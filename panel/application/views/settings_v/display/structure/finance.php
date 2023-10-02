@@ -54,7 +54,7 @@ $input10 = array(
 
 $financial_input_rows = array(
     "row1" => array($input1, $input2, $input3, $input4),
-    "row2" => array($input5, $input6,$input7, $input8),
+    "row2" => array($input5, $input6, $input7, $input8),
     "row3" => array($input9),
     "row4" => array($input10)
 )
@@ -62,11 +62,11 @@ $financial_input_rows = array(
 
 <?php foreach ($financial_input_rows as $financial_inputs) { ?>
     <div class="card-body">
-    <div class="row g-3">
-    <?php foreach ($financial_inputs as $finance_input) {
-        $name = $finance_input["name"];
-        $tag = $finance_input["tag"];
-        $width = $finance_input["width"]; ?>
+        <div class="row g-3">
+            <?php foreach ($financial_inputs as $finance_input) {
+                $name = $finance_input["name"];
+                $tag = $finance_input["tag"];
+                $width = $finance_input["width"]; ?>
                 <div class="<?php echo $width; ?>">
                     <label class="form-label" for="validationCustom01"><?php echo $tag; ?></label>
                     <input type="text"
@@ -80,8 +80,8 @@ $financial_input_rows = array(
                         <div class="invalid-feedback"><?php echo form_error($name); ?></div>
                     <?php } ?>
                 </div>
-    <?php } ?>
-    </div>
+            <?php } ?>
+        </div>
     </div>
 <?php } ?>
 
