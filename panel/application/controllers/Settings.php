@@ -314,7 +314,7 @@ class Settings extends CI_Controller
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "update";
+            $viewData->subViewFolder = "display";
             $viewData->form_error = true;
 
             /** Tablodan Verilerin Getirilmesi.. */
@@ -342,7 +342,7 @@ class Settings extends CI_Controller
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "update";
+        $viewData->subViewFolder = "display";
         $viewData->item = $item;
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
