@@ -134,12 +134,10 @@ if ($subViewFolder == "list") { ?>
                                href="<?php echo base_url("$this->Module_Name/update_form/$item->id"); ?>">
                                 <i class="menu-icon fa fa-edit fa-lg"></i> Düzenle
                             </a>
-                            <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
-                                    data-text="<?php echo $this->Module_Title; ?>"
-                                    data-url="<?php echo base_url("$this->Module_Name/new_form/$item->auction_id"); ?>"
-                                    url="<?php echo base_url("$this->Module_Name/new_form/$item->auction_id"); ?>">
-                                <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Sil
-                            </button>
+                            <a class="btn btn-primary" type="button"
+                                    href="<?php echo base_url("$this->Module_Name/new_form/$item->auction_id"); ?>">
+                                <i class="menu-icon fa fa-plus fa-xl" aria-hidden="true"></i> Yeni Maliyet Ekle
+                            </a>
                             <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
                                     data-text="<?php echo $this->Module_Title; ?>"
                                     data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>"
