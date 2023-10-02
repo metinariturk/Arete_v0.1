@@ -44,16 +44,6 @@ if (empty($auc_id)) { ?>
                                 </div>
                             </li>
                             <li>
-                                <div class="btn btn-light ">
-                                    <a href="<?php echo base_url("$this->Module_Name/file_form/$auc_id"); ?>">
-                                    <span style="padding-left: 20px">
-                                    <i class="icofont icofont-law-document"></i>
-                                    <?php echo auction_code($auc_id); ?>
-                                    </span>
-                                    </a>
-                                </div>
-                            </li>
-                            <li>
                                 <div class="btn btn-light">
                                     <span style="padding-left: 40px">
                                         <i class="icon-gallery"></i>
