@@ -136,6 +136,12 @@ if ($subViewFolder == "list") { ?>
                             </a>
                             <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
                                     data-text="<?php echo $this->Module_Title; ?>"
+                                    data-url="<?php echo base_url("$this->Module_Name/new_form/$item->auction_id"); ?>"
+                                    url="<?php echo base_url("$this->Module_Name/new_form/$item->auction_id"); ?>">
+                                <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Sil
+                            </button>
+                            <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
+                                    data-text="<?php echo $this->Module_Title; ?>"
                                     data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>"
                                     url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
                                 <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Sil
