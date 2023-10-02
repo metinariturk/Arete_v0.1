@@ -1,0 +1,11 @@
+
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^aretemuhendislik\.com\.tr$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.aretemuhendislik\.com\.tr$
+RewriteRule ^/?$ "https\:\/\/www\.aretemuhendislik\.com\.tr\/site" [R=301,L]
+
+
+
+php_value post_max_size 1024M
+php_value upload_max_filesize 1024M
+php_value memory_limit 1024M
