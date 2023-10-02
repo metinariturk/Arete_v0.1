@@ -124,13 +124,13 @@ class Cost extends CI_Controller
 
         $auc_id = auction_id_module($this->Module_Name, $id);
         $project_id = project_id_auc($auc_id);
-
-        $viewData->project_id = $project_id;
-
+        $settings = $this->Settings_model->get();
         $users = $this->User_model->get_all(array(
             "user_role" => 1
         ));
 
+        $viewData->settings = $settings;
+        $viewData->project_id = $project_id;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
