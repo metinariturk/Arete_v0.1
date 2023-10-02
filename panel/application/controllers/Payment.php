@@ -699,9 +699,9 @@ class Payment extends CI_Controller
         $this->load->library("upload", $config);
         if (!is_dir($config["upload_path"])) {
             mkdir($config["upload_path"], 0777, TRUE);
-            echo "Dosya Yolu Oluşturuldu: " . $path;
+            echo "Dosya Yolu Oluşturuldu: " . $config["upload_path"];
         } else {
-            echo "<p>Aynı İsimde Dosya Mevcut: " . $path . "</p>";
+            echo "<p>Aynı İsimde Dosya Mevcut: " . $config["upload_path"] . "</p>";
         }
 
 
