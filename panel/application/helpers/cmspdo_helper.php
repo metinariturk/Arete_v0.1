@@ -808,6 +808,18 @@ function get_avatar($id)
     }
 }
 
+function get_company_avatar($id)
+{
+    if (!empty($id)) {
+        $avatars = (directory_map("uploads/companys_v/system_companys/$id"));
+        if (!empty($avatars)) {
+            return 'src="' . base_url() . 'uploads/companys_v/system_companys/' . $id . '/' . $avatars[0] . '"';
+        } else {
+            return 'src="' . base_url() . 'assets/images/avtar/empty.png"';
+        }
+    }
+}
+
 function company_avatar_isset($id)
 {
     if (!empty($id)) {
