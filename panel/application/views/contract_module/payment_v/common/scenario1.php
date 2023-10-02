@@ -126,7 +126,7 @@
         }
 
 
-        var valorKES_k = valorC * valorKES_k_1 / 100;
+        var valorKES_k = valorA3 * valorKES_k_1 / 100;
         document.getElementById('KES_k').value = valorKES_k.toFixed(2) ; //k Hücresine Veri Göster
 
         var valorKES_d = Number(document.getElementById('KES_d').value, 10);
