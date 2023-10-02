@@ -1,0 +1,8 @@
+@media print{
+    /* All styles for print should goes here */
+    .container{
+        width: 10%;
+        height: auto;
+        margin: 50px auto;
+    }
+}

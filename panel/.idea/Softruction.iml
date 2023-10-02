@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/aucdraw_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/compute_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/compute_v/add" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/compute_v/common" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/compute_v/display" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/compute_v/list" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/compute_v/update" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/cost_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/cost_v/add" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/cost_v/common" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/cost_v/display" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/cost_v/list" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/cost_v/update" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/incentive_v/common" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/incentive_v/display" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/incentive_v/list" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/condition_v/add" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/condition_v/common" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/condition_v/display" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/condition_v/list" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/incentive_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/incentive_v/add" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/incentive_v/update" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/condition_v/update" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/condition_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/notice_v/add" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/notice_v/common" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/notice_v/display" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/notice_v/list" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/notice_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/auction_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module/offer_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/views/auction_module" isTestSource="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

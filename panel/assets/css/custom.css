@@ -1,0 +1,64 @@
+.txt-ror {
+    color: #ba102b !important
+}
+
+.txt-zip {
+    color: #f7c32d !important
+}
+
+.txt-excel {
+    color: #11753f !important
+}
+
+.txt-word {
+    color: #285191 !important
+}
+
+.txt-pp {
+    color: #be381b !important
+}
+
+.txt-acad {
+    color: #720828 !important
+}
+
+.txt-skp {
+    color: #e90a15 !important
+}
+
+.txt-warning {
+    color: #f8d62b !important
+}
+
+.txt-google-plus {
+    color: #c64e40 !important
+}
+
+.txt-twitter {
+    color: #6fa2d8 !important
+}
+
+.txt-linkedin {
+    color: #0077B5 !important
+}
+
+.txt-fb {
+    color: #50598e !important
+}
+
+.txt-primary {
+    color: var(--theme-deafult) !important
+}
+
+.txt-secondary {
+    color: var(--theme-secondary) !important
+}
+
+.horizontal-line {
+    width: 90%;
+    text-align: center;
+    border-bottom: 2px solid #AE66D9FF;
+    margin-left: 5%;
+    padding-top: 10px;
+}
+
