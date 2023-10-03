@@ -3,14 +3,16 @@
         <div class="col-12 p-0">
             <div class="login-card">
                 <div>
-                    <div>
-                        <a class="logo" href="index.html">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-lg-2 offset-lg-5 offset-md-4 offset-sm-3">
                             <img class="img-fluid for-light"
                                  src="<?php echo base_url("assets"); ?>/images/logo/login.png"
                                  alt="looginpage">
                             <img class="img-fluid for-dark"
-                                 src="<?php echo base_url("assets"); ?>/images/logo/logo_dark.png"
-                                 alt="looginpage"></a>
+                                 src="<?php echo base_url("assets"); ?>/images/logo/login.png"
+                                 alt="looginpage">
+                        </div>
+                        <h3 class="text-center">Mühendislik Müşavirlik</h3>
                     </div>
                     <form action="<?php echo base_url("login/do_login"); ?>" method="post">
                         <div class="login-main">
@@ -18,7 +20,8 @@
                             <p>Kullanıcı ve Şifrenizle Oturum Açınız</p>
                             <div class="form-group">
                                 <label class="col-form-label">Kullanıcı Adı</label>
-                                <input id="sign-in-email" type="text" class="form-control <?php cms_isset(form_error("user_name"), "is-invalid", ""); ?>"
+                                <input id="sign-in-email" type="text"
+                                       class="form-control <?php cms_isset(form_error("user_name"), "is-invalid", ""); ?>"
                                        placeholder="Kullanıcı Adı"
                                        name="user_name"
                                        value="<?php if (isset($form_error)) {
@@ -35,7 +38,8 @@
                             <div class="form-group">
                                 <label class="col-form-label">Şifre</label>
                                 <div class="form-input position-relative">
-                                    <input id="sign-in-password" type="password" class="form-control <?php cms_isset(form_error("user_password"), "is-invalid", ""); ?>"
+                                    <input id="sign-in-password" type="password"
+                                           class="form-control <?php cms_isset(form_error("user_password"), "is-invalid", ""); ?>"
                                            placeholder="Şifre"
                                            name="user_password">
                                     <?php if (isset($form_error)) { ?>
@@ -51,7 +55,7 @@
                                     <input id="checkbox1" type="checkbox">
                                 </div>
                                 <a class="link" href="<?php echo base_url("sifremi-unuttum"); ?>">Şifremi
-                                Unuttum</a>
+                                    Unuttum</a>
                                 <div class="text-end mt-3">
                                     <button class="btn btn-primary btn-block w-100" type="submit">Oturum Aç</button>
                                 </div>
