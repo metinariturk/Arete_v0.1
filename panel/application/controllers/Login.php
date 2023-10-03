@@ -287,7 +287,7 @@ class login extends CI_Controller
                                     </tr>
                                     <tr>
                                         <td>
-                                            CMS Photon Hesabınız için bir şifre sıfırlama talebi aldık .
+                                            Arete Sistem Kullanıcısı Hesabınız için bir şifre sıfırlama talebi aldık .
                                         </td>
                                     </tr>
                                     <tr>
