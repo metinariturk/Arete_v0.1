@@ -6,11 +6,10 @@
 <table class="table" id="payment_table">
     <thead>
     <tr>
-        <th  class="d-none d-sm-table-cell"><i class="fa fa-reorder"></i></th>
-        <th  class="d-none d-sm-table-cell">Dosya No</th>
+        <th  class="d-none d-sm-table-cell">Hakediş No</th>
         <th  class="d-none d-sm-table-cell">Hakediş İtibar Tarihi</th>
         <th>Hakediş Tutar</th>
-        <th  class="d-none d-sm-table-cell">Net Ödenen</th>
+        <th  class="d-none d-sm-table-cell">Net Ödenecek</th>
         <th>Evraklar</th>
     </tr>
     </thead>
@@ -19,11 +18,8 @@
         <?php foreach ($payments as $payment) { ?>
             <tr id="center_row">
                 <td class="d-none d-sm-table-cell">
-                    <?php echo $payment->id; ?>
-                </td>
-                <td class="d-none d-sm-table-cell">
                     <a  href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                        <?php echo $payment->dosya_no; ?>
+                        <?php echo str_pad($payment->hakedis_no, 2, "0", STR_PAD_LEFT);; ?>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">

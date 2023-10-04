@@ -1,6 +1,6 @@
 <div class="row">
 
-    <div class="col-xl-3 xl-100 box-col-12">
+    <div class="col-xl-6 xl-100 box-col-12">
         <div class="card">
             <div class="card-header">
                 <h5>Hızlı Erişim</h5>
@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-xl-6 xl-100 box-col-12">
         <div class="card">
             <div class="cal-date-widget card-body">
@@ -48,37 +47,6 @@
             </div>
         </div>
     </div>
-
-    <div class="col-xl-3 xl-100 box-col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-6 media">
-                        <div class="row">
-                            <div class="col-4">
-                                <img src="<?php echo base_url("assets"); ?>/images/usaflag.png">
-                            </div>
-                            <div class="col-8">
-                                <h6> USD $</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6 media">
-                        <div class="row">
-                            <div class="col-4">
-                                <img src="<?php echo base_url("assets"); ?>/images/european.png">
-                            </div>
-                            <div class="col-8">
-                                <h6> EUR €</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <div class="row">
@@ -100,7 +68,7 @@
                                           role="button"
                                           onclick="todoCheck(this)">
                                         <span class="btn-label">
-                                           Tümünü Tamamlandı
+                                           Tümü Tamamlandı İşaretle
                                         </span>
                                         <span class="action-box">
                                             <i class="fa fa-times fa-lg"></i>
@@ -114,7 +82,7 @@
                                       id="mark-all-incomplete"
                                       role="button">
                                         <span class="btn-label">
-                                            Tümünü Tamamlanmadı
+                                           Tümü Tamamlanmadı İşaretle
                                         </span>
                                         <span class="action-box">
                                             <i class="icon"><i class="icon-check"></i></i>

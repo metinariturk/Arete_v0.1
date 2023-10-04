@@ -2862,7 +2862,7 @@ class Contract extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => contract_code_name($id)
+                    "title" => "(Sözleşme) ".project_name(project_id_cont($id))." / ".contract_name($id)
                 )
             );
             echo "favoriye eklendi";

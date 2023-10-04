@@ -2124,7 +2124,7 @@ class Auction extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => auction_code_name($id)
+                    "title" => "(Teklif) ".project_name(project_id_auc($id))." / ".auction_name($id)
                 )
             );
             echo "favoriye eklendi";
