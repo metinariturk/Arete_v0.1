@@ -1,5 +1,4 @@
 <div class="row">
-
     <div class="col-xl-6 xl-100 box-col-12">
         <div class="card">
             <div class="card-header">

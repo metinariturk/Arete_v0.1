@@ -61,11 +61,6 @@ class Payment extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Payment_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
-        $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
-            )
-        );
-
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
 
@@ -74,7 +69,6 @@ class Payment extends CI_Controller
         $viewData->subViewFolder = "$this->List_Folder";
         $viewData->items = $items;
         $viewData->projects = $projects;
-        $viewData->active_contracts = $active_contracts;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -247,8 +241,7 @@ class Payment extends CI_Controller
 
     }
 
-    public
-    function file_form($id)
+    public function file_form($id)
     {
 
         $contract_id = contract_id_module("payment", $id);
@@ -282,8 +275,7 @@ class Payment extends CI_Controller
 
     }
 
-    public
-    function save($contract_id)
+    public function save($contract_id)
     {
 
         $project_id = project_id_cont($contract_id);
@@ -611,8 +603,7 @@ class Payment extends CI_Controller
         }
     }
 
-    public
-    function delete($id)
+    public function delete($id)
     {
 
         $hakedis_no = get_from_id("payment", "hakedis_no", "$id");
@@ -678,8 +669,7 @@ class Payment extends CI_Controller
         }
     }
 
-    public
-    function file_upload($id)
+    public function file_upload($id)
     {
 
         $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
@@ -729,8 +719,7 @@ class Payment extends CI_Controller
 
     }
 
-    public
-    function file_download($id)
+    public function file_download($id)
     {
         $fileName = $this->Payment_file_model->get(
             array(
@@ -761,8 +750,7 @@ class Payment extends CI_Controller
 
     }
 
-    public
-    function download_all($payment_id)
+    public function download_all($payment_id)
     {
         $this->load->library('zip');
         $this->zip->compression_level = 0;
@@ -788,8 +776,7 @@ class Payment extends CI_Controller
 
     }
 
-    public
-    function refresh_file_list($id)
+    public function refresh_file_list($id)
     {
         $viewData = new stdClass();
 
@@ -815,8 +802,7 @@ class Payment extends CI_Controller
 
     }
 
-    public
-    function fileDelete($id)
+    public function fileDelete($id)
     {
 
         $viewData = new stdClass();
@@ -870,8 +856,7 @@ class Payment extends CI_Controller
         }
     }
 
-    public
-    function fileDelete_all($id)
+    public function fileDelete_all($id)
     {
 
         $viewData = new stdClass();
@@ -920,8 +905,7 @@ class Payment extends CI_Controller
         }
     }
 
-    public
-    function duplicate_code_check($file_name)
+    public function duplicate_code_check($file_name)
     {
         $file_name = "HAK-" . $file_name;
 
@@ -933,8 +917,7 @@ class Payment extends CI_Controller
         }
     }
 
-    public
-    function sitedel_paymentday($payment_day, $sitedal_day)
+    public function sitedel_paymentday($payment_day, $sitedal_day)
     {
         $date_diff = date_minus($payment_day, $sitedal_day);
         if (($date_diff <= 0)) {
