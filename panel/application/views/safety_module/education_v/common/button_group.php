@@ -22,7 +22,7 @@
     </div>
     <div id="right" class="text-right">
         <a class="pager-btn btn btn-danger btn-outline" onclick="deleteConfirmationFile(this)" data-text="Bu Projeyi"
-           data-note="Bağlı İhaleler ve Tüm Alt Dosyaları Silinecek, Bu İşlem Geri Alınamaz"
+           data-note="Bağlı Teklifler ve Tüm Alt Dosyaları Silinecek, Bu İşlem Geri Alınamaz"
            data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
             <i class="fa fa-trash"></i> Herşeyi Sil
         </a>

@@ -6,7 +6,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>İhale Adı</th>
+                        <th>Teklif Adı</th>
                         <th>Yaklaşık Maliyet Grubu</th>
                         <th>Yaklaşık Maliyet Ad</th>
                         <th>Yaklaşık Maliyet Tutar</th>

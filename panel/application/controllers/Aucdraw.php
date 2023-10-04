@@ -30,7 +30,7 @@ class Aucdraw extends CI_Controller
         $this->load->model("User_model");
 
         $this->Module_Name = "aucdraw";
-        $this->Module_Title = "İhale Teknik Dökümanlar";
+        $this->Module_Title = "Teklif Teknik Dökümanlar";
         $this->Upload_Folder = "uploads";
         $this->Module_Main_Dir = "project_v";
         $this->Module_Depended_Dir = "auction";

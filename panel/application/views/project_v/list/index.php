@@ -22,7 +22,10 @@
         <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
+
 <?php $this->load->view("includes/include_script"); ?>
+<?php $this->load->view("includes/include_datatable"); ?>
+
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

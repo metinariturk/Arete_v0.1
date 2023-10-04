@@ -31,16 +31,16 @@
                                     data-feather="box"> </i><span>Projeler</span></a></li>
 
                     <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title" href="#"><i data-feather="briefcase"></i><span>İhale Süreçleri</span></a>
+                        <a class="sidebar-link sidebar-title" href="#"><i data-feather="briefcase"></i><span>Teklif Süreçleri</span></a>
                         <ul class="sidebar-submenu">
-                            <li><a href="<?php echo base_url("auction"); ?>">İhale Listesi</a></li>
-                            <li><a href="<?php echo base_url("aucdraw"); ?>">İhale Projeler</a></li>
+                            <li><a href="<?php echo base_url("auction"); ?>">Teklif Listesi</a></li>
+                            <li><a href="<?php echo base_url("aucdraw"); ?>">Teklif Projeler</a></li>
                             <li><a href="<?php echo base_url("compute"); ?>">Metrajlar</a></li>
                             <li><a href="<?php echo base_url("Cost"); ?>">Yaklaşık Maliyet</a></li>
                             <li><a href="<?php echo base_url("Condition"); ?>">Şartnameler</a></li>
                             <li><a href="<?php echo base_url("Incentive"); ?>">Teşvik Belgeleri</a></li>
-                            <li><a href="<?php echo base_url("Notice"); ?>">İhale Yayınlama</a></li>
-                            <li><a href="<?php echo base_url("Offer"); ?>">İhale Teklifleri</a></li>
+                            <li><a href="<?php echo base_url("Notice"); ?>">Teklif Yayınlama</a></li>
+                            <li><a href="<?php echo base_url("Offer"); ?>">Teklif Teklifleri</a></li>
                         </ul>
                     </li>
                     <li class="sidebar-list">

@@ -34,7 +34,7 @@ if ($subViewFolder == "list") { ?>
                                                   method="post"
                                                   enctype="multipart">
                                                 <div class="mb-3">
-                                                    <label class="col-form-label" for="recipient-name">İhale Seçiniz</label>
+                                                    <label class="col-form-label" for="recipient-name">Teklif Seçiniz</label>
                                                     <select class="form-control" name="auction_id">
                                                         <?php foreach ($prep_auctions as $item) { ?>
                                                             <option value="<?php echo "$item->id"; ?>">
@@ -89,7 +89,7 @@ if ($subViewFolder == "list") { ?>
                             </button>
                             <?php } elseif (empty($auc_id)) {?>
                             <button type="submit" form="auction_id" class="btn btn-success">
-                                <i class="fa fa-floppy-o fa-lg"></i> İhale Seç
+                                <i class="fa fa-floppy-o fa-lg"></i> Teklif Seç
                             </button>
                             <?php } ?>
                             <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">

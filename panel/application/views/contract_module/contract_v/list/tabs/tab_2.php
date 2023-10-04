@@ -1,79 +1,59 @@
 <div class="tab-pane fade" id="top-prep" role="tabpanel" aria-labelledby="prep-top-tab">
     <div class="row">
-        <?php foreach ($passive_items as $item) { ?>
-            <?php if (sum_from_table("extime", "uzatim_miktar", $item->id) > 0) {
-                $bitis_tarihi = date_plus_days($item->sozlesme_bitis, (sum_from_table("extime", "uzatim_miktar", $item->id)));
-                "<br>";
-                $toplam_sure_uzatim = sum_from_table("extime", "uzatim_miktar", $item->id);
-            } else {
-                $bitis_tarihi = $item->sozlesme_bitis;
-                "<br>";
-                $toplam_sure_uzatim = 0;
-            }
-            $toplam_gun = $item->isin_suresi + $toplam_sure_uzatim;
-            ?>
-            <?php if (!isAdmin()) { ?>
-                <?php $yetkili = contract_auth($item->id);
-                if (in_array(active_user_id(), $yetkili)) { ?>
-                    <div class="col-xxl-4 col-lg-6">
-                        <div class="project-box">
-                            <h6>
-                                <a href="<?php echo base_url("contract/file_form/$item->id"); ?>"><?php echo $item->sozlesme_ad; ?></a>
-                            </h6>
-                            <div class="media"
-                                <div class="media-body">
-                                    <p><?php echo company_name($item->isveren); ?></p>
-                                </div>
-                            </div>
-                            <div class="row details">
-                                <div class="col-6"><span>İş Veren </span></div>
-                                <div class="col-6 text-primary"><?php echo company_name($item->isveren); ?></div>
-                                <div class="col-6"><span>Sözleşme Bedel </span></div>
-                                <div class="col-6 text-primary"><?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?></div>
-                                <div class="col-6"><span>İşin Süresi</span></div>
-                                <div class="col-6 text-primary"><?php echo $toplam_gun; ?></div>
-                                <div class="col-6"><span>Yer Teslimi Tarihi</span></div>
-                                <div class="col-6 text-primary">
-                                    <?php echo dateFormat_dmy($item->sozlesme_tarih); ?>
-                                </div>
-                                <div class="col-6"><span>Bitiş Tarihi</span></div>
-                                <div class="col-6 text-primary">
-                                    <?php echo $item->sozlesme_bitis == null ? null : dateFormat($format = 'd-m-Y', $item->sozlesme_bitis); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php } ?>
-            <?php } else { ?>
-                <div class="col-xxl-4 col-lg-6">
-                    <div class="project-box">
-                        <h6>
-                            <a href="<?php echo base_url("contract/file_form/$item->id"); ?>"><?php echo $item->sozlesme_ad; ?></a>
-                        </h6>
-                        <div class="media">
-                            <div class="media-body">
-                                <p><?php echo company_name($item->isveren); ?></p>
-                            </div>
-                        </div>
-                        <div class="row details">
-                            <div class="col-6"><span>İş Veren </span></div>
-                            <div class="col-6 text-primary"><?php echo company_name($item->isveren); ?></div>
-                            <div class="col-6"><span>Sözleşme Bedel </span></div>
-                            <div class="col-6 text-primary"><?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?></div>
-                            <div class="col-6"><span>İşin Süresi</span></div>
-                            <div class="col-6 text-primary"><?php echo $toplam_gun; ?></div>
-                            <div class="col-6"><span>Yer Teslimi Tarihi</span></div>
-                            <div class="col-6 text-primary">
-                                <?php echo dateFormat_dmy($item->sozlesme_tarih); ?>
-                            </div>
-                            <div class="col-6"><span>Bitiş Tarihi</span></div>
-                            <div class="col-6 text-primary">
-                                <?php echo $item->sozlesme_bitis == null ? null : dateFormat($format = 'd-m-Y', $item->sozlesme_bitis); ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
-        <?php } ?>
+        <div class="tab-pane fade show active" id="top-all" role="tabpanel" aria-labelledby="top-all-tab">
+            <div class="table-responsive">
+                <table class="display" id="basic-2">
+                    <thead>
+                    <tr>
+                        <th>Sözleşme Kodu</th>
+                        <th>Sözleşme Adı</th>
+                        <th>İşveren</th>
+                        <th>Sözleşme Tutar</th>
+                        <th>İmza Tarihi</th>
+                        <th>Bitiş Tarihi Tarihi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($passive_items as $passive) { ?>
+                        <tr>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$passive->id"); ?>">
+                                    <?php echo project_name($passive->proje_id); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$passive->id"); ?>">
+                                    <?php echo $passive->sozlesme_ad; ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$passive->id"); ?>">
+                                    <?php echo company_name($passive->isveren); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$passive->id"); ?>">
+                                    <?php echo money_format($passive->sozlesme_bedel) . " " . $passive->para_birimi; ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$passive->id"); ?>">
+                                    <?php echo dateFormat_dmy($passive->sozlesme_tarih); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$passive->id"); ?>">
+                                    <?php echo $passive->sozlesme_bitis == null ? null : dateFormat($format = 'd-m-Y', $passive->sozlesme_bitis); ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
     </div>
 </div>

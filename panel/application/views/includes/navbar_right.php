@@ -3,7 +3,7 @@
     <div class="form-group w-100">
         <div class="Typeahead Typeahead--twitterUsers">
             <div id="the-basics">
-                <input class="typeahead" type="text" name="search" placeholder="Proje - Sözleşme - Şantiye ve İhaleler İçinde Ara">
+                <input class="typeahead" type="text" name="search" placeholder="Proje - Sözleşme - Şantiye ve Teklifler İçinde Ara">
                 <input type="submit" style="position: absolute; left: -9999px">
             </div>
         </div>

@@ -17,14 +17,14 @@ $bugun = date("Y-m-d");
                 <td><?php echo company_name($item->isveren); ?></td>
             </tr>
             <tr>
-                <td><b>Planlanan İhale Yayın Tarihi</td>
+                <td><b>Planlanan Teklif Yayın Tarihi</td>
                 <td><?php echo $item->talep_tarih == null ? null : dateFormat($format = 'd-m-Y', $item->talep_tarih); ?></td>
             </tr>
             <?php if (isset($ilanlar)){ ?>
             <?php foreach ($ilanlar as $ilan) { ?>
                 <tr>
                     <td>
-                        <b><?php echo cms_isset($ilan->original_notice, "Zeyilname", "İhale"); ?> Yayın Tarihi</b>
+                        <b><?php echo cms_isset($ilan->original_notice, "Zeyilname", "Teklif"); ?> Yayın Tarihi</b>
                     </td>
                     <td>
                         <?php echo dateFormat_dmy($ilan->ilan_tarih); ?> - <?php echo dateFormat_dmy($ilan->son_tarih); ?>

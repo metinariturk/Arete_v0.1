@@ -5,7 +5,7 @@
                 <div class="row">
                     <div class="widget">
                         <div class="widget-body">
-                            <b>İhale Bilgileri</b>
+                            <b>Teklif Bilgileri</b>
                         </div>
                     </div>
                 </div>

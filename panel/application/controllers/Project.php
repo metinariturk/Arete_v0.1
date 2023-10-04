@@ -68,7 +68,6 @@ class Project extends CI_Controller
             "durumu" => !1
         ));
 
-
         $all_projects = $this->Project_model->get_all();
 
         $settings = $this->Settings_model->get();
@@ -539,7 +538,7 @@ class Project extends CI_Controller
         if ($control > 0) {
 
             $alert = array(
-                "title" => "Bu Projeye Bağlı Sözleşme/İhale/Şantiye Mevcut",
+                "title" => "Bu Projeye Bağlı Sözleşme/Teklif/Şantiye Mevcut",
                 "text" => "$project_name silmek için alt birimleri silmeniz gerekmektedir.",
                 "type" => "danger"
             );

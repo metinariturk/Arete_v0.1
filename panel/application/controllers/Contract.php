@@ -245,7 +245,7 @@ class Contract extends CI_Controller
             }
         }
 
-        //ihale yetkilisi mi diye sorgulayabiliriz
+        //teklif yetkilisi mi diye sorgulayabiliriz
         $isveren = get_from_any("auction", "isveren", "id", "$auction_id");
         /** Tablodan Verilerin Getirilmesi.. */
         $proje_id = get_from_id("auction", "proje_id", "$auction_id");
@@ -587,7 +587,7 @@ class Contract extends CI_Controller
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[contract.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
-        $this->form_validation->set_rules("auction_id", "İhale Adı", "required|trim");
+        $this->form_validation->set_rules("auction_id", "Teklif Adı", "required|trim");
         $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
         $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
@@ -1697,13 +1697,13 @@ class Contract extends CI_Controller
             if ($delete_contract) {
                 $alert = array(
                     "title" => "İşlem Başarılı",
-                    "text" => "İhale tüm alt süreçleri ile birlikte, başarılı bir şekilde silindi",
+                    "text" => "Teklif tüm alt süreçleri ile birlikte, başarılı bir şekilde silindi",
                     "type" => "success"
                 );
             } else {
                 $alert = array(
                     "title" => "İşlem Başarısız",
-                    "text" => "İhale silme sırasında bir problem oluştu",
+                    "text" => "Teklif silme sırasında bir problem oluştu",
                     "type" => "danger"
                 );
             }

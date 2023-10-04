@@ -4,7 +4,7 @@ if (empty($auc_id)) { ?>
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h4>İhale Seçimi Yapmadan Bu İşleme Devam Edemezsiniz</h4>
+                    <h4>Teklif Seçimi Yapmadan Bu İşleme Devam Edemezsiniz</h4>
                 </div>
             </div>
             <div class="card">
@@ -14,7 +14,7 @@ if (empty($auc_id)) { ?>
                       enctype="multipart">
                     <div class="card-body">
                         <div class="mb-2 col-sm-6">
-                            <label class="col-form-label" for="recipient-name">İhale Seçiniz</label>
+                            <label class="col-form-label" for="recipient-name">Teklif Seçiniz</label>
                             <select class="form-control" name="auction_id">
                                 <?php foreach ($prep_auctions as $prep_auction) { ?>
                                     <option value="<?php echo "$prep_auction->id"; ?>">

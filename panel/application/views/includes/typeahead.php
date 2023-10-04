@@ -26,7 +26,7 @@ foreach ($sites as $site) {
 $auctions = all_auctions();
 $auction_type_name_id = array();
 foreach ($auctions as $auction) {
-    $auction_type_name_id[] = $auction->id . " - " . $auction->ihale_ad . " - İhale";
+    $auction_type_name_id[] = $auction->id . " - " . $auction->ihale_ad . " - Teklif";
 }
 
 $all_data = array_merge($project_type_name_id, $contract_type_name_id, $subcontract_type_name_id, $site_type_name_id, $auction_type_name_id);

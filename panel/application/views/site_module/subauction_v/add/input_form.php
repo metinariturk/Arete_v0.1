@@ -29,10 +29,10 @@
     </tr>
 
     <tr>
-        <td><b>İhale Adı *</b></td>
+        <td><b>Teklif Adı *</b></td>
         <td>
             <input type="text" class="form-control"
-                   name="ihale_ad" placeholder="İhale Adı"
+                   name="ihale_ad" placeholder="Teklif Adı"
                    value="<?php echo isset($form_error) ? set_value("ihale_ad") : ""; ?>">
             <?php if (isset($form_error)) { ?>
                 <small class="pull-left input-form-error"> <?php echo form_error("ihale_ad"); ?></div>
@@ -40,7 +40,7 @@
         </td>
     </tr>
     <tr>
-        <td><b>İhale Yapan *</b></td>
+        <td><b>Teklif Yapan *</b></td>
         <td>
             <select class="form-control" data-plugin="select2" name="isveren">
                 <option value="<?php echo isset($form_error) ? set_value("isveren") : ""; ?>"><?php echo isset($form_error) ? company_name(set_value("isveren")) : "Seçiniz"; ?></option>
@@ -54,7 +54,7 @@
         </td>
     </tr>
     <tr>
-        <td><b>İhale Bütçe Tutar</b></td>
+        <td><b>Teklif Bütçe Tutar</b></td>
         <td>
             <div class="row">
                 <div class="col-sm-7">
@@ -120,10 +120,10 @@
     </tr>
     <tr>
         <td>
-            <b>İhale Genel Notları</b>
+            <b>Teklif Genel Notları</b>
         </td>
         <td>
-            <textarea class="form-control" name="aciklama" placeholder="İhale özel notlarınızı ekleyiniz"><?php echo isset($form_error) ? set_value("aciklama") : ""; ?></textarea>
+            <textarea class="form-control" name="aciklama" placeholder="Teklif özel notlarınızı ekleyiniz"><?php echo isset($form_error) ? set_value("aciklama") : ""; ?></textarea>
         </td>
     </tr>
     <tr>

@@ -14,7 +14,7 @@
                 <?php } ?>
                 <?php if (isset($auction)) { ?>
                     <div class="clearfix m-b-sm">
-                        <div class="col-md-6"><strong>İhale Kodu <br> İhale Adı</strong></div>
+                        <div class="col-md-6"><strong>Teklif Kodu <br> Teklif Adı</strong></div>
                         <div class="col-md-6">
                             <a href="<?php echo base_url("auction/file_form/$auction->id"); ?>"><?php echo $auction->dosya_no . "<br>" . auction_name($auction->id); ?></a>
                         </div>

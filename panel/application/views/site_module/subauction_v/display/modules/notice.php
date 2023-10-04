@@ -2,8 +2,8 @@
     <div class="text-center">
         <?php if (empty($ilanlar)) { ?>
             <h4>
-                İhale Yayınla
-                <a data-tooltip-location="right" data-tooltip="Yeni İhale İlanı veya Zeyilname" class=""
+                Teklif Yayınla
+                <a data-tooltip-location="right" data-tooltip="Yeni Teklif İlanı veya Zeyilname" class=""
                    href="<?php echo base_url("notice/new_form/auction_display/$item->id"); ?>">
                     <i class="menu-icon fa fa-plus-circle fa-lg" aria-hidden="true"></i> </a>
             </h4>
@@ -32,7 +32,7 @@
                     </a>
                 </th>
                 <th class="w20">İşlem</th>
-                <th class="w15">İhale Yayını<br>Kapalı / Açık</th>
+                <th class="w15">Teklif Yayını<br>Kapalı / Açık</th>
             </tr>
             </thead>
             <tbody>
@@ -47,7 +47,7 @@
                             </a>
                         </td>
                         <td><?php echo $ilan->dosya_no; ?></td>
-                        <td><?php echo cms_isset($ilan->original_notice, "Zeyilname", "İhale"); ?></td>
+                        <td><?php echo cms_isset($ilan->original_notice, "Zeyilname", "Teklif"); ?></td>
                         <td><?php echo dateFormat_dmy_hi($ilan->ilan_tarih); ?></td>
                         <td><?php echo $ilan->aski_sure; ?></td>
                         <td><?php echo dateFormat_dmy_hi($ilan->son_tarih); ?></td>
@@ -55,14 +55,14 @@
                             <?php if (empty($ilan->original_notice)) { ?>
                                 <a class="pager-btn btn btn-info btn-outline" onclick="page_forward(this)"
                                    data-text="Bu Poliçe"
-                                   data-note="İhale Dosyasını İndirmek İstiyor Musunuz"
+                                   data-note="Teklif Dosyasını İndirmek İstiyor Musunuz"
                                    data-url="<?php echo base_url("notice/download_notice/$ilan->id"); ?>">
                                     <i class="fa fa-download" aria-hidden="true"></i>
                                 </a>
                             <?php } else { ?>
                                 <a class="pager-btn btn btn-info btn-outline" onclick="page_forward(this)"
                                    data-text="Bu Poliçe"
-                                   data-note="İhale Dosyasını İndirmek İstiyor Musunuz"
+                                   data-note="Teklif Dosyasını İndirmek İstiyor Musunuz"
                                    data-url="<?php echo base_url("notice/download_addendum/$ilan->id"); ?>">
                                     <i class="fa fa-download" aria-hidden="true"></i>
                                 </a>
@@ -79,7 +79,7 @@
                                 <?php if (empty($ilan->original_notice)) { ?>
                                     <?php if (!empty($ilanlar)) { ?>
                                         <a class="pager-btn btn btn-info btn-outline" onclick="page_forward(this)"
-                                           data-text="Bu İhale İle İlgili Zeyilname Yayınlama"
+                                           data-text="Bu Teklif İle İlgili Zeyilname Yayınlama"
                                            data-note="Sayfadan Çıkmak Üzeresiniz"
                                            data-url="<?php echo base_url("addendum/new_form/auction_display/$item->id/$ilan->id"); ?>">
                                             <i class="fa-brands fa-autoprefixer"></i> Zeyilname Yayınla

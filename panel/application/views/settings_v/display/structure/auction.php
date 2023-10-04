@@ -33,7 +33,7 @@ $auction_input6 = array(
 $auction_input7 = array(
     "name" => "yeterlilik",
     "width" => "col-sm-12",
-    "tag" => "İhale Yeterlilik Kontrolü",
+    "tag" => "Teklif Yeterlilik Kontrolü",
 );
 
 $auction_input_rows = array(

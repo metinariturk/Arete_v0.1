@@ -103,7 +103,7 @@
                     <div class="info">
                         <div class="row">
                             <div class="ttl-info text-start">
-                                <h5>İhaleler</h5>
+                                <h5>Teklifler</h5>
                                 <?php foreach ($auctions as $auction) { ?>
                                     <?php $auction_auth = auction_auth($auction->id);
                                     if (in_array($item->id, $auction_auth)) { ?>

@@ -182,7 +182,7 @@
                     </tr>
                     <tr>
                         <th colspan="2"></th>
-                        <th class="text-center">Sözleşme/İhale</th>
+                        <th class="text-center">Sözleşme/Teklif</th>
                         <th class="text-center">Proje</th>
                         <th class="text-center">İşlem</th>
                     </tr>

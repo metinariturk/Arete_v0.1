@@ -12,7 +12,7 @@
                 <b><?php cms_if_echo($item->auto_air, "1", "Otomatik ", " Manuel"); ?></b>
                 Olarak Yayınlanacak
             <?php } elseif ($son_gun_durum < 0) { ?>
-                İhale Yayın Süresi Doldu
+                Teklif Yayın Süresi Doldu
             <?php } else { ?>
                 <div class="media-body text-start icon-state switch-outline">
                     <label class="switch">
@@ -29,7 +29,7 @@
         </td>
     </tr>
     <tr>
-        <td><strong>İhale Yayını Dosya No</strong></td>
+        <td><strong>Teklif Yayını Dosya No</strong></td>
         <td><strong>:</strong></td>
         <td><?php echo $item->dosya_no; ?></td>
     </tr>
@@ -43,7 +43,7 @@
         </td>
     </tr>
     <tr>
-        <td><strong>İhale Dosyasını İndir</strong></td>
+        <td><strong>Teklif Dosyasını İndir</strong></td>
         <td><strong>:</strong></td>
         <td>
             <a href="<?php echo base_url("$this->Module_Name/download_all/$item->original_notice"); ?>">
@@ -52,7 +52,7 @@
         </td>
     </tr>
     <tr>
-        <td><strong>İhale İlan Tarihi</strong></td>
+        <td><strong>Teklif İlan Tarihi</strong></td>
         <td><strong>:</strong></td>
         <td><?php echo dateFormat_dmy_hi($item->ilan_tarih); ?></td>
     </tr>

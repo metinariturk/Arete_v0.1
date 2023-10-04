@@ -1,7 +1,7 @@
 <?php
 if (empty($auction)) { ?>
     <div class="alert alert-info text-center">
-        <p>Lütfen Yeni <?php echo $this->Module_Title; ?> İlgili İhale veya Proje Seçiniz <a
+        <p>Lütfen Yeni <?php echo $this->Module_Title; ?> İlgili Teklif veya Proje Seçiniz <a
                     href="<?php echo base_url("$this->Module_Name"); ?>">tıklayınız</a></p>
     </div>
 <?php } else { ?>

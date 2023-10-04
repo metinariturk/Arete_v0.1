@@ -7,7 +7,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>İhale Adı</th>
+                        <th>Teklif Adı</th>
                         <th>Teklif Verenler</th>
                         <th>En Düşük Teklif</th>
                         <th>En Yüksek Teklif</th>

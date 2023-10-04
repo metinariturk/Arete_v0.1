@@ -10,10 +10,10 @@
         <thead>
         <tr>
             <th class="w5">ID</th>
-            <th class="w10">İhale Kodu</th>
-            <th class="w30">İhale Adı</th>
+            <th class="w10">Teklif Kodu</th>
+            <th class="w30">Teklif Adı</th>
             <th class="w25">Proje Adı</th>
-            <th class="w25">İhale Bedel</th>
+            <th class="w25">Teklif Bedel</th>
             <th class="w5">İşlem</th>
         </tr>
         </thead>

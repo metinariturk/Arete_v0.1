@@ -2,7 +2,7 @@
     <ol>
         <li><b>Sözleşme Öncesi</b></li>
         <ol>
-            <li><b>İhale Sonuç Bildirim Formu</b></li>
+            <li><b>Teklif Sonuç Bildirim Formu</b></li>
             <li><b>Sözleşme Davet Yazısı</b></li>
             <li><b>Resmi Harçlar</b></li>
             <ol>

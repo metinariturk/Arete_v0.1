@@ -1,6 +1,6 @@
 <?php $proje_id = get_from_id("auction", "proje_id", $auc_id); ?>
 <?php if (empty($notice_id)){
-    $title = "İhale";
+    $title = "Teklif";
 } else {
     $title = "Zeyilname";
 } ?>

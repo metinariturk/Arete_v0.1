@@ -3,7 +3,7 @@
         <div class="col-9">
             <h6 class="mb-0">
                 <a href="<?php echo base_url("notice/file_form/$notice->id"); ?>" target="_blank">
-                    İhale Yayın Dosyası
+                    Teklif Yayın Dosyası
                 </a>
                 <a href="<?php echo base_url("notice/file_form/$notice->id"); ?>" target="_blank">
                     <p class="mb-0">
@@ -25,14 +25,14 @@
             <td>    <?php if (empty($ilan->original_notice)) { ?>
                     <a class="pager-btn btn btn-info btn-outline" onclick="page_forward(this)"
                        data-text="Bu Poliçe"
-                       data-note="İhale Dosyasını İndirmek İstiyor Musunuz"
+                       data-note="Teklif Dosyasını İndirmek İstiyor Musunuz"
                        data-url="<?php echo base_url("notice/download_notice/$notice->id"); ?>">
                         <i class="fa fa-download" aria-hidden="true"></i>
                     </a>
                 <?php } else { ?>
                     <a class="pager-btn btn btn-info btn-outline" onclick="page_forward(this)"
                        data-text="Bu Poliçe"
-                       data-note="İhale Dosyasını İndirmek İstiyor Musunuz"
+                       data-note="Teklif Dosyasını İndirmek İstiyor Musunuz"
                        data-url="<?php echo base_url("notice/download_addendum/$notice->id"); ?>">
                         <i class="fa fa-download" aria-hidden="true"></i>
                     </a>
@@ -40,7 +40,7 @@
             </td>
         </tr>
         <tr>
-            <td><strong>İhale İlan Tarihi</strong></td>
+            <td><strong>Teklif İlan Tarihi</strong></td>
             <td><strong>:</strong></td>
             <td><?php echo dateFormat_dmy_hi($notice->ilan_tarih); ?></td>
         </tr>

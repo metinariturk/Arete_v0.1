@@ -6,9 +6,9 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>İhale Adı</th>
-                        <th>İhale Yayınlama Tarihi</th>
-                        <th>İhale Yayından Kalış Tarihi</th>
+                        <th>Teklif Adı</th>
+                        <th>Teklif Yayınlama Tarihi</th>
+                        <th>Teklif Yayından Kalış Tarihi</th>
                     </tr>
                     </thead>
                     <tbody>

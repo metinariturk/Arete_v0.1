@@ -7,7 +7,7 @@
                     <li class="nav-item"><span class="main-title">Detaylar</span></li>
                     <li><a id="genel-tab" data-bs-toggle="pill" href="#genel" role="tab"
                            aria-controls="genel" aria-selected="true"><span
-                                    class="title">İhale Genel Bilgileri</span></a>
+                                    class="title">Teklif Genel Bilgileri</span></a>
                     </li>
                     <li>
                         <a class="show" id="teknik-tab" data-bs-toggle="pill"

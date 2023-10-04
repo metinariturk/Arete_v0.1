@@ -50,7 +50,7 @@ if ($subViewFolder == "list") { ?>
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
                                                 Kapat
                                             </button>
-                                            <button class="btn btn-primary" form="proje_id" type="submit">Yeni İhale
+                                            <button class="btn btn-primary" form="proje_id" type="submit">Yeni Teklif
                                             </button>
                                         </div>
                                     </div>

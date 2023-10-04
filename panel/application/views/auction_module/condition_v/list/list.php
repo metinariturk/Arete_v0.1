@@ -11,7 +11,7 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>İhale Adı</th>
+                <th>Teklif Adı</th>
                 <th>Şartname Grubu</th>
                 <th>İşlem</th>
             </tr>

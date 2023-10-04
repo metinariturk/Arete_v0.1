@@ -14,7 +14,7 @@
                                     </li>
                                     <li><a class="show" id="pills-favourites-tab" data-bs-toggle="pill"
                                            href="#pills-favourites" role="tab" aria-controls="pills-favourites"
-                                           aria-selected="false"><span class="title"> İhaleler</span></a></li>
+                                           aria-selected="false"><span class="title"> Teklifler</span></a></li>
                                     <li><a class="show" id="pills-shared-tab" data-bs-toggle="pill" href="#pills-shared"
                                            role="tab" aria-controls="pills-shared" aria-selected="false"><span
                                                     class="title">Ana Sözleşmeler</span></a></li>
@@ -56,13 +56,13 @@
                                      aria-labelledby="pills-favourites-tab">
                                     <div class="card mb-0">
                                         <div class="card-header d-flex">
-                                            <h6 class="mb-0">İhaleler</h6>
+                                            <h6 class="mb-0">Teklifler</h6>
                                             <ul>
                                                 <li>
                                                     <a class="pager-btn btn btn-info btn-outline"
                                                        href="<?php echo base_url("auction/new_form/$item->id"); ?>">
                                                         <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
-                                                        İhale Ekle
+                                                        Teklif Ekle
                                                     </a>
                                                 </li>
                                             </ul>

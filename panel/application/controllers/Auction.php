@@ -43,7 +43,7 @@ class Auction extends CI_Controller
         $this->load->model("Favorite_model");
 
         $this->Module_Name = "auction";
-        $this->Module_Title = "İhale";
+        $this->Module_Title = "Teklif";
 
         $this->Module_Main_Dir = "project_v";
         $this->Module_Main_Dir = "project_v";
@@ -138,7 +138,7 @@ class Auction extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
         $alert = array(
-            "title" => "Yeni İhale Hazırlığı",
+            "title" => "Yeni Teklif Hazırlığı",
             "text" => "",
             "type" => "success"
         );
@@ -313,11 +313,11 @@ class Auction extends CI_Controller
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("dosya_no", "Dosya No", "required|greater_than[0]|is_unique[auction.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
-        $this->form_validation->set_rules("ihale_ad", "İhale Ad", "required|trim");
+        $this->form_validation->set_rules("ihale_ad", "Teklif Ad", "required|trim");
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
         $this->form_validation->set_rules("butce", "Bütçe Bedeli", "required|trim");
         $this->form_validation->set_rules("para_birimi", "Para Birimi", "required|trim");
-        $this->form_validation->set_rules("talep_tarih", "Ön Görülen İhale Tarihi", "required|trim");
+        $this->form_validation->set_rules("talep_tarih", "Ön Görülen Teklif Tarihi", "required|trim");
         $this->form_validation->set_rules("aciklama", "Açıklama", "required|trim");
 
         $this->form_validation->set_message(
@@ -438,11 +438,11 @@ class Auction extends CI_Controller
     {
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("ihale_ad", "İhale Ad", "required|trim");
+        $this->form_validation->set_rules("ihale_ad", "Teklif Ad", "required|trim");
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
         $this->form_validation->set_rules("butce", "Bütçe Bedeli", "required|trim");
         $this->form_validation->set_rules("para_birimi", "Para Birimi", "required|trim");
-        $this->form_validation->set_rules("talep_tarih", "Ön Görülen İhale Tarihi", "required|trim");
+        $this->form_validation->set_rules("talep_tarih", "Ön Görülen Teklif Tarihi", "required|trim");
         $this->form_validation->set_rules("aciklama", "Açıklama", "required|trim");
 
         $this->form_validation->set_message(
@@ -709,13 +709,13 @@ class Auction extends CI_Controller
             if ($delete_auction) {
                 $alert = array(
                     "title" => "İşlem Başarılı",
-                    "text" => "İhale tüm alt süreçleri ile birlikte, başarılı bir şekilde silindi",
+                    "text" => "Teklif tüm alt süreçleri ile birlikte, başarılı bir şekilde silindi",
                     "type" => "success"
                 );
             } else {
                 $alert = array(
                     "title" => "İşlem Başarısız",
-                    "text" => "İhale silme sırasında bir problem oluştu",
+                    "text" => "Teklif silme sırasında bir problem oluştu",
                     "type" => "danger"
                 );
             }
@@ -808,13 +808,13 @@ class Auction extends CI_Controller
         if ($delete_auction) {
             $alert = array(
                 "title" => "İşlem Başarılı",
-                "text" => "İhale tüm alt süreçleri ile birlikte, başarılı bir şekilde silindi",
+                "text" => "Teklif tüm alt süreçleri ile birlikte, başarılı bir şekilde silindi",
                 "type" => "success"
             );
         } else {
             $alert = array(
                 "title" => "İşlem Başarısız",
-                "text" => "İhale silme sırasında bir problem oluştu",
+                "text" => "Teklif silme sırasında bir problem oluştu",
                 "type" => "danger"
             );
         }

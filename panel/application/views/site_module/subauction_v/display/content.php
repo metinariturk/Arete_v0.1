@@ -8,8 +8,8 @@
                 <li role="presentation"><a href="#tab-3" aria-controls="tab-3" role="tab" data-toggle="tab">Yaklaşık Maliyet</a></li>
                 <li role="presentation"><a href="#tab-4" aria-controls="tab-4" role="tab" data-toggle="tab">Şartnameler</a></li>
                 <li role="presentation"><a href="#tab-5" aria-controls="tab-5" role="tab" data-toggle="tab">Teşvik/Hibe</a></li>
-                <li role="presentation"><a href="#tab-6" aria-controls="tab-6" role="tab" data-toggle="tab">İhale Görsel</a></li>
-                <li role="presentation"><a href="#tab-7" aria-controls="tab-7" role="tab" data-toggle="tab">İhale Yayılama</a></li>
+                <li role="presentation"><a href="#tab-6" aria-controls="tab-6" role="tab" data-toggle="tab">Teklif Görsel</a></li>
+                <li role="presentation"><a href="#tab-7" aria-controls="tab-7" role="tab" data-toggle="tab">Teklif Yayılama</a></li>
                 <li role="presentation"><a href="#tab-8" aria-controls="tab-8" role="tab" data-toggle="tab">İstekliler</a></li>
                 <li role="presentation"><a href="#tab-9" aria-controls="tab-9" role="tab" data-toggle="tab">Teklifler</a></li>
             </ul><!-- .nav-tabs -->

@@ -2,9 +2,9 @@
     <table class="table table-bordered table-striped table-hover pictures_list">
         <thead>
         <th>#id</th>
-        <th>İhale Adı</th>
+        <th>Teklif Adı</th>
         <th>Yaklaşık Maliyet</th>
-        <th>İhale Tarihi</th>
+        <th>Teklif Tarihi</th>
         </thead>
         <tbody>
         <?php

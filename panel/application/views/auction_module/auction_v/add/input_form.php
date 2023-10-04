@@ -18,7 +18,7 @@
                                 <div class="btn btn-light">
                                 <span style="padding-left: 20px">
                                     <i class="icon-gallery"></i>
-                                    Yeni İhale
+                                    Yeni Teklif
                                 </span>
                                 </div>
                             </li>
@@ -33,7 +33,7 @@
     <div class="card">
         <div class="card-body">
             <div class="mb-2">
-                <div class="col-form-label">İhale Kodu</div>
+                <div class="col-form-label">Teklif Kodu</div>
                 <div class="input-group"><span class="input-group-text" id="inputGroupPrepend">IHL</span>
                     <?php if (!empty(get_last_fn("auction"))) { ?>
                         <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
@@ -57,17 +57,17 @@
                 </div>
             </div>
             <div class="mb-2">
-                <div class="col-form-label">İhale Adı</div>
+                <div class="col-form-label">Teklif Adı</div>
                 <input type="text"
                        class="form-control <?php cms_isset(form_error("ihale_ad"), "is-invalid", ""); ?>"
-                       placeholder="İhale Adı"
+                       placeholder="Teklif Adı"
                        value="<?php echo isset($form_error) ? set_value("ihale_ad") : ""; ?>" name="ihale_ad">
                 <?php if (isset($form_error)) { ?>
                     <div class="invalid-feedback"><?php echo form_error("ihale_ad"); ?></div>
                 <?php } ?>
             </div>
             <div class="mb-2">
-                <div class="col-form-label">İhale Yapan Kuruluş</div>
+                <div class="col-form-label">Teklif Yapan Kuruluş</div>
                 <select id="select2-demo-1"
                         class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
                         data-plugin="select2" name="isveren">
@@ -84,7 +84,7 @@
             <div class="mb-2">
                 <div class="row">
                     <div class="col-9">
-                        <div class="col-form-label">İhale Bütçe Bedel</div>
+                        <div class="col-form-label">Teklif Bütçe Bedel</div>
                         <input type="number" min="1" step="any" onblur=""
                                class="form-control <?php cms_isset(form_error("butce"), "is-invalid", ""); ?>"
                                name="butce"
@@ -122,7 +122,7 @@
     <div class="card">
         <div class="card-body">
             <div class="mb-2">
-                <div class="col-form-label">Planlanan İhale Tarihi</div>
+                <div class="col-form-label">Planlanan Teklif Tarihi</div>
                 <input class="datepicker-here form-control digits <?php cms_isset(form_error("talep_tarih"), "is-invalid", ""); ?>"
                        type="text"
                        name="talep_tarih"
@@ -155,10 +155,10 @@
                 <?php } ?>
             </div>
             <div class="mb-2">
-                <div class="col-form-label">İhale Genel Notları</div>
+                <div class="col-form-label">Teklif Genel Notları</div>
                 <input type="text"
                        class="form-control <?php cms_isset(form_error("aciklama"), "is-invalid", ""); ?>"
-                       placeholder="İhale Genel Notları"
+                       placeholder="Teklif Genel Notları"
                        value="<?php echo isset($form_error) ? set_value("aciklama") : ""; ?>"
                        name="aciklama">
                 <?php if (isset($form_error)) { ?>

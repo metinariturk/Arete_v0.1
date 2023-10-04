@@ -30,7 +30,7 @@ class Notice extends CI_Controller
         $this->load->model("User_model");
 
         $this->Module_Name = "Notice";
-        $this->Module_Title = "İhale Yayınlama";
+        $this->Module_Title = "Teklif Yayınlama";
         $this->Upload_Folder = "uploads";
         $this->Module_Main_Dir = "project_v";
         $this->Module_Depended_Dir = "auction";
@@ -179,9 +179,9 @@ class Notice extends CI_Controller
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
                 "integer" => "<b>{field}</b> alanı tam sayı olmalıdır",
-                "addenum_notice_day" => "<b>{field}</b> alanı ihale ilan tarihi olan <b>{param} dan daha önceki bir gün olamaz</b> ",
-                "addenum_last_day" => "<b>{field}</b> alanı ihale son tarihi olan <b>{param} dan daha önceki bir gün olamaz</b> ",
-                "sure_control" => "<b>{field}</b> dosyayı yayında kalmasını istediğiniz süre $aski_sure gün ancak <b>{param}</b> gün ihale ilanı askıda kalmış olacak. Eğer bu şekilde yayınlanmasını istiyorsanız yandaki kutucuktan girilen bilgilerin doğru olduğunu teyit ediniz",
+                "addenum_notice_day" => "<b>{field}</b> alanı teklif ilan tarihi olan <b>{param} dan daha önceki bir gün olamaz</b> ",
+                "addenum_last_day" => "<b>{field}</b> alanı teklif son tarihi olan <b>{param} dan daha önceki bir gün olamaz</b> ",
+                "sure_control" => "<b>{field}</b> dosyayı yayında kalmasını istediğiniz süre $aski_sure gün ancak <b>{param}</b> gün teklif ilanı askıda kalmış olacak. Eğer bu şekilde yayınlanmasını istiyorsanız yandaki kutucuktan girilen bilgilerin doğru olduğunu teyit ediniz",
                 "greater_than" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
                 "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.

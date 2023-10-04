@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="mb-2">
-            <div class="col-form-label">İhale Adı</div>
+            <div class="col-form-label">Teklif Adı</div>
             <select id="select2-demo-1" style="width: 100%;" class="form-control" data-plugin="select2"
                     name="auction_id">
                 <option selected="selected"

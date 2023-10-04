@@ -11,7 +11,7 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>İhale Adı</th>
+                <th>Teklif Adı</th>
                 <th>Teknik Yaklaşık Maliyet Grubu</th>
                 <th>Yaklaşık Maliyet Ad</th>
                 <th>İşlem</th>

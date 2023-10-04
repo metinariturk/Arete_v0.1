@@ -99,7 +99,7 @@ class Dashboard extends CI_Controller
             redirect(base_url("site/file_form/$gelen_dizin[0]"));
         }
 
-        if ($gelen_dizin[2] == "İhale") {
+        if ($gelen_dizin[2] == "Teklif") {
             redirect(base_url("auction/file_form/$gelen_dizin[0]"));
         }
 

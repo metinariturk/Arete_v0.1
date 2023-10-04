@@ -6,7 +6,7 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>İhale Adı</th>
+                        <th>Teklif Adı</th>
                         <th>Teknik Çizim Grubu</th>
                         <th>Çizim Ad</th>
                     </tr>

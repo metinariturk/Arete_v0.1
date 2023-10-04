@@ -2,7 +2,7 @@
     <div id="right" class="text-right">
         <a class="pager-btn btn btn-info btn-outline"
            href="<?php echo base_url("$this->Module_Name/select"); ?>">
-            <i class="fa fa-plus-square"></i> Yeni İhale
+            <i class="fa fa-plus-square"></i> Yeni Teklif
         </a>
     </div>
 </div>

@@ -18,11 +18,11 @@
                     <div class="col-md-6"><?php echo $item->dosya_no; ?></b></div>
                 </div>
                 <div class="clearfix m-b-sm">
-                    <div class="col-md-6 pull-left"><strong>İhale Adı</strong></div>
+                    <div class="col-md-6 pull-left"><strong>Teklif Adı</strong></div>
                     <div class="col-md-6"><?php echo $item->ihale_ad; ?></div>
                 </div>
                 <div class="clearfix m-b-sm">
-                    <div class="col-md-6 pull-left"><strong>İhale Yapan</strong></div>
+                    <div class="col-md-6 pull-left"><strong>Teklif Yapan</strong></div>
                     <div class="col-md-6"><?php echo company_name($item->isveren); ?></div>
                 </div>
                 <div class="clearfix m-b-sm">
@@ -141,7 +141,7 @@
             <hr>
             <div class="bg-color-op-cyan">
                 <div class="clearfix m-b-sm">
-                    <div class="col-md-6"><strong>İhale Yayını</strong></div>
+                    <div class="col-md-6"><strong>Teklif Yayını</strong></div>
                     <div class="col-md-6"></div>
                 </div>
                 <?php if (!empty($ilanlar)) { ?>

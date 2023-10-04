@@ -20,7 +20,7 @@
                     <i class="fa fa-download" aria-hidden="true"></i>
                 </a>
             </th>
-            <th class="w15">İhale Yayını<br>Kapalı / Açık</th>
+            <th class="w15">Teklif Yayını<br>Kapalı / Açık</th>
         </tr>
         </thead>
         <tbody>
@@ -40,7 +40,7 @@
                     </td>
                     <td>
                         <a href="<?php echo base_url("notice/file_form/$ilan->id"); ?>">
-                            <?php echo cms_isset($ilan->original_notice, "Zeyilname", "İhale"); ?>
+                            <?php echo cms_isset($ilan->original_notice, "Zeyilname", "Teklif"); ?>
                         </a>
                     </td>
                     <td>
@@ -109,7 +109,7 @@
                     <i class="fa fa-download" aria-hidden="true"></i>
                 </a>
             </th>
-            <th class="w15">İhale Yayını<br>Kapalı / Açık</th>
+            <th class="w15">Teklif Yayını<br>Kapalı / Açık</th>
         </tr>
         </thead>
         <tbody>
@@ -120,7 +120,7 @@
                     <td>
                         <a href="<?php echo base_url("notice/file_form/$ilan->id"); ?>">
 
-                            <?php echo cms_isset($ilan->original_notice, "Zeyilname", "İhale"); ?><br>
+                            <?php echo cms_isset($ilan->original_notice, "Zeyilname", "Teklif"); ?><br>
 
                             <?php echo dateFormat_dmy($ilan->ilan_tarih); ?> <br>
 
