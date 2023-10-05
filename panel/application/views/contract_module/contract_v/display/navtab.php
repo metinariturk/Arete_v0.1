@@ -80,11 +80,21 @@
                         </a>
                     </li>
 
-                    <li><a class="show" id="payment-tab" data-bs-toggle="pill"
+                    <li><a class="show" id="boq-tab" data-bs-toggle="pill"
                            href="#boq" role="tab" aria-controls="boq"
                            aria-selected="false">
                             <span class="title">
-                                Metraj
+                                Sözleşme Pozları
+                            </span>
+                        </a>
+                    </li>
+
+
+                    <li><a class="show" id="price-tab" data-bs-toggle="pill"
+                           href="#price" role="tab" aria-controls="price"
+                           aria-selected="false">
+                            <span class="title">
+                                Birim Fiyatlar
                             </span>
                         </a>
                     </li>

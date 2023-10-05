@@ -1179,6 +1179,23 @@ function boq_name($id)
     }
 }
 
+function boq_unit($id)
+{
+    if (!empty($id)) {
+        $ci =& get_instance();
+        $ci->load->database();
+        $sql = "SELECT * FROM `book` where `id` =" . $id;
+        $q = $ci->db->query($sql);
+        if ($q->num_rows() > 0) {
+            foreach ($q->result() as $data) {
+                return $data->unit;
+            }
+        }
+    } else {
+        return null;
+    }
+}
+
 function machine_name($id)
 {
     $ci =& get_instance();

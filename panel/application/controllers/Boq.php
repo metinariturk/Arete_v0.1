@@ -22,6 +22,7 @@ class Boq extends CI_Controller
         $this->viewFolder = "Boq_v";
         $this->load->model("Boq_model");
         $this->load->model("Contract_model");
+        $this->load->model("Payment_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
@@ -70,19 +71,19 @@ class Boq extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function new_form($contract_id = null, $payment_id = null)
+    public function new_form($contract_id = null, $payment_no = null)
     {
 
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
-        $items = $this->Contract_model->get_all(array());
+        $contract = $this->Contract_model->get(array("id" => $contract_id));
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
-        $viewData->items = $items;
-        $viewData->contract_id = $contract_id;
+        $viewData->contract = $contract;
+        $viewData->payment_no = $payment_no;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 

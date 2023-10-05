@@ -2886,7 +2886,7 @@ class Contract extends CI_Controller
     }
 
 
-    public function add_group($contract_id, $boq_id)
+    public function add_boq($contract_id, $boq_id)
     {
 
         $active_boqs = json_decode(get_from_id("contract", "active_boq", $contract_id), true);
@@ -2925,7 +2925,7 @@ class Contract extends CI_Controller
         );
         $viewData->item = $item;
 
-        $viewData->boqs = json_decode($item->active_boq, true);
+        $viewData->workgroups = json_decode($item->active_boq, true);
         $viewData->main_categories = $main_categories;
 
         $viewData->item_files = $this->Contract_file_model->get_all(
@@ -2934,13 +2934,13 @@ class Contract extends CI_Controller
             ),
         );
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/group_list_v", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
 
         echo $render_html;
 
     }
 
-    public function delete_group($contract_id, $boq_id)
+    public function delete_boq($contract_id, $boq_id)
     {
 
         $active_boqs = json_decode(get_from_id("contract", "active_boq", $contract_id), true);
@@ -2993,7 +2993,7 @@ class Contract extends CI_Controller
             ),
         );
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/group_list_v", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
 
         echo $render_html;
 
