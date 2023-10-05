@@ -44,7 +44,7 @@
                 <table class="table">
                     <tbody>
                     <tr>
-                        <td>Teklif Yapan Kuruluş</td>
+                        <td>Teklif Verilecek Kuruluş</td>
                         <td>
                             <?php echo company_name($item->isveren); ?>
                         </td>

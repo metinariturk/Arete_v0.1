@@ -67,7 +67,7 @@
                 <?php } ?>
             </div>
             <div class="mb-2">
-                <div class="col-form-label">Teklif Yapan Kuruluş</div>
+                <div class="col-form-label">Teklif Verilecek Kuruluş</div>
                 <select id="select2-demo-1"
                         class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
                         data-plugin="select2" name="isveren">
