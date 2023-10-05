@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="mb-2">
             <div class="col-form-label">Dosya No</div>
             <label for="custome-checkbox2">&nbsp;</label>
@@ -26,18 +26,20 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="col-form-label">Hakediş No <br>
             <input type="checkbox" name="final"/>
             <label for="custome-checkbox2">Kesin Hakediş</label>
         </div>
         <input type="number" step=".01" name="hakedis_no" class="form-control" readonly
-               value="<?php cms_if_echo(count_payments($contract->id), "0", "1", last_payment($contract->id) + 1); ?>">
+               value="<?php if (count_payments($contract->id) == 0)
+               { echo $hak_no = 1;}
+               else { echo $hak_no = last_payment($contract->id) + 1;} ?>">
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("hakedis_no"); ?></div>
         <?php } ?>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="col-form-label">Son İmalat Tarihi<br>
             <label for="customer-checkbox2">&nbsp;</label>
         </div>
@@ -50,6 +52,14 @@
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("imalat_tarihi"); ?></div>
         <?php } ?>
+    </div>
+    <div class="col-sm-3">
+        <div class="col-form-label">Metraj Yaparak Hakediş Gir<br>
+            <label for="customer-checkbox2">&nbsp;</label>
+        </div>
+        <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$hak_no"); ?>">
+            <i class="fa fa-plus"></i> Metraj Yap
+        </a>
     </div>
 </div>
 

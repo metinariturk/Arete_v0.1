@@ -1,23 +1,4 @@
 <style>
-    @media print {
-        .apexcharts-legend-marker {
-            -webkit-print-color-adjust: exact;
-        }
-    }
-    @page {
-        size: A3 portrait;
-        margin-left: 75px;
-        margin-bottom: 60px;
-        margin-right: 75px;
-        margin-top: 75px;
-    }
-    .fa-star {
-        color: #ffd30e;
-        text-shadow: 0 0 1px #545454;
-    }
-</style>
-
-<style>
     ul.list,
     ul.list ul {
         margin:0;
@@ -97,28 +78,5 @@
 
         background: RGBA(0, 58, 97, 1);
     }
-
-    /* CSS Styles */
-
-    #baslik {
-        font-weight: bold;
-        font-size: 15px;
-    }
-
-    #isaret {
-        margin-top: -3px;
-    }
-
-    #para {
-        color: #007bff;
-        font-weight: bold;
-    }
-
-    #ozet {
-        background-color: #f2f2f2;
-        border-radius: 5px;
-        padding: 10px;
-    }
-
 
 </style>

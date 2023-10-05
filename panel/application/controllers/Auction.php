@@ -372,7 +372,7 @@ class Auction extends CI_Controller
                     "yetkili_personeller" => $data_yetkili,
                     "talep_tarih" => $talep_tarih,
 
-                    "durumu" => "0",
+                    "durumu" => "1",
                 )
             );
 

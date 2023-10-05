@@ -499,3 +499,12 @@ $payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
     }
 </script>
 
+<script>
+    function add_group(anchor) {
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".refresh_list").html(response);
+        })
+    }
+</script>

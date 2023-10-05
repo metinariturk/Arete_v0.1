@@ -19,7 +19,7 @@
             <tr id="center_row">
                 <td class="d-none d-sm-table-cell">
                     <a  href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                        <?php echo str_pad($payment->hakedis_no, 2, "0", STR_PAD_LEFT);; ?>
+                        <?php echo str_pad($payment->hakedis_no, 2, "0", STR_PAD_LEFT); ?>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">

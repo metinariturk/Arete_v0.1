@@ -25,10 +25,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/contract_v/common" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\common" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modules" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\controllers" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\logo" />
     </key>
@@ -42,7 +49,8 @@
       <option name="presentableId" value="Default" />
       <updated>1696247995349</updated>
       <workItem from="1696247996602" duration="116000" />
-      <workItem from="1696397965058" duration="6905000" />
+      <workItem from="1696397965058" duration="18625000" />
+      <workItem from="1696530692380" duration="83000" />
     </task>
     <servers />
   </component>

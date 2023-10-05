@@ -56,6 +56,7 @@
                             <li><a href="<?php echo base_url("Extime"); ?>">Süre Uzatımı</a></li>
                             <li><a href="<?php echo base_url("Drawings"); ?>">Teknik Çizim ve Föy</a></li>
                             <li><a href="<?php echo base_url("Catalog"); ?>">Katalog</a></li>
+                            <li><a href="<?php echo base_url("Book"); ?>">Poz Kitabı</a></li>
                         </ul>
                     </li>
                     <li class="sidebar-list">

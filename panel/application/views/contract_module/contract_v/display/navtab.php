@@ -80,6 +80,15 @@
                         </a>
                     </li>
 
+                    <li><a class="show" id="payment-tab" data-bs-toggle="pill"
+                           href="#boq" role="tab" aria-controls="boq"
+                           aria-selected="false">
+                            <span class="title">
+                                Metraj
+                            </span>
+                        </a>
+                    </li>
+
 
                     <li><a class="show" id="newprice-tab" data-bs-toggle="pill"
                            href="#newprice" role="tab" aria-controls="newprice"

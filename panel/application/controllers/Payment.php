@@ -61,6 +61,11 @@ class Payment extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Payment_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
+        $active_contracts = $this->Contract_model->get_all(array(
+                "durumu" => 1
+            )
+        );
+
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
 
@@ -69,6 +74,7 @@ class Payment extends CI_Controller
         $viewData->subViewFolder = "$this->List_Folder";
         $viewData->items = $items;
         $viewData->projects = $projects;
+        $viewData->active_contracts = $active_contracts;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 

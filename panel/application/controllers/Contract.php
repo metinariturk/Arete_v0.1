@@ -33,6 +33,7 @@ class Contract extends CI_Controller
         $this->load->model("District_model");
         $this->load->model("Payment_model");
         $this->load->model("Bond_model");
+        $this->load->model("Book_model");
         $this->load->model("Drawings_model");
         $this->load->model("Order_model");
         $this->load->model("Advance_model");
@@ -151,6 +152,11 @@ class Contract extends CI_Controller
                 'contract_id' => $id,
                 'teminat_gerekce' => 'contract'
             ));
+
+            $main_categories = $this->Book_model->get_all(array(
+                'main_category' => 1
+            ));
+
             $advances = $this->Advance_model->get_all(array('contract_id' => $id));
             $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
             $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
@@ -170,6 +176,7 @@ class Contract extends CI_Controller
             $viewData->main_bond = $main_bond;
             $viewData->advances = $advances;
             $viewData->drawings = $drawings;
+            $viewData->main_categories = $main_categories;
             $viewData->costincs = $costincs;
             $viewData->master_catalog = $master_catalog;
             $viewData->newprices = $newprices;
@@ -195,6 +202,9 @@ class Contract extends CI_Controller
                 )
             );
 
+            $boqs = get_from_id("contract","active_boq","$id");
+            $viewData->workgroups = json_decode($boqs, true);
+
             $viewData->item_files = $this->Contract_file_model->get_all(
                 array(
                     "$this->Dependet_id_key" => $id,
@@ -216,6 +226,10 @@ class Contract extends CI_Controller
                 ),
             );
 
+            $viewData->main_categories = $this->Book_model->get_all(array(
+                'main_category' => 1
+            ));
+
             $viewData->provision_files = $this->Contract_file_model->get_all(
                 array(
                     "$this->Dependet_id_key" => $id,
@@ -229,6 +243,8 @@ class Contract extends CI_Controller
                     "type" => "final"
                 ),
             );
+
+
 
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -2867,6 +2883,120 @@ class Contract extends CI_Controller
             );
             echo "favoriye eklendi";
         }
+    }
+
+
+    public function add_group($contract_id, $boq_id)
+    {
+
+        $active_boqs = json_decode(get_from_id("contract", "active_boq", $contract_id), true);
+        $get_main_group = get_from_any("book", "parent", "id", $boq_id);
+
+
+        if (empty($active_boqs) || !isset($active_boqs[$get_main_group]) || !in_array($boq_id, $active_boqs[$get_main_group])) {
+            $active_boqs[$get_main_group][] = $boq_id;
+        }
+        $modified_group = $active_boqs;
+
+
+        $update = $this->Contract_model->update(
+            array(
+                "id" => $contract_id
+            ),
+            array(
+                "active_boq" => json_encode($modified_group),
+            )
+        );
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+
+
+        $main_categories = $this->Book_model->get_all(array('main_category' => 1));
+
+
+        $item = $this->Contract_model->get(
+            array(
+                "id" => $contract_id
+            )
+        );
+        $viewData->item = $item;
+
+        $viewData->boqs = json_decode($item->active_boq, true);
+        $viewData->main_categories = $main_categories;
+
+        $viewData->item_files = $this->Contract_file_model->get_all(
+            array(
+                "$this->Dependet_id_key" => $contract_id
+            ),
+        );
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/group_list_v", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function delete_group($contract_id, $boq_id)
+    {
+
+        $active_boqs = json_decode(get_from_id("contract", "active_boq", $contract_id), true);
+        $get_main_group = get_from_any("book", "parent", "id", $boq_id);
+
+
+        foreach ($active_boqs as &$subArray) {
+            if (($index = array_search($boq_id, $subArray)) !== false) {
+                unset($subArray[$index]);
+                if (empty($subArray)) {
+                    unset($active_boqs[$get_main_group]);
+                }
+            }
+        }
+
+        $modified_group = $active_boqs;
+
+        $update = $this->Contract_model->update(
+            array(
+                "id" => $contract_id
+            ),
+            array(
+                "active_boq" => json_encode($modified_group),
+            )
+        );
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+
+
+        $main_categories = $this->Book_model->get_all(array('main_category' => 1));
+
+
+        $item = $this->Contract_model->get(
+            array(
+                "id" => $contract_id
+            )
+        );
+        $viewData->item = $item;
+
+        $viewData->workgroups = json_decode($item->active_boq, true);
+        $viewData->main_categories = $main_categories;
+
+        $viewData->item_files = $this->Contract_file_model->get_all(
+            array(
+                "$this->Dependet_id_key" => $contract_id
+            ),
+        );
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/group_list_v", $viewData, true);
+
+        echo $render_html;
+
     }
 }
 
