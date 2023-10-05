@@ -81,6 +81,7 @@ function contract_company($id)
     }
 }
 
+
 function site_auth($id)
 {
     $ci = &get_instance();

@@ -25,6 +25,7 @@ class company extends CI_Controller
         $this->load->model("Settings_model");
         $this->load->model("Project_model");
         $this->load->model("Contract_model");
+        $this->load->model("Auction_model");
         $this->load->model("City_model");
         $this->load->model("User_model");
         $this->load->model("Order_model");
@@ -104,10 +105,13 @@ class company extends CI_Controller
 
         $contracts = $this->Contract_model->get_all(array());
 
+        $auctions = $this->Auction_model->get_all(array());
+
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->contracts = $contracts;
+        $viewData->auctions = $auctions;
 
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->item = $this->company_model->get(

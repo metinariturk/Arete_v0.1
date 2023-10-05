@@ -95,6 +95,26 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-6">
+                <div class="card hovercard text-center">
+                    <div class="info">
+                        <div class="row">
+                            <div class="ttl-info text-start">
+                                <h5>Teklifler</h5>
+                                <ul>
+                                    <?php foreach ($auctions as $auction) { ?>
+                                        <?php if ($auction->isveren == $item->id) { ?>
+                                            <li>
+                                                <a href="<?php echo base_url("auction/file_form/$auction->id"); ?>"><?php echo $auction->ihale_ad; ?></a>
+                                            </li>
+                                        <?php } ?>
+                                    <?php } ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
