@@ -68,7 +68,7 @@
                             </ul>
                         </li>
                         <li class="submenu-direction">
-                            <a href="<?php echo base_url();?>">KULLANICI PANELİ</a>
+                            <a href="<?php echo base_url("panel");?>">KULLANICI PANELİ</a>
                         </li>
                     </ul>
                 </div>
