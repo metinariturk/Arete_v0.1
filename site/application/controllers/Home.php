@@ -39,5 +39,11 @@ class Home extends CI_Controller {
 
     }
 
+    public function paneş(){
+
+        redirect("https://www.aretemuhendislik.com.tr/panel");
+
+    }
+
 
 }
