@@ -51,6 +51,7 @@
       <workItem from="1696247996602" duration="116000" />
       <workItem from="1696397965058" duration="18625000" />
       <workItem from="1696530692380" duration="7839000" />
+      <workItem from="1696573493387" duration="20093000" />
     </task>
     <servers />
   </component>
@@ -62,7 +63,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>2888</line>
+          <line>2886</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="add_group" />

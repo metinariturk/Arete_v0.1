@@ -500,11 +500,102 @@ $payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
 </script>
 
 <script>
+    function ConfirmationBoq(btn) {
+        var url = btn.getAttribute('url');
+
+        swal({
+            title: "Sözleşme Miktar ve Fiyatlarını Kontrol Ediniz",
+            text: "Emin Misiniz!",
+            icon: "warning",
+            buttons: ["Kaydet", "Değişiklikleri Uygulamadan Çık"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Kayıt Yapılmadı", {
+                        icon: "success",
+                    });
+                    window.location.href = url;
+                }
+            })
+    }
+</script>
+
+<script>
     function add_boq(anchor) {
         var $url = anchor.getAttribute('url');
 
         $.post($url, {}, function (response) {
             $(".refresh_list").html(response);
         })
+    }
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Checkbox değiştiğinde
+        $('#toggleCheckbox').change(function() {
+            // Checkbox durumu (seçili veya seçili değil) alınır
+            var isChecked = $(this).is(':checked');
+
+            // Tablodaki tüm input alanları seçilir ve etkinleştirilir veya devre dışı bırakılır
+            $('#contract_price input').each(function() {
+                // Input'un id'sinde "total" kelimesi yoksa etkinleştir veya devre dışı bırak
+                if ($(this).attr('id').indexOf('total') === -1) {
+                    $(this).prop('disabled', !isChecked);
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    // Input alanlarının değişikliklerini dinlemek için event listener ekle
+    var inputElements = document.querySelectorAll('input[id$="_qty"], input[id$="_price"]');
+    inputElements.forEach(function(input) {
+        input.addEventListener("input", function() {
+            var id = input.id.split("_")[0]; // ID'den malzeme numarasını al
+            calculateTotal(id);
+        });
+
+        // Virgülü otomatik olarak noktaya çevir
+        input.addEventListener("input", function() {
+            var inputValue = input.value;
+            // Virgülü noktaya çevir
+            input.value = inputValue.replace(/,/g, '.');
+        });
+    });
+
+    function formatNumberWithSpaces(number) {
+        // Sayıyı binlik ayracı olan boşlukla formatla
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function calculateTotal(materialId) {
+        var qtyInput = document.getElementById(materialId + "_qty");
+        var priceInput = document.getElementById(materialId + "_price");
+        var totalInput = document.getElementById(materialId + "_total");
+
+        // Kullanıcının girdiği değeri alırken virgülü otomatik olarak noktaya çeviriyoruz
+        var qtyValue = qtyInput.value.replace(/ /g, '').replace(',', '.'); // Girilen boşluğu kaldır ve virgülü noktaya çevir
+        var priceValue = priceInput.value.replace(/ /g, '').replace(',', '.'); // Girilen boşluğu kaldır ve virgülü noktaya çevir
+
+        var qty = parseFloat(qtyValue) || 0; // Miktarı al, eğer geçersizse veya boşsa 0 kabul et
+        var price = parseFloat(priceValue) || 0; // Birim fiyatı al, eğer geçersizse veya boşsa 0 kabul et
+
+        var total = qty * price; // Toplam maliyeti hesapla
+
+        totalInput.value = formatNumberWithSpaces(total.toFixed(2)); // Toplam maliyeti binlik ayracı ile formatlı olarak input alanına yaz
+
+        // Tüm "_total" input alanlarının toplamını hesapla
+        var totalContract = 0;
+        var totalInputs = document.querySelectorAll('input[id$="_total"]');
+        totalInputs.forEach(function(input) {
+            totalContract += parseFloat(input.value.replace(/ /g, '')) || 0; // Girilen boşluğu kaldır
+        });
+
+        // Toplam maliyeti "total_contract" input alanına yaz
+        document.getElementById("total_contract").value = formatNumberWithSpaces(totalContract.toFixed(2));
     }
 </script>

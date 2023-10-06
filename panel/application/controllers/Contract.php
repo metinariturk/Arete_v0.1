@@ -202,7 +202,7 @@ class Contract extends CI_Controller
                 )
             );
 
-            $boqs = get_from_id("contract","active_boq","$id");
+            $boqs = get_from_id("contract", "active_boq", "$id");
             $viewData->workgroups = json_decode($boqs, true);
 
             $viewData->item_files = $this->Contract_file_model->get_all(
@@ -243,8 +243,6 @@ class Contract extends CI_Controller
                     "type" => "final"
                 ),
             );
-
-
 
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -2878,7 +2876,7 @@ class Contract extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => "(Sözleşme) ".project_name(project_id_cont($id))." / ".contract_name($id)
+                    "title" => "(Sözleşme) " . project_name(project_id_cont($id)) . " / " . contract_name($id)
                 )
             );
             echo "favoriye eklendi";
@@ -2998,5 +2996,51 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
+    public function save_price($contract_id)
+    {
+        $yetkili = contract_auth($contract_id);
+        if (!isAdmin()) {
+            if (!in_array(active_user_id(), $yetkili)) {
+                redirect(base_url("error"));
+            }
+        }
+
+        $boqs = $this->input->post("boq[]");
+
+
+        $update = $this->Contract_model->update(
+            array(
+                "id" => $contract_id
+            ),
+            array(
+                "price" => json_encode($boqs)
+            ));
+
+
+        // TODO Alert sistemi eklenecek...
+        if ($update) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde güncellendi",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Güncelleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+        }
+
+        $this->session->set_flashdata("alert", $alert);
+        redirect(base_url("$this->Module_Name/file_form/$contract_id/price"));
+
+    }
+
+
 }
+
+
+
 
