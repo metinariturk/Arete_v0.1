@@ -39,7 +39,7 @@ class Home extends CI_Controller {
 
     }
 
-    public function paneş(){
+    public function panel(){
 
         redirect("https://www.aretemuhendislik.com.tr/panel");
 
