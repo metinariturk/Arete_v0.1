@@ -635,6 +635,11 @@ class Payment extends CI_Controller
                 return !empty($value);
             });
 
+            if (count_payments($contract_id) == 0) {
+                $payment_no = 1;
+            } else {
+                $payment_no = last_payment($contract_id) + 1;
+            }
 
             $contract_type = get_from_id("contract", "official", "$contract_id");
 

@@ -1,7 +1,9 @@
 <?php $active_boqs = (json_decode($contract->price, true)); ?>
 <pre>
 
-<?php if (isset($exist_boq)){ $calculation_array = (json_decode($exist_boq->calculation,true)); }?>
+<?php if (isset($old_boq)){ $calculation_old_array = (json_decode($old_boq->calculation,true)); }?>
+<?php if (isset($this_boq)){ $calculation_this_array = (json_decode($this_boq->calculation,true)); }?>
+    <?php print_r($old_boq); ?>
     </pre>
 
 <table class="table">
@@ -24,8 +26,12 @@
         <?php foreach ($active_boqs as $active_group => $boqs) { ?>
             <?php foreach ($boqs as $boq => $value) { ?>
                 <?php
-                if (isset($exist_boq)) {$key_in_calculation = array_search($boq, array_keys($calculation_array)); }
+                if (isset($old_boq)) {$old_key_in_calculation = array_search($boq, array_keys($calculation_old_array)); }
                 ?>
+                <?php
+                if (isset($this_boq)) {$this_key_in_calculation = array_search($boq, array_keys($calculation_this_array)); }
+                ?>
+
                 <tr>
 
                     <td>
@@ -44,16 +50,16 @@
                         <input id="<?php echo $boq; ?>_unitprice" readonly class="form-control" value="<?php echo $value["price"]; ?>" style="float: right;">
                     </td>
                     <td><!--Önceki Miktar-->
-                        <input id="<?php echo $boq; ?>_oldqty" readonly class="form-control" type="text">
+                        <input id="<?php echo $boq; ?>_oldqty" value="<?php if  (isset($old_boq)) {echo  $calculation_old_array["$boq"]["thisqty"];} ?>" readonly class="form-control" type="text">
                     </td>
                     <td><!--Bu Miktar-->
-                        <input id="<?php echo $boq; ?>_thisqty" value="<?php if  (isset($exist_boq)) {echo  $calculation_array["$boq"]["thisqty"];} ?>" class="form-control" name="calculate[<?php echo $boq; ?>][thisqty]" type="text">
+                        <input id="<?php echo $boq; ?>_thisqty"  value="<?php if  (isset($old_boq)) {echo  $calculation_this_array["$boq"]["thisqty"];} ?>" class="form-control" name="calculate[<?php echo $boq; ?>][thisqty]" type="text">
                     </td>
                     <td><!--Önceki Tutar-->
-                        <input id="<?php echo $boq; ?>_oldprice" readonly class="form-control" type="text">
+                        <input id="<?php echo $boq; ?>_oldprice" value="<?php if  (isset($old_boq)) {echo  $calculation_old_array["$boq"]["thisprice"];} ?>" readonly class="form-control" type="text">
                     </td>
                     <td style="width: 3%"><!--Bu Tutar-->
-                        <input id="<?php echo $boq; ?>_thisprice" readonly value="<?php if  (isset($exist_boq)) {echo  $calculation_array["$boq"]["thisqty"];} ?>" class="form-control" name="calculate[<?php echo $boq; ?>][thisprice]" type="text">
+                        <input id="<?php echo $boq; ?>_thisprice" value="<?php if  (isset($old_boq)) {echo  $calculation_this_array["$boq"]["thisprice"];} ?>" readonly  class="form-control" name="calculate[<?php echo $boq; ?>][thisprice]" type="text">
                     </td>
                     <td style="width: 3%"><!--Toplam-->
                         <input id="<?php echo $boq; ?>_totalprice" readonly class="form-control" name="calculate[<?php echo $boq; ?>][totalprice]" type="text">

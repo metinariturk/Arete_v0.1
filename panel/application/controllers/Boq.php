@@ -75,18 +75,37 @@ class Boq extends CI_Controller
     {
         $viewData = new stdClass();
 
-        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$payment_no");
+        $old_select = get_from_any_array("boq", "contract_id", "$contract_id");
 
-        if ($boq_control) {
-            $boq = $this->Boq_model->get(array(
-                    "id" => $boq_control
+
+        $last_payment = (max(array_column($old_select, 'payment_no')));
+
+        $old_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$last_payment");
+
+        $this_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$payment_no");
+
+        if ($old_control) {
+            $old = $this->Boq_model->get(array(
+                    "id" => $old_control
                 )
             );
-            $viewData->exist_boq = $boq;
-            $viewData->boq_calculate = json_decode($boq->calculation, true);
+            $viewData->old_boq = $old;
+            $viewData->boq_calculate = json_decode($old->calculation, true);
         } else {
-            $boq = null;
-            $viewData->boq = $boq;
+            $old = null;
+            $viewData->old_boq = $old;
+        }
+
+        if ($this_control) {
+            $this_boq = $this->Boq_model->get(array(
+                    "id" => $this_control
+                )
+            );
+            $viewData->this_boq = $this_boq;
+            $viewData->boq_calculate = json_decode($this_boq->calculation, true);
+        } else {
+            $this_boq = null;
+            $viewData->boq = $this_boq;
         }
 
         /** Tablodan Verilerin Getirilmesi.. */
