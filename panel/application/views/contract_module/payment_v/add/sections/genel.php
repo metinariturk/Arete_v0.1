@@ -32,9 +32,7 @@
             <label for="custome-checkbox2">Kesin Hakediş</label>
         </div>
         <input type="number" step=".01" name="hakedis_no" class="form-control" readonly
-               value="<?php if (count_payments($contract->id) == 0)
-               { echo $hak_no = 1;}
-               else { echo $hak_no = last_payment($contract->id) + 1;} ?>">
+               value="<?php echo $payment_no; ?>">
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("hakedis_no"); ?></div>
         <?php } ?>
@@ -57,9 +55,15 @@
         <div class="col-form-label">Metraj Yaparak Hakediş Gir<br>
             <label for="customer-checkbox2">&nbsp;</label>
         </div>
-        <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$hak_no"); ?>">
+        <?php if (isset($boq)){ ?>
+            <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$payment_no"); ?>">
+                <i class="fa fa-plus"></i> Metraj Düzenle
+            </a>
+        <?php } else { ?>
+        <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$payment_no"); ?>">
             <i class="fa fa-plus"></i> Metraj Yap
         </a>
+        <?php } ?>
     </div>
 </div>
 

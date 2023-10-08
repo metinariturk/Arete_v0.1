@@ -8,8 +8,6 @@
     <meta name="keywords" content="YapıLım">
     <meta name="author" content="pixelstrap">
 
-
-    <title>Softruction - Beta</title>
-
+    <title>Arete - Panel</title>
 <?php $this->load->view("includes/include_style"); ?>
 

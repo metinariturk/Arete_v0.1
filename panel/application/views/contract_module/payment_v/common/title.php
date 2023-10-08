@@ -130,12 +130,20 @@ if ($subViewFolder == "list") { ?>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li>
-                            <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
+                            <?php if (isset($boq)){ ?>
+                            <button class="btn btn-danger" type="button" onclick="deletePaymentModule(this)"
                                     data-text="<?php echo $this->Module_Title; ?>"
-                                    data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>"
-                                    url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
+                                    data-url="<?php echo base_url("payment/delete/$item->id"); ?>"
+                                    data-boq="<?php echo base_url("payment/delete/$item->id/$boq->id"); ?>">
                                 <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Hakedişi Sil
-                            </button>
+                            </button> <?php } else { ?>
+                                <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
+                                        data-text="<?php echo $this->Module_Title; ?>"
+                                        data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>"
+                                        url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
+                                    <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Hakedişi Sil
+                                </button>
+                            <?php } ?>
                         </li>
                     </ol>
                 </div>

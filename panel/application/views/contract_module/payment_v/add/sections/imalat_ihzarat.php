@@ -60,11 +60,19 @@
         <div class="col-form-label">İmalat Bedeli (Bu Hak.)</div>
     </div>
     <div class="col-sm-6">
+        <?php if (isset($boq)) { ?>
         <input type="number" step=".01" id="A3" name="bu_imalat"
-               value="<?php echo isset($form_error) ? set_value("bu_imalat") : ""; ?>"
+               value="<?php echo isset($form_error) ? set_value("bu_imalat") : "$boq->total"; ?>"
                class="form-control <?php cms_isset(form_error("bu_imalat"), "is-invalid", ""); ?>"
                onblur="calcular()" required
                onfocus="calcular()">
+        <?php } else { ?>
+            <input type="number" step=".01" id="A3" name="bu_imalat"
+                   value="<?php echo isset($form_error) ? set_value("bu_imalat") : ""; ?>"
+                   class="form-control <?php cms_isset(form_error("bu_imalat"), "is-invalid", ""); ?>"
+                   onblur="calcular()" required
+                   onfocus="calcular()">
+        <?php } ?>
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("bu_imalat"); ?></div>
         <?php } ?>

@@ -25,6 +25,7 @@ class Payment extends CI_Controller
 
         $this->load->model("Contract_model");
         $this->load->model("Project_model");
+        $this->load->model("Boq_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
 
@@ -98,11 +99,19 @@ class Payment extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function new_form($contract_id = null)
+    public function new_form($contract_id = null, $boq_id = null)
     {
         if ($contract_id == null) {
             $contract_id = $this->input->post("contract_id");
         }
+
+        if (count_payments($contract_id) == 0) {
+            $payment_no = 1;
+        } else {
+            $payment_no = last_payment($contract_id) + 1;
+        }
+        //Önceki Metraj Kontrolü
+        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$payment_no");
 
         $error = array();
         $fiyat_fark = get_from_id("contract", "fiyat_fark", "$contract_id");
@@ -223,6 +232,7 @@ class Payment extends CI_Controller
                 "durumu" => 1
             )
         );
+
         $settings = $this->Settings_model->get();
         $contract = $this->Contract_model->get(array(
                 "id" => $contract_id
@@ -239,6 +249,21 @@ class Payment extends CI_Controller
         $viewData->subViewFolder = "$this->Add_Folder";
         $viewData->items = $items;
         $viewData->projects = $projects;
+        $viewData->payment_no = $payment_no;
+
+        if ($boq_control) {
+            $boq = $this->Boq_model->get(array(
+                    "id" => $boq_control
+                )
+            );
+        } else {
+            $boq = null;
+        }
+
+
+        $viewData->boq = $boq;
+
+        $viewData->payment_no = $payment_no;
         $viewData->error_array = $error_array;
         $viewData->error_isset = $error_isset;
         $viewData->active_contracts = $active_contracts;
@@ -253,10 +278,13 @@ class Payment extends CI_Controller
 
     }
 
-    public function file_form($id)
+    public
+    function file_form($id)
     {
 
+
         $contract_id = contract_id_module("payment", $id);
+
 
         $viewData = new stdClass();
         $contract = $this->Contract_model->get(array(
@@ -272,11 +300,30 @@ class Payment extends CI_Controller
         $viewData->contract = $contract;
         $viewData->project_id = $project_id;
 
-        $viewData->item = $this->Payment_model->get(
+       $item = $this->Payment_model->get(
             array(
                 "id" => $id
             )
         );
+
+        $viewData->item = $item;
+
+
+        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$item->hakedis_no");
+
+        if ($boq_control) {
+            $boq = $this->Boq_model->get(array(
+                    "id" => $boq_control
+                )
+            );
+            $viewData->boq = $boq;
+
+        } else {
+            $boq = null;
+            $viewData->boq = null;
+
+        }
+
 
         $viewData->item_files = $this->Payment_file_model->get_all(
             array(
@@ -287,7 +334,8 @@ class Payment extends CI_Controller
 
     }
 
-    public function save($contract_id)
+    public
+    function save($contract_id)
     {
 
         $project_id = project_id_cont($contract_id);
@@ -304,10 +352,12 @@ class Payment extends CI_Controller
         $hak_no = $this->input->post('hakedis_no');
 
         $a = $this->input->post('toplam_imalat');
-        echo $last_total_imalat = sum_payments("bu_imalat", $contract_id);
+        $last_total_imalat = sum_payments("bu_imalat", $contract_id);
         $b = $this->input->post('toplam_ihzarat');
+
+
         $c = $a + $b;
-        echo $last_total_ihzarat = sum_payments("bu_ihzarat", $contract_id);
+        $last_total_ihzarat = sum_payments("bu_ihzarat", $contract_id);
 
 
         $limit = limit_cost($contract_id);
@@ -494,6 +544,8 @@ class Payment extends CI_Controller
 
 
             $error = array();
+
+
             $fiyat_fark = get_from_id("contract", "fiyat_fark", "$contract_id");
             $fiyat_fark_teminat = get_from_id("contract", "fiyat_fark_teminat", "$contract_id");
             $final_date = get_from_id("contract", "final_date", "$contract_id");
@@ -583,12 +635,18 @@ class Payment extends CI_Controller
                 return !empty($value);
             });
 
-            if ($error_empty) {
-                $error_isset = true;
-            } else {
-                $error_isset = false;
-            }
 
+            $contract_type = get_from_id("contract", "official", "$contract_id");
+
+            if ($contract_type == 1) {
+                if ($error_empty) {
+                    $error_isset = true;
+                } else {
+                    $error_isset = false;
+                }
+            } else {
+                echo $error_isset = true;
+            }
 
             $viewData = new stdClass();
 
@@ -605,6 +663,7 @@ class Payment extends CI_Controller
             $viewData->subViewFolder = "$this->Add_Folder";
             $viewData->form_error = true;
             $viewData->contract = $contract;
+            $viewData->payment_no = $this->input->post('hakedis_no');
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;
             $viewData->settings = $settings;
@@ -615,7 +674,8 @@ class Payment extends CI_Controller
         }
     }
 
-    public function delete($id)
+    public
+    function delete($id, $boq=null)
     {
 
         $hakedis_no = get_from_id("payment", "hakedis_no", "$id");
@@ -653,6 +713,14 @@ class Payment extends CI_Controller
                 )
             );
 
+            if ($boq != null) {
+                $delete_boq = $this->Boq_model->delete(
+                    array(
+                        "id" => $boq
+                    )
+                );
+            }
+
             // TODO Alert Sistemi Eklenecek...
             if ($delete1 and $delete2) {
                 $alert = array(
@@ -681,7 +749,8 @@ class Payment extends CI_Controller
         }
     }
 
-    public function file_upload($id)
+    public
+    function file_upload($id)
     {
 
         $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
@@ -731,7 +800,8 @@ class Payment extends CI_Controller
 
     }
 
-    public function file_download($id)
+    public
+    function file_download($id)
     {
         $fileName = $this->Payment_file_model->get(
             array(
@@ -762,7 +832,8 @@ class Payment extends CI_Controller
 
     }
 
-    public function download_all($payment_id)
+    public
+    function download_all($payment_id)
     {
         $this->load->library('zip');
         $this->zip->compression_level = 0;
@@ -788,7 +859,8 @@ class Payment extends CI_Controller
 
     }
 
-    public function refresh_file_list($id)
+    public
+    function refresh_file_list($id)
     {
         $viewData = new stdClass();
 
@@ -814,7 +886,8 @@ class Payment extends CI_Controller
 
     }
 
-    public function fileDelete($id)
+    public
+    function fileDelete($id)
     {
 
         $viewData = new stdClass();
@@ -868,7 +941,8 @@ class Payment extends CI_Controller
         }
     }
 
-    public function fileDelete_all($id)
+    public
+    function fileDelete_all($id)
     {
 
         $viewData = new stdClass();
@@ -917,7 +991,8 @@ class Payment extends CI_Controller
         }
     }
 
-    public function duplicate_code_check($file_name)
+    public
+    function duplicate_code_check($file_name)
     {
         $file_name = "HAK-" . $file_name;
 
@@ -929,7 +1004,8 @@ class Payment extends CI_Controller
         }
     }
 
-    public function sitedel_paymentday($payment_day, $sitedal_day)
+    public
+    function sitedel_paymentday($payment_day, $sitedal_day)
     {
         $date_diff = date_minus($payment_day, $sitedal_day);
         if (($date_diff <= 0)) {

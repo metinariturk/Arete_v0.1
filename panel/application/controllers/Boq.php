@@ -73,8 +73,22 @@ class Boq extends CI_Controller
 
     public function new_form($contract_id = null, $payment_no = null)
     {
-
         $viewData = new stdClass();
+
+        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$payment_no");
+
+        if ($boq_control) {
+            $boq = $this->Boq_model->get(array(
+                    "id" => $boq_control
+                )
+            );
+            $viewData->exist_boq = $boq;
+            $viewData->boq_calculate = json_decode($boq->calculation, true);
+        } else {
+            $boq = null;
+            $viewData->boq = $boq;
+        }
+
         /** Tablodan Verilerin Getirilmesi.. */
         $contract = $this->Contract_model->get(array("id" => $contract_id));
 
@@ -151,121 +165,71 @@ class Boq extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function save($contract_id)
+    public function save($contract_id, $payment_no)
     {
 
-        $file_name_len = file_name_digits();
-        $file_name = "YBF-" . $this->input->post('dosya_no');
+        $calculates = json_encode($this->input->post("calculate[]"));
 
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = get_from_id("contract", "dosya_no", $contract_id);
-        $contract_day = dateFormat_dmy(get_from_id("contract", "sozlesme_tarih", "$contract_id"));
-        $this->load->library("form_validation");
+        echo $sayi = $this->input->post("this_payment");
+        $sayi = str_replace(' ', '', $sayi);
+        $sayi = str_replace(',', '.', $sayi);
 
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[newprice.dosya_no]|required|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
-        $this->form_validation->set_rules("ybf_tarih", "Verildiği Tarih", "callback_newprice_contractday[$contract_day]|required|trim");
-        $this->form_validation->set_rules("karar_no", "Karar No", "required|trim");
-        $this->form_validation->set_rules("ybf_tutar", "YBF Tutar", "greater_than[0]|required|trim|numeric");
-        if ($this->input->post('onay') != "on") {
-            $this->form_validation->set_rules("ybf_oran", "YBF Oran", "less_than_equal_to[20]|required|trim");
+
+        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$payment_no");
+
+        if ($boq_control) {
+            $update = $this->Boq_model->update(
+                array(
+                    "id" => $boq_control
+                ),
+                array(
+                    "calculation" => $calculates,
+                    "total" => $sayi,
+                )
+            );
+
         } else {
-            $this->form_validation->set_rules("ybf_oran", "YBF Oran", "numeric|required|trim");
-        }
-        $this->form_validation->set_rules("aciklama", "Yeni Birim Fiyat Notları", "required|trim"); //4
-
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
-                "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
-                "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük bir sayı olmalıdır",
-                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
-                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
-                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
-                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "newprice_contractday" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden önce olamaz",
-
-                "less_than_equal_to" => "<b>{field}</b> <b>{param}</b> 'den fazla Yeni Birim Fiyat veriyorsunuz. İşlem doğru ise yandaki kutucuğu işaretleyerek devam ediniz.",
-            )
-        );
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Boq/$file_name";
-
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-                echo "oluştu";
-            } else {
-                echo "aynı isimde dosya mevcut";
-            }
-
-            if ($this->input->post("ybf_tarih")) {
-                $ybf_tarihi = dateFormat('Y-m-d', $this->input->post("ybf_tarih"));
-            } else {
-                $ybf_tarihi = null;
-            }
-
             $insert = $this->Boq_model->add(
                 array(
                     "contract_id" => $contract_id,
-                    "dosya_no" => $file_name,
-                    "karar_no" => $this->input->post("karar_no"),
-                    "ybf_tarih" => $ybf_tarihi,
-                    "ybf_tutar" => $this->input->post("ybf_tutar"),
-                    "ybf_oran" => $this->input->post("ybf_oran"),
-                    "aciklama" => $this->input->post("aciklama"),
+                    "payment_no" => $payment_no,
+                    "calculation" => $calculates,
+                    "total" => $sayi,
                 )
             );
-
-            $record_id = $this->db->insert_id();
-
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $record_id,
-                    "connected_contract_id" => $contract_id,
-                    "file_order" => $file_name,
-                    "createdAt" => date("Y-m-d H:i:s"),
-"createdBy" => active_user_id(),
-                )
-            );
-
-            if ($insert) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
-        } else {
-
-            $viewData = new stdClass();
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Add_Folder";
-            $viewData->form_error = true;
-            $viewData->contract_id = $contract_id;
-            $viewData->project_id = $project_id;
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
 
+
+
+        $record_id = $this->db->insert_id();
+
+        $insert2 = $this->Order_model->add(
+            array(
+                "module" => $this->Module_Name,
+                "connected_module_id" => $record_id,
+                "connected_contract_id" => $contract_id,
+                "createdAt" => date("Y-m-d H:i:s"),
+                "createdBy" => active_user_id(),
+            )
+        );
+
+        if ($insert or $update) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde eklendi/güncellendi",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+        }
+        $this->session->set_flashdata("alert", $alert);
+        redirect(base_url("payment/new_form/$contract_id/$record_id"));
     }
+
 
     public function update($id)
     {
@@ -418,7 +382,7 @@ class Boq extends CI_Controller
                 ),
                 array(
                     "deletedAt" => date("Y-m-d H:i:s"),
-"deletedBy" => active_user_id(),
+                    "deletedBy" => active_user_id(),
                 )
             );
 
@@ -466,7 +430,7 @@ class Boq extends CI_Controller
             ),
             array(
                 "deletedAt" => date("Y-m-d H:i:s"),
-"deletedBy" => active_user_id(),
+                "deletedBy" => active_user_id(),
             )
         );
 
@@ -517,7 +481,7 @@ class Boq extends CI_Controller
                 array(
                     "img_url" => $uploaded_file,
                     "createdAt" => date("Y-m-d H:i:s"),
-"createdBy" => active_user_id(),
+                    "createdBy" => active_user_id(),
                     "$this->Dependet_id_key" => $id,
                     "size" => $size
                 )
