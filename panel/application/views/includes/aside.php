@@ -48,7 +48,7 @@
                         <ul class="sidebar-submenu">
                             <li><a href="<?php echo base_url("Contract"); ?>">Sözleşmeler</a></li>
                             <li><a href="<?php echo base_url("Subcontract"); ?>">Alt Sözleşmeler</a></li>
-                            <li><a href="<?php echo base_url("Payment"); ?>">Hakedişler</a></li>
+                            <li><a href="<?php echo base_url("payment"); ?>">Hakedişler</a></li>
                             <li><a href="<?php echo base_url("advance"); ?>">Avans İşlemleri</a></li>
                             <li><a href="<?php echo base_url("Bond"); ?>">Teminat İşlemleri</a></li>
                             <li><a href="<?php echo base_url("Costinc"); ?>">Keşif Artışı</a></li>

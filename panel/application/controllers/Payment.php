@@ -29,7 +29,7 @@ class Payment extends CI_Controller
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
 
-        $this->Module_Name = "Payment";
+        $this->Module_Name = "payment";
         $this->Module_Title = "Hakediş";
 
         // Folder Structure
@@ -838,8 +838,8 @@ class Payment extends CI_Controller
         $this->load->library('zip');
         $this->zip->compression_level = 0;
 
-        $contract_id = get_from_id("Payment", "contract_id", "$payment_id");
-        $hak_no = get_from_id("Payment", "hakedis_no", "$payment_id");
+        $contract_id = get_from_id("payment", "contract_id", "$payment_id");
+        $hak_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");
         $contract_code = contract_code($contract_id);
