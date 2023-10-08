@@ -33,7 +33,7 @@ if (empty($contract->id or $payment_no)) { ?>
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12">
             <div class="card">
 
                 <form id="save_<?php echo $this->Module_Name; ?>"

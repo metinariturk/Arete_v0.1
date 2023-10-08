@@ -202,10 +202,16 @@ class Payment extends CI_Controller
             return !empty($value);
         });
 
-        if ($error_empty) {
-            $error_isset = true;
+        $contract_type = get_from_id("contract", "official", "$contract_id");
+
+        if ($contract_type == 1) {
+            if ($error_empty) {
+                $error_isset = true;
+            } else {
+                $error_isset = false;
+            }
         } else {
-            $error_isset = false;
+            echo $error_isset = true;
         }
 
 
