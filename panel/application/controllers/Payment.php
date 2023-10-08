@@ -160,7 +160,10 @@ class Payment extends CI_Controller
                     $error_advance = null;
                 }
             }
+        } else {
+            $error_advance = null;
         }
+
 
         $error_costinc = null;
 
@@ -579,13 +582,18 @@ class Payment extends CI_Controller
                 $error_final = null;
             }
 
-            foreach ($advances as $advance) {
-                $teminat = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_avans_id", "$advance->id");
-                if (empty($teminat)) {
-                    $error_advance = "Verilen avansa ait teminat mektubu bulunamadı. Avans teminatı girilmeden hakediş yapılamaz.*" . base_url("bond/new_form_advance/$advance->id");
-                } else {
-                    $error_advance = null;
+            if (isset($advances)) {
+                foreach ($advances as $advance) {
+                    $teminat = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_avans_id", "$advance->id");
+                    if (empty($teminat)) {
+                        $error_advance = "Verilen avansa ait teminat mektubu bulunamadı. Avans teminatı girilmeden hakediş yapılamaz.*" . base_url("bond/new_form_advance/$advance->id");
+                    } else {
+                        $error_advance = null;
+                    }
                 }
+
+            } else {
+                $error_advance = null;
             }
 
             if (isset($costincs)) {

@@ -11,8 +11,12 @@
 
             // Hesaplamaları yap
             calculateTotal(id);
-            calculateoldTotal(id);
         });
+    });
+
+    inputElements.forEach(function(input) {
+        var id = input.id.split("_")[0];
+        calculateTotal(id);
     });
 
     function formatNumberWithSpaces(number) {
@@ -76,6 +80,11 @@
 
         var genel_sonuc = oldTotalContract + totalContract;
         document.getElementById("total_payment").value = formatNumberWithSpaces(genel_sonuc.toFixed(2));
+
+        var cumulative = oldQty + qty;
+        document.getElementById(materialId + "_cumulative").value = formatNumberWithSpaces(cumulative.toFixed(2));
     }
 
 </script>
+
+

@@ -75,26 +75,9 @@ class Boq extends CI_Controller
     {
         $viewData = new stdClass();
 
-        $old_select = get_from_any_array("boq", "contract_id", "$contract_id");
-
-
-        $last_payment = (max(array_column($old_select, 'payment_no')));
-
-        $old_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$last_payment");
 
         $this_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$payment_no");
 
-        if ($old_control) {
-            $old = $this->Boq_model->get(array(
-                    "id" => $old_control
-                )
-            );
-            $viewData->old_boq = $old;
-            $viewData->boq_calculate = json_decode($old->calculation, true);
-        } else {
-            $old = null;
-            $viewData->old_boq = $old;
-        }
 
         if ($this_control) {
             $this_boq = $this->Boq_model->get(array(
@@ -103,9 +86,53 @@ class Boq extends CI_Controller
             );
             $viewData->this_boq = $this_boq;
             $viewData->boq_calculate = json_decode($this_boq->calculation, true);
+
+            $old_select = get_from_any_array("boq", "contract_id", "$contract_id");
+
+
+            if (isset($old_select)) {
+                $last_payment = (array_column($old_select, 'payment_no'));
+                rsort($last_payment);
+                if ((count($last_payment)) > 1) {
+                    $last_payment_no = $last_payment[1];
+                    $old_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$last_payment_no");
+                    if ($old_control) {
+                        $old = $this->Boq_model->get(array(
+                                "id" => $old_control
+                            )
+                        );
+                        $viewData->old_boq = $old;
+                        $viewData->boq_calculate = json_decode($old->calculation, true);
+                    } else {
+                        $old = null;
+                        $viewData->old_boq = $old;
+                    }
+                }
+            }
+
         } else {
             $this_boq = null;
             $viewData->boq = $this_boq;
+
+            $old_select = get_from_any_array("boq", "contract_id", "$contract_id");
+
+
+            if (isset($old_select)) {
+                $last_payment = (max(array_column($old_select, 'payment_no')));
+                $old_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$last_payment");
+                if ($old_control) {
+                    $old = $this->Boq_model->get(array(
+                            "id" => $old_control
+                        )
+                    );
+                    $viewData->old_boq = $old;
+                    $viewData->boq_calculate = json_decode($old->calculation, true);
+                } else {
+                    $old = null;
+                    $viewData->old_boq = $old;
+                }
+            }
+
         }
 
         /** Tablodan Verilerin Getirilmesi.. */
@@ -122,7 +149,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function update_form($id)
+    public
+    function update_form($id)
     {
 
         $viewData = new stdClass();
@@ -155,7 +183,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function file_form($id)
+    public
+    function file_form($id)
     {
 
         $viewData = new stdClass();
@@ -184,7 +213,8 @@ class Boq extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function save($contract_id, $payment_no)
+    public
+    function save($contract_id, $payment_no)
     {
 
         $calculates = json_encode($this->input->post("calculate[]"));
@@ -219,7 +249,6 @@ class Boq extends CI_Controller
         }
 
 
-
         $record_id = $this->db->insert_id();
 
         $insert2 = $this->Order_model->add(
@@ -250,7 +279,8 @@ class Boq extends CI_Controller
     }
 
 
-    public function update($id)
+    public
+    function update($id)
     {
         $contract_id = contract_id_module("newprice", "$id");
         $contract_day = dateFormat_dmy(get_from_id("contract", "sozlesme_tarih", "$contract_id"));
@@ -378,7 +408,8 @@ class Boq extends CI_Controller
         }
     }
 
-    public function delete($id)
+    public
+    function delete($id)
     {
         //Bağlı teminat silme işlemleri
         $contract_id = contract_id_module("newprice", $id);
@@ -471,7 +502,8 @@ class Boq extends CI_Controller
         redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$contract_id"));
     }
 
-    public function file_upload($id)
+    public
+    function file_upload($id)
     {
 
         $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
@@ -514,7 +546,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function download_all($newprice_id)
+    public
+    function download_all($newprice_id)
     {
         $this->load->library('zip');
         $this->zip->compression_level = 0;
@@ -540,7 +573,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function file_download($id)
+    public
+    function file_download($id)
     {
         $fileName = $this->Boq_file_model->get(
             array(
@@ -572,7 +606,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function refresh_file_list($id)
+    public
+    function refresh_file_list($id)
     {
         $viewData = new stdClass();
 
@@ -598,7 +633,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function fileDelete($id)
+    public
+    function fileDelete($id)
     {
 
         $viewData = new stdClass();
@@ -652,7 +688,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function fileDelete_all($id)
+    public
+    function fileDelete_all($id)
     {
 
         $viewData = new stdClass();
@@ -701,7 +738,8 @@ class Boq extends CI_Controller
         }
     }
 
-    public function duplicate_code_check($file_name)
+    public
+    function duplicate_code_check($file_name)
     {
         $file_name = "YBF-" . $file_name;
 
@@ -713,7 +751,8 @@ class Boq extends CI_Controller
         }
     }
 
-    public function newprice_contractday($newprice_day, $contract_day)
+    public
+    function newprice_contractday($newprice_day, $contract_day)
     {
         $date_diff = date_minus($newprice_day, $contract_day);
         if (($date_diff < 0)) {

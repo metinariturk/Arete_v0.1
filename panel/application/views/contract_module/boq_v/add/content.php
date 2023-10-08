@@ -46,7 +46,7 @@ if (empty($contract->id or $payment_no)) { ?>
 
         <div class="col-sm-12">
             <div class="card">
-                <button type="submit" form="save_<?php echo $this->Module_Name; ?>" class="btn btn-success">
+                <button type="submit" form="save_<?php echo $this->Module_Name; ?>" class="btn btn-success" id="saveButton">
                     <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                 </button>
                 <form id="save_<?php echo $this->Module_Name; ?>"
@@ -71,8 +71,8 @@ if (empty($contract->id or $payment_no)) { ?>
                         </div>
                     </div>
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
-
                 </form>
+                <button id="saveButton">Kaydet</button>
             </div>
         </div>
     </div>
