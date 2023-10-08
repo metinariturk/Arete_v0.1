@@ -19,7 +19,7 @@ class Boq extends CI_Controller
         }
 
         $this->moduleFolder = "contract_module";
-        $this->viewFolder = "Boq_v";
+        $this->viewFolder = "boq_v";
         $this->load->model("Boq_model");
         $this->load->model("Contract_model");
         $this->load->model("Payment_model");
