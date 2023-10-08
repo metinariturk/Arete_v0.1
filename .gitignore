@@ -1,3 +1,7 @@
 
 panel/application/config/database.php
+panel/application/config/config.php
 site/application/config/database.php
+site/application/config/config.php
+
+
