@@ -41,50 +41,54 @@ $active_boqs = json_decode($item->active_boq, true);
             </thead>
             <tbody>
 
-
+            <?php if (isset($active_boqs)) { ?>
             <?php foreach ($active_boqs as $active_group => $boqs) : ?>
-                <tr>
-                    <th colspan="5"><?php echo boq_name($active_group); ?></th>
-                </tr>
-                <tr>
-                    <th>Poz ID</th>
-                    <th>Poz Adı</th>
-                    <th>Sözleşme Miktarı</th>
-                    <th>Fiyat</th>
-                    <th>Toplam Tutar</th>
-                </tr>
-                <?php foreach ($boqs as $boq) : ?>
-                    <tr>
-                        <td>
-                            <div class="boq-name"><a href="#"> <?php echo $boq; ?></a></div>
-                        </td>
-                        <td>
-                            <div class="boq-name"><a href="#"> <?php echo boq_name($boq); ?></a></div>
-                        </td>
-                        <td class="text-center">
-                            <div class="input-group">
-                                <input disabled id="<?php echo $boq; ?>_qty" name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][qty]"
-                                       class="form-control btn-square" placeholder="Miktar" type="text">
-                                <span class="input-group-text btn btn-primary btn-right"><?php echo boq_unit($boq); ?></span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <div class="input-group">
-                                <input disabled id="<?php echo $boq; ?>_price" name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][price]"
-                                       class="form-control btn-square" placeholder="Tutar" type="text">
-                                <span class="input-group-text btn btn-primary btn-right"><?php echo $item->para_birimi; ?></span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <div class="input-group">
-                                <input id="<?php echo $boq; ?>_total" disabled name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][total]"
-                                       class="form-control btn-square" placeholder="Toplam" type="text">
-                                <span class="input-group-text btn btn-primary btn-right"><?php echo $item->para_birimi; ?></span>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+            <tr>
+                <th colspan="5"><?php echo boq_name($active_group); ?></th>
+            </tr>
+            <tr>
+                <th>Poz ID</th>
+                <th>Poz Adı</th>
+                <th>Sözleşme Miktarı</th>
+                <th>Fiyat</th>
+                <th>Toplam Tutar</th>
+            </tr>
+            <?php foreach ($boqs as $boq) : ?>
+            <tr>
+                <td>
+                    <div class="boq-name"><a href="#"> <?php echo $boq; ?></a></div>
+                </td>
+                <td>
+                    <div class="boq-name"><a href="#"> <?php echo boq_name($boq); ?></a></div>
+                </td>
+                <td class="text-center">
+                    <div class="input-group">
+                        <input disabled id="<?php echo $boq; ?>_qty"
+                               name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][qty]"
+                               class="form-control btn-square" placeholder="Miktar" type="text">
+                        <span class="input-group-text btn btn-primary btn-right"><?php echo boq_unit($boq); ?></span>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <div class="input-group">
+                        <input disabled id="<?php echo $boq; ?>_price"
+                               name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][price]"
+                               class="form-control btn-square" placeholder="Tutar" type="text">
+                        <span class="input-group-text btn btn-primary btn-right"><?php echo $item->para_birimi; ?></span>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <div class="input-group">
+                        <input id="<?php echo $boq; ?>_total" disabled
+                               name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][total]"
+                               class="form-control btn-square" placeholder="Toplam" type="text">
+                        <span class="input-group-text btn btn-primary btn-right"><?php echo $item->para_birimi; ?></span>
+                    </div>
+                </td>
+            </tr>
             <?php endforeach; ?>
+            <?php endforeach; ?>
+            <?php } ?>
             </tbody>
         </table>
     </div>

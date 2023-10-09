@@ -24,61 +24,73 @@
                 <?php } ?>
             </div>
         </div>
-        <?php if (!$is_sub){ ?>
-        <div class="mb-2">
-            <div class="col-form-label">Teklif Adı</div>
-            <select id="select2-demo-1" style="width: 100%;" class="form-control" data-plugin="select2"
-                    name="auction_id">
-                <option selected="selected"
-                        value="0">Bağımsız Sözleşme
-                </option>
-                <option selected="selected"
-                        value="<?php echo isset($form_error) ? set_value("auction_id") : ""; ?>">
+
+        <?php if (!$is_sub) { ?>
+
+            <div class="mb-2">
+                <div class="col-form-label">Teklif Adı</div>
+                <select id="select2-demo-1" style="width: 100%;" class="form-control" data-plugin="select2"
+                        name="auction_id">
+                    <option selected="selected"
+                            value="0">Bağımsız Sözleşme
+                    </option>
+                    <option selected="selected"
+                            value="<?php echo isset($form_error) ? set_value("auction_id") : ""; ?>">
+                        <?php
+                        if ((isset($form_error) and (set_value("auction_id") > 0))) {
+                            echo auction_name(set_value("auction_id"));
+                        } else {
+                            echo "Seçiniz(İsteğe Bağlı)";
+                        }
+                        ?>
+                    </option>
                     <?php
-                    if ((isset($form_error) and (set_value("auction_id") > 0))) {
-                        echo auction_name(set_value("auction_id"));
-                    } else {
-                        echo "Seçiniz(İsteğe Bağlı)";
-                    }
-                    ?>
-                </option>
-                <?php
-                foreach ($ihaleler as $ihale) { ?>
-                    <option value="<?php echo $ihale->id; ?>"><?php echo auction_name($ihale->id); ?></option>
+                    foreach ($ihaleler as $ihale) { ?>
+                        <option value="<?php echo $ihale->id; ?>"><?php echo auction_name($ihale->id); ?></option>
+                    <?php } ?>
+                </select>
+                <?php if (isset($form_error)) { ?>
+                    <div class="invalid-feedback"><?php echo form_error("auction_id"); ?></div>
                 <?php } ?>
-            </select>
-            <?php if (isset($form_error)) { ?>
-                <div class="invalid-feedback"><?php echo form_error("auction_id"); ?></div>
-            <?php } ?>
-        </div>
+            </div>
         <?php } else { ?>
+            <div class="mb-2">
+                <input type="number" min="1" step="any" onblur=""
+                       class="form-control" hidden
+                       name="is_sub"
+                       value="<?= $is_sub ? "1" : "" ?>">
+            </div>
         <div class="mb-2">
-            <?php print_r($main_contracts); ?>
-            <div class="col-form-label">Bağlı Olduğu Ana Sözleşme Adı</div>
-            <select id="select2-demo-1" style="width: 100%;" class="form-control" data-plugin="select2"
-                    name="main_contract_id">
-                <option selected="selected"
-                        value="0">Bağımsız Sözleşme
-                </option>
-                <option selected="selected"
-                        value="<?php echo isset($form_error) ? set_value("main_contract_id") : ""; ?>">
-                    <?php
-                    if ((isset($form_error) and (set_value("main_contract_id") > 0))) {
-                        echo auction_name(set_value("main_contract_id"));
-                    } else {
-                        echo "Seçiniz(İsteğe Bağlı)";
-                    }
-                    ?>
-                </option>
-                <?php
-                foreach ($main_contracts as $main_contract) { ?>
-                    <option value="<?php echo $main_contract->id; ?>"><?php echo contract_name($main_contract->id); ?></option>
-                <?php } ?>
-            </select>
-            <?php if (isset($form_error)) { ?>
-                <div class="invalid-feedback"><?php echo form_error("main_contract_id"); ?></div>
-            <?php } ?>
+            <span>Atl Sözleşme</span>
         </div>
+            <div class="mb-2">
+                <div class="col-form-label">Bağlı Olduğu Ana Sözleşme Adı</div>
+                <select id="select2-demo-1" style="width: 100%;" class="form-control" data-plugin="select2"
+                        name="main_contract_id">
+                    <option selected="selected"
+                            value="0">Bağımsız Sözleşme
+                    </option>
+                    <option selected="selected"
+                            value="<?php echo isset($form_error) ? set_value("main_contract_id") : ""; ?>">
+                        <?php
+                        if ((isset($form_error) and (set_value("main_contract_id") > 0))) {
+                            echo contract_name(set_value("main_contract_id"));
+                        } else {
+                            echo "Seçiniz(İsteğe Bağlı)";
+                        }
+                        ?>
+                    </option>
+                    <?php
+                    foreach ($main_contracts as $main_contract) { ?>
+                        <?php if ($main_contract->subcont != 1) { ?>
+                            <option value="<?php echo $main_contract->id; ?>"><?php echo contract_name($main_contract->id); ?></option>
+                        <?php } ?>
+                    <?php } ?>
+                </select>
+                <?php if (isset($form_error)) { ?>
+                    <div class="invalid-feedback"><?php echo form_error("main_contract_id"); ?></div>
+                <?php } ?>
+            </div>
         <?php } ?>
         <div class="mb-2">
             <div class="row">

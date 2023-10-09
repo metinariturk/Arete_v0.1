@@ -129,6 +129,7 @@
                 </div>
             </div>
         </div>
+        <?php if ($item->subcont != 1) { ?>
         <div class="mb-2">
             <div class="row">
                 <div class="col-8">
@@ -233,12 +234,11 @@
                                 <option value="<?php echo $distirct->id; ?>"><?php echo district_name($distirct->id); ?></option>
                             <?php } ?>
                         <?php } ?>
-
-
                     </select>
                 </div>
             </div>
         </div>
+        <?php } ?>
     </div>
 </div>
 

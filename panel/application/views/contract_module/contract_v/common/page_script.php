@@ -61,8 +61,12 @@ if (!empty($extimes)) {
 </script>
 
 
-<?php if (!empty($costincs)) { ?>
-    <?php $top_limit = $item->sozlesme_bedel + sum_anything("costinc", "artis_miktar", "contract_id", "$item->id"); ?>
+<?php if (!empty($costincs)) {
+    $top_limit = $item->sozlesme_bedel + sum_anything("costinc", "artis_miktar", "contract_id", "$item->id");
+} else {
+    $top_limit = $item->sozlesme_bedel;
+    ?>
+
     <?php $sub_limit = 0; ?>
     <?php $amount_payed = sum_anything("payment", "bu_imalat_ihzarat", "contract_id", "$item->id"); ?>
     <?php if ($amount_payed >= $top_limit) {
@@ -532,14 +536,14 @@ $payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Checkbox değiştiğinde
-        $('#toggleCheckbox').change(function() {
+        $('#toggleCheckbox').change(function () {
             // Checkbox durumu (seçili veya seçili değil) alınır
             var isChecked = $(this).is(':checked');
 
             // Tablodaki tüm input alanları seçilir ve etkinleştirilir veya devre dışı bırakılır
-            $('#contract_price input').each(function() {
+            $('#contract_price input').each(function () {
                 // Input'un id'sinde "total" kelimesi yoksa etkinleştir veya devre dışı bırak
                 if ($(this).attr('id').indexOf('total') === -1) {
                     $(this).prop('disabled', !isChecked);
@@ -553,14 +557,14 @@ $payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
 <script>
     // Input alanlarının değişikliklerini dinlemek için event listener ekle
     var inputElements = document.querySelectorAll('input[id$="_qty"], input[id$="_price"]');
-    inputElements.forEach(function(input) {
-        input.addEventListener("input", function() {
+    inputElements.forEach(function (input) {
+        input.addEventListener("input", function () {
             var id = input.id.split("_")[0]; // ID'den malzeme numarasını al
             calculateTotal(id);
         });
 
         // Virgülü otomatik olarak noktaya çevir
-        input.addEventListener("input", function() {
+        input.addEventListener("input", function () {
             var inputValue = input.value;
             // Virgülü noktaya çevir
             input.value = inputValue.replace(/,/g, '.');
@@ -591,7 +595,7 @@ $payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
         // Tüm "_total" input alanlarının toplamını hesapla
         var totalContract = 0;
         var totalInputs = document.querySelectorAll('input[id$="_total"]');
-        totalInputs.forEach(function(input) {
+        totalInputs.forEach(function (input) {
             totalContract += parseFloat(input.value.replace(/ /g, '')) || 0; // Girilen boşluğu kaldır
         });
 
