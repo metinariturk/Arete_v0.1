@@ -82,7 +82,8 @@ class Contract extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $active_items = $this->Contract_model->get_all(array(
-            "durumu" => 1
+            "durumu" => 1,
+
         ));
         $passive_items = $this->Contract_model->get_all(array(
             "durumu" => !1

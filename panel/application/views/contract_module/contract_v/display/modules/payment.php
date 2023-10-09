@@ -10,7 +10,6 @@
         <th  class="d-none d-sm-table-cell">Hakediş İtibar Tarihi</th>
         <th>Hakediş Tutar</th>
         <th  class="d-none d-sm-table-cell">Net Ödenecek</th>
-        <th>Evraklar</th>
     </tr>
     </thead>
     <tbody>
