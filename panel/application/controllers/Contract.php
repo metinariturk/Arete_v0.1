@@ -529,7 +529,7 @@ class Contract extends CI_Controller
     }
 
 
-    public function new_form_project($project_id = null)
+    public function new_form_project($project_id = null, $is_sub = null)
     {
         if (!isAdmin()) {
             $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
@@ -537,6 +537,7 @@ class Contract extends CI_Controller
                 redirect(base_url("error"));
             }
         }
+
 
         //Proje yetkilisi mi diye sorgulayabiliriz
 
@@ -549,11 +550,11 @@ class Contract extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $project = $this->Project_model->get(array("id" => $project_id));
-        $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
+        $main_contracts = $this->Auction_model->get_all(array("proje_id" => $project_id));
+        $ihaleler = $this->Contract_model->get_all(array("proje_id" => $project_id));
         $settings = $this->Settings_model->get();
         $isverenler = $this->Company_model->get_all(array());
         $yukleniciler = $this->Company_model->get_all(array());
-
         $yuklenici_users = $this->User_model->get_all(array("user_role" => 2));
         $isveren_users = $this->User_model->get_all(array("user_role" => 1));
 
@@ -567,11 +568,13 @@ class Contract extends CI_Controller
         $viewData->project_id = $project_id;
         $viewData->ihaleler = $ihaleler;
         $viewData->settings = $settings;
+        $viewData->main_contracts = $main_contracts;
         $viewData->yuklenici_users = $yuklenici_users;
         $viewData->isveren_users = $isveren_users;
         $viewData->isverenler = $isverenler;
         $viewData->yukleniciler = $yukleniciler;
         $viewData->cities = $cities;
+        $viewData->is_sub = $is_sub;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 

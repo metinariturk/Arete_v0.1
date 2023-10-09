@@ -15,8 +15,6 @@
     <?php $this->load->view("includes/aside"); ?>
     <!--========== END app aside -->
 
-
-
     <!-- APP MAIN ==========-->
     <main id="app-main" class="app-main">
         <div class="wrap">

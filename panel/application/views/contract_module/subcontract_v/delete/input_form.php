@@ -109,8 +109,7 @@
                 </div>
                 <div class="col-3">
                     <div class="col-form-label">Para Birimi</div>
-                    <select id="select2-demo-1" style="width: 100%;"
-                            class="form-control  <?php cms_isset(form_error("para_birimi"), "is-invalid", ""); ?>" data-plugin="select2"
+                    <select id="select2-demo-1" style="width: 100%;" class="form-control" data-plugin="select2"
                             name="para_birimi">
                         <option selected="selected"
                                 value="<?php echo isset($form_error) ? set_value("para_birimi") : "$item->para_birimi"; ?>">

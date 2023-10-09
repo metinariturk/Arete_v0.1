@@ -15,7 +15,7 @@
             <div class="error-wrapper">
                 <div class="container"><img class="img-100" src="<?php echo base_url(); ?>/assets/images/other-images/sad.png" alt="">
                     <div class="error-heading">
-                        <img src="<?php echo base_url(); ?>/assets/images/logo/login.png" alt="">
+                        <img width="500px" src="<?php echo base_url(); ?>/assets/images/logo/login.png" alt="">
                     </div>
                     <div class="col-md-8 offset-md-2">
                         <p class="sub-content">Bu Sayfaya Erişim Yetkiniz Bulunmamaktadır</p>

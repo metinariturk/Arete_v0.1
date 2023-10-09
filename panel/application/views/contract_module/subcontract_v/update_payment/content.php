@@ -1,7 +1,7 @@
 <div class="row">
-    <div class="col-xl-6 col-md-8">
+    <div class="col-sm-4">
         <div class="card">
-            <div class="card-header">
+            <div class="card-body">
                 <div class="file-sidebar">
                     <ul>
                         <li>
@@ -12,17 +12,17 @@
                                 </a>
                             </div>
                         </li>
-                        <?php if (!empty($item->auction_id)){ ?>
-                        <li>
-                            <div class="btn btn-light ">
-                                <a href="<?php echo base_url("auction/file_form/$item->auction_id"); ?>">
+                        <?php if (!empty($item->auction_id)) { ?>
+                            <li>
+                                <div class="btn btn-light ">
+                                    <a href="<?php echo base_url("auction/file_form/$item->auction_id"); ?>">
                                     <span style="padding-left: 20px">
                                     <i class="icofont icofont-law-document"></i>
                                     <?php echo auction_code_name($item->auction_id); ?>
                                     </span>
-                                </a>
-                            </div>
-                        </li>
+                                    </a>
+                                </div>
+                            </li>
                         <?php } ?>
                         <li>
                             <div class="btn btn-light">
@@ -38,26 +38,12 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <form id="update_<?php echo $this->Module_Name; ?>"
-                  action="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>" method="post"
-                  enctype="multipart/form-data" autocomplete="off">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
-            </form>
-        </div>
     </div>
-    <div class="col-xl-6 col-md-4">
-        <div class="card">
-            <div class="file-content">
-                <div class="card-header">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
-                </div>
-                <div class="image_list_container">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
-                </div>
-            </div>
-        </div>
+    <div class="col-sm-8">
+        <form id="update_payment"
+              action="<?php echo base_url("$this->Module_Name/update_payment/$item->id"); ?>" method="post"
+              enctype="multipart/form-data" autocomplete="off">
+            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+        </form>
     </div>
 </div>
-
-<?php echo validation_errors(); ?>

@@ -78,7 +78,7 @@ $db['default'] = array(
     'hostname' => 'localhost',
     'username' => 'root',
     'password' => '',
-    'database' => 'aretemuhendislik_main',
+    'database' => 'cms',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
@@ -92,5 +92,5 @@ $db['default'] = array(
     'compress' => FALSE,
     'stricton' => FALSE,
     'failover' => array(),
-    'save_queries' => TRUE
+    'save_queries' => FALSE
 );

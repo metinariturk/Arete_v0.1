@@ -30,17 +30,16 @@ if ($subViewFolder == "list") { ?>
                                         </div>
                                         <div class="modal-body">
                                             <form id="proje_id"
-                                                  action="<?php echo base_url("$this->Module_Name/new_form"); ?>"
+                                                  action="<?php echo base_url("$this->Module_Name/new_form_project"); ?>"
                                                   method="post"
                                                   enctype="multipart">
                                                 <div class="mb-3">
-                                                    <label class="col-form-label" for="recipient-name">Sözleşme Seçiniz</label>
-                                                    <select class="form-control" name="contract_id">
-                                                        <option>Bağımsız Alt Sözleşme
-                                                        </option>
-                                                        <?php foreach ($active_contracts as $active_contract) { ?>
-                                                            <option value="<?php echo "$active_contract->id"; ?>">
-                                                                <?php echo "$active_contract->sozlesme_ad"; ?>
+                                                    <label class="col-form-label" for="recipient-name">Proje
+                                                        Seçiniz</label>
+                                                    <select class="form-control" name="proje_id">
+                                                        <?php foreach ($projects as $project) { ?>
+                                                            <option value="<?php echo "$project->id"; ?>">
+                                                                <?php echo "$project->proje_ad"; ?>
                                                             </option>
                                                         <?php } ?>
                                                     </select>
@@ -51,7 +50,7 @@ if ($subViewFolder == "list") { ?>
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
                                                 Kapat
                                             </button>
-                                            <button class="btn btn-primary" form="proje_id" type="submit">Yeni Alt Sözleşme
+                                            <button class="btn btn-primary" form="proje_id" type="submit">Yeni Teklif
                                             </button>
                                         </div>
                                     </div>
@@ -63,7 +62,7 @@ if ($subViewFolder == "list") { ?>
             </div>
         </div>
     </div>
-<?php } elseif ($subViewFolder == "add") { ?>
+<?php } elseif ($subViewFolder == "add_auction") { ?>
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
@@ -75,7 +74,31 @@ if ($subViewFolder == "list") { ?>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li>
-                            <button type="submit" form="save" class="btn btn-success">
+                            <button type="submit" form="save_<?php echo $this->Module_Name; ?>_auction" class="btn btn-success">
+                                <i class="fa fa-floppy-o fa-lg"></i> Kaydet
+                            </button>
+                            <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">
+                                <i class="fa fa-times"></i> İptal
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } elseif ($subViewFolder == "add_project") { ?>
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>
+                        <?php echo "Yeni $this->Module_Title Oluştur"; ?>
+                    </h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li>
+                            <button type="submit" form="save_<?php echo $this->Module_Name; ?>_project" class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>
                             <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">

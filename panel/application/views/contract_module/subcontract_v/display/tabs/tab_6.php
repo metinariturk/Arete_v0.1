@@ -6,8 +6,6 @@
         <div class="card-header d-flex">
             <h6 class="mb-0">Hakediş</h6>
             <ul>
-
-
                 <li>
                     <a class="pager-btn btn btn-info btn-outline"
                        href="<?php echo base_url("payment/new_form/$item->id"); ?>" target="_blank">
