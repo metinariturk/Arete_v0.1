@@ -218,6 +218,7 @@ class Boq extends CI_Controller
     {
 
         $calculates = json_encode($this->input->post("calculate[]"));
+        $remove_space = str_replace(' ', '', $calculates);
 
         $sayi = $this->input->post("this_payment");
         $sayi = str_replace(' ', '', $sayi);
@@ -242,7 +243,7 @@ class Boq extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "payment_no" => $payment_no,
-                    "calculation" => $calculates,
+                    "calculation" => $remove_space,
                     "total" => $sayi,
                 )
             );
