@@ -327,13 +327,6 @@ class Contract extends CI_Controller
                         "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
                         "para_birimi" => $payments->para_birimi,
 
-                        "adres" => $this->input->post("adres"),
-                        "adres_il" => $this->input->post("adress_city"),
-                        "adres_ilce" => $this->input->post("adress_district"),
-
-                        "isveren_yetkili" => $this->input->post("isveren_yetkili"),
-                        "yuklenici_yetkili" => $this->input->post("yuklenici_yetkili"),
-
                         "kdv_oran" => $payments->kdv_oran,
                         "tevkifat_oran" => $payments->tevkifat_oran,
                         "damga_oran" => $payments->damga_oran,
@@ -612,8 +605,6 @@ class Contract extends CI_Controller
                     "adres_ilce" => $this->input->post("adress_district"),
                     "subcont" => $is_sub,
                     "sitedel_date" => $yer_teslim,
-                    "isveren_yetkili" => $this->input->post("isveren_yetkili"),
-                    "yuklenici_yetkili" => $this->input->post("yuklenici_yetkili"),
                     "durumu" => "1",
                     "main_contract" => $this->input->post("main_contract"),
 
@@ -828,13 +819,6 @@ class Contract extends CI_Controller
                     "sozlesme_bitis" => $sozlesme_bitis,
                     "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
                     "para_birimi" => $this->input->post("para_birimi"),
-
-                    "adres" => $this->input->post("adres"),
-                    "adres_il" => $this->input->post("adress_city"),
-                    "adres_ilce" => $this->input->post("adress_district"),
-
-                    "isveren_yetkili" => $this->input->post("isveren_yetkili"),
-                    "yuklenici_yetkili" => $this->input->post("yuklenici_yetkili"),
 
                     "auction_id" => $this->input->post("auction_id"),
 

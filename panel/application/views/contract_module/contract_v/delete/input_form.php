@@ -144,21 +144,6 @@
                         <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
                     <?php } ?>
                 </div>
-                <div class="col-4">
-                    <div class="col-form-label">İşveren Yetkili</div>
-                    <select id="select2-demo-1"
-                            class="form-control <?php cms_isset(form_error("isveren_yetkili"), "is-invalid", ""); ?>"
-                            data-plugin="select2" name="isveren_yetkili">
-                        <option selected
-                                value="<?php echo isset($form_error) ? set_value("isveren_yetkili") : $item->isveren_yetkili; ?>"><?php echo isset($form_error) ? full_name(set_value("isveren_yetkili")) : full_name($item->isveren_yetkili); ?></option>
-                        <?php foreach ($isveren_users as $isveren_user) { ?>
-                            <option value="<?php echo $isveren_user->id; ?>"><?php echo full_name($isveren_user->id); ?></option>
-                        <?php } ?>
-                    </select>
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("isveren_yetkili"); ?></div>
-                    <?php } ?>
-                </div>
             </div>
         </div>
         <div class="mb-2">
@@ -175,20 +160,6 @@
                     </select>
                     <?php if (isset($form_error)) { ?>
                         <div class="invalid-feedback"><?php echo form_error("yuklenici"); ?></div>
-                    <?php } ?>
-                </div>
-                <div class="col-4">
-                    <div class="col-form-label">Yüklenici Yetkili</div>
-                    <select id="select2-demo-1"
-                            class="form-control <?php cms_isset(form_error("yuklenici_yetkili"), "is-invalid", ""); ?>"
-                            data-plugin="select2" name="yuklenici_yetkili">
-                        <option value="<?php echo isset($form_error) ? set_value("yuklenici_yetkili") : $item->yuklenici_yetkili; ?>"><?php echo isset($form_error) ? full_name(set_value("yuklenici_yetkili")) : full_name($item->yuklenici_yetkili); ?></option>
-                        <?php foreach ($yuklenici_users as $yuklenici_user) { ?>
-                            <option value="<?php echo $yuklenici_user->id; ?>"><?php echo full_name($yuklenici_user->id); ?></option>
-                        <?php } ?>
-                    </select>
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("yuklenici_yetkili"); ?></div>
                     <?php } ?>
                 </div>
             </div>
