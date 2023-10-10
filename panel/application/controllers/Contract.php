@@ -219,9 +219,6 @@ class Contract extends CI_Controller
         $settings = $this->Settings_model->get();
         $isverenler = $this->Company_model->get_all(array());
         $yukleniciler = $this->Company_model->get_all(array());
-        $yuklenici_users = $this->User_model->get_all(array("user_role" => 2, "company" => $yuklenici_id));
-        $isveren_users = $this->User_model->get_all(array("user_role" => 1, "company" => $isveren));
-        $cities = $this->City_model->get_all(array());
         $auction = $this->Auction_model->get(array("id" => $auction_id));
         $idari_sart = $this->Condition_model->get(array(
             'auction_id' => $auction_id
@@ -240,9 +237,6 @@ class Contract extends CI_Controller
         $viewData->yuklenici_id = $yuklenici_id;
         $viewData->auction = $auction;
         $viewData->price = $price;
-        $viewData->yuklenici_users = $yuklenici_users;
-        $viewData->isveren_users = $isveren_users;
-        $viewData->cities = $cities;
         if (isset($idari_sart)) {
             $viewData->idari_sart = $idari_sart;
         }
@@ -506,12 +500,9 @@ class Contract extends CI_Controller
         $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
         $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id));
         $settings = $this->Settings_model->get();
-        $isverenler = $this->Company_model->get_all(array());
-        $yukleniciler = $this->Company_model->get_all(array());
-        $yuklenici_users = $this->User_model->get_all(array("user_role" => 2));
-        $isveren_users = $this->User_model->get_all(array("user_role" => 1));
+        $companys = $this->Company_model->get_all(array("company_role !=" => 0));
+        $sistem_isverenler = $this->Company_model->get_all(array("company_role" => 0));
 
-        $cities = $this->City_model->get_all(array());
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -522,11 +513,8 @@ class Contract extends CI_Controller
         $viewData->ihaleler = $ihaleler;
         $viewData->settings = $settings;
         $viewData->main_contracts = $main_contracts;
-        $viewData->yuklenici_users = $yuklenici_users;
-        $viewData->isveren_users = $isveren_users;
-        $viewData->isverenler = $isverenler;
-        $viewData->yukleniciler = $yukleniciler;
-        $viewData->cities = $cities;
+        $viewData->companys = $companys;
+        $viewData->sistem_isverenler = $sistem_isverenler;
         $viewData->is_sub = $is_sub;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -634,6 +622,8 @@ class Contract extends CI_Controller
                     "isveren_yetkili" => $this->input->post("isveren_yetkili"),
                     "yuklenici_yetkili" => $this->input->post("yuklenici_yetkili"),
                     "durumu" => "1",
+                    "main_contract" => $this->input->post("main_contract"),
+
                 )
             );
 

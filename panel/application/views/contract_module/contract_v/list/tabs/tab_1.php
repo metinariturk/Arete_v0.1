@@ -1,10 +1,10 @@
 <div class="tab-pane fade show active" id="top-all" role="tabpanel" aria-labelledby="top-all-tab">
-    <div class="table-responsive">
+    <div class="table">
         <table class="display" id="basic-1">
             <thead>
             <tr>
-                <th>Proje Adı</th>
                 <th>Sözleşme Adı</th>
+                <th>Proje Adı</th>
                 <th>İşveren</th>
                 <th>Sözleşme Tutar</th>
                 <th>İmza Tarihi</th>
@@ -12,17 +12,17 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($active_items as $active) { ?>
+            <?php $i = 1; foreach ($active_items as $active) { ?>
                 <?php if ($active->subcont != 1) { ?>
-                    <tr>
+                    <tr >
                         <td>
                             <a href="<?php echo base_url("contract/file_form/$active->id"); ?>">
-                                <?php echo project_name($active->proje_id); ?>
+                                <?php echo $i++; ?> - <?php echo $active->sozlesme_ad; ?>
                             </a>
                         </td>
                         <td>
                             <a href="<?php echo base_url("contract/file_form/$active->id"); ?>">
-                                <?php echo $active->sozlesme_ad; ?>
+                                <?php echo project_name($active->proje_id); ?>
                             </a>
                         </td>
                         <td>
@@ -46,18 +46,42 @@
                             </a>
                         </td>
                     </tr>
-                    <?php $sub_conts = get_from_any_and_array("contract", "proje_id", "$active->proje_id", "subcont", "1"); ?>
-                    <tr class="hidden-row">
-                        <td colspan="6">
-                            <div class="additional-info">
-                                <?php foreach ($sub_conts as $sub_cont=>$value) { ?>
-                                    <div class="row">
-                                        <div class="col-12"><?php echo print_r($value); ?></div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        </td>
-                    </tr>
+                    <?php $j = "a";
+                    $subcontracts = $this->Contract_model->get_all(array(
+                        "main_contract" => $active->id,
+                    )); ?>
+                    <?php foreach ($subcontracts as $subcontract) { ?>
+                        <tr>
+                            <td style="text-align: right">
+                                <a href="<?php echo base_url("contract/file_form/$active->id"); ?>">
+                                    <?php echo $j . ' ';
+                                    $j = chr(ord($j) + 1); ?> -  <?php echo $subcontract->sozlesme_ad; ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>">
+                                </a>
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>">
+                                    <?php echo money_format($subcontract->sozlesme_bedel) . " " . $subcontract->para_birimi; ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>">
+                                    <?php echo dateFormat_dmy($subcontract->sozlesme_tarih); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>">
+                                    <?php echo $subcontract->sozlesme_bitis == null ? null : dateFormat($format = 'd-m-Y', $subcontract->sozlesme_bitis); ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 <?php } ?>
             <?php } ?>
             </tbody>

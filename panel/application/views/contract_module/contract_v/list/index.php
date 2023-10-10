@@ -22,7 +22,6 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
 
 
 </body>

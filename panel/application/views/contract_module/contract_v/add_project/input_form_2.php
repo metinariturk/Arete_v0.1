@@ -3,33 +3,6 @@
         <div class="mb-2">
             <div class="row">
                 <div class="col-6">
-                    <div class="col-form-label">Sözleşme İmza Tarihi</div>
-                    <input class="datepicker-here form-control digits <?php cms_isset(form_error("sozlesme_tarih"), "is-invalid", ""); ?>"
-                           type="text"
-                           name="sozlesme_tarih"
-                           value="<?php echo isset($form_error) ? set_value("sozlesme_tarih") : ""; ?>"
-                           data-options="{ format: 'DD-MM-YYYY' }"
-                           data-language="tr">
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("sozlesme_tarih"); ?></div>
-                    <?php } ?>
-                </div>
-                <div class="col-6">
-                    <div class="col-form-label">İşin Süresi (Gün)</div>
-                    <input type="number" min="1" step="any" onblur=""
-                           class="form-control <?php cms_isset(form_error("isin_suresi"), "is-invalid", ""); ?>"
-                           name="isin_suresi"
-                           value="<?php echo isset($form_error) ? set_value("isin_suresi") : ""; ?>"
-                    >
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("isin_suresi"); ?></div>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
-        <div class="mb-2">
-            <div class="row">
-                <div class="col-6">
                     <div class="col-form-label">Sözleşme Bedel</div>
                     <input type="number" min="1" step="any" onblur=""
                            class="form-control <?php cms_isset(form_error("sozlesme_bedel"), "is-invalid", ""); ?>"
@@ -63,122 +36,78 @@
                 </div>
             </div>
         </div>
-        <?php if (!$is_sub) { ?>
-            <div class="mb-2">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="col-form-label">Teklif Verilecek Kuruluş</div>
-                        <select id="select2-demo-1"
-                                class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
-                                data-plugin="select2" name="isveren">
-                            <option value="<?php echo isset($form_error) ? set_value("isveren") : ""; ?>"><?php echo isset($form_error) ? company_name(set_value("isveren")) : ""; ?></option>
-                            <?php foreach ($isverenler as $isveren) { ?>
-                                <option value="<?php echo $isveren->id; ?>"><?php echo $isveren->company_name; ?></option>
-                            <?php } ?>
-                        </select>
-                        <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
-                        <?php } ?>
-                    </div>
-                    <div class="col-4">
-                        <div class="col-form-label">İşveren Yetkili</div>
-                        <select id="select2-demo-1"
-                                class="form-control <?php cms_isset(form_error("isveren_yetkili"), "is-invalid", ""); ?>"
-                                data-plugin="select2" name="isveren_yetkili">
-                            <option value="<?php echo isset($form_error) ? set_value("isveren_yetkili") : ""; ?>"><?php echo isset($form_error) ? full_name(set_value("isveren_yetkili")) : ""; ?></option>
-                            <?php foreach ($isveren_users as $isveren_user) { ?>
-                                <option value="<?php echo $isveren_user->id; ?>"><?php echo full_name($isveren_user->id); ?></option>
-                            <?php } ?>
-                        </select>
-                        <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("isveren_yetkili"); ?></div>
-                        <?php } ?>
-                    </div>
 
+        <div class="mb-2">
+            <div class="row">
+                <div class="col-6">
+                    <div class="col-form-label">Teklif Türü</div>
+                    <select id="select2-demo-1"
+                            class="form-control <?php cms_isset(form_error("sozlesme_turu"), "is-invalid", ""); ?>"
+                            data-plugin="select2"
+                            name="sozlesme_turu">
+                        <option selected="selected"
+                                value="<?php echo isset($form_error) ? cms_if_echo(set_value("sozlesme_turu"), null, "", set_value("sozlesme_turu")) : ""; ?>">
+                            <?php echo isset($form_error) ? cms_if_echo(set_value("sozlesme_turu"), null, "Seçiniz", set_value("sozlesme_turu")) : ""; ?>
+                        </option>
+                        <?php
+                        $teklif_turleri = get_as_array($settings->sozlesme_turu);
+                        foreach ($teklif_turleri as $teklif_tur) { ?>
+                            <option value="<?php echo $teklif_tur; ?>"><?php echo $teklif_tur; ?></option>";
+                        <?php } ?>
+                    </select>
+                    <?php if (isset($form_error)) { ?>
+                        <div class="invalid-feedback"><?php echo form_error("sozlesme_turu"); ?></div>
+                    <?php } ?>
+                </div>
+                <div class="col-6">
+                    <div class="col-form-label">İşin Türü</div>
+                    <select id="select2-demo-1"
+                            class="form-control <?php cms_isset(form_error("isin_turu"), "is-invalid", ""); ?>"
+                            data-plugin="select2"
+                            name="isin_turu">
+                        <option selected="selected"
+                                value="<?php echo isset($form_error) ? cms_if_echo(set_value("isin_turu"), null, "", set_value("isin_turu")) : ""; ?>">
+                            <?php echo isset($form_error) ? cms_if_echo(set_value("isin_turu"), null, "Seçiniz", set_value("isin_turu")) : ""; ?>
+                        </option>
+                        <?php
+                        $is_turleri = get_as_array($settings->isin_turu);
+                        foreach ($is_turleri as $is_turu) { ?>
+                            <option value="<?php echo $is_turu; ?>"><?php echo $is_turu; ?></option>";
+                        <?php } ?>
+                    </select>
+                    <?php if (isset($form_error)) { ?>
+                        <div class="invalid-feedback"><?php echo form_error("isin_turu"); ?></div>
+                    <?php } ?>
                 </div>
             </div>
-            <div class="mb-2">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="col-form-label">Yüklenici</div>
-                        <select id="select2-demo-1"
-                                class="form-control <?php cms_isset(form_error("yuklenici"), "is-invalid", ""); ?>"
-                                data-plugin="select2" name="yuklenici">
-                            <option value="<?php echo isset($form_error) ? set_value("yuklenici") : ""; ?>"><?php echo isset($form_error) ? company_name(set_value("yuklenici")) : ""; ?></option>
-                            <?php foreach ($yukleniciler as $yuklenici) { ?>
-                                <option value="<?php echo $yuklenici->id; ?>"><?php echo company_name($yuklenici->id); ?></option>
-                            <?php } ?>
-                        </select>
-                        <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("yuklenici"); ?></div>
-                        <?php } ?>
-                    </div>
-                    <div class="col-4">
-                        <div class="col-form-label">Yüklenici Yetkili</div>
-                        <select id="select2-demo-1"
-                                class="form-control <?php cms_isset(form_error("yuklenici_yetkili"), "is-invalid", ""); ?>"
-                                data-plugin="select2" name="yuklenici_yetkili">
-                            <option value="<?php echo isset($form_error) ? set_value("yuklenici_yetkili") : ""; ?>"><?php echo isset($form_error) ? full_name(set_value("yuklenici_yetkili")) : ""; ?></option>
-                            <?php foreach ($yuklenici_users as $yuklenici_user) { ?>
-                                <option value="<?php echo $yuklenici_user->id; ?>"><?php echo full_name($yuklenici_user->id); ?></option>
-                            <?php } ?>
-                        </select>
-                        <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("yuklenici_yetkili"); ?></div>
-                        <?php } ?>
-                    </div>
+        </div>
+
+        <div class="mb-2">
+            <div class="row">
+                <div class="col-6">
+                    <div class="col-form-label">Sözleşme İmza Tarihi</div>
+                    <input class="datepicker-here form-control digits <?php cms_isset(form_error("sozlesme_tarih"), "is-invalid", ""); ?>"
+                           type="text"
+                           name="sozlesme_tarih"
+                           value="<?php echo isset($form_error) ? set_value("sozlesme_tarih") : ""; ?>"
+                           data-options="{ format: 'DD-MM-YYYY' }"
+                           data-language="tr">
+                    <?php if (isset($form_error)) { ?>
+                        <div class="invalid-feedback"><?php echo form_error("sozlesme_tarih"); ?></div>
+                    <?php } ?>
+                </div>
+                <div class="col-6">
+                    <div class="col-form-label">İşin Süresi (Gün)</div>
+                    <input type="number" min="1" step="any" onblur=""
+                           class="form-control <?php cms_isset(form_error("isin_suresi"), "is-invalid", ""); ?>"
+                           name="isin_suresi"
+                           value="<?php echo isset($form_error) ? set_value("isin_suresi") : ""; ?>"
+                    >
+                    <?php if (isset($form_error)) { ?>
+                        <div class="invalid-feedback"><?php echo form_error("isin_suresi"); ?></div>
+                    <?php } ?>
                 </div>
             </div>
-            <div class="mb-2">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="col-form-label">Adres</div>
-                        <input class="form-control" placeholder="Adres"
-                               name="adres"
-                               value="<?php echo isset($form_error) ? set_value("adres") : ""; ?>"/>
-                    </div>
-                    <div class="col-3">
-                        <div class="col-form-label">İl</div>
-
-                        <select name="adress_city" class="form-control">
-                            <option id="adress_cityOption" selected
-                                    value="<?php echo isset($form_error) ? set_value("adress_city") : ""; ?>"
-                                    data-url="<?php echo base_url("$this->Module_Name/get_district/"); ?>"
-                            >
-                                <?php echo isset($form_error) ? city_name(set_value("adress_city")) : ""; ?>
-                            </option>
-                            <?php foreach ($cities as $city) { ?>
-                                <option id="tax_cityOption"
-                                        data-url="<?php echo base_url("$this->Module_Name/get_district/"); ?>"
-                                        value="<?php echo $city->id; ?>"><?php echo $city->city_name; ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <div class="col-3">
-                        <div class="col-form-label">İlçe</div>
-
-                        <select name="adress_district" class="form-control">
-                            <option id="adress_districtOption" selected
-                                    value="<?php echo isset($form_error) ? set_value("adress_district") : ""; ?>">
-                                <?php echo isset($form_error) ? district_name(set_value("adress_district")) : ""; ?>
-                            </option>
-                            <?php if (set_value("adress_city") > 0) { ?>
-                                <?php $error_districts = get_from_any_array("district", "city_id", set_value("adress_city")); ?>
-                                <?php foreach ($error_districts as $error_district) { ?>
-                                    <option value="<?php echo $error_district->id; ?>"><?php echo district_name($error_district->id); ?></option>
-                                <?php } ?>
-                            <?php } else { ?>
-                                <?php foreach ($distircts as $distirct) { ?>
-                                    <option value="<?php echo $distirct->id; ?>"><?php echo district_name($distirct->id); ?></option>
-                                <?php } ?>
-                            <?php } ?>
-
-
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-        <?php } ?>
+        </div>
     </div>
 </div>
