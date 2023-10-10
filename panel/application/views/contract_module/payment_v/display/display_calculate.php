@@ -39,7 +39,7 @@ $calculations = json_decode($caculation->calculation, true);
                 <span style="float: right;"><?php echo boq_unit($calculation); ?></span>
             </td>
             <td>
-                <span style="float: left; padding-left: 20%"><?php echo money_format($this_qty); ?></span>
+                <span style="float: left; padding-left: 20%"><?php echo money_format($cumulative); ?></span>
                 <span style="float: right;"><?php echo boq_unit($calculation); ?></span>
             <td>
                 <span style="float: left; padding-left: 5%"><?php echo money_format($value["thisprice"]); ?></span>

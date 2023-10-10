@@ -219,7 +219,7 @@ class Boq extends CI_Controller
 
         $calculates = json_encode($this->input->post("calculate[]"));
 
-        echo $sayi = $this->input->post("this_payment");
+        $sayi = $this->input->post("this_payment");
         $sayi = str_replace(' ', '', $sayi);
         $sayi = str_replace(',', '.', $sayi);
 
