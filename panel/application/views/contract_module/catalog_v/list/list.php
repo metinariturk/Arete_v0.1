@@ -45,5 +45,6 @@
         </table>
         <?php } ?>
     </div>
+    <?php } ?>
 </div>
 

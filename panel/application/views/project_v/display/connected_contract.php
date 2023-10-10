@@ -13,7 +13,7 @@
             <tr>
                 <td><?php echo $contract->id; ?></td>
                 <td>
-                    <?php echo $contract->sozlesme_ad; ?>
+                    <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>"><?php echo $contract->sozlesme_ad; ?></a>
                 </td>
                 <td><?php echo money_format($contract->sozlesme_bedel) . " " . get_currency($contract->id); ?></td>
                 <td><?php echo money_format(sum_from_table("payment", "bu_imalat_ihzarat", "$contract->id")) . " " . get_currency($contract->id); ?></td>
