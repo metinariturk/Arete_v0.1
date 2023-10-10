@@ -144,49 +144,6 @@
                             <?php echo money_format(sum_anything("cost", "cost", "auction_id", "$item->auction_id")) . " " . $item->para_birimi; ?>
                         </td>
                     </tr>
-                    <tr>
-                        <td>İşveren Yetkili <br>
-                            <div class="customers">
-                                <ul>
-                                    <?php if (!empty($item->isveren_yetkili)) { ?>
-                                        <li class="d-inline-block">
-                                            <span data-tooltip-location="top"
-                                                  data-tooltip="<?php echo full_name($item->isveren_yetkili); ?>">
-                                            <a href="<?php echo base_url("user/file_form/$item->isveren_yetkili"); ?>">
-                                                <img
-                                                        class="img-50 rounded-circle" <?php echo get_avatar($item->isveren_yetkili); ?>
-                                                        alt=""
-                                                        data-original-title=""
-                                                        title="<?php echo full_name($item->isveren_yetkili); ?>">
-                                            </a>
-                                            </span>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            </div>
-                        </td>
-
-                        <td>Yüklenici Yetkili <br>
-                            <div class="customers">
-                                <ul>
-                                    <?php if (!empty($item->yuklenici_yetkili)) { ?>
-                                        <li class="d-inline-block">
-                                            <span data-tooltip-location="top"
-                                                  data-tooltip="<?php echo full_name($item->yuklenici_yetkili); ?>">
-                                            <a href="<?php echo base_url("user/file_form/$item->yuklenici_yetkili"); ?>">
-                                                <img
-                                                        class="img-50 rounded-circle" <?php echo get_avatar($item->yuklenici_yetkili); ?>
-                                                        alt=""
-                                                        data-original-title=""
-                                                        title="<?php echo full_name($item->yuklenici_yetkili); ?>">
-                                            </a>
-                                            </span>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
             </div>

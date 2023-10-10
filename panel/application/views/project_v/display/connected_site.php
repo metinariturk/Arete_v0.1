@@ -12,11 +12,8 @@
             <tr>
                 <td><?php echo $site->id; ?></td>
                 <td>
-                    <?php $site_yetkili = site_auth($site->id);
-                    if ((in_array(active_user_id(), $site_yetkili)) or isAdmin()) { ?>
+                    <?php if (isAdmin()) { ?>
                         <a href="<?php echo base_url("site/file_form/$site->id"); ?>"><?php echo $site->santiye_ad; ?></a>
-                    <?php } else { ?>
-                        <?php echo $site->santiye_ad; ?>
                     <?php } ?>
 
                 </td>

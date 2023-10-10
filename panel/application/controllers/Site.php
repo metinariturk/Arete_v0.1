@@ -400,12 +400,9 @@ class Site extends CI_Controller
 
     public function file_form($id, $active_tab = null)
     {
-        $yetkili = site_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
-        }
+            redirect(base_url("error"));
+s        }
 
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
@@ -479,11 +476,8 @@ class Site extends CI_Controller
 
     public function update_form($id)
     {
-        $yetkili = site_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -827,7 +821,7 @@ class Site extends CI_Controller
                 force_download("$file_path/$file", NULL);
             }
         }
-        
+
 
     }
 

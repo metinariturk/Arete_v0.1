@@ -127,9 +127,8 @@ class Contract extends CI_Controller
 
     public function file_form($id, $active_tab = null, $error = null)
     {
-        $yetkili = contract_auth($id);
 
-        if (!isAdmin() && !in_array(active_user_id(), $yetkili)) {
+        if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
@@ -204,11 +203,8 @@ class Contract extends CI_Controller
 
     public function new_form_auction($auction_id, $yuklenici_id, $price)
     {
-        $yetkili = auction_auth($auction_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         //teklif yetkilisi mi diye sorgulayabiliriz
@@ -255,11 +251,8 @@ class Contract extends CI_Controller
 
     public function save_auction($auction_id)
     {
-        $yetkili = auction_auth($auction_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $file_name_len = file_name_digits();
         $file_name = "SOZ-" . $this->input->post('dosya_no');
@@ -555,7 +548,7 @@ class Contract extends CI_Controller
             $this->form_validation->set_rules("auction_id", "Teklif Adı", "required|trim");
             $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
             $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
-            $yer_teslim  = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
+            $yer_teslim = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
 
         }
 
@@ -697,11 +690,8 @@ class Contract extends CI_Controller
 
     public function update_form($id, $from = null)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -762,14 +752,11 @@ class Contract extends CI_Controller
 
     public function update($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
-        $is_sub = get_from_id("contract","subcont","$id");
+        $is_sub = get_from_id("contract", "subcont", "$id");
 
         $this->load->library("form_validation");
 
@@ -955,11 +942,8 @@ class Contract extends CI_Controller
 
     public function update_payment_form($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -999,11 +983,8 @@ class Contract extends CI_Controller
 
     public function update_payment($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $this->load->library("form_validation");
 
@@ -1151,11 +1132,8 @@ class Contract extends CI_Controller
 
     public function sitedel_date($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$id"));
@@ -1227,11 +1205,8 @@ class Contract extends CI_Controller
 
     public function workplan_date($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$id"));
 
@@ -1295,11 +1270,8 @@ class Contract extends CI_Controller
 
     public function workplan_payment($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         if (!empty($this->input->post("old_payment[]"))) {
@@ -1363,11 +1335,8 @@ class Contract extends CI_Controller
     public function provision_date($id)
     {
 
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$id"));
 
@@ -1432,11 +1401,8 @@ class Contract extends CI_Controller
 
     public function final_date($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $gecici_kabul_tarihi = dateFormat('d-m-Y', get_from_any("contract", "provision_date", "id", "$id"));
 
@@ -1502,11 +1468,8 @@ class Contract extends CI_Controller
     {
         $contract_id = get_from_any("delete_error", "module_id", "id", "$error_list_id");
 
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $viewData = new stdClass();
 
@@ -1531,11 +1494,8 @@ class Contract extends CI_Controller
 
     public function delete($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_id = get_from_id("contract", "proje_id", $id);
@@ -1561,8 +1521,8 @@ class Contract extends CI_Controller
         }
 
         $auction = $this->Contract_model->get(array('id' => $id));
-        if ($auction->auction_id != null){
-        $file_ids[] = "Auction*" . $auction->auction_id;
+        if ($auction->auction_id != null) {
+            $file_ids[] = "Auction*" . $auction->auction_id;
         }
 
         $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
@@ -1694,11 +1654,8 @@ class Contract extends CI_Controller
 
     public function hard_delete($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = get_from_id("contract", "proje_id", $id);
         $project_code = project_code($project_id);
@@ -1765,11 +1722,8 @@ class Contract extends CI_Controller
 
     public function file_upload($id, $type = null)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
@@ -1842,11 +1796,8 @@ class Contract extends CI_Controller
         $contract_code = contract_code($contract_id);
         $project_id = project_id_cont($contract_id);
 
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_code = project_code($project_id);
@@ -1891,11 +1842,8 @@ class Contract extends CI_Controller
 
     public function download_all($cont_id, $where = null)
     {
-        $yetkili = contract_auth($cont_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $this->load->library('zip');
@@ -1959,11 +1907,8 @@ class Contract extends CI_Controller
 
     public function refresh_site_list($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -1993,11 +1938,8 @@ class Contract extends CI_Controller
 
     public function refresh_provision_list($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -2027,11 +1969,8 @@ class Contract extends CI_Controller
 
     public function refresh_final_list($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -2061,11 +2000,8 @@ class Contract extends CI_Controller
 
     public function refresh_workplan_list($id)
     {
-        $yetkili = contract_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -2109,11 +2045,8 @@ class Contract extends CI_Controller
         );
 
         $contract_id = get_from_id("contract_files", "contract_id", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_id = project_id_cont($contract_id);
@@ -2178,11 +2111,8 @@ class Contract extends CI_Controller
         );
 
         $contract_id = get_from_id("contract_files", "contract_id", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);
@@ -2251,11 +2181,8 @@ class Contract extends CI_Controller
         );
 
         $contract_id = get_from_id("contract_files", "contract_id", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);
@@ -2324,11 +2251,8 @@ class Contract extends CI_Controller
         );
 
         $contract_id = get_from_id("contract_files", "contract_id", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);
@@ -2397,11 +2321,8 @@ class Contract extends CI_Controller
         );
 
         $contract_id = get_from_id("contract_files", "contract_id", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);
@@ -2457,11 +2378,8 @@ class Contract extends CI_Controller
 
     public function fileDelete_all($contract_id)
     {
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -2519,11 +2437,8 @@ class Contract extends CI_Controller
 
     public function fileDelete_all_sitedel($contract_id)
     {
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -2581,11 +2496,8 @@ class Contract extends CI_Controller
 
     public function fileDelete_all_workplan($contract_id)
     {
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -2643,11 +2555,8 @@ class Contract extends CI_Controller
 
     public function fileDelete_all_provision($contract_id)
     {
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $viewData = new stdClass();
 
@@ -2704,11 +2613,8 @@ class Contract extends CI_Controller
 
     public function fileDelete_all_final($contract_id)
     {
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $viewData = new stdClass();
 
@@ -2963,11 +2869,8 @@ class Contract extends CI_Controller
 
     public function save_price($contract_id)
     {
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $boqs = $this->input->post("boq[]");

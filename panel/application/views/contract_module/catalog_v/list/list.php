@@ -18,30 +18,28 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($items as $item) { ?>
-                <?php if (!isAdmin()) { ?>
-                    <?php $yetkili = contract_auth($item->contract_id);
-                    if (in_array(active_user_id(), $yetkili)) { ?>
-                        <tr>
-                            <td class="w5c"><?php echo $item->id; ?></td>
-                            <td class="w30">
-                                <h5>
-                                    <a href="<?php echo base_url("contract/file_form/$item->contract_id"); ?>"
-                                    <span><?php echo get_from_id("contract", "sozlesme_ad", $item->contract_id); ?></span>
-                                    </a>
-                                </h5>
-                            </td>
-                            <td class="w10"><?php echo $item->catalog_ad; ?></td>
-                            <td class="w10">
-                                <a class="btn btn-info pager-btn"
-                                   href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>"
-                                <span class="m-r-xs"><i class="fas fa-ellipsis-h"></i></span>
-                                <span>Görüntüle</span>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                <?php } ?>
+            <?php foreach ($items
+
+            as $item) { ?>
+            <?php if (!isAdmin()) { ?>
+                <tr>
+                    <td class="w5c"><?php echo $item->id; ?></td>
+                    <td class="w30">
+                        <h5>
+                            <a href="<?php echo base_url("contract/file_form/$item->contract_id"); ?>"
+                            <span><?php echo get_from_id("contract", "sozlesme_ad", $item->contract_id); ?></span>
+                            </a>
+                        </h5>
+                    </td>
+                    <td class="w10"><?php echo $item->catalog_ad; ?></td>
+                    <td class="w10">
+                        <a class="btn btn-info pager-btn"
+                           href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>"
+                        <span class="m-r-xs"><i class="fas fa-ellipsis-h"></i></span>
+                        <span>Görüntüle</span>
+                        </a>
+                    </td>
+                </tr>
             <?php } ?>
             </tbody>
         </table>

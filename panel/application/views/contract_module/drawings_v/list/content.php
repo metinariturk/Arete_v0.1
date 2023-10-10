@@ -14,36 +14,33 @@
                     </thead>
                     <tbody>
                     <?php foreach ($items as $item) { ?>
-                        <?php if (!isAdmin()) { ?>
-                            <?php $yetkili = contract_auth($item->contract_id);
-                            if (in_array(active_user_id(), $yetkili)) { ?>
-                                <tr>
-                                    <td>
-                                        <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
-                                            <?php echo $item->id; ?>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
-                                            <?php echo get_from_id("contract", "sozlesme_ad", $item->contract_id); ?>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
-                                            <?php echo $item->dosya_no; ?>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        <?php } ?>
+
+                        <tr>
+                            <td>
+                                <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
+                                    <?php echo $item->id; ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
+                                    <?php echo get_from_id("contract", "sozlesme_ad", $item->contract_id); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
+                                    <?php echo $item->dosya_no; ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("advance/file_form/$item->id"); ?>">
+                                </a>
+                            </td>
+                        </tr>
+
                     <?php } ?>
                     </tbody>
                 </table>

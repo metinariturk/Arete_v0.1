@@ -18,9 +18,7 @@
                     <?php foreach ($items
 
                                    as $item) { ?>
-                        <?php if (!isAdmin()) { ?>
-                            <?php $yetkili = contract_auth($item->contract_id);
-                            if (in_array(active_user_id(), $yetkili)) { ?>
+
                                 <tr>
                                     <td>
                                         <a href="<?php echo base_url("bond/file_form/$item->id"); ?>">
@@ -66,8 +64,7 @@
                                         </a>
                                     </td>
                                 </tr>
-                            <?php } ?>
-                        <?php } ?>
+
                     <?php } ?>
                     </tbody>
                 </table>

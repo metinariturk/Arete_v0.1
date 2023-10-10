@@ -75,11 +75,12 @@ class Advance extends CI_Controller
 
     public function new_form($contract_id = null)
     {
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
+        }
+
+        if (!isAdmin()) {
+            redirect(base_url("error"));
         }
 
         if ($contract_id == null) {
@@ -115,11 +116,8 @@ class Advance extends CI_Controller
     {
 
         $contract_id = contract_id_module("advance", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_id = project_id_cont("$contract_id");
@@ -154,11 +152,8 @@ class Advance extends CI_Controller
 
         $contract_id = contract_id_module("advance", $id);
 
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_id = project_id_cont("$contract_id");
@@ -193,11 +188,8 @@ class Advance extends CI_Controller
     {
         $contract_id = contract_id_module("advance", $id);
 
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $this->load->library("form_validation");
 
@@ -314,11 +306,8 @@ class Advance extends CI_Controller
         $this->load->library("form_validation");
 
         $contract_id = contract_id_module("advance", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $contract_id = contract_id_module("advance", $id);
@@ -436,11 +425,8 @@ class Advance extends CI_Controller
     {
         //Bağlı teminat silme işlemleri
         $contract_id = contract_id_module("advance", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");
@@ -541,11 +527,8 @@ class Advance extends CI_Controller
         $size = $_FILES["file"]["size"];
 
         $contract_id = contract_id_module("advance", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_id = project_id_cont("$contract_id");
@@ -594,11 +577,8 @@ class Advance extends CI_Controller
 
         $advance_id = get_from_id("advance_files", "advance_id", $id);
         $contract_id = contract_id_module("advance", $advance_id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");
@@ -628,11 +608,8 @@ class Advance extends CI_Controller
         $this->zip->compression_level = 0;
 
         $contract_id = get_from_id("advance", "contract_id", "$advance_id");
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $Advance_code = get_from_id("advance", "dosya_no", "$advance_id");
         $project_id = project_id_cont("$contract_id");
@@ -698,11 +675,8 @@ class Advance extends CI_Controller
 
         $advance_id = get_from_id("advance_files", "advance_id", $id);
         $contract_id = contract_id_module("advance", $advance_id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");
@@ -750,11 +724,8 @@ class Advance extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
 
         $contract_id = contract_id_module("advance", $id);
-        $yetkili = contract_auth($contract_id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");

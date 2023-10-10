@@ -92,66 +92,6 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <p>&nbsp;</p>
-                                    <h6 class="mb-3">Görevli Oluğu Projeler</h6>
-                                    <table class="table">
-                                        <tbody>
-                                        <?php foreach ($projects as $project) { ?>
-                                            <?php $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project->id"));
-                                            if (in_array($user->id, $yetkili)) { ?>
-                                                <tr>
-                                                    <td style="width: 15%"><?php echo $project->proje_kodu; ?></td>
-                                                    <td class="font-primary"><?php echo $project->proje_ad; ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
-                                    <p>&nbsp;</p>
-                                    <h6 class="mb-3">Görevli Oluğu Sözleşmeler</h6>
-                                    <table class="table">
-                                        <tbody>
-                                        <?php foreach ($contracts as $contract) { ?>
-                                            <?php $cont_auth = contract_auth($contract->id);
-                                            if (in_array($user->id, $cont_auth)) { ?>
-                                                <tr>
-                                                    <td style="width: 15%"><?php echo $contract->dosya_no; ?></td>
-                                                    <td class="font-primary"><?php echo $contract->sozlesme_ad; ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
-                                    <p>&nbsp;</p>
-                                    <h6 class="mb-3">Görevli Oluğu Projeler</h6>
-                                    <table class="table">
-                                        <tbody>
-                                        <?php foreach ($auctions as $auction) { ?>
-                                            <?php $auction_auth = auction_auth($auction->id);
-                                            if (in_array($user->id, $auction_auth)) { ?>
-                                                <tr>
-                                                    <td style="width: 15%"><?php echo $auction->dosya_no; ?></td>
-                                                    <td class="font-primary"><?php echo $auction->ihale_ad; ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
-                                    <p>&nbsp;</p>
-                                    <h6 class="mb-3">Görevli Oluğu Şantiyeler</h6>
-                                    <table class="table">
-                                        <tbody>
-                                        <?php foreach ($sites as $site) { ?>
-                                            <?php $site_auth = site_auth($site->id);
-                                            if (in_array($user->id, $site_auth)) { ?>
-                                                <tr>
-                                                    <td style="width: 15%"><?php echo $site->dosya_no; ?></td>
-                                                    <td class="font-primary"><?php echo $site->santiye_ad; ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -212,51 +152,6 @@
                                                     <tr>
                                                         <td style="width: 15%"><?php echo $project->proje_kodu; ?></td>
                                                         <td class="font-primary"><?php echo $project->proje_ad; ?></td>
-                                                    </tr>
-                                                <?php } ?>
-                                            <?php } ?>
-                                            </tbody>
-                                        </table>
-                                        <p>&nbsp;</p>
-                                        <h6 class="mb-3">Görevli Oluğu Sözleşmeler</h6>
-                                        <table class="table">
-                                            <tbody>
-                                            <?php foreach ($contracts as $contract) { ?>
-                                                <?php $cont_auth = contract_auth($contract->id);
-                                                if (in_array($item->id, $cont_auth)) { ?>
-                                                    <tr>
-                                                        <td style="width: 15%"><?php echo $contract->dosya_no; ?></td>
-                                                        <td class="font-primary"><?php echo $contract->sozlesme_ad; ?></td>
-                                                    </tr>
-                                                <?php } ?>
-                                            <?php } ?>
-                                            </tbody>
-                                        </table>
-                                        <p>&nbsp;</p>
-                                        <h6 class="mb-3">Görevli Oluğu Projeler</h6>
-                                        <table class="table">
-                                            <tbody>
-                                            <?php foreach ($auctions as $auction) { ?>
-                                                <?php $auction_auth = auction_auth($auction->id);
-                                                if (in_array($item->id, $auction_auth)) { ?>
-                                                    <tr>
-                                                        <td style="width: 15%"><?php echo $auction->dosya_no; ?></td>
-                                                        <td class="font-primary"><?php echo $auction->ihale_ad; ?></td>
-                                                    </tr>
-                                                <?php } ?>
-                                            <?php } ?>
-                                            </tbody>
-                                        </table>
-                                        <p>&nbsp;</p>
-                                        <h6 class="mb-3">Görevli Oluğu Şantiyeler</h6>
-                                        <table class="table">
-                                            <tbody>
-                                            <?php foreach ($sites as $site) { ?>
-                                                <?php $site_auth = site_auth($site->id);
-                                                if (in_array($item->id, $site_auth)) { ?>
-                                                    <tr>
-                                                        <td style="width: 15%"><?php echo $site->dosya_no; ?></td>
-                                                        <td class="font-primary"><?php echo $site->santiye_ad; ?></td>
                                                     </tr>
                                                 <?php } ?>
                                             <?php } ?>

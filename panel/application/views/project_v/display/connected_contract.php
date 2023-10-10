@@ -13,12 +13,7 @@
             <tr>
                 <td><?php echo $contract->id; ?></td>
                 <td>
-                    <?php $yetkili = contract_auth($contract->id);
-                    if ((in_array(active_user_id(), $yetkili)) or isAdmin()) { ?>
-                        <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>"><?php echo $contract->sozlesme_ad; ?></a>
-                    <?php } else { ?>
-                        <?php echo $contract->sozlesme_ad; ?>
-                    <?php } ?>
+                    <?php echo $contract->sozlesme_ad; ?>
                 </td>
                 <td><?php echo money_format($contract->sozlesme_bedel) . " " . get_currency($contract->id); ?></td>
                 <td><?php echo money_format(sum_from_table("payment", "bu_imalat_ihzarat", "$contract->id")) . " " . get_currency($contract->id); ?></td>

@@ -14,12 +14,7 @@
             <tr>
                 <td><?php echo $subcontract->id; ?></td>
                 <td>
-                    <?php $yetkili = contract_auth($subcontract->id);
-                    if ((in_array(active_user_id(), $yetkili)) or isAdmin()) { ?>
-                        <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>"><?php echo $subcontract->sozlesme_ad; ?></a>
-                    <?php } else { ?>
-                        <?php echo $subcontract->sozlesme_ad; ?>
-                    <?php } ?>
+                    <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>"><?php echo $subcontract->sozlesme_ad; ?></a>
                 </td>
                 <td>
                     <?php $connected_site = get_from_any("contract", "site_id", "id", $subcontract->id); ?>

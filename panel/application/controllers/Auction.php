@@ -117,9 +117,7 @@ class Auction extends CI_Controller
             "durumu" => default_table()
         ));
         $settings = $this->Settings_model->get();
-        $employers = $this->Company_model->get_all(array(
-
-        ));
+        $employers = $this->Company_model->get_all(array());
         $users = $this->User_model->get_all(array(
             "user_role" => 1
         ));
@@ -151,11 +149,8 @@ class Auction extends CI_Controller
     {
 
 
-        $yetkili = auction_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
@@ -260,19 +255,14 @@ class Auction extends CI_Controller
 
     public function update_form($id)
     {
-        $yetkili = auction_auth($id);
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
 
         $settings = $this->Settings_model->get();
-        $employers = $this->Company_model->get_all(array(
-
-        ));
+        $employers = $this->Company_model->get_all(array());
         $users = $this->User_model->get_all(array(
             "user_role" => 1
         ));
@@ -415,9 +405,7 @@ class Auction extends CI_Controller
 
             $viewData = new stdClass();
             $settings = $this->Settings_model->get();
-            $employers = $this->Company_model->get_all(array(
-
-            ));
+            $employers = $this->Company_model->get_all(array());
             $users = $this->User_model->get_all(array(
                 "user_role" => 1
             ));
@@ -535,9 +523,7 @@ class Auction extends CI_Controller
 
 
             $viewData = new stdClass();
-            $employers = $this->Company_model->get_all(array(
-
-            ));
+            $employers = $this->Company_model->get_all(array());
             $users = $this->User_model->get_all(array(
                 "user_role" => 1
             ));
@@ -2124,7 +2110,7 @@ class Auction extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => "(Teklif) ".project_name(project_id_auc($id))." / ".auction_name($id)
+                    "title" => "(Teklif) " . project_name(project_id_auc($id)) . " / " . auction_name($id)
                 )
             );
             echo "favoriye eklendi";

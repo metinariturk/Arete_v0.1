@@ -82,12 +82,9 @@
                                 <h5>Sözleşmeler</h5>
                                 <ul>
                                     <?php foreach ($contracts as $contract) { ?>
-                                        <?php $cont_auth = contract_company($contract->id);
-                                        if (in_array($item->id, $cont_auth)) { ?>
-                                            <li>
-                                                <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>"><?php echo $contract->sozlesme_ad; ?></a>
-                                            </li>
-                                        <?php } ?>
+                                        <li>
+                                            <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>"><?php echo $contract->sozlesme_ad; ?></a>
+                                        </li>
                                     <?php } ?>
                                 </ul>
                             </div>
