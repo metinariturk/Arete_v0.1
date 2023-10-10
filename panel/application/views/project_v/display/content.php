@@ -18,9 +18,6 @@
                                     <li><a class="show" id="pills-shared-tab" data-bs-toggle="pill" href="#pills-shared"
                                            role="tab" aria-controls="pills-shared" aria-selected="false"><span
                                                     class="title">Ana Sözleşmeler</span></a></li>
-                                    <li><a class="show" id="pills-bookmark-tab" data-bs-toggle="pill"
-                                           href="#pills-bookmark" role="tab" aria-controls="pills-bookmark"
-                                           aria-selected="false"><span class="title">Alt Sözleşmeler</span></a></li>
                                     <li><a class="show" id="pills-notification-tab" data-bs-toggle="pill"
                                            href="#pills-notification" role="tab" aria-controls="pills-notification"
                                            aria-selected="false"><span class="title"> Şantiyeler</span></a></li>
@@ -96,28 +93,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="fade tab-pane" id="pills-bookmark" role="tabpanel"
-                                     aria-labelledby="pills-bookmark-tab">
-                                    <div class="card mb-0">
-                                        <div class="card-header d-flex">
-                                            <h6 class="mb-0">Alt Sözleşmeler</h6>
-                                            <ul>
-                                                <li>
-                                                    <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("contract/new_form_project/$item->id/true"); ?>">
-                                                        <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni Alt
-                                                        Sözleşme Ekle
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php if (!empty($subcontracts)) { ?>
-                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_subcontract"); ?>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="fade tab-pane" id="pills-notification" role="tabpanel"
                                      aria-labelledby="pills-notification-tab">
                                     <div class="card mb-0">

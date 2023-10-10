@@ -402,7 +402,7 @@ class Site extends CI_Controller
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
-s        }
+        }
 
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
