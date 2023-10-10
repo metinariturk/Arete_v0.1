@@ -25,8 +25,8 @@ $calculations = json_decode($caculation->calculation, true);
     foreach ($calculations as $calculation => $value) {
         $this_qty = intval($value["thisqty"]);
         $cumulative = intval($value["cumulative"]);
-        $this_price += $value["thisprice"];
-        $total_price += $value["totalprice"];
+        $this_price += floatval($value["thisprice"]);
+        $total_price += floatval($value["totalprice"]);
         ?>
         <tr>
             <td><?php echo boq_name($calculation); ?></td>
