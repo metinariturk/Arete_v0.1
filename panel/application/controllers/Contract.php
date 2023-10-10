@@ -1769,13 +1769,7 @@ class Contract extends CI_Controller
 
     public function file_download($contract_file_id, $where = null)
     {
-
-        $fileName = $this->Contract_file_model->get(
-            array(
-                "id" => $contract_file_id
-            )
-        );
-
+        $fileName = $this->Contract_file_model->get(array("id" => $contract_file_id));
         $contract_id = contract_id_module("contract_file", $contract_file_id);
         $contract_code = contract_code($contract_id);
         $project_id = project_id_cont($contract_id);
@@ -1785,42 +1779,28 @@ class Contract extends CI_Controller
         }
 
         $project_code = project_code($project_id);
+        $file_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/Contract/$fileName->img_url";
 
-        $file_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/$where/$fileName->img_url";
-
-        if ($file_path) {
-
-            if (file_exists($file_path)) {
-                // get file content
-                $data = file_get_contents($file_path);
-                //force download
-                force_download($fileName->img_url, $data);
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Dosya indirildi",
-                    "type" => "success"
-                );
-
-                $this->session->set_flashdata("alert", $alert);
-                redirect(base_url("$this->Module_Name/$this->Display_route/$contract_id/$where"));
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN",
-                    "type" => "danger"
-                );
-                redirect(base_url("$this->Module_Name/$this->Display_route/$contract_id/$where"));
-
-                $this->session->set_flashdata("alert", $alert);
-            }
+        if (file_exists($file_path)) {
+            // Dosya içeriğini al
+            $data = file_get_contents($file_path);
+            // İndirme işlemini başlat
+            force_download($fileName->img_url, $data);
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Dosya indirildi",
+                "type" => "success"
+            );
+            $this->session->set_flashdata("alert", $alert);
+            redirect(base_url("$this->Module_Name/$this->Display_route/$contract_id"));
         } else {
             $alert = array(
                 "title" => "İşlem Başarısız",
-                "text" => "Dosya yok",
+                "text" => "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN",
                 "type" => "danger"
             );
             $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$contract_id/$where"));
+            redirect(base_url("$this->Module_Name/$this->Display_route/$contract_id"));
         }
     }
 
