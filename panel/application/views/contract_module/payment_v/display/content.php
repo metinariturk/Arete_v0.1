@@ -42,8 +42,10 @@
         <div class="file-content">
             <div class="card">
                 <div class="card-header">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/display_calculation"); ?>
                 </div>
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
+
                 <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
             </div>
         </div>

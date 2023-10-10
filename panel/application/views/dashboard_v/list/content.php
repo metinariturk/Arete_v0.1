@@ -14,7 +14,6 @@
                         </li>
                     <?php } ?>
                 </ol>
-
             </div>
         </div>
     </div>
@@ -47,7 +46,6 @@
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-xl-6 xl-100 box-col-12">
         <div class="card">
@@ -91,7 +89,6 @@
                             <div class="todo-list-body">
                                 <?php $this->load->view("{$viewFolder}/list/todo"); ?>
                             </div>
-
                             <div class="todo-list-footer">
                                 <div class="add-task-btn-wrapper"><span class="add-task-btn">
                                 <button class="btn btn-primary"><i class="icon-plus"></i>Yeni Not Ekle</button></span>
@@ -107,7 +104,6 @@
                                             class="btn btn-danger cancel-btn" id="close-task-panel">Vazgeç</span>
 
                                     <button class="btn btn-primary" onclick="asd()">Notu Ekle</button>
-
                                 </div>
                             </div>
                         </div>
@@ -135,83 +131,4 @@
             </div>
         </div>
     </div>
-
-    <div class="col-xl-6 xl-100 box-col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Son İşlemler</h5>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Dosya</th>
-                        <th>Türü</th>
-                        <th colspan="3" class="text-center">Adı</th>
-                    </tr>
-                    <tr>
-                        <th colspan="2"></th>
-                        <th class="text-center">Sözleşme/Teklif</th>
-                        <th class="text-center">Proje</th>
-                        <th class="text-center">İşlem</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php $i = 0;
-                    foreach ($last_created_elements as $last_created_element) { ?>
-                        <tr>
-                            <td>
-                                <?php echo module_name($last_created_element->module); ?>
-                            </td>
-                            <td>
-                                <a href="<?php echo base_url("$last_created_element->module/file_form/$last_created_element->connected_module_id"); ?>">
-                                    <?php echo $last_created_element->file_order; ?>
-                                </a>
-                            </td>
-                            <td class="text-center"><?php
-                                if (isset($last_created_element->connected_contract_id)) { ?>
-                                    <a href="<?php echo base_url("contract/file_form/$last_created_element->connected_contract_id"); ?>"> <?php echo contract_name($last_created_element->connected_contract_id); ?></a>
-                                <?php } elseif (isset($last_created_element->connected_auction_id)) { ?>
-                                    <a href="<?php echo base_url("auction/file_form/$last_created_element->connected_auction_id"); ?>"><?php echo auction_name($last_created_element->connected_auction_id); ?></a>
-                                <?php } ?>
-                            </td>
-                            <td class="text-center">
-                                <?php
-                                if (isset($last_created_element->connected_contract_id)) { ?>
-                                    <a href="<?php echo base_url("project/file_form/" . project_id_cont($last_created_element->connected_contract_id) . ""); ?>">
-                                        <?php echo project_name(project_id_cont($last_created_element->connected_contract_id)); ?>
-                                    </a>
-                                <?php } elseif (isset($last_created_element->connected_auction_id)) { ?>
-                                    <a href="<?php echo base_url("project/file_form/" . project_id_auc($last_created_element->connected_auction_id) . ""); ?>">
-                                        <?php echo project_name(project_id_auc($last_created_element->connected_auction_id)); ?>
-                                    </a>
-                                <?php } elseif ($last_created_element->module == "project") { ?>
-                                    <a href="<?php echo base_url("project/file_form/$last_created_element->connected_module_id"); ?>">
-                                        <?php echo project_name($last_created_element->connected_module_id); ?>
-                                    </a>
-                                <?php } ?>
-                            </td>
-                            <td class="text-center"><?php
-                                if (isset($last_created_element->deletedAt)) {
-                                    echo "Silindi";
-                                } elseif ((isset($last_created_element->updatedAt)) and (empty($last_created_element->deletedAt))) {
-                                    echo "Güncellendi";
-                                } else {
-                                    echo "Oluşturuldu";
-                                }
-                                ?>
-                            </td>
-
-
-                        </tr>
-                        <?php if (++$i == 5) break; ?>
-                    <?php } ?>
-                    </tbody>
-                </table>
-
-            </div>
-            <div class="card-body">
-
-            </div>
-        </div>
-    </div>
-
 </div>

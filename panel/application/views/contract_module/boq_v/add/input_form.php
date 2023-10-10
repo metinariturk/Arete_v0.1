@@ -47,7 +47,7 @@
                         <?php echo boq_unit($boq); ?>
                     </td>
                     <td><!--Birim Fiyat-->
-                        <input id="<?php echo $boq; ?>_unitprice" readonly class="form-control" value="<?php echo $value["price"]; ?>" style="float: right;">
+                        <input id="<?php echo $boq; ?>_unitprice" class="form-control" value="<?php echo $value["price"]; ?>" style="float: right;">
                     </td>
                     <td><!--Önceki Miktar-->
                         <input id="<?php echo $boq; ?>_oldqty" value="<?php if  (isset($old_boq)) {echo  $calculation_old_array["$boq"]["cumulative"];} ?>" readonly class="form-control" type="text">
