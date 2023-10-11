@@ -160,6 +160,7 @@ class company extends CI_Controller
                 "company_role" => $this->input->post("company_role"),
                 "profession" => $this->input->post("profession"),
                 "company_name" => $name,
+                "employer" => 1,
                 "tax_city" => $this->input->post("tax_city"),
                 "tax_office" => $this->input->post("tax_office"),
                 "tax_no" => $this->input->post("tax_no"),
