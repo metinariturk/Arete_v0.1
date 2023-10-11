@@ -486,7 +486,7 @@ class Contract extends CI_Controller
         $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
         $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id));
         $settings = $this->Settings_model->get();
-        $companys = $this->Company_model->get_all(array("employer !=" => 0));
+        $companys = $this->Company_model->get_all(array("employer !=" => 0, "employer" => null));
         $sistem_isverenler = $this->Company_model->get_all(array("employer" => 0));
 
 
