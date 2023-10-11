@@ -213,7 +213,6 @@ class company extends CI_Controller
             $current_password = $this->input->post("password");
         }
 
-
         $current_company_name = get_from_any("companys", "company_name", "id", $id);
         $income_company_name = $this->input->post("company_name");
 
@@ -491,7 +490,7 @@ class company extends CI_Controller
     public
     function name_control($company_name)
     {
-        return (!preg_match("/^([-a-z üğişçöÜĞİŞÇÖ.1234567890-])+$/i", $company_name)) ? FALSE : TRUE;
+        return (!preg_match("/^([-a-z üğişçöÜĞİŞÇÖ.1234567890-])+$/ui", $company_name)) ? FALSE : TRUE;
     }
 
     public
