@@ -486,8 +486,8 @@ class Contract extends CI_Controller
         $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
         $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id));
         $settings = $this->Settings_model->get();
-        $companys = $this->Company_model->get_all(array("company_role !=" => 0));
-        $sistem_isverenler = $this->Company_model->get_all(array("company_role" => 0));
+        $companys = $this->Company_model->get_all(array("employer !=" => 0));
+        $sistem_isverenler = $this->Company_model->get_all(array("employer" => 0));
 
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -652,8 +652,8 @@ class Contract extends CI_Controller
             $project = $this->Project_model->get(array("id" => $project_id));
             $settings = $this->Settings_model->get();
             $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
-            $companys = $this->Company_model->get_all(array("company_role !=" => 0));
-            $sistem_isverenler = $this->Company_model->get_all(array("company_role" => 0));
+            $companys = $this->Company_model->get_all(array("employer !=" => 0));
+            $sistem_isverenler = $this->Company_model->get_all(array("employer" => 0));
 
             $cities = $this->City_model->get_all(array());
 
