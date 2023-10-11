@@ -93,44 +93,42 @@ $active_boqs = json_decode($item->active_boq, true);
 
                 <?php $active_boq = json_decode($item->active_boq, true);
                 $price = json_decode($item->price, true);
-                if (!empty($price)) { ?>
 
-                    <?php // Boş bir sonuç dizisi oluşturun
-                    $result = array();
+                // Boş bir sonuç dizisi oluşturun
+                $result = array();
 
-                    // $active_boq dizisini dönün
-                    foreach ($active_boq as $key => $boq_items) {
-                        // Eğer $price dizisinde bu anahtar varsa
-                        if (array_key_exists($key, $price)) {
-                            // BOQ kalemlerini dönün
-                            foreach ($boq_items as $boq_item) {
-                                // Eğer $price dizisinde bu BOQ öğesi varsa
-                                if (array_key_exists($boq_item, $price[$key])) {
-                                    // Fiyat ve miktarı alın
-                                    $qty = $price[$key][$boq_item]['qty'];
-                                    $price_value = $price[$key][$boq_item]['price'];
-                                } else {
-                                    // BOQ öğesi $price dizisinde yoksa boş değerlerle doldurun
-                                    $qty = '';
-                                    $price_value = '';
-                                }
-                                // Sonuç dizisine ekleyin
-                                $result[$key][$boq_item]['qty'] = $qty;
-                                $result[$key][$boq_item]['price'] = $price_value;
+                // $active_boq dizisini dönün
+                foreach ($active_boq as $key => $boq_items) {
+                    // Eğer $price dizisinde bu anahtar varsa
+                    if (array_key_exists($key, $price)) {
+                        // BOQ kalemlerini dönün
+                        foreach ($boq_items as $boq_item) {
+                            // Eğer $price dizisinde bu BOQ öğesi varsa
+                            if (array_key_exists($boq_item, $price[$key])) {
+                                // Fiyat ve miktarı alın
+                                $qty = $price[$key][$boq_item]['qty'];
+                                $price_value = $price[$key][$boq_item]['price'];
+                            } else {
+                                // BOQ öğesi $price dizisinde yoksa boş değerlerle doldurun
+                                $qty = '';
+                                $price_value = '';
                             }
-                        } else {
-                            // Anahtar $price dizisinde yoksa boş değerlerle doldurun
-                            foreach ($boq_items as $boq_item) {
-                                $result[$key][$boq_item]['qty'] = '';
-                                $result[$key][$boq_item]['price'] = '';
-                            }
+                            // Sonuç dizisine ekleyin
+                            $result[$key][$boq_item]['qty'] = $qty;
+                            $result[$key][$boq_item]['price'] = $price_value;
+                        }
+                    } else {
+                        // Anahtar $price dizisinde yoksa boş değerlerle doldurun
+                        foreach ($boq_items as $boq_item) {
+                            $result[$key][$boq_item]['qty'] = '';
+                            $result[$key][$boq_item]['price'] = '';
                         }
                     }
+                }
 
-                    // Oluşturulan sonuç dizisini görüntüleyin
-                    ?>
+                // Oluşturulan sonuç dizisini görüntüleyin
+                ?>
 
-                <?php } ?>
             <?php } ?>
             <?php foreach ($result as $active_group => $boqs) { ?>
                 <tr>
@@ -143,7 +141,7 @@ $active_boqs = json_decode($item->active_boq, true);
                     <th>Fiyat</th>
                     <th>Toplam Tutar</th>
                 </tr>
-                <?php foreach ($boqs as $boq => $value) { ?>
+                <?php foreach ($boqs as $boq=>$value) { ?>
                     <tr>
                         <td>
                             <div class="boq-name"><a href="#"> <?php echo $boq; ?></a></div>
@@ -154,8 +152,7 @@ $active_boqs = json_decode($item->active_boq, true);
                         <td class="text-center">
                             <div class="input-group">
                                 <input disabled id="<?php echo $boq; ?>_qty"
-                                       name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][qty]"
-                                       value="<?php echo $value["qty"]; ?>"
+                                       name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][qty]" value="<?php echo $value["qty"]; ?>"
                                        class="form-control btn-square" placeholder="Miktar" type="text">
                                 <span class="input-group-text btn btn-primary btn-right"><?php echo boq_unit($boq); ?></span>
                             </div>
@@ -163,8 +160,7 @@ $active_boqs = json_decode($item->active_boq, true);
                         <td class="text-center">
                             <div class="input-group">
                                 <input disabled id="<?php echo $boq; ?>_price"
-                                       name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][price]"
-                                       value="<?php echo $value["price"]; ?>"
+                                       name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][price]" value="<?php echo $value["price"]; ?>"
                                        class="form-control btn-square" placeholder="Tutar" type="text">
                                 <span class="input-group-text btn btn-primary btn-right"><?php echo $item->para_birimi; ?></span>
                             </div>
@@ -172,8 +168,7 @@ $active_boqs = json_decode($item->active_boq, true);
                         <td class="text-center">
                             <div class="input-group">
                                 <input id="<?php echo $boq; ?>_total" disabled
-                                       name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][total]"
-                                       value="<?php echo (floatval($value["price"])) * (floatval($value["qty"])); ?>"
+                                       name="boq[<?php echo $active_group; ?>][<?php echo $boq; ?>][total]" value="<?php echo (floatval($value["price"]))*(floatval($value["qty"])); ?>"
                                        class="form-control btn-square" placeholder="Toplam" type="text">
                                 <span class="input-group-text btn btn-primary btn-right"><?php echo $item->para_birimi; ?></span>
                             </div>
