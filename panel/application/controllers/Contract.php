@@ -651,11 +651,10 @@ class Contract extends CI_Controller
             $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id));
             $project = $this->Project_model->get(array("id" => $project_id));
             $settings = $this->Settings_model->get();
-            $isverenler = $this->Company_model->get_all(array());
-            $yukleniciler = $this->Company_model->get_all(array());
-            $yuklenici_users = $this->User_model->get_all(array("user_role" => 2));
-            $isveren_users = $this->User_model->get_all(array("user_role" => 1));
             $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
+            $companys = $this->Company_model->get_all(array("company_role !=" => 0));
+            $sistem_isverenler = $this->Company_model->get_all(array("company_role" => 0));
+
             $cities = $this->City_model->get_all(array());
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -663,6 +662,8 @@ class Contract extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_project";
             $viewData->project = $project;
+            $viewData->companys = $companys;
+            $viewData->sistem_isverenler = $sistem_isverenler;
             $viewData->ihaleler = $ihaleler;
             $viewData->settings = $settings;
             $viewData->main_contracts = $main_contracts;
