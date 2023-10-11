@@ -5,7 +5,7 @@ $caculation = $this->Boq_model->get(array(
 ));
 $calculations = json_decode($caculation->calculation, true);
 ?>
-
+<?php if (!empty($calculations)) { ?>
 <table class="table">
     <thead>
     <tr>
@@ -68,3 +68,6 @@ $calculations = json_decode($caculation->calculation, true);
     </tr>
     </tfoot>
 </table>
+<?php } else { ?>
+Bu Hakediş Metraj Verisi Olmadan Yapılmış
+<?php } ?>

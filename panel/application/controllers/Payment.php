@@ -303,7 +303,7 @@ class Payment extends CI_Controller
         $viewData->contract = $contract;
         $viewData->project_id = $project_id;
 
-       $item = $this->Payment_model->get(
+        $item = $this->Payment_model->get(
             array(
                 "id" => $id
             )
@@ -340,6 +340,8 @@ class Payment extends CI_Controller
     public
     function save($contract_id)
     {
+
+        $is_negative = $this->input->post("is_negative");
 
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);
@@ -396,7 +398,9 @@ class Payment extends CI_Controller
         }
 
         $this->form_validation->set_rules("bu_imalat", "Bu İmalat Bedeli", "required|numeric|trim"); //2
-        $this->form_validation->set_rules("toplam_imalat", "Toplam İmalat Bedeli", "required|greater_than_equal_to[$last_total_imalat]|less_than_equal_to[$c]|numeric|trim"); //2
+        if ($is_negative != "on") {
+            $this->form_validation->set_rules("toplam_imalat", "Toplam İmalat Bedeli", "required|greater_than_equal_to[$last_total_imalat]|less_than_equal_to[$c]|numeric|trim"); //2
+        }
         $this->form_validation->set_rules("bu_ihzarat", "Bu İhzarat Bedeli", "numeric|trim"); //2
         $this->form_validation->set_rules("toplam_ihzarat", "Toplam İhzarat Bedeli", "greater_than_equal_to[$last_total_ihzarat]|less_than_equal_to[$c]|numeric|trim"); //2
 
@@ -688,7 +692,7 @@ class Payment extends CI_Controller
     }
 
     public
-    function delete($id, $boq=null)
+    function delete($id, $boq = null)
     {
 
         $hakedis_no = get_from_id("payment", "hakedis_no", "$id");

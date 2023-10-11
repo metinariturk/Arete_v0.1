@@ -18,6 +18,8 @@
                value="<?php echo isset($form_error) ? set_value("toplam_imalat") : ""; ?>">
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("toplam_imalat"); ?></div>
+            Negatif Değerde Hakediş Yaptığımın Farkındayım<input type="checkbox" name="is_negative">
+
         <?php } ?>
     </div>
 </div>
@@ -45,6 +47,7 @@
                    onfocus="calcular()" placeholder="Toplam İhzarat">
             <?php if (isset($form_error)) { ?>
                 <div class="invalid-feedback"><?php echo form_error("toplam_ihzarat"); ?></div>
+                <input type="checkbox" name="is_negative">
             <?php } ?>
         </div>
     </div>
