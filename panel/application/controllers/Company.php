@@ -226,19 +226,19 @@ class company extends CI_Controller
         }
         $this->form_validation->set_rules("company_role", "Firma Rolü", "required|trim");
         $this->form_validation->set_rules("profession", "Faaliyet Alanı", "required|trim");
-        $this->form_validation->set_rules("tax_city", "Vergi Daire İl", "required|trim");
-        $this->form_validation->set_rules("tax_office", "Vergi Dairesi", "required|trim");
+        $this->form_validation->set_rules("tax_city", "Vergi Daire İl", "trim");
+        $this->form_validation->set_rules("tax_office", "Vergi Dairesi", "trim");
         if ($current_tax_no != $income_tax_no) {
-            $this->form_validation->set_rules("tax_no", "Vergi No", "max_length[11]|min_length[10]|is_unique[companys.tax_no]|required|trim|numeric");
+            $this->form_validation->set_rules("tax_no", "Vergi No", "max_length[11]|min_length[10]|is_unique[companys.tax_no]|trim|numeric");
         }
-        $this->form_validation->set_rules("adress", "Adres", "required|trim");
-        $this->form_validation->set_rules("adress_city", "Şehir", "required|trim");
-        $this->form_validation->set_rules("adress_district", "İlçe", "required|trim");
+        $this->form_validation->set_rules("adress", "Adres", "trim");
+        $this->form_validation->set_rules("adress_city", "Şehir", "trim");
+        $this->form_validation->set_rules("adress_district", "İlçe", "trim");
         $this->form_validation->set_rules("phone", "Telefon Numarası ", "regex_match[/^[0-9]{10}$/]"); //{10} for 10 digits number
         if (!empty($this->input->post("password"))) {
             $this->form_validation->set_rules("IBAN", "IBAN ", "exact_length[26]|numeric"); //{10} for 10 digits number
         }
-        $this->form_validation->set_rules("email", "E-Posta", "valid_email|required|trim");
+        $this->form_validation->set_rules("email", "E-Posta", "valid_email|trim");
         $this->form_validation->set_rules("email2", "E-Posta", "valid_email|trim");
         $this->form_validation->set_rules("password", "Şifre", "trim|min_length[6]");
         if (!empty($this->input->post("password"))) {
