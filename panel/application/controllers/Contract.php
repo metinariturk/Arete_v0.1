@@ -667,10 +667,6 @@ class Contract extends CI_Controller
             $viewData->ihaleler = $ihaleler;
             $viewData->settings = $settings;
             $viewData->main_contracts = $main_contracts;
-            $viewData->isverenler = $isverenler;
-            $viewData->yukleniciler = $yukleniciler;
-            $viewData->yuklenici_users = $yuklenici_users;
-            $viewData->isveren_users = $isveren_users;
             $viewData->project_id = $project_id;
             $viewData->cities = $cities;
             $viewData->form_error = true;
