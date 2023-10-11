@@ -65,7 +65,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>2778</line>
+          <line>2777</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="add_group" />

@@ -262,11 +262,7 @@ class Contract extends CI_Controller
         $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
         $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarihi", "required|trim");
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
-        $this->form_validation->set_rules("adres", "Adres", "trim");
-        if (!empty($this->input->post('adres'))) {
-            $this->form_validation->set_rules("adress_city", "İl", "required|trim");
-            $this->form_validation->set_rules("adress_district", "İlçe", "required|trim");
-        }
+
 
         $this->form_validation->set_message(
             array(
@@ -539,10 +535,12 @@ class Contract extends CI_Controller
 
         if ($is_sub == 0) {
             $this->form_validation->set_rules("auction_id", "Teklif Adı", "required|trim");
-            $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
-            $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
-            $yer_teslim = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
+        }
+        $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
+        $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
 
+        if ($is_sub == 1) {
+            $yer_teslim = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
         }
 
         $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarih", "required|trim");
@@ -551,12 +549,7 @@ class Contract extends CI_Controller
         $this->form_validation->set_rules("isin_suresi", "İşin Süresi", "greater_than[0]|required|trim|integer");
         $this->form_validation->set_rules("sozlesme_bedel", "Sözleşme Bedel", "greater_than[0]|required|trim|numeric");
         $this->form_validation->set_rules("para_birimi", "Para Birimi", "required|trim");
-        $this->form_validation->set_rules("adres", "Adres", "trim");
 
-        if (!empty($this->input->post('adres'))) {
-            $this->form_validation->set_rules("adress_city", "İl", "required|trim");
-            $this->form_validation->set_rules("adress_district", "İlçe", "required|trim");
-        }
 
         // Form Validation Hatalarını Tanımla
         $this->form_validation->set_message(
@@ -600,9 +593,6 @@ class Contract extends CI_Controller
                     "sozlesme_bitis" => $sozlesme_bitis,
                     "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
                     "para_birimi" => $this->input->post("para_birimi"),
-                    "adres" => $this->input->post("adres"),
-                    "adres_il" => $this->input->post("adress_city"),
-                    "adres_ilce" => $this->input->post("adress_district"),
                     "subcont" => $is_sub,
                     "sitedel_date" => $yer_teslim,
                     "durumu" => "1",
@@ -760,11 +750,7 @@ class Contract extends CI_Controller
         $this->form_validation->set_rules("isin_suresi", "İşin Süresi", "greater_than[0]|required|trim|integer");
         $this->form_validation->set_rules("sozlesme_bedel", "Sözleşme Bedel", "greater_than[0]|required|trim|numeric");
         $this->form_validation->set_rules("para_birimi", "Para Birimi", "required|trim");
-        $this->form_validation->set_rules("adres", "Adres", "trim");
-        if (!empty($this->input->post('adres'))) {
-            $this->form_validation->set_rules("adress_city", "İl", "required|trim");
-            $this->form_validation->set_rules("adress_district", "İlçe", "required|trim");
-        }
+
 
         $this->form_validation->set_message(
             array(
