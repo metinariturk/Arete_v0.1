@@ -221,7 +221,7 @@ class company extends CI_Controller
 
 
         if ($current_company_name != $income_company_name) {
-            $this->form_validation->set_rules("company_name", "Firma Adı", "callback_name_control|is_unique[companys.company_name]|min_length[3]|required|trim");
+            $this->form_validation->set_rules("company_name", "Firma Adı", "is_unique[companys.company_name]|min_length[3]|required|trim");
         }
         $this->form_validation->set_rules("company_role", "Firma Rolü", "required|trim");
         $this->form_validation->set_rules("profession", "Faaliyet Alanı", "required|trim");
@@ -252,7 +252,6 @@ class company extends CI_Controller
                 "is_unique" => "<b>{field}</b> kaydı mevcut",
                 "min_length" => "<b>{field}</b> en az {param} karakter uzunluğunda olmalıdır",
                 "max_length" => "<b>{field}</b> en çok {param} karakter uzunluğunda olmalıdır",
-                "name_control" => "<b>{field}</b> Geçersiz Karakter İçeriyor",
                 "full_name" => "<b>{field}</b> Ad Soyad Bilgilerini Eksiksiz Giriniz",
                 "matches" => "<b>{field}</b> Şifreleriniz Eşleşmiyor",
                 "valid_email" => "<b>{field}</b> Geçerli bir E-Posta adresi giriniz",
@@ -487,11 +486,7 @@ class company extends CI_Controller
         }
     }
 
-    public
-    function name_control($company_name)
-    {
-        return (!preg_match("/^([-a-z üğişçöÜĞİŞÇÖ.1234567890-])+$/ui", $company_name)) ? FALSE : TRUE;
-    }
+
 
     public
     function isActiveSetter($id)
