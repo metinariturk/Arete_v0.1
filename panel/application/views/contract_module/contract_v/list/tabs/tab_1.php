@@ -53,7 +53,7 @@
                     <?php foreach ($subcontracts as $subcontract) { ?>
                         <tr>
                             <td style="text-align: right">
-                                <a href="<?php echo base_url("contract/file_form/$active->id"); ?>">
+                                <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>">
                                     <?php echo $j . ' ';
                                     $j = chr(ord($j) + 1); ?> -  <?php echo $subcontract->sozlesme_ad; ?>
                                 </a>

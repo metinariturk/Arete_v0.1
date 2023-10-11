@@ -233,7 +233,7 @@ class Boq extends CI_Controller
                     "id" => $boq_control
                 ),
                 array(
-                    "calculation" => $calculates,
+                    "calculation" => $remove_space,
                     "total" => $sayi,
                 )
             );
