@@ -253,7 +253,12 @@ $sidebarList = array(
                 "url" => base_url("emailsettings")
             )
         )
-    )
+    ),
+    array(
+        "title" => "ÇIKIŞ",
+        "icon" => "box",
+        "url" => base_url("logout")
+    ),
 );
 
 foreach ($sidebarList as $module) { ?>
