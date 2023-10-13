@@ -168,7 +168,7 @@ if ($subViewFolder == "list") { ?>
             <div class="row">
                 <div class="col-6">
                     <h3>
-                        <?php echo "$this->Module_Title Görüntüle"; ?>
+                        Sözleşme / <?php echo "$item->sozlesme_ad"; ?>
                     </h3>
                 </div>
                 <div class="col-6">

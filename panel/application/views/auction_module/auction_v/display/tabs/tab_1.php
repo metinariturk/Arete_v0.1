@@ -16,7 +16,6 @@
                                             <i data-feather="home"></i>
                                             <?php echo project_code_name($item->proje_id); ?>
                                         </a>
-
                                     </div>
                                 </li>
                                 <li>

@@ -5,22 +5,22 @@
                 <div class="file-sidebar">
                     <ul>
                         <li>
-                            <div class="btn btn-light">
-                                <a href="<?php echo base_url("project/file_form/$project_id"); ?>">
+                            <a href="<?php echo base_url("project/file_form/$project_id"); ?>">
+                                <div class="btn btn-light">
                                     <i data-feather="home"></i>
                                     <?php echo project_code_name($project_id); ?>
-                                </a>
-                            </div>
+                                </div>
+                            </a>
                         </li>
                         <li>
-                            <div class="btn btn-light ">
-                                <a href="<?php echo base_url("contract/file_form/$item->contract_id"); ?>">
-                                    <span style="padding-left: 20px">
+                            <a href="<?php echo base_url("contract/file_form/$item->contract_id"); ?>">
+                                <div class="btn btn-light ">
+                                         <span style="padding-left: 20px">
                                     <i class="icofont icofont-law-document"></i>
                                     <?php echo contract_code_name($item->contract_id); ?>
                                     </span>
-                                </a>
-                            </div>
+                                </div>
+                            </a>
                         </li>
                         <li>
                             <div class="btn btn-light">

@@ -13,7 +13,6 @@
     <ul class="nav-menus">
         <li>
             <span class="header-search"><i data-feather="search"></i></span></li>
-
         <li>
             <div class="mode"><i class="fa fa-moon-o"></i></div>
         </li>

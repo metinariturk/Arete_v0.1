@@ -11,12 +11,12 @@
                         <div class="file-sidebar">
                             <ul>
                                 <li>
-                                    <div class="btn btn-light">
-                                        <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                    <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                        <div class="btn btn-light">
                                             <i data-feather="home"></i>
                                             <?php echo project_code_name($item->proje_id); ?>
-                                        </a>
-                                    </div>
+                                        </div>
+                                    </a>
                                 </li>
                                 <?php if (!empty($item->auction_id)) { ?>
                                     <?php $auction_control = get_from_any("auction", "dosya_no", "id", "$item->auction_id"); ?>
@@ -32,6 +32,19 @@
                                             </div>
                                         </li>
                                     <?php } ?>
+                                <?php } ?>
+                                <?php if (($item->subcont == 1)) { ?>
+                                    <li>
+                                        <a href="<?php echo base_url("contract/file_form/$item->main_contract"); ?>">
+                                            <div class="btn btn-light ">
+
+                                    <span style="padding-left: 20px">
+                                    <i class="icofont icofont-law-document"></i>
+                                    <?php echo contract_code_name($item->main_contract); ?>
+                                    </span>
+                                            </div>
+                                        </a>
+                                    </li>
                                 <?php } ?>
                                 <li>
                                     <div class="btn btn-light">
@@ -88,14 +101,12 @@
                     </tr>
                     <tr>
                         <td>İşin Süresi</td>
-
                         <td>
                             <?php echo $item->isin_suresi; ?> Gün
                         </td>
                     </tr>
                     <tr>
                         <td>Sözleşme İmza Tarihi</td>
-
                         <td>
                             <?php echo $item->sozlesme_tarih == null ? null : dateFormat($format = 'd-m-Y', $item->sozlesme_tarih); ?>
                         </td>
@@ -115,7 +126,6 @@
                     </tr>
                     <tr>
                         <td>Sözleşme Bitiş Tarihi</td>
-
                         <td>
                             <?php echo $item->sozlesme_bitis == null ? null : dateFormat($format = 'd-m-Y', $item->sozlesme_bitis); ?>
                         </td>

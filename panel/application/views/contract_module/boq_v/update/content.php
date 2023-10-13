@@ -5,14 +5,14 @@
                 <div class="file-sidebar">
                     <ul>
                         <li>
-                            <div class="btn btn-light ">
                                 <a href="<?php echo base_url("contract/file_form/$item->contract_id"); ?>">
-                                    <span style="padding-left: 20px">
+                                    <div class="btn btn-light ">
+                                         <span style="padding-left: 20px">
                                     <i class="icofont icofont-law-document"></i>
                                     <?php echo contract_code_name($item->contract_id); ?>
                                     </span>
-                                </a>
-                            </div>
+                             </div>
+                         </a>
                         </li>
                         <li>
                             <div class="btn btn-light">

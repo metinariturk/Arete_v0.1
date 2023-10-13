@@ -11,12 +11,12 @@
                         <div class="file-sidebar">
                             <ul>
                                 <li>
-                                    <div class="btn btn-light">
-                                        <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                    <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                        <div class="btn btn-light">
                                             <i data-feather="home"></i>
                                             <?php echo project_code_name($item->proje_id); ?>
-                                        </a>
-                                    </div>
+                                        </div>
+                                    </a>
                                 </li>
                                 <?php if (isset($item->contract_id)) { ?>
                                     <li>
