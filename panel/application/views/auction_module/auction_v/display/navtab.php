@@ -92,7 +92,11 @@
                             İstekliler
                             </span>
                             <span class="badge pull-right">
-                                (<?php if (isset($istekliler)) {echo count(json_decode($istekliler));} else {echo "0";} ?>)
+                                (<?php if (isset($istekliler)) {
+                                    echo count(json_decode($istekliler));
+                                } else {
+                                    echo "0";
+                                } ?>)
                             </span>
                         </a>
                     </li>

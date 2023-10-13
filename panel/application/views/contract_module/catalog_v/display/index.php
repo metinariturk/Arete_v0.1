@@ -4,7 +4,7 @@
     <?php $this->load->view("includes/head"); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/photoswipe.css">
 </head>
-<body onload="startTime()">
+<body onload="startTime()" class="<?php echo  $this->Theme_mode; ?>"> 
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">

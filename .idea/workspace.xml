@@ -26,16 +26,16 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Backup/cuba res" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/assets/images/logo" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\logo" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\includes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modules" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\common" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\logo" />
@@ -56,6 +56,7 @@
       <workItem from="1696756244898" duration="42000" />
       <workItem from="1696880711284" duration="1051000" />
       <workItem from="1697106577456" duration="9406000" />
+      <workItem from="1697191323165" duration="12013000" />
     </task>
     <servers />
   </component>
@@ -67,12 +68,17 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>2777</line>
+          <line>2778</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="add_group" />
           </properties>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>
+          <line>187</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

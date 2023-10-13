@@ -28,7 +28,6 @@
                             </a>
                         </li>
 
-
                     <?php } ?>
                     <li><a class="show" id="workplan-tab" data-bs-toggle="pill" href="#workplan"
                            role="tab" aria-controls="workplan" aria-selected="false">

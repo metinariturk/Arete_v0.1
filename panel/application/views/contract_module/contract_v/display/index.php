@@ -5,17 +5,15 @@
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/photoswipe.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/print_option.css">
-
-
 
     <?php $this->load->view("includes/head"); ?>
+
 
     <!-- Plugins css start-->
 
     <!-- Plugins css Ends-->
 </head>
-<body onload="startTime()">
+<body onload="startTime()" class="<?php echo  $this->Theme_mode; ?>"> 
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">

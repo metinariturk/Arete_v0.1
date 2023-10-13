@@ -10,11 +10,10 @@ class Payment extends CI_Controller
     {
         parent::__construct();
 
-        if (!get_active_user()) {
+               if (!get_active_user()) {
             redirect(base_url("login"));
         }
-
-        if (temp_pass_control()) {
+ $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 

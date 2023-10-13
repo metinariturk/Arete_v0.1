@@ -28,7 +28,7 @@
 
     <!-- Plugins css Ends-->
 </head>
-<body onload="startTime()">
+<body onload="startTime()" class="<?php echo  $this->Theme_mode; ?>"> 
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">

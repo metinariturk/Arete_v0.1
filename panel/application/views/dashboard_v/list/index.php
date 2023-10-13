@@ -5,7 +5,7 @@
     <?php $this->load->view("{$viewFolder}/common/page_style"); ?>
 
 </head>
-<body onload="startTime()">
+<body onload="startTime()" class="<?php echo  $this->Theme_mode; ?>">
 <div class="loader-wrapper">
     <div class="loader-index"><span></span></div>
     <svg>

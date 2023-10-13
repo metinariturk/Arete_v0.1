@@ -11,12 +11,13 @@
                         <div class="file-sidebar">
                             <ul>
                                 <li>
-                                    <div class="btn btn-light">
-                                        <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                    <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                        <div class="btn btn-light">
+
                                             <i data-feather="home"></i>
                                             <?php echo project_code_name($item->proje_id); ?>
-                                        </a>
-                                    </div>
+                                        </div>
+                                    </a>
                                 </li>
                                 <li>
                                     <div class="btn btn-light">
@@ -39,71 +40,50 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body d-flex">
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <td>Teklif Verilecek Kuruluş</td>
-                        <td>
-                            <?php echo company_name($item->isveren); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Hedeflenen Tarih</td>
+            <div class="container">
+                <div class="row py-3">
+                    <div class="col-6">
+                        <p class="font-weight-bold">Teklif Verilecek Kuruluş</p>
+                    </div>
+                    <div class="col-6">
+                        <p><?php echo company_name($item->isveren); ?></p>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-6">
+                        Hedeflenen Tarih
+                    </div>
+                    <div class="col-6">
+                        <?php echo $item->talep_tarih == null ? null : dateFormat($format = 'd-m-Y', $item->talep_tarih); ?>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-6">
+                        Bütçe Bedeli (Varsa)
+                    </div>
+                    <div class="col-6">
+                        <?php echo money_format($item->butce) . " " . $item->para_birimi; ?>
 
-                        <td>
-                            <?php echo $item->talep_tarih == null ? null : dateFormat($format = 'd-m-Y', $item->talep_tarih); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Bütçe Bedeli (Varsa)</td>
-                        <td>
-                            <?php echo money_format($item->butce) . " " . $item->para_birimi; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Yaklaşık Maliyet (Toplam)</td>
-                        <td>
-                            <?php echo money_format(sum_anything("cost", "cost", "auction_id", "$item->id")) . " " . $item->para_birimi; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Genel Açıklama - Kapsam</td>
-                        <td>
-                            <?php echo $item->aciklama; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Yetkili Personeller</td>
-                        <td>
-                            <div class="customers">
-                                <ul>
-                                    <?php if (!empty($item->yetkili_personeller)) { ?>
-                                        <?php
-                                        $yetkili_personeller = get_as_array($item->yetkili_personeller);
-                                        foreach ($yetkili_personeller as $personel) { ?>
-                                            <li class="d-inline-block">
-                                            <span data-tooltip-location="top"
-                                                  data-tooltip="<?php echo full_name($personel); ?>">
-                                            <a href="<?php echo base_url("user/file_form/$personel"); ?>">
-                                                <img
-                                                        class="img-50 rounded-circle" <?php echo get_avatar($personel); ?>
-                                                        alt=""
-                                                        data-original-title=""
-                                                        title="<?php echo full_name($personel); ?>">
-                                            </a>
-                                            </span>
-                                            </li>
-                                        <?php } ?>
-
-                                    <?php } ?>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-6">
+                        Bütçe Bedeli (Varsa)
+                    </div>
+                    <div class="col-6">
+                        <p><?php echo money_format(sum_anything("cost", "cost", "auction_id", "$item->id")) . " " . $item->para_birimi; ?></p>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-6">
+                        Genel Açıklama - Kapsam
+                    </div>
+                    <div class="col-6">
+                        <?php echo $item->aciklama; ?>
+                    </div>
+                </div>
             </div>
+
         </div>
 
         <div class="col-xl-7 col-lg-12 col-md-12 box-col-10">

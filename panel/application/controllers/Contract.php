@@ -14,6 +14,7 @@ class Contract extends CI_Controller
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
+        $this->Theme_mode = get_active_user()->mode;
 
         // Geçici şifre kontrolü
         if (temp_pass_control()) {
