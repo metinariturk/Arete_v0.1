@@ -235,6 +235,36 @@ function all_contracts()
     return $contracts;
 }
 
+function all_subcontracts()
+{
+    $t = get_instance();
+    $t->load->model("Contract_model");
+    $subcontracts = $t->Contract_model->get_all(array(
+        "subcont" => 1
+    ));
+
+    return $subcontracts;
+}
+
+function all_sites()
+{
+    $t = get_instance();
+    $t->load->model("Site_model");
+    $sites = $t->Site_model->get_all(array());
+
+    return $sites;
+}
+
+function all_auctions()
+{
+    $t = get_instance();
+    $t->load->model("Auction_model");
+    $auctions = $t->Auction_model->get_all(array());
+
+    return $auctions;
+}
+
+
 function project_id_cont($contract_id)
 {
     $t = get_instance();
@@ -292,34 +322,7 @@ function auction_id_module($module, $id)
     return $module->auction_id;
 }
 
-function all_subcontracts()
-{
-    $t = get_instance();
-    $t->load->model("Contract_model");
-    $subcontracts = $t->Contract_model->get_all(array(
-        "subcont" => 1
-    ));
 
-    return $subcontracts;
-}
-
-function all_sites()
-{
-    $t = get_instance();
-    $t->load->model("Site_model");
-    $sites = $t->Site_model->get_all(array());
-
-    return $sites;
-}
-
-function all_auctions()
-{
-    $t = get_instance();
-    $t->load->model("Auction_model");
-    $auctions = $t->Auction_model->get_all(array());
-
-    return $auctions;
-}
 
 function project_code_auc($id)
 {

@@ -1,5 +1,5 @@
 <?php $user = get_active_user(); ?>
-<form class="form-inline search-full col" action="<?php echo base_url("Dashboard/distributor"); ?>" method="post">
+<form class="form-inline search-full col" action="<?php echo base_url("Dashboard/distributor"); ?>" id="distributor" method="post">
     <div class="form-group w-100">
         <div class="Typeahead Typeahead--twitterUsers">
             <div id="the-basics">

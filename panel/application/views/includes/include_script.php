@@ -43,5 +43,18 @@
         });
     }
 </script>
+<script>
+    document.addEventListener("click", function(event) {
+        var target = event.target;
+        if (target.classList.contains("tt-suggestion") && target.classList.contains("tt-selectable")) {
+            // Öğenin atası olan formu bulun
+            var form = target.closest("form");
 
+            if (form) {
+                // Formu submit edin
+                form.submit();
+            }
+        }
+    });
+</script>
 

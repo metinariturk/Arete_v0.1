@@ -11,7 +11,7 @@ foreach ($contracts as $contract) {
     $contract_type_name_id[] = $contract->id . " - " . $contract->sozlesme_ad . " - Sözleşme";
 }
 
-$subcontracts = all_contracts();
+$subcontracts = all_subcontracts();
 $subcontract_type_name_id = array();
 foreach ($subcontracts as $subcontract) {
     $subcontract_type_name_id[] = $subcontract->id . " - " . $subcontract->sozlesme_ad . " - Alt Sözleşme";
@@ -70,4 +70,5 @@ $all_data = array_merge($project_type_name_id, $contract_type_name_id, $subcontr
             source: substringMatcher(states)
         });
     });
+
 </script>

@@ -93,7 +93,7 @@ class Dashboard extends CI_Controller
         }
 
         if ($gelen_dizin[2] == "Alt Sözleşme") {
-            redirect(base_url("subcontract/file_form/$gelen_dizin[0]"));
+            redirect(base_url("contract/file_form/$gelen_dizin[0]"));
         }
 
         if ($gelen_dizin[2] == "Şantiye") {
