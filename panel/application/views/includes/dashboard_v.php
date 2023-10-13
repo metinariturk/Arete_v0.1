@@ -3,7 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
 </head>
-<body onload="startTime()" class="<?php echo  $this->Theme_mode; ?>"> 
+<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
 <div class="loader-wrapper">
     <div class="loader-index"><span></span></div>
     <svg>

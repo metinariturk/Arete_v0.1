@@ -3,7 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
 </head>
-<body onload="startTime()" class="<?php echo  $this->Theme_mode; ?>"> 
+<body onload="startTime()" class="<?php echo $this->Theme_mode; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">

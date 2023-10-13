@@ -36,4 +36,12 @@
 
 <?php $this->load->view("includes/alert"); ?>
 
+<script>
+    function changeMode(anchor) {
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+        });
+    }
+</script>
+
 

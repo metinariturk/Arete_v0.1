@@ -5,7 +5,7 @@
     <?php $this->load->view("{$viewFolder}/common/page_style"); ?>
 
 </head>
-<body onload="startTime()" class="<?php echo  $this->Theme_mode; ?>">
+<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <div class="loader-wrapper">
     <div class="loader-index"><span></span></div>
     <svg>
@@ -36,6 +36,15 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("{$viewFolder}/common/page_script"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
+
+<script>
+    function changeMode(anchor) {
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+        });
+    }
+</script>
+
 
 </body>
 </html>

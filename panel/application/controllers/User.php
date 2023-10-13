@@ -10,10 +10,12 @@ class user extends CI_Controller
     {
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -579,5 +581,32 @@ class user extends CI_Controller
     {
         return (!preg_match("/^([-a-z üğışçöÜĞİŞÇÖ])+$/i", $user_name)) ? FALSE : TRUE;
     }
+
+    public function mode()
+    {
+        $user_mode = get_active_user()->mode;
+
+        $user_id = get_active_user()->id;
+// Yeni mode değeri
+        $new_mode = $user_mode == 1 ? 0 : 1;
+
+        echo $user_id;
+
+        $update = $this->User_model->update(
+            array("id" => $user_id),
+            array("mode" => $new_mode)
+        );
+
+
+        $session_data = $this->session->userdata();
+
+        $session_data['user']->mode = $new_mode;
+
+        $this->session->unset_userdata("user");
+
+        $this->session->set_userdata($session_data);
+
+    }
+
 
 }
