@@ -39,6 +39,19 @@ class Home extends CI_Controller {
 
     }
 
+    public function about(){
+
+        $viewData = new stdClass();
+
+        $settings = $this->Settings_model->get();
+
+        $viewData->viewFolder = "about_us_v";
+        $viewData->settings = $settings;
+
+        $this->load->view( $viewData->viewFolder,  $viewData);
+
+    }
+
     public function panel(){
 
         redirect("https://www.aretemuhendislik.com.tr/panel");

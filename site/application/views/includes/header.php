@@ -55,7 +55,7 @@
                         </li>
 
                         <li>
-                            <a href="about-1.html">Hakkımızda</a>
+                            <a href="<?php echo base_url("about");?>">Hakkımızda</a>
                         </li>
 
                         <li>
