@@ -11,7 +11,7 @@
                     </ul>
                 </div>
                 <div class="mt-topbar-right">
-                    <div class="appint-btn"><a href="#" class="contact-slide-show"><div class="site-button">Görüşme Talep Et</div></a></div>
+                    <div class="appint-btn"><a href="#" class="contact-slide-show"><div class="site-button">İletişim</div></a></div>
                 </div>
             </div>
         </div>
