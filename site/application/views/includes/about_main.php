@@ -28,28 +28,28 @@
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
                                 <a href="about-1.html"><img
-                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic8.jpg" alt=""></a>
+                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic2.jpg" alt=""></a>
                             </div>
                         </div>
                         <!-- COLUMNS 3 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
                                 <a href="about-1.html"><img
-                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic9.jpg" alt=""></a>
+                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic3.jpg" alt=""></a>
                             </div>
                         </div>
                         <!-- COLUMNS 4 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
                                 <a href="about-1.html"><img
-                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic6.jpg" alt=""></a>
+                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic4.jpg" alt=""></a>
                             </div>
                         </div>
                         <!-- COLUMNS 5 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
                                 <a href="about-1.html"><img
-                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic2.jpg" alt=""></a>
+                                            src="<?php echo base_url("assets"); ?>/images/gallery/pic5.jpg" alt=""></a>
                             </div>
                         </div>
                     </div>
