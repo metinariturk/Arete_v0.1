@@ -27,7 +27,7 @@ class login extends CI_Controller
 
     public function login()
     {
-        
+
         if (get_active_user()) {
             redirect(base_url("dashboard"));
         }
@@ -278,35 +278,70 @@ class login extends CI_Controller
 
                 $topic = "Şifremi Unuttum";
 
-                $message = "</table>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            Merhaba <b>$user_fullname </b>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Arete Sistem Kullanıcısı Hesabınız için bir şifre sıfırlama talebi aldık .
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            $temp_password Sıfırlamayı tamamlamak için bu kodu kullanabilirsiniz .
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Hesabınızı korumak için bize verdiğiniz destek için teşekkür ederiz .
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Böyle bir işlem yapmadınız mı ? Şifrenizi hemen değiştirdiğinizden emin olun .
-                                        </td>
-                                    </tr>
-                                </tbody>        
-                            </table>";
+                $user_fullname = full_name($user->id);
+
+                $message = '<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Temel stillemeler */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #0070c9;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .button {
+            background-color: #0070c9;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Şifre Sıfırlama İsteği</h1>
+        </div>
+        <div class="content">
+            <p>Sayın '.$user_fullname.'</p>
+            <p>Hesabınızın şifresini sıfırlamak için bir talep aldık. İşte geçici şifreniz:</p>
+            <p><strong>Geçici Şifre: '.$temp_password.'</strong></p>
+            <p>Lütfen bu geçici şifreyi kullanarak hesabınıza erişim sağlayın. Daha sonra yeni bir güçlü şifre belirlemeniz gerekmektedir.</p>
+            <p>Şifre Sıfırlama Adımları:</p>
+            <ol>
+                <li>Geçici şifreyi kopyalayın veya not alın.</li>
+                <li>Hesabınıza giriş yapın.</li>
+                <li>Profil ayarlarına gidin ve yeni bir şifre belirleyin.</li>
+                <li>Şifrenizin güçlü ve benzersiz olduğundan emin olun.</li>
+            </ol>
+            <p>Bu şifre sıfırlama işlemi sizin tarafınızdan başlatılmadıysa, hemen şifrenizi değiştirin ve bizimle iletişime geçin.</p>
+            <p>Hesabınızın güvenliğini önemsiyoruz ve herhangi bir sorunuz varsa lütfen bizimle iletişime geçin.</p>
+        </div>
+        <div class="footer" style="text-align: center;">
+            <a class="button" href="www.aretemuhendislik.com.tr/panel">Hesabımı Ziyaret Et</a>
+        </div>
+    </div>
+</body>
+</html>
+
+';
 
 
                 $send = cms_email("$user->email", $topic, "$message");
