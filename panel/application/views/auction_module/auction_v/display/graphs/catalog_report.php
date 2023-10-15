@@ -4,7 +4,7 @@ $path = "uploads/project_v/$project_code/$item->dosya_no/Catalog/Thumb";
 ?>
 <?php if (!empty($path)) { ?>
     <div class="col-12 box-col-10">
-        <div class="card-header text-center">
+        <div class=" text-center">
             <h4>Katalog Görselleri</h4>
         </div>
         <div class="container-fluid">

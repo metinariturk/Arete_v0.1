@@ -56,7 +56,7 @@ class Offer extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Offer_model->get_all(array());
-        $prep_auctions = $this->Auction_model->get_all(array('durumu' => 0));
+        $prep_auctions = $this->Auction_model->get_all(array());
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -91,34 +91,20 @@ class Offer extends CI_Controller
             $auc_id = $this->input->post("auction_id");
         }
 
-        if (isset($auc_id)) {
-            $project_id = project_id_auc($auc_id);
-        }
+        $project_id = project_id_auc($auc_id);
+
         $viewData = new stdClass();
 
         /** Tablodan Verilerin Getirilmesi.. */
-        $projects = $this->Project_model->get_all(array());
-        $prep_auctions = $this->Auction_model->get_all(array('durumu' => 0));
-        $companys = $this->Company_model->get_all(array(
-
-        ));
         $settings = $this->Settings_model->get();
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
-        $viewData->projects = $projects;
-        $viewData->prep_auctions = $prep_auctions;
         $viewData->auc_id = $auc_id;
-        if (isset($auc_id)) {
-            $viewData->project_id = $project_id;
-        }
-        $viewData->companys = $companys;
+        $viewData->project_id = $project_id;
         $viewData->settings = $settings;
-        if (isset($auc_id)) {
-            $viewData->istekliler = json_decode(get_from_id("auction", "istekliler", "$auc_id"));
-        }
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
@@ -161,6 +147,9 @@ class Offer extends CI_Controller
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[offer.dosya_no]|required|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+        $this->form_validation->set_rules("offer_price", "Teklif Bedeli", "required|trim");;
+        $this->form_validation->set_rules("offer_no", "Teklif No", "required|trim");;
+        $this->form_validation->set_rules("offer_date", "Teklif Tarihi", "required|trim");;
 
         $this->form_validation->set_message(
             array(
@@ -177,14 +166,17 @@ class Offer extends CI_Controller
         $validate = $this->form_validation->run();
 
         if ($validate) {
-            $offers = $this->input->post("offers[]");
 
-            print_r($offers);
-            $project_id = get_from_id("auction", "proje_id", $auc_id);
+            if ($this->input->post("offer_date")) {
+                $offer_date = dateFormat('Y-m-d', $this->input->post("offer_date"));
+            } else {
+                $offer_date = null;
+            }
+            $project_id = project_id_auc($auc_id);
             $project_code = project_code($project_id);
-            $auction_code = get_from_id("auction", "dosya_no", $auc_id);
+            $auction_code = auction_code($auc_id);
 
-            $path = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/";
+            $path = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$file_name";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -197,7 +189,9 @@ class Offer extends CI_Controller
                 array(
                     "auction_id" => $auc_id,
                     "dosya_no" => $file_name,
-                    "offer" => json_encode($offers),
+                    "offer_price" => $this->input->post("offer_price"),
+                    "offer_no" => $this->input->post("offer_no"),
+                    "offer_date" => $offer_date,
                     "aciklama" => $this->input->post("aciklama"),
                     "createdAt" => date("Y-m-d")
                 )
@@ -249,11 +243,13 @@ class Offer extends CI_Controller
 
 
             $viewData = new stdClass();
+            $project_id = project_id_auc($auc_id);
 
             $viewData->auc_id = $auc_id;
-            $viewData->istekliler = json_decode(get_from_id("auction", "istekliler", "$auc_id"));
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
+            $viewData->project_id = $project_id;
+
             $viewData->subViewFolder = "$this->Add_Folder";
             $viewData->form_error = true;
 
@@ -264,13 +260,14 @@ class Offer extends CI_Controller
 
     public function delete($id)
     {
+
         $auction_id = get_from_id("offer", "auction_id", $id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
         $project_code = project_code($project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
-        $offer_code = get_from_id("offer", "dosya_no", $id);
+        $Offer_code = get_from_id("offer", "dosya_no", $id);
 
-        $path = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$offer_code/";
+        $path = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$Offer_code/";
 
         $sil = deleteDirectory($path);
 
@@ -321,7 +318,7 @@ class Offer extends CI_Controller
         redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$auction_id"));
     }
 
-    public function file_upload($id, $comp_id)
+    public function file_upload($id)
     {
         $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
         $size = $_FILES["file"]["size"];
@@ -331,11 +328,11 @@ class Offer extends CI_Controller
         $project_id = get_from_id("auction", "proje_id", $auction_id);
         $project_code = project_code($project_id);
         $auction_code = get_from_id("auction", "dosya_no", get_from_id("offer", "auction_id", $id));
-        $offer_code = get_from_id("offer", "dosya_no", $id);
+        $Offer_code = get_from_id("offer", "dosya_no", $id);
 
         $config["allowed_types"] = "*";
-        $config["upload_path"] = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix";
-        $config["file_name"] = $comp_id . "---" . date("d-m-y");
+        $config["upload_path"] = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$Offer_code";
+        $config["file_name"] = $file_name;
 
         $this->load->library("upload", $config);
 
@@ -355,8 +352,6 @@ class Offer extends CI_Controller
                 )
             );
 
-            redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$auction_id"));
-
         } else {
             echo "islem basarisiz";
             echo $config["upload_path"];
@@ -371,21 +366,21 @@ class Offer extends CI_Controller
             )
         );
 
-
         $offer_id = get_from_id("offer_files", "offer_id", $id);
         $auction_id = get_from_id("offer", "auction_id", $offer_id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
         $project_code = project_code($project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
+        $Offer_code = get_from_id("offer", "dosya_no", $offer_id);
 
-        $file_path = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$fileName->img_url";
+        $file_path = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$Offer_code/$fileName->img_url";
+
 
         if ($file_path) {
 
             if (file_exists($file_path)) {
                 $data = file_get_contents($file_path);
-
-                force_download((bid_file_name($fileName->img_url)), $data);
+                force_download($fileName->img_url, $data);
             } else {
                 echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
             }
@@ -423,7 +418,6 @@ class Offer extends CI_Controller
 
     public function fileDelete($id)
     {
-
         $viewData = new stdClass();
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -437,11 +431,13 @@ class Offer extends CI_Controller
             )
         );
 
+
         $offer_id = get_from_id("offer_files", "offer_id", $id);
         $auction_id = get_from_id("offer", "auction_id", $offer_id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
         $project_code = project_code($project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
+        $Offer_code = get_from_id("offer", "dosya_no", $offer_id);
 
         $delete = $this->Offer_file_model->delete(
             array(
@@ -451,7 +447,8 @@ class Offer extends CI_Controller
 
         if ($delete) {
 
-            $path = "$this->File_Dir_Prefix/$project_code/$auction_code/Offer/$fileName->img_url";
+            $path = "$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$Offer_code/$fileName->img_url";
+
             unlink($path);
 
             $viewData->item = $this->Offer_model->get(
@@ -470,23 +467,19 @@ class Offer extends CI_Controller
             echo $render_html;
 
         }
-
     }
 
     public function fileDelete_all($id)
     {
-
         $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-
 
         $auction_id = get_from_id("offer", "auction_id", $id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
         $project_code = project_code($project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
+        $Offer_code = get_from_id("offer", "dosya_no", $id);
 
         $delete = $this->Offer_file_model->delete(
             array(
@@ -496,10 +489,10 @@ class Offer extends CI_Controller
 
         if ($delete) {
 
-            $dir_files = directory_map("$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix");
+            $dir_files = directory_map("$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$Offer_code");
 
             foreach ($dir_files as $dir_file) {
-                unlink("$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$dir_file");
+                unlink("$this->File_Dir_Prefix/$project_code/$auction_code/$this->File_Dir_Suffix/$Offer_code/$dir_file");
             }
 
             $viewData->item = $this->Offer_model->get(
@@ -514,22 +507,27 @@ class Offer extends CI_Controller
                 )
             );
 
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
+            echo $render_html;
+
+
         }
 
     }
 
-    public function download_all($offer_id)
+    public function download_all($Offer_id)
     {
         $this->load->library('zip');
         $this->zip->compression_level = 0;
 
-        $auction_id = get_from_id("Offer", "auction_id", "$offer_id");
+        $auction_id = get_from_id("offer", "auction_id", "$Offer_id");
+        $Offer_code = get_from_id("offer", "dosya_no", "$Offer_id");
         $project_id = get_from_id("auction", "proje_id", $auction_id);
         $project_code = project_code($project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
         $auction_name = get_from_id("auction", "ihale_ad", $auction_id);
 
-        $path = "uploads/project_v/$project_code/$auction_code/$this->Module_Name";
+        $path = "uploads/project_v/$project_code/$auction_code/$this->Module_Name/$Offer_code";
         echo $path;
 
         $files = glob($path . '/*');

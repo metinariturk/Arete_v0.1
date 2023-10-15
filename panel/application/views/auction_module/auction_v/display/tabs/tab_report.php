@@ -4,7 +4,7 @@
      aria-labelledby="report-tab">
     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/graphs/header"); ?>
 
-    <?php $modules = array("general", "cost", "condition", "qualify", "offer_report", "explain", "catalog_report"); ?>
+    <?php $modules = array("general", "cost", "condition", "offer_report", "explain"); ?>
     <?php foreach ($modules as $module) { ?>
         <div class="row">
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/graphs/$module"); ?>

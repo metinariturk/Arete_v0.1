@@ -8,7 +8,7 @@
     <tr>
         <th  class="d-none d-sm-table-cell">Hakediş No</th>
         <th  class="d-none d-sm-table-cell">Hakediş İtibar Tarihi</th>
-        <th>Hakediş Tutar</th>
+        <th> Hakediş Tutar</th>
         <th  class="d-none d-sm-table-cell">Net Ödenecek</th>
     </tr>
     </thead>
@@ -74,8 +74,6 @@
         </td>
         <td class="d-none d-sm-table-cell">
         </td>
-        <td class="d-none d-sm-table-cell">
-        </td>
         <td>
             <?php echo money_format(sum_anything("payment", "bu_imalat_ihzarat", "contract_id", $item->id)); ?>
             <?php echo "$item->para_birimi"; ?>
@@ -83,7 +81,6 @@
         <td  class="d-none d-sm-table-cell">
             <?php echo money_format(sum_anything("payment", "net_bedel", "contract_id", $item->id)); ?> <?php echo "$item->para_birimi"; ?>
         </td>
-
     </tr>
     </tfoot>
 </table>

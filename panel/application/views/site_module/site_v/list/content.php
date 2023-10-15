@@ -23,9 +23,6 @@
                 <div class="col-6"><span>Günlük Rapor Sayısı</span></div>
                 <div class="col-6 text-primary"><?php echo count(get_from_any_array("report","site_id","$item->id")); ?></div>
                 <hr>
-                <div class="col-6"><span>Bağlı Alt Sözleşmeler </span></div>
-                <div class="col-6 text-primary"><?php echo count_data_multi("contract","site_id",$item->id,"subcont",1); ?></div>
-                <hr>
                 <div class="col-6"><span>Teknik Personeller</span></div>
                 <div class="col-6 text-primary">  <?php if (!empty($item->teknik_personel)) { ?>
                         <?php foreach (get_as_array($item->teknik_personel) as $personel) { ?>

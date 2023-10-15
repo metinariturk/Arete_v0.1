@@ -4,12 +4,12 @@ $bugun = date("Y-m-d");
 <div class="row">
     <div class="col-6" >
         <?php if (!empty($ymler)) { ?>
-            <div class="card-header text-center">
+            <div class="text-center">
                 <h4>Yaklaşık Maliyet</h4>
             </div>
             <div class="row" style="justify-content: center;">
                 <?php if (!empty($ymler)) { ?>
-                    <table class="table" style="width: 80%">
+                    <table style="width: 80%">
                         <tbody>
                         <?php if (!empty($ymler)) { ?>
                             <?php $groups = array_unique(array_column($ymler, 'ym_grup')); ?>
@@ -54,7 +54,7 @@ $bugun = date("Y-m-d");
 
     </div>
     <div class="col-6">
-        <div class="card-header text-center">
+        <div class="text-center">
             <h4>Maliyet Dağılımı</h4>
         </div>
         <div style="justify-content: center;" id="yaklasik"></div>

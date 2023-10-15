@@ -1,198 +1,73 @@
-<?php if (isset($teklifler->offer)) { ?>
-    <?php $teklifler = json_decode($teklifler->offer, true); ?>
-    <?php if (isset($teklifler)) { ?>
-        <?php foreach ($teklifler as $teklif) {
-            $istekliler = array_keys($teklif);
-        } ?>
-        <div class="col-sm-12 d-none d-sm-block">
-            <button class="btn btn-pill btn-outline-success" onclick="OfferToExcel('xlsx')"
-                    type="button"><i class="fa fa-share-square-o"></i> EXCEL
-            </button>
-            <table class="table" id="offer_table">
-                <thead>
-                <tr>
-                    <th style="width: 150px;">Firma Adı</th>
-                    <?php $i = 0; ?>
-                    <?php foreach ($teklifler as $key) { ?>
-                        <?php $x = $i++; ?>
-                        <th <?php if (($x > 1) and ($x < (count($teklifler)-2))){echo "class='d-none'";} ?> ><?php echo $x+1; ?>. Teklif</th>
-                    <?php } ?>
-                    <th>En Yüksek</th>
-                    <th>En Düşük</th>
-                    <th>Tenzilat</th>
-                    <th>İşlem</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($istekliler as $istekli) { ?>
-                    <tr>
-                        <td><?php echo company_name($istekli); ?></td>
 
-                        <?php $j = 0; ?>
-                        <?php foreach ($teklifler as $teklif) { ?>
-                            <?php $y = $j++; ?>
-                            <td <?php if (($y > 1) and ($y < (count($teklifler)-2))){echo "class='d-none'";} ?> >
-                                <?php echo money_format($teklif[$istekli]) . " " . $item->para_birimi; ?>
-                                <?php $collect[] = $teklif[$istekli]; ?>
-                            </td>
-                        <?php } ?>
-                        <td>
-                            <?php echo money_format(max($collect)) . " " . $item->para_birimi; ?>
-                        </td>
-                        <td>
-                            <?php
-                            $min_offer = min($collect);
-                            echo money_format(min($collect)) . " " . $item->para_birimi; ?>
 
-                        </td>
-                        <td>
-                            <?php echo two_digits_percantage(1 - min($collect) / max($collect)); ?>
-                        </td>
-                        <td><a class="btn btn-success active"
-                               href="<?php echo base_url("contract/new_form_auction/$item->id/$istekli/$min_offer"); ?>"
-                               type="button" title=""
-                               data-bs-original-title="<?php echo min($collect); ?> İle Sözleşmeye Çevir">
-                                <i class="menu-icon fa fa-check-circle-o"
-                                   aria-hidden="true"></i>
-                            </a>
-                        </td>
-                    </tr>
-                <?php } ?>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <?php $collect_total = array(); ?>
-                    <?php $deneme = array(); ?>
-                    <?php foreach ($teklifler as $teklifs) { ?>
-                        <?php foreach ($teklifs as $key => $value) {
-                            $deneme[] = $value;
-                        } ?>
-                    <?php } ?>
-                    <td colspan="3" class="bg-info">
-                        <strong>En Yüksek Teklif : <?php $a = max($deneme);
-                            echo money_format($a) . " " . $item->para_birimi; ?>
-                        </strong>
+<div class="col-sm-12">
+    <table class="table" id="cost_table">
+        <thead>
+        <tr>
+            <th class="d-none d-sm-table-cell"><i class="fa fa-reorder"></i></th>
+            <th>Teklif No</th>
+            <th>Teklif Tarih</th>
+            <th>Teklif Tutar</th>
+            <th>Açıklama</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php if (!empty($offers)) { ?>
+            <?php foreach ($offers as $offer) { ?>
+                <tr id="center_row">
+                    <td class="d-none d-sm-table-cell">
+                        <?php echo $offer->id; ?>
                     </td>
-                    <td colspan="<?php echo count($teklifler) + 1; ?>">
-                        <h5>
-                            <?php foreach ($teklifler as $teklifs) { ?>
-                                <?php $higest_search = array_keys($teklifs, max($deneme)); ?>
-                                <?php if (!empty($higest_search)) {
-                                    echo company_name($higest_search[0]);
-                                } ?>
+                    <td class="d-none d-sm-table-cell">
+                        <a href="<?php echo base_url("offer/file_form/$offer->id"); ?>">
+                            <?php echo $offer->offer_no; ?>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="<?php echo base_url("offer/file_form/$offer->id"); ?>">
+                            <?php echo $offer->offer_date; ?>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="<?php echo base_url("offer/file_form/$offer->id"); ?>">
+                            <?php echo money_format($offer->offer_price) . " " . get_currency_auc($item->id); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="<?php echo base_url("offer/file_form/$offer->id"); ?>">
+                            <?php echo $offer->aciklama; ?>
+                        </a>
+                    </td>
+                    <td>
+                        <div>
+                            <?php if (!empty($offer->id)) {
+                                $offer_files = get_module_files("offer_files", "offer_id", "$offer->id");
+                                if (!empty($offer_files)) { ?>
+                                    <a class="btn btn-pill btn-success btn-air-success" type="button" title=""
+                                       href="<?php echo base_url("offer/download_all/$offer->id"); ?>"
+                                       data-bs-original-title="<?php foreach ($offer_files as $offer_file) { ?>
+                                            <?php echo filenamedisplay($offer_file->img_url); ?> |
+                                            <?php } ?>"
+                                       data-original-title="btn btn-pill btn-info btn-air-info ">
+                                        <i class="fa fa-download" aria-hidden="true"></i> Dosya
+                                        (<?php echo count($offer_files); ?>)
+                                    </a>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <div class="div-table">
+                                    <div class="div-table-row">
+                                        <div class="div-table-col">
+                                            Dosya Yok, Eklemek İçin Görüntüle Butonundan Şartname Sayfasına
+                                            Gidiniz
+                                        </div>
+                                    </div>
+                                </div>
                             <?php } ?>
-                        </h5>
+                        </div>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="3" class="bg-success">
-                        <strong>En Düşük Teklif
-                            : <?php echo money_format(min($deneme)) . " " . $item->para_birimi; ?></strong>
-                    </td>
-                    <td colspan="<?php echo count($teklifler) + 1; ?>">
-                        <h5>
-                            <?php foreach ($teklifler as $teklifs) { ?>
-                                <?php $lowest_search = array_keys($teklifs, min($deneme)); ?>
-                                <?php if (!empty($lowest_search)) {
-                                    echo company_name($lowest_search[0]);
-                                } ?>
-                            <?php } ?>
-                        </h5>
-                    </td>
-                </tr>
-
-                </tfoot>
-            </table>
-        </div>
-    <?php } ?>
-    <?php if (isset($teklifler)) { ?>
-        <?php foreach ($teklifler as $teklif) {
-            $istekliler = array_keys($teklif);
-        } ?>
-        <div class="col-12 d-sm-none">
-            <button class="btn btn-pill btn-outline-success" onclick="OfferToExcel('xlsx')"
-                    type="button"><i class="fa fa-share-square-o"></i> EXCEL
-            </button>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Firma Adı</th>
-                    <th>En Yüksek - En Düşük</th>
-                    <th>İşlem</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($istekliler as $istekli) { ?>
-                    <tr>
-                        <td><?php echo company_name($istekli); ?></td>
-                        <?php $collect = array(); ?>
-                        <?php foreach ($teklifler as $teklif) { ?>
-                            <?php $collect[] = $teklif[$istekli]; ?>
-                        <?php } ?>
-                        <td>
-                            <?php echo money_format(max($collect)) . " " . $item->para_birimi; ?> -
-                            <?php
-                            $min_offer = min($collect);
-                            echo money_format(min($collect)) . " " . $item->para_birimi; ?>
-                        </td>
-                        <td><a class="btn btn-success active"
-                               href="<?php echo base_url("contract/new_form_auction/$item->id/$istekli/$min_offer"); ?>"
-                               type="button" title=""
-                               data-bs-original-title="<?php echo min($collect); ?> İle Sözleşmeye Çevir">
-                                <i class="menu-icon fa fa-check-circle-o"
-                                   aria-hidden="true"></i>
-                            </a>
-                        </td>
-                    </tr>
-                <?php } ?>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <?php $collect_total = array(); ?>
-                    <?php $deneme = array(); ?>
-                    <?php foreach ($teklifler as $teklifs) { ?>
-                        <?php foreach ($teklifs as $key => $value) {
-                            $deneme[] = $value;
-                        } ?>
-                    <?php } ?>
-                    <td colspan="1" class="bg-info">
-                        <strong>En Yüksek Teklif : <?php $a = max($deneme);
-                            echo money_format($a) . " " . $item->para_birimi; ?>
-                        </strong>
-                    </td>
-                    <td colspan="<?php echo count($teklifler) + 1; ?>">
-                        <h5>
-                            <?php foreach ($teklifler as $teklifs) { ?>
-                                <?php $higest_search = array_keys($teklifs, max($deneme)); ?>
-                                <?php if (!empty($higest_search)) {
-                                    echo company_name($higest_search[0]);
-                                } ?>
-                            <?php } ?>
-                        </h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1" class="bg-success">
-                        <strong>En Düşük Teklif
-                            : <?php echo money_format(min($deneme)) . " " . $item->para_birimi; ?></strong>
-                    </td>
-                    <td colspan="<?php echo count($teklifler) + 1; ?>">
-                        <h5>
-                            <?php foreach ($teklifler as $teklifs) { ?>
-                                <?php $lowest_search = array_keys($teklifs, min($deneme)); ?>
-                                <?php if (!empty($lowest_search)) {
-                                    echo company_name($lowest_search[0]);
-                                } ?>
-                            <?php } ?>
-                        </h5>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <button onclick='document.getElementById("foo").classList.toggle("hide2")'>Click me</button>
-    <?php } ?>
-<?php } ?>
-
-
+            <?php } ?>
+        <?php } ?>
+        </tbody>
+    </table>
+</div>

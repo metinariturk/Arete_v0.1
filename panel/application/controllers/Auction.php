@@ -209,8 +209,7 @@ class Auction extends CI_Controller
         $viewData->settings = $settings;
         $viewData->fav = $fav;
 
-        $teklifler = $this->Offer_model->get(array("auction_id" => $id));
-        $teklif_kontrol = $this->Offer_model->get_all(array("auction_id" => $id));
+        $offers = $this->Offer_model->get_all(array("auction_id" => $id));
         $yukleniciler = $this->Company_model->get_all();
         $istekliler = get_from_id("auction", "istekliler", $id);
 
@@ -226,8 +225,7 @@ class Auction extends CI_Controller
         $viewData->project = $project;
         $viewData->ilanlar = $ilanlar;
         $viewData->ihale_ilan = $ihale_ilan;
-        $viewData->teklifler = $teklifler;
-        $viewData->teklif_kontrol = count($teklif_kontrol);
+        $viewData->offers = $offers;
         $viewData->yukleniciler = $yukleniciler;
         $viewData->istekliler = $istekliler;
         $viewData->active_tab = $active_tab;

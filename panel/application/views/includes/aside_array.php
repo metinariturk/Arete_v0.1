@@ -21,10 +21,6 @@ $sidebarList = array(
                 "url" => base_url("Contract")
             ),
             array(
-                "title" => "Alt Sözleşmeler",
-                "url" => base_url("Subcontract")
-            ),
-            array(
                 "title" => "Hakedişler",
                 "url" => base_url("payment")
             ),

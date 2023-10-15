@@ -1,43 +1,24 @@
-<div class="row">
-    <div class="col-xl-4 col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <div class="file-sidebar">
-                    <ul>
-
-                        <li>
-                            <div class="btn btn-light ">
-                                <a href="<?php echo base_url("contract/file_form/$contract_id"); ?>">
-                                    <span style="padding-left: 20px">
-                                    <i class="icofont icofont-law-document"></i>
-                                    <?php echo contract_code_name($item->contract_id); ?>
-                                    </span>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn btn-light">
-                                    <span style="padding-left: 40px">
-                                        <i class="icon-gallery"></i>
-                                        <?php echo $item->dosya_no; ?> / <?php echo module_name($this->Module_Name); ?>
-                                    </span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+<div class="container-fluid">
+    <div class="email-wrap bookmark-wrap">
+        <div class="row">
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-4 box-col-2">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/navtab"); ?>
             </div>
-        </div>
-        <div class="card">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/display_table"); ?>
-        </div>
-    </div>
-    <div class="col-xl-8 col-md-6 box-col-6">
-        <div class="file-content">
-            <div class="card">
-                <div class="card-header">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
+            <div class="col-xxl-10 col-xl-9 col-lg-8 col-md-8 box-col-10">
+                <div class="email-right-aside bookmark-tabcontent">
+                    <div class="card email-body radius-left">
+                        <div class="ps-0">
+                            <div class="tab-content">
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_main"); ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_works_done"); ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_green"); ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_boq"); ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_images"); ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_graph"); ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
             </div>
         </div>
     </div>

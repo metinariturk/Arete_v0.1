@@ -63,7 +63,9 @@
                                 </a>
                             </td>
                             <td>
-
+                                <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>">
+                                    <?php echo company_name($subcontract->yuklenici); ?>
+                                </a>
                             </td>
                             <td>
                                 <a href="<?php echo base_url("contract/file_form/$subcontract->id"); ?>">

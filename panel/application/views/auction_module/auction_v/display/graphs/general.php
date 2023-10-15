@@ -10,7 +10,7 @@ $bugun = date("Y-m-d");
 </div>
 <div class="row">
     <div class="col-6">
-        <table class="table">
+        <table>
             <tbody>
             <tr>
                 <td><b>İşveren</b></td>
@@ -48,7 +48,7 @@ $bugun = date("Y-m-d");
         </table>
     </div>
     <div class="col-6">
-        <table class="table">
+        <table>
             <tbody>
             <tr>
                 <td><b>Görevliler</b></td>

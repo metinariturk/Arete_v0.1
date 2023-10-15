@@ -103,11 +103,13 @@ class Boq extends CI_Controller
 
         $contract_id = contract_id_module("boq", $id);
         $project_id = project_id_cont($contract_id);
+        $active_tab = null;
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = $this->Display_Folder;
         $viewData->project_id = $project_id;
+        $viewData->active_tab = $active_tab;
         $viewData->contract_id = $contract_id;
         $viewData->item = $this->Boq_model->get(array("id" => $id));
 

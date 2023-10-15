@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-12">
                 <h4 class="text-center">İstekli Teklifleri</h4>
-                <table class="table" id="tbl_exporttable_to_xls">
+                <table id="tbl_exporttable_to_xls">
                     <thead>
                     <tr>
                         <th style="width: 150px;">Firma Adı</th>
@@ -56,7 +56,7 @@
     <div class="row">
         <?php if (count($teklifler) > 6) { ?>
             <div class="col-sm-4">
-                <table class="table">
+                <table>
                     <thead>
                     <tr>
                         <th>Firma Adı</th>

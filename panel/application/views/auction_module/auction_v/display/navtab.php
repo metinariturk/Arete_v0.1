@@ -72,51 +72,7 @@
                             </span>
                         </a>
                     </li>
-                    <li>
-                        <a class="show" id="yayin-tab" data-bs-toggle="pill"
-                           href="#yayin" role="tab" aria-controls="yayin"
-                           aria-selected="false">
-                            <span class="title">
-                            İlanlar
-                            </span>
-                            <span class="badge pull-right">
-                                (<?php echo count($ilanlar) ?>)
-                            </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="show" id="istekliler-tab" data-bs-toggle="pill"
-                           href="#istekliler" role="tab" aria-controls="istekliler"
-                           aria-selected="false">
-                            <span class="title">
-                            İstekliler
-                            </span>
-                            <span class="badge pull-right">
-                                (<?php if (isset($istekliler)) {
-                                    echo count(json_decode($istekliler));
-                                } else {
-                                    echo "0";
-                                } ?>)
-                            </span>
-                        </a>
-                    </li>
 
-                    <li>
-                        <a class="show" id="yeterlilik-tab" data-bs-toggle="pill"
-                           href="#yeterlilik" role="tab" aria-controls="yeterlilik"
-                           aria-selected="false">
-                            <span class="title">
-                                Ön Yeterlilik
-                            </span>
-                            <span class="badge pull-right">
-                                <?php if (!empty($item->yeterlilik)) { ?>
-                                    <i class="icon-check"></i>
-                                <?php } else { ?>
-                                    <i class="icon-plus"></i>
-                                <?php } ?>
-                            </span>
-                        </a>
-                    </li>
 
                     <li>
                         <a class="show" id="offers-tab" data-bs-toggle="pill"
@@ -126,11 +82,7 @@
                                 Teklifler
                             </span>
                             <span class="badge pull-right">
-                                <?php if (!empty($teklifler)) { ?>
-                                    <i class="icon-check"></i>
-                                <?php } else { ?>
-                                    <i class="icon-plus"></i>
-                                <?php } ?>
+                                (<?php echo count($offers) ?>)
                             </span>
                         </a>
                     </li>

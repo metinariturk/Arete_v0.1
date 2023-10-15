@@ -30,7 +30,7 @@ if (empty($auc_id)) { ?>
     </div>
 <?php } else { ?>
     <div class="row">
-        <div class="col-12">
+        <div class="col-sm-12 col-md-4">
             <div class="card">
                 <div class="card-body">
                     <div class="file-sidebar">
@@ -40,16 +40,6 @@ if (empty($auc_id)) { ?>
                                     <a href="<?php echo base_url("project/file_form/$project_id"); ?>">
                                         <i data-feather="home"></i>
                                         <?php echo project_code_name($project_id); ?>
-                                    </a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="btn btn-light ">
-                                    <a href="<?php echo base_url("auction/file_form/$auc_id"); ?>">
-                                    <span style="padding-left: 20px">
-                                    <i class="icofont icofont-law-document"></i>
-                                    <?php echo auction_code($auc_id); ?>
-                                    </span>
                                     </a>
                                 </div>
                             </li>
@@ -66,13 +56,15 @@ if (empty($auc_id)) { ?>
                 </div>
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-sm-12 col-md-8">
             <div class="card">
-                <form id="save_<?php echo $this->Module_Name; ?>"
-                      action="<?php echo base_url("$this->Module_Name/save/$auc_id"); ?>" method="post"
-                      enctype="multipart/form-data" autocomplete="off">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
-                </form>
+                <div class="card-body">
+                    <form id="save_<?php echo $this->Module_Name; ?>"
+                          action="<?php echo base_url("$this->Module_Name/save/$auc_id"); ?>" method="post"
+                          enctype="multipart/form-data" autocomplete="off">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
