@@ -40,7 +40,7 @@
                                 <div class="form-group mb-0">
                                     <div class="checkbox p-0">
                                         <input id="checkbox1" type="checkbox">
-                                        <label class="text-muted" for="checkbox1">Remember password</label>
+                                        <label class="text-muted" for="checkbox1">Şifremi Hatırla</label>
                                     </div>
 
                                     <button class="btn btn-primary btn-block w-100" type="submit">Şifremi Değiştir</button>

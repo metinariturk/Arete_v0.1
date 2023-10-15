@@ -10,10 +10,11 @@ class Newprice extends CI_Controller
     {
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -243,7 +244,7 @@ class Newprice extends CI_Controller
                     "connected_contract_id" => $contract_id,
                     "file_order" => $file_name,
                     "createdAt" => date("Y-m-d H:i:s"),
-"createdBy" => active_user_id(),
+                    "createdBy" => active_user_id(),
                 )
             );
 
@@ -430,7 +431,7 @@ class Newprice extends CI_Controller
                 ),
                 array(
                     "deletedAt" => date("Y-m-d H:i:s"),
-"deletedBy" => active_user_id(),
+                    "deletedBy" => active_user_id(),
                 )
             );
 
@@ -478,7 +479,7 @@ class Newprice extends CI_Controller
             ),
             array(
                 "deletedAt" => date("Y-m-d H:i:s"),
-"deletedBy" => active_user_id(),
+                "deletedBy" => active_user_id(),
             )
         );
 
@@ -529,7 +530,7 @@ class Newprice extends CI_Controller
                 array(
                     "img_url" => $uploaded_file,
                     "createdAt" => date("Y-m-d H:i:s"),
-"createdBy" => active_user_id(),
+                    "createdBy" => active_user_id(),
                     "$this->Dependet_id_key" => $id,
                     "size" => $size
                 )

@@ -4,8 +4,8 @@
             <div class="login-card">
                 <div>
                     <div><a class="logo" href="<?php echo base_url("ana-sayfa"); ?>">
-                            <img class="img-fluid for-light" src="<?php echo base_url("assets"); ?>/images/logo/login.png" alt="looginpage">
-                            <img class="img-fluid for-dark" src="<?php echo base_url("assets"); ?>/images/logo/logo_dark.png" alt="looginpage">
+                            <img class="img-fluid for-light" src="<?php echo base_url("assets"); ?>/images/logo/login.png" width="400px" alt="looginpage">
+                            <img class="img-fluid for-dark" src="<?php echo base_url("assets"); ?>/images/logo/logo_dark.png" width="400px" alt="looginpage">
                         </a></div>
                     <div class="login-main">
                         <form action="<?php echo base_url("reset-password"); ?>" method="post">

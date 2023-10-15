@@ -423,6 +423,7 @@ function module_name($module_name)
 {
     $module_types = array(
         "Proje" => "project",
+        "Hakediş Metraj" => "boq",
         "Avans" => "advance",
         "Teminat" => "bond",
         "Görsel Katalogları" => "catalog",
@@ -439,7 +440,7 @@ function module_name($module_name)
         "Yaklaşık Maliyet" => "cost",
         "Teşvik/Hibe" => "incentive",
         "Yayın" => "notice",
-        "Teklif" => "offer",
+        "Teklif Formu" => "offer",
         "Rapor" => "report",
         "Şantiye" => "site",
         "Şantiye Depo" => "sitestock",
