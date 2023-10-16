@@ -1,90 +1,114 @@
 <script>
-    // Input alanlarını virgülleri otomatik olarak noktaya çevir ve hesaplamaları yap
-    var inputElements = document.querySelectorAll('input[id$="_thisqty"], input[id$="_unitprice"], input[id$="_oldqty"]');
-    inputElements.forEach(function(input) {
-        input.addEventListener("input", function() {
-            var id = input.id.split("_")[0]; // ID'den malzeme numarasını al
+    function renderCalculate(btn) {
+        var $url = btn.getAttribute('url');
 
-            // Virgülü otomatik olarak noktaya çevir
-            var inputValue = input.value;
-            input.value = inputValue.replace(/,/g, '.');
-
-            // Hesaplamaları yap
-            calculateTotal(id);
-        });
-    });
-
-    inputElements.forEach(function(input) {
-        var id = input.id.split("_")[0];
-        calculateTotal(id);
-    });
-
-    function formatNumberWithSpaces(number) {
-        // Sayıyı binlik ayracı olan boşlukla formatla
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        $.post($url, {}, function (response) {
+            $(".dynamic").html(response);
+        })
     }
+</script>
+<script>
+    function calculateAndSetResult(income, row_number) {
+        var totalResult = 0;
+        var total = 0; // Toplamı saklamak için bir değişken tanımlayın
+        var allEmpty = true; // Tüm q, w, h, l değerleri boş mu?
 
-    function calculateTotal(materialId) {
-        var qtyInput = document.getElementById(materialId + "_thisqty");
-        var priceInput = document.getElementById(materialId + "_unitprice");
-        var totalInput = document.getElementById(materialId + "_thisprice");
+        for (var i = 1; i <= 10; i++) {
+            var q = parseFloat(document.getElementById('q_' + income + '_' + i).value);
+            var w = parseFloat(document.getElementById('w_' + income + '_' + i).value);
+            var h = parseFloat(document.getElementById('h_' + income + '_' + i).value);
+            var l = parseFloat(document.getElementById('l_' + income + '_' + i).value);
 
-        // Kullanıcının girdiği değeri alırken virgülü otomatik olarak noktaya çeviriyoruz
-        var qtyValue = qtyInput.value.replace(/ /g, '').replace(',', '.'); // Girilen boşluğu kaldır ve virgülü noktaya çevir
-        var priceValue = priceInput.value.replace(/ /g, '').replace(',', '.'); // Girilen boşluğu kaldır ve virgülü noktaya çevir
+            var qElement = document.getElementById('q_' + income + '_' + i);
+            if (qElement) {
+                var q = parseFloat(qElement.value);
+                // Diğer işlemleri yapın
+            } else {
+                console.log("Element bulunamadı: q_" + income + "_" + i);
+            }
 
-        var qty = parseFloat(qtyValue) || 0; // Miktarı al, eğer geçersizse veya boşsa 0 kabul et
-        var price = parseFloat(priceValue) || 0; // Birim fiyatı al, eğer geçersizse veya boşsa 0 kabul et
+            var n = document.getElementById('n_' + income + '_' + i).value.toLowerCase();
 
-        var total = qty * price; // Toplam maliyeti hesapla
+            var forbiddenWord = 'minha';
 
-        totalInput.value = formatNumberWithSpaces(total.toFixed(2)); // Toplam maliyeti binlik ayracı ile formatlı olarak input alanına yaz
+            var qInput = document.getElementById('q_' + income + '_' + i);
+            var wInput = document.getElementById('w_' + income + '_' + i);
+            var nInput = document.getElementById('n_' + income + '_' + i);
+            var sInput = document.getElementById('s_' + income + '_' + i);
+            var hInput = document.getElementById('h_' + income + '_' + i);
+            var lInput = document.getElementById('l_' + income + '_' + i);
+            var tInput = document.getElementById('t_' + income + '_' + i);
 
-        // Tüm "_total" input alanlarının toplamını hesapla
-        var totalContract = 0;
-        var totalInputs = document.querySelectorAll('input[id$="_thisprice"]');
-        totalInputs.forEach(function(input) {
-            totalContract += parseFloat(input.value.replace(/ /g, '')) || 0; // Girilen boşluğu kaldır
-        });
+            if (n.includes(forbiddenWord)) {
+                qInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                wInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                hInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                lInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                tInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                nInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                sInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+            } else {
+                qInput.style.backgroundColor = '';
+                wInput.style.backgroundColor = '';
+                hInput.style.backgroundColor = '';
+                lInput.style.backgroundColor = '';
+                tInput.style.backgroundColor = '';
+                nInput.style.backgroundColor = '';
+                sInput.style.backgroundColor = '';
+            }
 
-        // Toplam maliyeti "total_contract" input alanına yaz
-        document.getElementById("this_payment").value = formatNumberWithSpaces(totalContract.toFixed(2));
+            // Değerler boşsa, t değerini 0 olarak ayarla
+            if (isNaN(q) && isNaN(w) && isNaN(h) && isNaN(l)) {
+                document.getElementById('t_' + income + '_' + i).value = "0";
+            } else {
+                q = q || 1; // Eğer q değeri yoksa veya NaN ise 1 olarak ayarla
+                w = w || 1; // Benzer şekilde diğer değerleri de düzelt
+                h = h || 1;
+                l = l || 1;
 
-        var oldQtyInput = document.getElementById(materialId + "_oldqty");
-        var oldPriceInput = document.getElementById(materialId + "_unitprice");
-        var oldTotalInput = document.getElementById(materialId + "_oldprice");
+                var m = n.includes(forbiddenWord) ? -1 : 1;
 
-        // Kullanıcının girdiği değeri alırken virgülü otomatik olarak noktaya çeviriyoruz
-        var oldQtyValue = oldQtyInput.value.replace(/ /g, '').replace(',', '.'); // Girilen boşluğu kaldır ve virgülü noktaya çevir
-        var oldPriceValue = oldPriceInput.value.replace(/ /g, '').replace(',', '.'); // Girilen boşluğu kaldır ve virgülü noktaya çevir
+                var result = m * q * w * h * l;
+                result = result.toFixed(2);
+                document.getElementById('t_' + income + '_' + i).value = result;
+                totalResult += parseFloat(result);
+                allEmpty = false; // En az bir değer dolu, allEmpty değerini false yap
+            }
 
-        var oldQty = parseFloat(oldQtyValue) || 0; // Miktarı al, eğer geçersizse veya boşsa 0 kabul et
-        var oldPrice = parseFloat(oldPriceValue) || 0; // Birim fiyatı al, eğer geçersizse veya boşsa 0 kabul et
+        }
 
-        var oldTotal = oldQty * oldPrice; // Toplam maliyeti hesapla
+        if (allEmpty) {
+            document.getElementById('total_' + income).value = "0";
+        } else {
+            document.getElementById('total_' + income).value = totalResult.toFixed(2);
+        }
 
-        oldTotalInput.value = formatNumberWithSpaces(oldTotal.toFixed(2)); // Toplam maliyeti binlik ayracı ile formatlı olarak input alanına yaz
-
-        // Tüm "_total" input alanlarının toplamını hesapla
-        var oldTotalContract = 0;
-        var oldTotalInputs = document.querySelectorAll('input[id$="_oldprice"]');
-        oldTotalInputs.forEach(function(input) {
-            oldTotalContract += parseFloat(input.value.replace(/ /g, '')) || 0; // Girilen boşluğu kaldır
-        });
-
-        // Toplam maliyeti "total_contract" input alanına yaz
-        document.getElementById("old_payment").value = formatNumberWithSpaces(oldTotalContract.toFixed(2));
-
-        var sonuc = oldTotal + total;
-        document.getElementById(materialId + "_totalprice").value = formatNumberWithSpaces(sonuc.toFixed(2));
-
-        var genel_sonuc = oldTotalContract + totalContract;
-        document.getElementById("total_payment").value = formatNumberWithSpaces(genel_sonuc.toFixed(2));
-
-        var cumulative = oldQty + qty;
-        document.getElementById(materialId + "_cumulative").value = formatNumberWithSpaces(cumulative.toFixed(2));
     }
 
 </script>
+<script>
+    function toggleReadOnly(income) {
+        var toggleCheckbox = document.getElementById('toggleCheckbox');
+        var readonlyInput = document.getElementById('total_' + income);
 
+        readonlyInput.readOnly = !toggleCheckbox.checked;
 
+        for (var i = 1; i <= 10; i++) {
+            var qInput = document.getElementById('q_' + income + '_' + i);
+            var wInput = document.getElementById('w_' + income + '_' + i);
+            var nInput = document.getElementById('n_' + income + '_' + i);
+            var sInput = document.getElementById('s_' + income + '_' + i);
+            var hInput = document.getElementById('h_' + income + '_' + i);
+            var lInput = document.getElementById('l_' + income + '_' + i);
+            var tInput = document.getElementById('t_' + income + '_' + i);
+
+            qInput.readOnly = toggleCheckbox.checked;
+            wInput.readOnly = toggleCheckbox.checked;
+            nInput.readOnly = toggleCheckbox.checked;
+            sInput.readOnly = toggleCheckbox.checked;
+            hInput.readOnly = toggleCheckbox.checked;
+            lInput.readOnly = toggleCheckbox.checked;
+            tInput.readOnly = toggleCheckbox.checked;
+        }
+    }
+</script>

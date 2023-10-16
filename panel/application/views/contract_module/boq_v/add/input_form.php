@@ -12,13 +12,13 @@
                                    class="boq-link"><?php echo $mainCounter . ". " . boq_name($boq_group); ?></a>
                                 <ul class="sub-list">
                                     <?php $subCounter = 'a'; ?>
-                                    <?php foreach ($boqs as $boq) { ?>
+                                    <?php foreach ($boqs as $boq_id) { ?>
                                         <a onclick="renderCalculate(this)"
                                            class="btn me-3" href="#"
                                            data-bs-original-title=""
                                            title=""
-                                           url="<?php echo base_url("$this->Module_Name/calculate_render/$contract->id/$boq"); ?>">
-                                            <?php echo boq_name($boq); ?>
+                                           url="<?php echo base_url("$this->Module_Name/calculate_render/$contract->id/$payment_no/$boq_id"); ?>">
+                                            <?php echo boq_name($boq_id); ?>
                                         </a>
                                         <?php $subCounter++; ?>
                                     <?php } ?>

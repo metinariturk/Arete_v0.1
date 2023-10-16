@@ -13,9 +13,10 @@ class Boq extends CI_Controller
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
-        $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
-        redirect(base_url("sifre-yenile"));
-    }
+        $this->Theme_mode = get_active_user()->mode;
+        if (temp_pass_control()) {
+            redirect(base_url("sifre-yenile"));
+        }
 
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "boq_v";
@@ -72,19 +73,27 @@ class Boq extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function new_form($contract_id = null)
+    public function new_form($contract_id = null, $payment_no = null, $boq_id = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        if (empty($payment_no)) {
+            if (empty($contract_id)) {
+                $contract_id = $this->input->post("contract_id");
+                if (empty($contract_id)) {
+                    redirect(base_url("dashboard"));
+                } else {
+                    redirect(base_url("contract/file_form/$contract_id/payment"));
+                }
+            } elseif (count_payments($contract_id) == 0) {
+                $payment_no = 1;
+            } else {
+                $payment_no = last_payment($contract_id) + 1;
+            }
         }
 
-        if ($contract_id == null) {
-            $contract_id = $this->input->post("contract_id");
-        }
 
         $contract = $this->Contract_model->get(array(
                 "id" => $contract_id
@@ -96,20 +105,20 @@ class Boq extends CI_Controller
 
         $settings = $this->Settings_model->get();
 
-
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
+        $viewData->payment_no = $payment_no;
         $viewData->contract = $contract;
+        $viewData->boq_id = $boq_id;
+        $viewData->settings = $settings;
+        $viewData->contract_id = $contract_id;
 
         if ((!empty($this->input->post("contract_id"))) or !empty($contract_id)) {
             $viewData->project_id = project_id_cont($contract_id);
         }
-        $viewData->contract_id = $contract_id;
-        $viewData->settings = $settings;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
     }
 
     public function update_form($id)
@@ -184,7 +193,7 @@ class Boq extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function calculate_render($contract_id, $boq)
+    public function calculate_render($contract_id, $payment_no, $boq_id)
     {
 
         if (!isAdmin()) {
@@ -193,147 +202,85 @@ class Boq extends CI_Controller
 
         $viewData = new stdClass();
 
+
+        $isset_boq =
+            get_from_any_and_and("boq",
+                "contract_id", "$contract_id",
+                "payment_no", "$payment_no",
+                "boq_id", $boq_id);
+
+
+
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
 
-        $viewData->income = $boq;
+        $viewData->income = $boq_id;
+        if (isset($isset_boq)) {
+            $old_boq = $this->Boq_model->get(
+                array(
+                    "id" => $isset_boq,
+                )
+            );
+            $viewData->old_boq = json_decode($old_boq->calculation,true);
+
+        }
+        $viewData->payment_no = $payment_no;
+        $viewData->contract_id = $contract_id;
 
         $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
 
         echo $render_calculate;
     }
 
-    public function save($contract_id)
+    public function save($contract_id = null, $payment_no = null)
     {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
 
         $boq_array = ($this->input->post('boq[]'));
+        $boq_id = ($this->input->post('boq_id'));
+        $boq_total = ($this->input->post("total_$boq_id"));
 
         foreach ($boq_array as $key => $sub_array) {
             if (empty(array_filter($sub_array))) {
                 unset($boq_array[$key]);
             }
         }
-        echo "<pre>";
 
-        print_r($boq_array);
-        echo "</pre>";
-
-        die();
-        $contract_id = contract_id_module("boq", $id);
-
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $this->load->library("form_validation");
-
-        $file_name_len = file_name_digits();
-        $file_name = "AV-" . $this->input->post('dosya_no');
-
-        $contract_price = get_from_id("contract", "sozlesme_bedel", $contract_id);
-        $sozlesme_tarih = dateFormat_dmy(get_from_any("contract", "sozlesme_tarih", "id", "$contract_id"));
-
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "is_unique[boq.dosya_no]|exact_length[$file_name_len]|trim|callback_duplicate_code_check"); //2
-        if ($this->input->post('onay') != "on") {
-            $this->form_validation->set_rules("metraj_miktar", "Metraj Miktarı", "less_than_equal_to[$contract_price]|numeric|required|trim");
-        } else {
-            $this->form_validation->set_rules("metraj_miktar", "Metraj Miktarı", "numeric|required|trim");
-        }
-        $this->form_validation->set_rules("aciklama", "Açıklama", "required|trim");
-
-        $this->form_validation->set_message(
+        $insert = $this->Boq_model->add(
             array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "less_than_equal_to" => "<b>{field}</b> <b>{param}</b> 'den küçük olmalıdır",
-                "is_natural" => "<b>{field}</b> netural alanı rakamlardan oluşmalıdır",
-                "numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
-                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
-                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
-                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "duplicate_name_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
-                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
+                "contract_id" => $contract_id,
+                "boq_id" => $boq_id,
+                "payment_no" => $payment_no,
+                "calculation" => json_encode($boq_array),
+                "total" => $boq_total,
+                "createdAt" => date("Y-m-d H:i:s"),
             )
         );
-
-        // Form Validation Calistirilir..
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-
-            $project_id = project_id_cont("$contract_id");
-            $project_code = project_code("$project_id");
-            $contract_code = contract_code($contract_id);
-
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/$this->Module_Name/$file_name";
-
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-                echo "oluştu";
-            } else {
-                echo "aynı isimde dosya mevcut";
-            }
-
-            $metraj_tarihi = dateFormat('Y-m-d', $this->input->post("metraj_tarih"));
-
-
-            $insert = $this->Boq_model->add(
-                array(
-                    "dosya_no" => $file_name,
-                    "contract_id" => $contract_id,
-                    "metraj_tarih" => $metraj_tarihi,
-                    "metraj_miktar" => $this->input->post("metraj_miktar"),
-                    "metraj_oran" => $this->input->post("metraj_oran"),
-                    "aciklama" => $this->input->post("aciklama"),
-                )
+        if ($insert) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Metraj başarılı bir şekilde eklendi",
+                "type" => "success"
             );
-            $record_id = $this->db->insert_id();
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $this->db->insert_id(),
-                    "connected_contract_id" => $contract_id,
-                    "file_order" => $file_name,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                )
-            );
-            // TODO Alert sistemi eklenecek...
-            if ($insert) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-            // İşlemin Sonucunu Session'a yazma işlemi...
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
-            //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
         } else {
-
-            $project_id = project_id_cont("$contract_id");
-
-            $viewData = new stdClass();
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Add_Folder";
-            $viewData->form_error = true;
-            $viewData->contract_id = $contract_id;
-            $viewData->project_id = $project_id;
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Metraj Ekleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
         }
+        // İşlemin Sonucunu Session'a yazma işlemi...
+        $this->session->set_flashdata("alert", $alert);
+        redirect(base_url("$this->Module_Name/new_form/$contract_id/$payment_no"));
+        //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
     }
 
-    public function update($id)
+    public
+    function update($id)
     {
 
         $this->load->library("form_validation");
@@ -452,7 +399,8 @@ class Boq extends CI_Controller
         }
     }
 
-    public function delete($id)
+    public
+    function delete($id)
     {
         //Bağlı teminat silme işlemleri
         $contract_id = contract_id_module("boq", $id);
@@ -551,7 +499,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function file_upload($id)
+    public
+    function file_upload($id)
     {
 
         $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
@@ -598,7 +547,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function file_download($id)
+    public
+    function file_download($id)
     {
         $fileName = $this->Boq_file_model->get(
             array(
@@ -633,7 +583,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function download_all($boq_id)
+    public
+    function download_all($boq_id)
     {
         $this->load->library('zip');
         $this->zip->compression_level = 0;
@@ -662,7 +613,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function refresh_file_list($id)
+    public
+    function refresh_file_list($id)
     {
         $viewData = new stdClass();
 
@@ -688,7 +640,8 @@ class Boq extends CI_Controller
 
     }
 
-    public function fileDelete($id)
+    public
+    function fileDelete($id)
     {
 
         $viewData = new stdClass();
@@ -745,7 +698,8 @@ class Boq extends CI_Controller
         }
     }
 
-    public function fileDelete_all($id)
+    public
+    function fileDelete_all($id)
     {
 
         $viewData = new stdClass();
@@ -797,7 +751,8 @@ class Boq extends CI_Controller
         }
     }
 
-    public function duplicate_code_check($file_name)
+    public
+    function duplicate_code_check($file_name)
     {
         $file_name = "MTJ-" . $file_name;
 
