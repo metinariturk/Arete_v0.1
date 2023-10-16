@@ -91,8 +91,8 @@
                     </li>
 
 
-                    <li><a class="show" id="price-tab" data-bs-toggle="pill"
-                           href="#price" role="tab" aria-controls="price"
+                    <li><a cdata-bs-toggle="pill"
+                           href="<?php echo base_url("contract/file_form/$item->id/price"); ?>" role="tab"
                            aria-selected="false">
                             <span class="title">
                                 Birim Fiyatlar

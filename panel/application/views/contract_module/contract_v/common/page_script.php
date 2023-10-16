@@ -536,20 +536,18 @@ $payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
 </script>
 
 <script>
-    $(document).ready(function () {
-        // Checkbox değiştiğinde
-        $('#toggleCheckbox').change(function () {
-            // Checkbox durumu (seçili veya seçili değil) alınır
-            var isChecked = $(this).is(':checked');
+    // Checkbox öğesini seçiyoruz
+    var checkbox = document.getElementById("toggleCheckbox");
 
-            // Tablodaki tüm input alanları seçilir ve etkinleştirilir veya devre dışı bırakılır
-            $('#contract_price input').each(function () {
-                // Input'un id'sinde "total" kelimesi yoksa etkinleştir veya devre dışı bırak
-                if ($(this).attr('id').indexOf('total') === -1) {
-                    $(this).prop('disabled', !isChecked);
-                }
-            });
-        });
+    // Checkbox durumunu takip ediyoruz
+    checkbox.addEventListener("change", function() {
+        // Tüm input öğelerini seçiyoruz
+        var inputElements = document.querySelectorAll("input[type='text']");
+
+        // Checkbox işaretlendiğinde veya kaldırıldığında tüm input öğelerini etkinleştir veya devre dışı bırak
+        for (var i = 0; i < inputElements.length; i++) {
+            inputElements[i].disabled = !checkbox.checked;
+        }
     });
 </script>
 

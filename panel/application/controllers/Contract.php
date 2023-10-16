@@ -2750,9 +2750,9 @@ class Contract extends CI_Controller
             ),
         );
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
 
-        echo $render_html;
+        echo $render_boq;
 
     }
 

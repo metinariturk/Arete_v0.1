@@ -121,40 +121,6 @@ class Boq extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function update_form($id)
-    {
-
-        $contract_id = contract_id_module("boq", $id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $project_id = project_id_cont("$contract_id");
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Update_Folder";
-        $viewData->contract_id = $contract_id;
-        $viewData->project_id = $project_id;
-
-        $viewData->item = $this->Boq_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->item_files = $this->Boq_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
-
-    }
 
     public function file_form($id)
     {
@@ -210,7 +176,6 @@ class Boq extends CI_Controller
                 "boq_id", $boq_id);
 
 
-
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -223,7 +188,7 @@ class Boq extends CI_Controller
                     "id" => $isset_boq,
                 )
             );
-            $viewData->old_boq = json_decode($old_boq->calculation,true);
+            $viewData->old_boq = $old_boq;
 
         }
         $viewData->payment_no = $payment_no;
@@ -234,15 +199,74 @@ class Boq extends CI_Controller
         echo $render_calculate;
     }
 
+    public function select_group($contract_id, $payment_no, $group_id)
+    {
+
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $viewData = new stdClass();
+
+        $contract = $this->Contract_model->get(
+            array(
+                "id" => $contract_id
+            ),
+        );
+
+        $active_boq = $contract->active_boq;
+        $active_boqs = json_decode($active_boq, true);
+        $gorup_items = ($active_boqs[$group_id]);
+
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
+
+
+        $viewData->payment_no = $payment_no;
+        $viewData->contract = $contract;
+        $viewData->contract_id = $contract_id;
+        $viewData->gorup_items = $gorup_items;
+
+        $renderGroup = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/renderGroup", $viewData, true);
+
+        echo $renderGroup;
+    }
+
     public function save($contract_id = null, $payment_no = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        $boq_array = ($this->input->post('boq[]'));
+        $total_bypass = $this->input->post('bypass_total');
+
         $boq_id = ($this->input->post('boq_id'));
-        $boq_total = ($this->input->post("total_$boq_id"));
+
+        $old_record = get_from_any_and_and(
+            "boq",
+            "contract_id", "$contract_id",
+            "payment_no", "$payment_no",
+            "boq_id", "$boq_id"
+        );
+
+
+        $boq_array = ($this->input->post('boq[]'));
+
+        if ($total_bypass == "on") {
+            $boq_total = ($this->input->post("total_$boq_id"));
+            echo $boq_total;
+        } else {
+            $boq_total = 0.0;
+            foreach ($boq_array as $item) {
+                if (isset($item['t'])) {
+                    $boq_total += (float)$item['t'];
+                }
+            }
+            echo $boq_total;
+        }
 
         foreach ($boq_array as $key => $sub_array) {
             if (empty(array_filter($sub_array))) {
@@ -250,154 +274,64 @@ class Boq extends CI_Controller
             }
         }
 
-        $insert = $this->Boq_model->add(
-            array(
-                "contract_id" => $contract_id,
-                "boq_id" => $boq_id,
-                "payment_no" => $payment_no,
-                "calculation" => json_encode($boq_array),
-                "total" => $boq_total,
-                "createdAt" => date("Y-m-d H:i:s"),
-            )
-        );
-        if ($insert) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Metraj başarılı bir şekilde eklendi",
-                "type" => "success"
+        if (isset($old_record)) {
+            $update = $this->Boq_model->update(
+                array(
+                    "id" => $old_record
+                ),
+                array(
+                    "calculation" => json_encode($boq_array),
+                    "total" => $boq_total,
+                    "createdAt" => date("Y-m-d H:i:s"),
+                )
             );
+            if ($update) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Metraj başarılı bir şekilde güncellendi",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Metraj Güncelleme sırasında bir problem oluştu",
+                    "type" => "danger"
+                );
+            }
+
         } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Metraj Ekleme sırasında bir problem oluştu",
-                "type" => "danger"
+            $insert = $this->Boq_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "boq_id" => $boq_id,
+                    "payment_no" => $payment_no,
+                    "calculation" => json_encode($boq_array),
+                    "total" => $boq_total,
+                    "createdAt" => date("Y-m-d H:i:s"),
+                )
             );
+            if ($insert) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Metraj başarılı bir şekilde eklendi",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Metraj Ekleme sırasında bir problem oluştu",
+                    "type" => "danger"
+                );
+            }
+
         }
+
         // İşlemin Sonucunu Session'a yazma işlemi...
         $this->session->set_flashdata("alert", $alert);
         redirect(base_url("$this->Module_Name/new_form/$contract_id/$payment_no"));
         //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
     }
 
-    public
-    function update($id)
-    {
-
-        $this->load->library("form_validation");
-
-        $contract_id = contract_id_module("boq", $id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $contract_id = contract_id_module("boq", $id);
-        $contract_price = get_from_id("contract", "sozlesme_bedel", $contract_id);
-
-        $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$contract_id"));
-
-
-        $this->form_validation->set_rules("metraj_tarih", "Metraj Tarihi", "required|trim");
-        if ($this->input->post('onay') != "on") {
-            $this->form_validation->set_rules("metraj_miktar", "Metraj Miktarı", "less_than_equal_to[$contract_price]|numeric|required|trim");
-        } else {
-            $this->form_validation->set_rules("metraj_miktar", "Metraj Miktarı", "numeric|required|trim");
-        }
-        $this->form_validation->set_rules("aciklama", "Açıklama", "required|trim");
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "is_natural_no_zero" => "<b>{field}</b> alanı '0' dan farklı bir tamsayı olmalıdır",
-                "less_than_equal_to" => "<b>{field}</b> <b>{param}</b> 'den küçük olmalıdır",
-                "is_natural" => "<b>{field}</b> netural alanı rakamlardan oluşmalıdır",
-                "numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
-            )
-        );
-
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-
-            if ($this->input->post("metraj_tarih")) {
-                $metraj_tarihi = dateFormat('Y-m-d', $this->input->post("metraj_tarih"));
-            } else {
-                $metraj_tarihi = null;
-            }
-
-            $update = $this->Boq_model->update(
-                array(
-                    "id" => $id
-                ),
-                array(
-                    "metraj_tarih" => $metraj_tarihi,
-                    "metraj_miktar" => $this->input->post("metraj_miktar"),
-                    "metraj_oran" => $this->input->post("metraj_oran"),
-                    "aciklama" => $this->input->post("aciklama"),
-                )
-            );
-
-            $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
-
-            $update2 = $this->Order_model->update(
-                array(
-                    "id" => $file_order_id
-                ),
-                array(
-                    "updatedAt" => date("Y-m-d H:i:s"),
-                )
-            );
-
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-
-            } else {
-
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-
-
-            }
-
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
-
-        } else {
-
-
-            $viewData = new stdClass();
-            $contract_id = contract_id_module("boq", $id);
-            $project_id = project_id_cont("$contract_id");
-
-
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Boq_model->get(
-                array(
-                    "id" => $id,
-                )
-            );
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Update_Folder";
-            $viewData->form_error = true;
-            $viewData->item = $item;
-            $viewData->contract_id = $contract_id;
-            $viewData->project_id = $project_id;
-
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-        }
-    }
 
     public
     function delete($id)

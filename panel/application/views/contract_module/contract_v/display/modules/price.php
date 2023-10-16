@@ -1,7 +1,6 @@
 <?php
 $active_boqs = json_decode($item->active_boq, true);
 ?>
-
 <form id="save_price" action="<?php echo base_url("$this->Module_Name/save_price/$item->id"); ?>" method="post"
       enctype="multipart/form-data" autocomplete="off">
 

@@ -196,9 +196,15 @@ class Book extends CI_Controller
 
     public function delete_sub($id)
     {
-        $delete = $this->Book_model->delete(
+        $delete = $this->Book_model->update(
             array(
                 "id" => $id
+            ),
+            array(
+                "deleted" =>1,
+                "main_category" => null,
+                "sub_category" =>null,
+                "parent" =>null
             )
         );
 
@@ -222,6 +228,18 @@ class Book extends CI_Controller
 
     public function delete_main($id)
     {
+        $delete = $this->Book_model->update(
+            array(
+                "id" => $id
+            ),
+            array(
+                "deleted" =>1,
+                "main_category" => null,
+                "sub_category" =>null,
+                "parent" =>null
+            )
+        );
+
         $delete = $this->Book_model->delete(
             array(
                 "id" => $id
