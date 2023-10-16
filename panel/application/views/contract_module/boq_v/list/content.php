@@ -17,28 +17,25 @@
 
                         <tr>
                             <td>
-                                <a href="<?php echo base_url("newprice/file_form/$item->id"); ?>">
+                                <a href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
                                     <?php echo $item->id; ?>
                                 </a>
                             </td>
                             <td>
-                                <a href="<?php echo base_url("newprice/file_form/$item->id"); ?>">
-                                    <?php echo get_from_id("contract", "sozlesme_ad", $item->contract_id); ?>
+                                <a href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
                                 </a>
                             </td>
                             <td>
-                                <a href="<?php echo base_url("newprice/file_form/$item->id"); ?>">
+                                <a href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
                                     <?php echo $item->dosya_no; ?>
                                 </a>
                             </td>
                             <td>
-                                <a href="<?php echo base_url("newprice/file_form/$item->id"); ?>">
-                                    <?php echo dateFormat('d-m-Y', $item->ybf_tarih); ?>
+                                <a href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
                                 </a>
                             </td>
                             <td>
-                                <a href="<?php echo base_url("newprice/file_form/$item->id"); ?>">
-                                    <?php echo money_format($item->ybf_tutar) . " " . get_currency($item->contract_id); ?>
+                                <a href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
                                 </a>
                             </td>
                         </tr>

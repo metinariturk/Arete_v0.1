@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <?php $this->load->view("includes/head"); ?>
+    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
+
 </head>
 <body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -22,8 +24,22 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
+<script>
+    function renderCalculate(btn) {
+        var $url = btn.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".dynamic").html(response);
+        })
+
+    }
+
+
+</script>
+
+
+
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

@@ -30,13 +30,11 @@ if (empty($contract_id)) { ?>
     </div>
 <?php } else { ?>
     <div class="col-sm-12 col-md-12">
-        <div class="card">
-            <form id="save_<?php echo $this->Module_Name; ?>"
-                  action="<?php echo base_url("$this->Module_Name/save/$contract_id"); ?>" method="post"
-                  enctype="multipart/form-data" autocomplete="off">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
-            </form>
-        </div>
+        <form id="save_<?php echo $this->Module_Name; ?>"
+              action="<?php echo base_url("$this->Module_Name/save/$contract_id"); ?>" method="post"
+              enctype="multipart/form-data" autocomplete="off">
+            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+        </form>
     </div>
 <?php } ?>
 

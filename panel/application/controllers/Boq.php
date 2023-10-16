@@ -184,8 +184,43 @@ class Boq extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
+    public function calculate_render($contract_id, $boq)
+    {
+
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
+
+        $viewData->income = $boq;
+
+        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
+
+        echo $render_calculate;
+    }
+
     public function save($contract_id)
     {
+
+        $boq_array = ($this->input->post('boq[]'));
+
+        foreach ($boq_array as $key => $sub_array) {
+            if (empty(array_filter($sub_array))) {
+                unset($boq_array[$key]);
+            }
+        }
+        echo "<pre>";
+
+        print_r($boq_array);
+        echo "</pre>";
+
+        die();
         $contract_id = contract_id_module("boq", $id);
 
         if (!isAdmin()) {
