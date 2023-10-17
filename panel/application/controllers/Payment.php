@@ -281,16 +281,21 @@ class Payment extends CI_Controller
     }
 
     public
-    function file_form($id)
-    {
+    function file_form($id, $active_tab = null) {
 
 
         $contract_id = contract_id_module("payment", $id);
-
+        $payment_no = get_from_id("payment","hakedis_no","$id");
+        $active_boqs = get_from_id("contract","active_boq","$contract_id");
 
         $viewData = new stdClass();
         $contract = $this->Contract_model->get(array(
             "id" => $contract_id
+        ));
+
+        $calculates = $this->Boq_model->get_all(array(
+            "contract_id" => $contract_id,
+            "payment_no" => $payment_no,
         ));
 
         $project_id = project_id_cont($contract_id);
@@ -300,7 +305,12 @@ class Payment extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->contract = $contract;
+        $viewData->calculates = $calculates;
+        $viewData->active_boqs = json_decode($active_boqs,true);
         $viewData->project_id = $project_id;
+        $viewData->active_tab = $active_tab;
+
+
 
         $item = $this->Payment_model->get(
             array(

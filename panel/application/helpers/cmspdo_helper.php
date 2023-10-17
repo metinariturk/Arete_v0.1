@@ -1092,7 +1092,7 @@ function boq_name($id)
         $q = $ci->db->query($sql);
         if ($q->num_rows() > 0) {
             foreach ($q->result() as $data) {
-                return yazim_duzen($data->name);
+                return mb_strtoupper(yazim_duzen($data->name));
             }
         }
     } else {
@@ -1109,7 +1109,7 @@ function boq_unit($id)
         $q = $ci->db->query($sql);
         if ($q->num_rows() > 0) {
             foreach ($q->result() as $data) {
-                return $data->unit;
+                return mb_strtoupper($data->unit);
             }
         }
     } else {

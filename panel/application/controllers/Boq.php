@@ -122,7 +122,7 @@ class Boq extends CI_Controller
     }
 
 
-    public function file_form($id)
+    public function file_form($id, $active_tab = null)
     {
 
         $contract_id = contract_id_module("boq", $id);
@@ -139,6 +139,8 @@ class Boq extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
+
+        $viewData->active_tab = $active_tab;
 
         $viewData->item = $this->Boq_model->get(
             array(

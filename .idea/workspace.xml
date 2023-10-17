@@ -26,17 +26,17 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/boq_v/add" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/payment_v/common" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\add" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\common" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\add\dynamic" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\common" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\display\tabs" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\add" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
@@ -64,6 +64,7 @@
       <workItem from="1697373248448" duration="6403000" />
       <workItem from="1697393071486" duration="41989000" />
       <workItem from="1697475474427" duration="16354000" />
+      <workItem from="1697571652980" duration="6948000" />
     </task>
     <servers />
   </component>
