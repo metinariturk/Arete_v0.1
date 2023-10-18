@@ -3,6 +3,15 @@
         <div class="card-body">
             <div class="email-app-sidebar left-bookmark">
                 <ul class="nav main-menu" role="tablist">
+                    <?php if (isset($boq)){ ?>
+                        <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
+                            <i class="fa fa-plus"></i> Metraj Düzenle
+                        </a>
+                    <?php } else { ?>
+                        <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
+                            <i class="fa fa-plus"></i> Metraj Yap
+                        </a>
+                    <?php } ?>
                     <li>
                         <a class="show"
                            id="calculate-tab"

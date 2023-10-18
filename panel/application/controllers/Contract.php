@@ -128,9 +128,14 @@ class Contract extends CI_Controller
 
     public function file_form($id, $active_tab = null, $error = null)
     {
-
         if (!isAdmin()) {
             redirect(base_url("error"));
+        }
+
+        if (count_payments($id) == 0) {
+            $payment_no = 1;
+        } else {
+            $payment_no = last_payment($id) + 1;
         }
 
         $fav = $this->Favorite_model->get(array(
@@ -163,6 +168,7 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->payments = $payments;
         $viewData->bonds = $bonds;
+        $viewData->payment_no = $payment_no;
         $viewData->main_bond = $main_bond;
         $viewData->advances = $advances;
         $viewData->drawings = $drawings;
@@ -176,6 +182,16 @@ class Contract extends CI_Controller
         $viewData->catalogs = $catalogs;
         $viewData->sites = $sites;
         $viewData->fav = $fav;
+
+        $form_errors = $this->session->flashdata('form_errors');
+
+        if (!empty($form_errors)) {
+            $viewData->form_errors = $form_errors;
+        } else {
+            $viewData->form_errors = null;
+
+        }
+
 
         if ($active_tab == "workplan" && isset($error)) {
             $viewData->error_workplan = "Ödenek Dilimleri Toplamı Sözleşme Toplam Bedeli ile Aynı Olmalıdır<br>Fark Tutar = " . money_format($error);

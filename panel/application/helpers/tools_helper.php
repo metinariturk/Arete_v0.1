@@ -234,7 +234,8 @@ function fark_gun($date)
 
 function money_format($value = NULL, $decimals = '2', $decimal_sep = ',', $thousand_sep = '.')
 {
-    return number_format($value, $decimals, $decimal_sep, $thousand_sep); // 123T456#78900
+    $numeric_value = is_numeric($value) ? $value : 0; // Convert to a number or set to 0 if not numeric
+    return number_format($numeric_value, $decimals, $decimal_sep, $thousand_sep);
 }
 
 function deleteDirectory($dir)

@@ -2,12 +2,26 @@
     <table class="table table-xs">
         <thead>
         <tr>
+            <th colspan="4" style="text-align: center">
+                <a onclick="renderGroup(this)"
+                               class="btn btn-success me-3" href="#" style="width: 250px;"
+                               data-bs-original-title=""
+                               title=""
+                               url="<?php echo base_url("$this->Module_Name/select_group/$contract->id/$payment_no"); ?>">
+                    <span style="text-align: center">İş Grupları</span>
+                </a></th>
+        </tr>
+        <tr>
+            <th colspan="4" style="text-align: center; font-size: 15px"><strong>Grup Pozları</strong></th>
+        </tr>
+        <tr>
             <th scope="col">İmalat Adı</th>
             <th scope="col">Önceki Miktar</th>
             <th scope="col">Bu Miktar</th>
             <th scope="col">Tomlam Miktar</th>
         </tr>
         </thead>
+
         <tbody>
         <?php foreach ($gorup_items as $boq_ids => $boq_id) { ?>
             <tr>

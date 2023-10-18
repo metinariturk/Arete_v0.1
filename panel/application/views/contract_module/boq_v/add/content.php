@@ -31,7 +31,7 @@ if (empty($contract_id)) { ?>
 <?php } else { ?>
     <div class="col-sm-12 col-md-12">
         <form id="save_<?php echo $this->Module_Name; ?>"
-              action="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment_no"); ?>" method="post"
+              action="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment_no/exit"); ?>" method="post"
               enctype="multipart/form-data" autocomplete="off">
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
         </form>

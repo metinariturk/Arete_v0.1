@@ -100,6 +100,8 @@ class Boq extends CI_Controller
             )
         );
 
+        $payment_id = get_from_any_and("payment","contract_id","$contract_id","hakedis_no","$payment_no");
+
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
 
@@ -110,6 +112,7 @@ class Boq extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
         $viewData->payment_no = $payment_no;
+        $viewData->payment_id = $payment_id;
         $viewData->contract = $contract;
         $viewData->boq_id = $boq_id;
         $viewData->settings = $settings;
@@ -201,7 +204,7 @@ class Boq extends CI_Controller
         echo $render_calculate;
     }
 
-    public function select_group($contract_id, $payment_no, $group_id)
+    public function select_group($contract_id, $payment_no, $group_id = null)
     {
 
         if (!isAdmin()) {
@@ -218,8 +221,14 @@ class Boq extends CI_Controller
 
         $active_boq = $contract->active_boq;
         $active_boqs = json_decode($active_boq, true);
-        $gorup_items = ($active_boqs[$group_id]);
 
+        if (!empty($group_id)){
+            $gorup_items = ($active_boqs[$group_id]);
+            $viewData->gorup_items = $gorup_items;
+        } else {
+            $gorup_items = null;
+            $viewData->gorup_items = $gorup_items;
+        }
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -230,14 +239,19 @@ class Boq extends CI_Controller
         $viewData->payment_no = $payment_no;
         $viewData->contract = $contract;
         $viewData->contract_id = $contract_id;
-        $viewData->gorup_items = $gorup_items;
 
-        $renderGroup = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/renderGroup", $viewData, true);
+
+
+        if (!empty($group_id)){
+            $renderGroup = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/renderGroup", $viewData, true);
+        } else {
+            $renderGroup = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/renderList", $viewData, true);
+        }
 
         echo $renderGroup;
     }
 
-    public function save($contract_id = null, $payment_no = null)
+    public function save($contract_id = null, $payment_no = null, $stay = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -267,7 +281,6 @@ class Boq extends CI_Controller
                     $boq_total += (float)$item['t'];
                 }
             }
-            echo $boq_total;
         }
 
         foreach ($boq_array as $key => $sub_array) {
@@ -330,7 +343,43 @@ class Boq extends CI_Controller
 
         // İşlemin Sonucunu Session'a yazma işlemi...
         $this->session->set_flashdata("alert", $alert);
-        redirect(base_url("$this->Module_Name/new_form/$contract_id/$payment_no"));
+
+        $viewData = new stdClass();
+
+
+        $isset_boq =
+            get_from_any_and_and("boq",
+                "contract_id", "$contract_id",
+                "payment_no", "$payment_no",
+                "boq_id", $boq_id);
+
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
+
+        $viewData->income = $boq_id;
+        if (isset($isset_boq)) {
+            $old_boq = $this->Boq_model->get(
+                array(
+                    "id" => $isset_boq,
+                )
+            );
+            $viewData->old_boq = $old_boq;
+
+        }
+        $viewData->payment_no = $payment_no;
+        $viewData->contract_id = $contract_id;
+
+        if ($stay != null){
+            $payment_id = get_from_any_and("payment","contract_id","$contract_id","hakedis_no","$payment_no");
+            redirect(base_url("payment/file_form/$payment_id"));
+        }
+
+        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
+
+        echo $render_calculate;
         //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
     }
 

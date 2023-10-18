@@ -347,6 +347,163 @@ class Payment extends CI_Controller
     }
 
     public
+    function create($contract_id)
+    {
+
+        $project_id = project_id_cont($contract_id);
+        $project_code = project_code($project_id);
+        $contract_code = contract_code($contract_id);
+
+        $contract = $this->Contract_model->get(array(
+                "id" => $contract_id
+            )
+        );
+
+        $file_name_len = file_name_digits();
+        $file_name = "HAK-" . $this->input->post('dosya_no');
+        $hak_no = $this->input->post('hakedis_no');
+
+        if ($hak_no != 1) {
+            $imalat_tarihi = dateFormat('Y-m-d', $this->input->post("imalat_tarihi"));
+            $last_payment_id = get_from_any_and("payment", "contract_id", "$contract_id", "hakedis_no", last_payment($contract_id));
+            $last_payment_day = dateFormat('d-m-Y', get_from_any("payment", "imalat_tarihi", "id", "$last_payment_id"));
+            $last_payment_no = get_from_id("payment", "hakedis_no", "$last_payment_id");
+            $warning = "son hakediş <b>" . "$last_payment_no" . " nolu </b> hakedişin tarihi olan";
+        }
+
+        if ($hak_no == 1) {
+            $imalat_tarihi = dateFormat('Y-m-d', $this->input->post("imalat_tarihi"));
+            $yer_teslimi_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sitedel_date", "id", "$contract_id"));
+            $warning = "yer teslimi tarihi olan";
+        }
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[payment.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+        $this->form_validation->set_rules("hakedis_no", "Hakediş No", "required|numeric|trim"); //2
+        if ($hak_no == 1) {
+            $this->form_validation->set_rules("imalat_tarihi", "İmalat Tarihi", "trim|callback_sitedel_paymentday[$yer_teslimi_tarihi]"); //2
+        }
+        if ($hak_no != 1) {
+            $this->form_validation->set_rules("imalat_tarihi", "İmalat Tarihi", "trim|callback_sitedel_paymentday[$last_payment_day]"); //2
+        }
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "numeric" => "<b>{field}</b> rakamlardan oluşmalıdır",
+                "limit_advance" => "<b>{field}</b> en fazla kadar olmalıdır.",
+                "sitedel_paymentday" => "Uygulama <b>{field}</b>  $warning <b>{param}</b> tarhihinden daha ileri bir tarih olmalı",
+                "greater_than_equal_to" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
+                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
+                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
+                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
+                "duplicate_name_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
+                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
+            )
+        );
+
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+
+            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no";
+
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+                echo "Dosya Yolu Oluşturuldu: " . $path;
+            } else {
+                echo "<p>Aynı İsimde Dosya Mevcut: " . $path . "</p>";
+            }
+
+            if ($this->input->post('hakedis_no') == "on") {
+                $final = 1;
+            } else {
+                $final = 0;
+            }
+
+            if ($this->input->post('toplam_ihzarat') == null) {
+                $ihzarat = 0;
+            }
+
+            $insert = $this->Payment_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "dosya_no" => $file_name,
+                    "hakedis_no" => $this->input->post('hakedis_no'),
+                )
+            );
+
+            $record_id = $this->db->insert_id();
+
+            $insert2 = $this->Order_model->add(
+                array(
+                    "module" => $this->Module_Name,
+                    "connected_module_id" => $this->db->insert_id(),
+                    "connected_contract_id" => $contract_id,
+                    "file_order" => $file_name,
+                    "createdAt" => date("Y-m-d H:i:s"),
+                    "createdBy" => active_user_id(),
+                )
+            );
+
+            // TODO Alert sistemi eklenecek...
+            if ($insert) {
+
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Hakediş başarılı bir şekilde eklendi",
+                    "type" => "success"
+                );
+
+            } else {
+
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Hakediş Ekleme sırasında bir problem oluştu",
+                    "type" => "danger"
+                );
+            }
+
+            // İşlemin Sonucunu Session'a yazma işlemi...
+            $this->session->set_flashdata("alert", $alert);
+
+            $this->session->unset_userdata('form_errors');
+
+            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
+
+        } else {
+
+            $viewData = new stdClass();
+
+            $contract = $this->Contract_model->get(array(
+                    "id" => $contract_id
+                )
+            );
+
+            $settings = $this->Settings_model->get();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "$this->Add_Folder";
+            $viewData->form_error = true;
+            $viewData->contract = $contract;
+            $viewData->payment_no = $this->input->post('hakedis_no');
+            $viewData->contract_id = $contract_id;
+            $viewData->project_id = $project_id;
+            $viewData->settings = $settings;
+
+            if ($this->form_validation->run() === false) {
+                $form_errors = validation_errors();
+                $this->session->set_flashdata('form_errors', $form_errors);
+                redirect(base_url("contract/file_form/$contract_id/payment/payment"));
+            }
+        }
+    }
+
+    public
     function save($contract_id)
     {
 

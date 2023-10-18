@@ -52,6 +52,16 @@
     var itemCount = list.getElementsByTagName("li").length;
     document.getElementById("result").innerHTML = itemCount;
 </script>
+
+<?php if (isset($form_errors)) { ?>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Sayfa yüklendiğinde modalı aç
+            $("#modal_payment").modal("show");
+        });
+    </script>
+<?php } ?>
+
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

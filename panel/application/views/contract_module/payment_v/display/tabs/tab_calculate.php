@@ -52,16 +52,22 @@
             </table>
         </div>
         <?php foreach ($active_boqs as $group_key => $boq_ids) { ?>
-            <table style="width:100%;">
-                <thead>
-                <tr>
-                    <td>
-                        <p style="margin-top:3pt; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
-                            <strong><?php echo boq_name($group_key); ?></strong></p>
-                    </td>
-                </tr>
-                </thead>
-            </table>
+            <?php foreach ($boq_ids as $boq_id) { ?>
+                <?php foreach ($calculates as $calculation_item) { ?>
+                    <?php if ($calculation_item->boq_id == $boq_id) { ?>
+                        <table style="width:100%;">
+                            <thead>
+                            <tr>
+                                <td>
+                                    <p style="margin-top:3pt; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
+                                        <strong><?php echo boq_name($group_key); ?></strong></p>
+                                </td>
+                            </tr>
+                            </thead>
+                        </table>
+                    <?php } ?>
+                <?php } ?>
+            <?php } ?>
             <?php foreach ($boq_ids as $boq_id) { ?>
                 <?php foreach ($calculates as $calculation_item) { ?>
                     <?php if ($calculation_item->boq_id == $boq_id) { ?>
@@ -115,19 +121,19 @@
                                                     <?php echo $calculation_data["n"]; ?>
                                                 </td>
                                                 <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                                    <?php echo $calculation_data["q"]; ?>
+                                                    <?php echo money_format($calculation_data["q"]); ?>
                                                 </td>
                                                 <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                                    <?php echo $calculation_data["w"]; ?>
+                                                    <?php echo money_format($calculation_data["w"]); ?>
                                                 </td>
                                                 <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                                    <?php echo $calculation_data["h"]; ?>
+                                                    <?php echo money_format($calculation_data["h"]); ?>
                                                 </td>
                                                 <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                                    <?php echo $calculation_data["l"]; ?>
+                                                    <?php echo money_format($calculation_data["l"]); ?>
                                                 </td>
                                                 <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                                    <?php echo $calculation_data["t"]; ?>
+                                                    <?php echo money_format($calculation_data["t"]); ?>
                                                 </td>
                                             </tr>
                                         <?php } ?>
@@ -143,7 +149,6 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                    </p>
                                 </td>
                             </tr>
                             </thead>
@@ -152,9 +157,6 @@
                 <?php } ?>
             <?php } ?>
         <?php } ?>
-
-
-
         <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/signature"); ?>
     </div>
 </div>

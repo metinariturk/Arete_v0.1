@@ -8,16 +8,21 @@
             <h6 class="text-center">Metraj Formu</h6>
             <hr>
             <div class="mb-3 row">
-                <label class="col-lg-3 form-label text-lg-start" for="prependedcheckbox">El İle Toplam Metraj Girişi</label>
+                <label class="col-lg-3 form-label text-lg-start" for="prependedcheckbox">El İle Toplam Metraj
+                    Girişi</label>
                 <div class="col-lg-4">
                     <div class="input-group">
                         <span class="input-group-text">
-                            <input type="checkbox" id="toggleCheckbox" name="bypass_total" onclick="toggleReadOnly(<?php echo $income; ?>)">
+                            <input type="checkbox" id="toggleCheckbox" name="bypass_total"
+                                   onclick="toggleReadOnly(<?php echo $income; ?>)">
                         </span>
                         <input id="total_<?php echo $income; ?>" readonly name="total_<?php echo $income; ?>"
-                               value="<?php if (!empty($old_boq)) { echo $old_boq->total; }?>"
-                               class="form-control btn-square" type="text" placeholder=""><span class="input-group-text"><?php echo boq_unit($income); ?></span>
-                        <input name="boq_id" hidden value="<?php echo $income; ?>">
+                               value="<?php if (!empty($old_boq)) {
+                                   echo $old_boq->total;
+                               } ?>"
+                               class="form-control btn-square" type="text" placeholder=""><span
+                                class="input-group-text"><?php echo boq_unit($income); ?></span>
+                        <input name="boq_id" id="dont_delete" value="<?php echo $income; ?>">
                     </div>
                 </div>
             </div>
@@ -113,7 +118,7 @@
             <?php } ?>
         <?php } ?>
         <?php if (isset($old_boq)) { ?>
-            <?php $row_numbers = range($range+1, ($range+10)); ?>
+            <?php $row_numbers = range($range + 1, ($range + 10)); ?>
         <?php } else { ?>
             <?php $row_numbers = range(1, 10); ?>
         <?php } ?>
@@ -164,7 +169,26 @@
                     </div>
                 </div>
             </div>
+
         <?php } ?>
+        <div class="container-fluid">
+            <div class="row">
+                <a onclick="saveCalc(this)"
+                   class="btn btn-success me-3"
+                   style="width: 250px;"
+                   data-bs-original-title=""
+                   title=""
+                   form="save_boq"
+                    data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment_no"); ?>" <!-- Add the data-url attribute for the AJAX call -->
+                >
+                <span style="text-align: left">Kaydet/Satır Ekle</span>
+
+                </a>
+                <button type="button" class="btn btn-secondary" style="width: 250px;" onclick="resetInputValues()">
+                    Tüm Girdileri Sıfırla
+                </button>
+            </div>
+        </div>
         <?php } else { ?>
             <div class="card" style="height: 150px">
                 <div class="card-body">
@@ -181,8 +205,8 @@
 
         <?php if (isset($old_boq)) { ?>
             <?php
-            $last_row = $range+10;
-            $row_numbers = range($range+1, ($last_row)); ?>
+            $last_row = $range + 10;
+            $row_numbers = range($range + 1, ($last_row)); ?>
         <?php } else { ?>
             <?php
             $last_row = 10;
@@ -195,6 +219,72 @@
                 $.post($url, {}, function (response) {
                     $(".dynamic").html(response);
                 })
+            }
+        </script>
+        <script>
+            function resetInputValues() {
+                // Get the form element by its ID
+                var form = document.getElementById('save_boq');
+
+                // Get all input elements within the form
+                var inputElements = form.querySelectorAll('input');
+
+                // Loop through the input elements and set their values to 0, except for the input with id "dont_delete"
+                for (var i = 0; i < inputElements.length; i++) {
+                    var input = inputElements[i];
+                    if ((input.type === 'text' || input.type === 'number') && input.id !== 'dont_delete') {
+                        input.value = '';
+                    }
+                }
+            }
+        </script>
+        <script>
+            function saveCalc(btn) {
+                var url = btn.getAttribute('data-url');
+                var formId = btn.getAttribute('form');
+
+                // Serialize the form data
+                var formData = new FormData(document.getElementById(formId));
+
+                // Send an AJAX POST request
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        // Assuming the response contains the updated content
+                        $(".dynamic").html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+        </script>
+        <script>
+            function saveCalcexit(btn) {
+                var url = btn.getAttribute('data-url');
+                var formId = btn.getAttribute('form');
+
+                // Serialize the form data
+                var formData = new FormData(document.getElementById(formId));
+
+                // Send an AJAX POST request
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        window.location.href = "<?php echo base_url("payment/file_form/$payment_id"); ?> // Replace with the URL you want to redirect to
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
             }
         </script>
         <script>
@@ -322,10 +412,6 @@
                 }
             }
         </script>
-
-
-
-
 
 
 
