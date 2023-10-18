@@ -75,6 +75,16 @@
                             <span class="title">Grafikler</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="show" id="sign-tab"
+                           data-bs-toggle="pill"
+                           href="#sign"
+                           role="tab"
+                           aria-controls="sign"
+                           aria-selected="false">
+                            <span class="title">İmzalar</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

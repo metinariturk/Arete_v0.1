@@ -1,16 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/photoswipe.css">
     <style>
-        @media print {
-            /* Sayfa kenarlıklarını sıfırla */
-            @page {
-                margin-left: 100px;
-            }
+        /* Sayfa stilini tanımlayın */
+        @page {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #000;
+        }
+
+        /* İçerik stilini tanımlayın */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+        }
+
+        /* Sayfa içeriğini tanımlayın */
+        .content {
+            /* İçerik stilinizi burada belirleyin */
+        }
+
+        /* Alt bilgiyi içeriğe eklemek için 'after' seçicisini kullanın */
+        .content:after {
+            content: "Alt Bilgi Metni";
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10pt;
+        }
+
+        /* Belirli bir div'i sayfa içeriğine eklemek için 'content' sınıfını hedefleyin */
+        .content .special-div {
+            /* Belirli div'in stilini burada belirleyin */
+            font-weight: bold;
+            color: #FF0000;
         }
     </style>
     <?php $this->load->view("includes/head"); ?>
@@ -40,25 +70,16 @@
 </div>
 
 <?php $this->load->view("includes/include_script"); ?>
+<script>
+    document.getElementById("printButton").addEventListener("click", function() {
+        window.print();
+    });
+
+</script>
 
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 
-<script>
-    function openList1() {
-        var list = document.getElementById("ollist");
 
-        if (list.style.display == "none"){
-            list.style.display = "block";
-        }else{
-            list.style.display = "none";
-        }
-    }
-</script>
-<script>
-    var list = document.getElementById("ollist");
-    var itemCount = list.getElementsByTagName("li").length;
-    document.getElementById("result").innerHTML = itemCount;
-</script>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

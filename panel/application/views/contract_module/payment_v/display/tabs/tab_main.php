@@ -5,7 +5,7 @@
      aria-labelledby="genel-tab">
     <div id="contentToPrint">
         <div style="clear:both;">
-            <table cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+            <table style="border-collapse:collapse;  border: 2px solid black;">
                 <tbody>
                 <tr>
                     <td style="width:1000.5pt; padding:1.4pt 4pt; vertical-align:top;">
@@ -18,7 +18,7 @@
             </table>
             <p style="margin-top:0pt;  line-height:normal; font-size:10pt;">&nbsp;</p>
         </div>
-        <table cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+        <table cellspacing="0" cellpadding="0" style="border-collapse:collapse;  border: 2px solid black;">
             <tbody>
             <tr style="height:26.85pt;">
                 <td colspan="8"
@@ -231,7 +231,6 @@
         </table>
         <p style="margin-top:0pt;  line-height:normal; font-size:9pt;">&nbsp;</p>
     </div>
-    <div style="color: red;">Created with <a href="https://wordtohtml.net/">WordToHTML.net</a> trial.</div>
     <button id="printButton">Yazdır</button>
 
     <script>

@@ -199,6 +199,10 @@ class Boq extends CI_Controller
         $viewData->payment_no = $payment_no;
         $viewData->contract_id = $contract_id;
 
+        $group_id = get_from_id("book","parent","$boq_id");
+        $viewData->group_id = $group_id;
+
+
         $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
 
         echo $render_calculate;
@@ -210,7 +214,6 @@ class Boq extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
-
         $viewData = new stdClass();
 
         $contract = $this->Contract_model->get(
@@ -236,6 +239,7 @@ class Boq extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
 
 
+        $viewData->group_id = $group_id;
         $viewData->payment_no = $payment_no;
         $viewData->contract = $contract;
         $viewData->contract_id = $contract_id;
@@ -250,6 +254,7 @@ class Boq extends CI_Controller
 
         echo $renderGroup;
     }
+
 
     public function save($contract_id = null, $payment_no = null, $stay = null)
     {
@@ -372,6 +377,10 @@ class Boq extends CI_Controller
         $viewData->payment_no = $payment_no;
         $viewData->contract_id = $contract_id;
 
+        $group_id = get_from_id("book","parent","$boq_id");
+        $viewData->group_id = $group_id;
+
+
         if ($stay != null){
             $payment_id = get_from_any_and("payment","contract_id","$contract_id","hakedis_no","$payment_no");
             redirect(base_url("payment/file_form/$payment_id"));
@@ -380,109 +389,39 @@ class Boq extends CI_Controller
         $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
 
         echo $render_calculate;
+
         //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
     }
 
 
-    public
-    function delete($id)
+    public function delete($boq_id)
     {
-        //Bağlı teminat silme işlemleri
-        $contract_id = contract_id_module("boq", $id);
+
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
 
-        $bond_id = get_from_any_and("bond", "contract_id", $contract_id, "teminat_metraj_id", $id);
+        $viewData = new stdClass();
 
-        if (!empty($bond_id)) {
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
 
-            $bond_file_name = get_from_id("bond", "dosya_no", $bond_id);
-            $bond_file_order_id = get_from_any_and("file_order", "connected_module_id", $bond_id, "module", "bond");
-
-            $bond_path = "$this->File_Dir_Prefix/$project_code/$contract_code/contract/bond/$bond_file_name/";
-
-            $sil_bond = deleteDirectory($bond_path);
-
-            $update_bond_order = $this->Order_model->update(
-                array(
-                    "id" => $bond_file_order_id
-                ),
-                array(
-                    "deletedAt" => date("Y-m-d H:i:s"),
-                    "deletedBy" => active_user_id(),
-                )
-            );
-
-            $delete_bond_file = $this->Bond_file_model->delete(
-                array(
-                    "bond_id" => $bond_id
-                )
-            );
-
-            $delete_bond = $this->Bond_model->delete(
-                array(
-                    "id" => $bond_id
-                )
-            );
-        }
-
-        $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
-        $boq_code = get_from_id("boq", "dosya_no", $id);
-
-        $boq_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Boq/$boq_code/";
-
-        $delete_boq = deleteDirectory($boq_path);
-
-        if ($delete_boq) {
-            echo '<br>deleted successfully';
-        } else {
-            echo '<br>Hata Oluştu';
-        }
-
-        $update_file_order = $this->Order_model->update(
-            array("id" => $file_order_id),
-            array("deletedAt" => date("Y-m-d H:i:s"),
-                "deletedBy" => active_user_id(),
+        $delete = $this->Boq_model->delete(
+            array(
+                "id" => $boq_id
             )
         );
 
-        $delete_boq_file = $this->Boq_file_model->delete(
-            array("$this->Dependet_id_key" => $id)
-        );
+        $viewData->payment_no = get_from_id("boq","payment_no","$boq_id");
+        $viewData->contract_id = get_from_id("boq","contract_id","$boq_id");
 
-        $delete_boq = $this->Boq_model->delete(
-            array("id" => $id)
-        );
+        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
 
-        // TODO Alert Sistemi Eklenecek...
-        if ($update_file_order and $delete_boq_file and $delete_boq) {
-
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde silindi",
-                "type" => "success"
-            );
-
-        } else {
-
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt silme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-
-
-        }
-
-        $this->session->set_flashdata("alert", $alert);
-        redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$contract_id"));
-
+        echo $render_calculate;
     }
+
 
     public
     function file_upload($id)

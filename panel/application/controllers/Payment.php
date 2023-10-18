@@ -423,15 +423,15 @@ class Payment extends CI_Controller
                 $final = 0;
             }
 
-            if ($this->input->post('toplam_ihzarat') == null) {
-                $ihzarat = 0;
-            }
+            $imalat_tarihi = dateFormat('Y-m-d', $this->input->post("imalat_tarihi"));
+
 
             $insert = $this->Payment_model->add(
                 array(
                     "contract_id" => $contract_id,
                     "dosya_no" => $file_name,
                     "hakedis_no" => $this->input->post('hakedis_no'),
+                    "imalat_tarihi" => $imalat_tarihi,
                 )
             );
 
@@ -899,7 +899,8 @@ class Payment extends CI_Controller
             if ($boq != null) {
                 $delete_boq = $this->Boq_model->delete(
                     array(
-                        "id" => $boq
+                        "contract_id" => $contract_id,
+                        "payment_no" => $hakedis_no
                     )
                 );
             }
