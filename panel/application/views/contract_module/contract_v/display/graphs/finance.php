@@ -13,9 +13,9 @@
             <thead>
             <tr>
                 <th>Dosya No</th>
-                <th>Miktar</th>
-                <th>Hakediş</th>
-                <th>Kalan</th>
+                <th>Sözleşme Tutar</th>
+                <th>Hakediş Tutar</th>
+                <th>Kalan İş Bedeli</th>
                 <th>Yüzde</th>
             </tr>
             <tr>

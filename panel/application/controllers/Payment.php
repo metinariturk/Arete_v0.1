@@ -1199,4 +1199,69 @@ class Payment extends CI_Controller
         }
     }
 
+    public
+    function print($id, $active_tab = null) {
+
+
+        $contract_id = contract_id_module("payment", $id);
+        $payment_no = get_from_id("payment","hakedis_no","$id");
+        $active_boqs = get_from_id("contract","active_boq","$contract_id");
+
+        $viewData = new stdClass();
+        $contract = $this->Contract_model->get(array(
+            "id" => $contract_id
+        ));
+
+        $calculates = $this->Boq_model->get_all(array(
+            "contract_id" => $contract_id,
+            "payment_no" => $payment_no,
+        ));
+
+        $project_id = project_id_cont($contract_id);
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "print";
+        $viewData->contract = $contract;
+        $viewData->calculates = $calculates;
+        $viewData->active_boqs = json_decode($active_boqs,true);
+        $viewData->project_id = $project_id;
+        $viewData->active_tab = $active_tab;
+
+
+
+        $item = $this->Payment_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+        $viewData->item = $item;
+
+
+        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$item->hakedis_no");
+
+        if ($boq_control) {
+            $boq = $this->Boq_model->get(array(
+                    "id" => $boq_control
+                )
+            );
+            $viewData->boq = $boq;
+
+        } else {
+            $boq = null;
+            $viewData->boq = null;
+
+        }
+
+        $viewData->item_files = $this->Payment_file_model->get_all(
+            array(
+                "$this->Dependet_id_key" => $id
+            ),
+        );
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+    }
+
 }

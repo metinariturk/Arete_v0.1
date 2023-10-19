@@ -3,7 +3,7 @@
 } ?>"
      id="genel" role="tabpanel"
      aria-labelledby="genel-tab">
-    <div id="contentToPrint">
+    <div id="contentToPrint" style="page-break-before: auto;">
         <div style="clear:both;">
             <table style="border-collapse:collapse;  border: 2px solid black;">
                 <tbody>
