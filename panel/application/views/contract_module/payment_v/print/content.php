@@ -40,7 +40,6 @@
                 <strong><?php echo $item->hakedis_no; ?> No'lu Hakediş</strong>
             </td>
         </tr>
-
         </tbody>
     </table>
 </div>
@@ -49,7 +48,6 @@
         <?php foreach ($calculates as $calculation_item) { ?>
             <?php if ($calculation_item->boq_id == $boq_id) { ?>
                 <button class="page-break-button" onclick="togglePageBreak(this)">Bölümü Ayır</button>
-
                 <table style="width:100%;">
                     <thead>
                     <tr>
@@ -67,7 +65,6 @@
         <?php foreach ($calculates as $calculation_item) { ?>
             <?php if ($calculation_item->boq_id == $boq_id) { ?>
                 <button class="page-break-button" onclick="togglePageBreak(this)">Tabloyu Ayır</button>
-
                 <table style="width:100%;">
                     <thead>
                     <tr>
@@ -154,4 +151,4 @@
         <?php } ?>
     <?php } ?>
 <?php } ?>
-<div>
+
