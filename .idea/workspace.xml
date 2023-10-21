@@ -24,19 +24,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/payment_v" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/payment_v/print",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\print" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\add" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\display\tabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
@@ -68,6 +73,7 @@
       <workItem from="1697613502329" duration="17136000" />
       <workItem from="1697657683369" duration="13107000" />
       <workItem from="1697698905096" duration="16547000" />
+      <workItem from="1697886045656" duration="11637000" />
     </task>
     <servers />
   </component>
@@ -79,7 +85,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>2794</line>
+          <line>2810</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="add_group" />
@@ -88,7 +94,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>127</line>
+          <line>141</line>
           <properties>
             <option name="className" value="\Boq" />
             <option name="methodName" value="file_form" />
@@ -97,7 +103,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>75</line>
+          <line>76</line>
           <properties>
             <option name="className" value="\Boq" />
             <option name="methodName" value="new_form" />
@@ -111,7 +117,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>
-          <line>39</line>
+          <line>42</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>

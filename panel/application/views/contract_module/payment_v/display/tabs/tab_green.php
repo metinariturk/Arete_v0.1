@@ -22,7 +22,7 @@
                 <strong><?php echo contract_name($item->contract_id); ?></strong>
             </p>
             <p style="text-align:center; font-size:14pt;">
-                <strong>YEŞİL DEFTER</strong>
+                <strong>METRAJ İCMALİ</strong>
             </p>
             <table style="width:100%;">
                 <tbody>
@@ -53,7 +53,6 @@
             </table>
         </div>
         <?php foreach ($active_boqs as $group_key => $boq_ids) { ?>
-            <?php $i = 1; ?>
             <table style="width:100%;">
                 <thead>
                 <tr>
@@ -92,46 +91,84 @@
                 </thead>
                 <tbody>
                 <?php foreach ($boq_ids as $boq_id) { ?>
-                    <?php $calculation_item_found = false; ?>
-                    <?php foreach ($calculates as $calculation_item) { ?>
-                        <?php if ($calculation_item->boq_id == $boq_id) { ?>
+                    <?php
+                    $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
+                        return $item->boq_id == $boq_id;
+                    }); ?>
 
-                                <tr>
-                                    <td style="border: 0.75pt solid black; text-align:center; border-width:0.75pt;">
-                                        <?php echo $i;
-                                        $i++; ?>
-                                    </td>
-                                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
-                                        <?php echo($boq_id); ?>
-                                    </td>
-                                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
-                                        <?php echo boq_name($boq_id); ?>
-                                    </td>
-                                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                        <?php echo boq_unit($boq_id); ?>
-                                    </td>
-                                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    </td>
-                                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    </td>
-                                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                        <?php echo money_format($calculation_item->total); ?>
-                                    </td>
-                                </tr>
+                    <?php $old_total_array = $this->Boq_model->get_all(
+                        array(
+                            "contract_id" => $item->contract_id,
+                            "payment_no <" => $item->hakedis_no,
+                            "boq_id" => $boq_id,
+                        ),
+                    ); ?>
+                    <?php if (!empty($old_total_array)) { ?>
+                        <?php $old_total = sum_anything_and_and("boq", "total", "contract_id", $item->contract_id, "payment_no <", $item->hakedis_no, "boq_id", "$boq_id"); ?>
+                    <?php } else {
+                        $old_total = 0;
+                    } ?>
 
+                    <?php if (!empty($foundItems)) {
+                        // Hedef boq_id bulundu, $foundItems içinde saklanır.
+                        foreach ($foundItems as $foundItem) { ?>
+                            <tr>
+                                <td style="border: 0.75pt solid black; text-align:center; border-width:0.75pt;">
+                                </td>
+                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
+                                    <?php echo($boq_id); ?>
+                                </td>
+                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
+                                    <?php echo boq_name($boq_id); ?>
+                                </td>
+                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                    <?php echo boq_unit($boq_id); ?>
+                                </td>
+                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                    <?php echo money_format($foundItem->total + $old_total); ?>
+                                </td>
+                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                    <?php echo money_format($old_total); ?>
+                                </td>
+                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                    <?php echo money_format($foundItem->total); ?>
+                                </td>
+                            </tr>
                         <?php } ?>
-                    <?php } ?>
-                    <?php if (!$calculation_item_found) { ?>
-                        <!-- Handle the case where no calculation item is found for this boq_id -->
+                    <?php } else { ?>
+                        <tr>
+                            <td style="border: 0.75pt solid black; text-align:center; border-width:0.75pt;">
+                            </td>
+                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
+                                <?php echo($boq_id); ?>
+                            </td>
+                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
+                                <?php echo boq_name($boq_id); ?>
+                            </td>
+                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo boq_unit($boq_id); ?>
+                            </td>
+                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($old_total); ?>
+                            </td>
+                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($old_total); ?>
+                            </td>
+                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                0.00
+                            </td>
+                        </tr>
                     <?php } ?>
                 <?php } ?>
                 </tbody>
             </table>
         <?php } ?>
+
         <div>
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
         </div>
-        <a class="btn btn-primary" href="<?php echo base_url("payment/print/$item->id"); ?>">Önizleme</a>
+        <a class="btn btn-primary" target="_blank"
+           href="<?php echo base_url("payment/print/$item->id/green"); ?>">Önizleme</a>
     </div>
 </div>
 

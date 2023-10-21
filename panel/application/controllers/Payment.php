@@ -1200,7 +1200,7 @@ class Payment extends CI_Controller
     }
 
     public
-    function print($id, $active_tab = null) {
+    function print($id, $target) {
 
 
         $contract_id = contract_id_module("payment", $id);
@@ -1227,9 +1227,7 @@ class Payment extends CI_Controller
         $viewData->calculates = $calculates;
         $viewData->active_boqs = json_decode($active_boqs,true);
         $viewData->project_id = $project_id;
-        $viewData->active_tab = $active_tab;
-
-
+        $viewData->target = $target;
 
         $item = $this->Payment_model->get(
             array(
@@ -1238,7 +1236,6 @@ class Payment extends CI_Controller
         );
 
         $viewData->item = $item;
-
 
         $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$item->hakedis_no");
 
