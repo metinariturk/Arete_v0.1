@@ -10,10 +10,11 @@ class Payment extends CI_Controller
     {
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -281,12 +282,13 @@ class Payment extends CI_Controller
     }
 
     public
-    function file_form($id, $active_tab = null) {
+    function file_form($id, $active_tab = null)
+    {
 
 
         $contract_id = contract_id_module("payment", $id);
-        $payment_no = get_from_id("payment","hakedis_no","$id");
-        $active_boqs = get_from_id("contract","active_boq","$contract_id");
+        $payment_no = get_from_id("payment", "hakedis_no", "$id");
+        $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
 
         $viewData = new stdClass();
         $contract = $this->Contract_model->get(array(
@@ -306,10 +308,9 @@ class Payment extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->contract = $contract;
         $viewData->calculates = $calculates;
-        $viewData->active_boqs = json_decode($active_boqs,true);
+        $viewData->active_boqs = json_decode($active_boqs, true);
         $viewData->project_id = $project_id;
         $viewData->active_tab = $active_tab;
-
 
 
         $item = $this->Payment_model->get(
@@ -1200,12 +1201,11 @@ class Payment extends CI_Controller
     }
 
     public
-    function print($id, $target) {
-
-
+    function print($id, $target)
+    {
         $contract_id = contract_id_module("payment", $id);
-        $payment_no = get_from_id("payment","hakedis_no","$id");
-        $active_boqs = get_from_id("contract","active_boq","$contract_id");
+        $payment_no = get_from_id("payment", "hakedis_no", "$id");
+        $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
 
         $viewData = new stdClass();
         $contract = $this->Contract_model->get(array(
@@ -1225,7 +1225,7 @@ class Payment extends CI_Controller
         $viewData->subViewFolder = "print";
         $viewData->contract = $contract;
         $viewData->calculates = $calculates;
-        $viewData->active_boqs = json_decode($active_boqs,true);
+        $viewData->active_boqs = json_decode($active_boqs, true);
         $viewData->project_id = $project_id;
         $viewData->target = $target;
 
@@ -1259,6 +1259,32 @@ class Payment extends CI_Controller
         );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
+    }
+
+    public function export_pdf()
+    {
+        $this->load->library('pdf_creator');
+        $pdf = new Pdf_creator();
+
+        // Header işlemini her sayfa başında çağır
+        $pdf->setPrintHeader(true);
+
+        $this->load->library('pdf_creator');
+        $pdf = new Pdf_creator();
+
+        $pdf->AddPage();
+        $pdf->SetFont('dejavusans', '', 12);
+
+        // Sayfa başlığını her sayfa başında elle ekleyin
+        $pdf->SetY(10); // Sayfanın yüksekliği ayarlanabilir
+        $pdf->Cell(0, 10, "asdasd", 0, 0, 'C');
+
+        // Diğer sayfa içeriğini ekleyin
+        $body = $this->input->post('body');
+        $pdf->writeHTML($body, true, false, true, false, '');
+
+        // PDF'yi çıktı olarak ver veya kaydet
+        $pdf->Output('ornek.pdf', 'I');
     }
 
 }

@@ -97,3 +97,4 @@
         <?php endforeach; ?>
     <?php endforeach; ?>
 <?php endforeach; ?>
+<a href="<?php echo base_url("payment/export_pdf"); ?>" target="_blank" class="btn">PDF İndir</a>
