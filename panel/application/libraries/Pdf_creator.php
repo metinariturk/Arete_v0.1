@@ -14,12 +14,16 @@ class Pdf_creator extends TCPDF {
         $this->SetAutoPageBreak(true, 10);
     }
 
-    public function Header(){
-        $baslik = null;
-        // Dinamik başlık içeriğini burada kullanabilirsiniz.
-        $this->SetFont('helvetica', 'B', 12);
-        $this->Cell(0, 10, $baslik, 0, false, 'C', 0, '', 0, false, 'M', 'M');
+    public function Header() {
+        // Logo
+        $image_file = K_PATH_IMAGES.'logo_example.jpg';
+        $this->Image($image_file, 20, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        // Set font
+        $this->setFont('helvetica', 'B', 20);
 
+            // Title using the $header parameter
+            $this->Cell(0, 15, "", 0, false, 'C', 0, '', 0, false, 'M', 'M');
+        // Title
     }
 
 }

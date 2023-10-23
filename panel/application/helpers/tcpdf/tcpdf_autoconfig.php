@@ -80,9 +80,9 @@ if (!defined('K_PATH_URL')) {
 	$k_path_url = K_PATH_MAIN; // default value for console mode
 	if (isset($_SERVER['HTTP_HOST']) AND (!empty($_SERVER['HTTP_HOST']))) {
 		if(isset($_SERVER['HTTPS']) AND (!empty($_SERVER['HTTPS'])) AND (strtolower($_SERVER['HTTPS']) != 'off')) {
-			$k_path_url = 'https://';
+			$k_path_url = base_url();
 		} else {
-			$k_path_url = 'http://';
+			$k_path_url = base_url();
 		}
 		$k_path_url .= $_SERVER['HTTP_HOST'];
 		$k_path_url .= str_replace( '\\', '/', substr(K_PATH_MAIN, (strlen($_SERVER['DOCUMENT_ROOT']) - 1)));

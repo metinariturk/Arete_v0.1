@@ -67,7 +67,6 @@ class Payment extends CI_Controller
             )
         );
 
-
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
 
         $viewData->viewModule = $this->moduleFolder;
@@ -226,7 +225,6 @@ class Payment extends CI_Controller
             echo $error_isset = true;
         }
 
-
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Payment_model->get_all(array());
@@ -263,7 +261,6 @@ class Payment extends CI_Controller
             $boq = null;
         }
 
-
         $viewData->boq = $boq;
 
         $viewData->payment_no = $payment_no;
@@ -284,8 +281,6 @@ class Payment extends CI_Controller
     public
     function file_form($id, $active_tab = null)
     {
-
-
         $contract_id = contract_id_module("payment", $id);
         $payment_no = get_from_id("payment", "hakedis_no", "$id");
         $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
@@ -1263,28 +1258,56 @@ class Payment extends CI_Controller
 
     public function export_pdf()
     {
-        $this->load->library('pdf_creator');
-        $pdf = new Pdf_creator();
 
-        // Header işlemini her sayfa başında çağır
-        $pdf->setPrintHeader(true);
-
-        $this->load->library('pdf_creator');
-        $pdf = new Pdf_creator();
-
-        $pdf->AddPage();
-        $pdf->SetFont('dejavusans', '', 12);
-
-        // Sayfa başlığını her sayfa başında elle ekleyin
-        $pdf->SetY(10); // Sayfanın yüksekliği ayarlanabilir
-        $pdf->Cell(0, 10, "asdasd", 0, 0, 'C');
-
-        // Diğer sayfa içeriğini ekleyin
         $body = $this->input->post('body');
-        $pdf->writeHTML($body, true, false, true, false, '');
+        $head = $this->input->post('header');
+        $this->load->library('pdf_creator');
+        $headerText = "asdasdasd";
 
-        // PDF'yi çıktı olarak ver veya kaydet
-        $pdf->Output('ornek.pdf', 'I');
+        $pdf = new Pdf_creator();
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
+        $pdf->setFooterData(array(0,64,0), array(0,64,128));
+
+// set header and footer fonts
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+// set default monospaced font
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+// set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+// set auto page breaks
+
+        $pdf->SetFont('dejavusans', '', 14, '', true);
+
+// Add a page
+// This method has several options, check the source code documentation for more information.
+        $pdf->AddPage();
+
+// set text shadow effect
+
+// Set some content to print
+        $html_head = $head;
+        $html = $body;
+
+// Print text using writeHTMLCell()
+        $pdf->writeHTMLCell(0, 0, 100, 10, $html_head, 0, 1, 0, true, '', true);
+
+        $pdf->writeHTMLCell(0, 0, '', 30, $html, 0, 1, 0, true, '', true);
+        $pdf->SetY(40); // Hücrenin sonlandığı yatay konumu 40 birim aşağıda
+
+// ---------------------------------------------------------
+
+// Close and output PDF document
+// This method has several options, check the source code documentation for more information.
+        $pdf->Output('example_001.pdf', 'I');
+
+//============================================================+
+// END OF FILE
+//============================================================+
     }
-
 }
