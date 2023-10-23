@@ -1,30 +1,3 @@
-<table style="width:100%;">
-    <thead>
-    <tr>
-        <th colspan="7" style="text-align: center">
-            <strong><i>METRAJ İCMALİ</i></strong>
-        </th>
-    </tr>
-    <tr>
-        <th>
-            &nbsp;
-        </th>
-    </tr>
-    <tr>
-        <th colspan="5" style="text-align: left; font-size: 10pt; margin-top: 20px">
-            <?php echo contract_name($item->contract_id); ?>
-        </th>
-        <th style="text-align: right; font-size: 10pt;">
-            Hakediş No
-        </th>
-        <th style="text-align: left;  font-size: 10pt; ">
-            : <?php echo $item->hakedis_no; ?>
-        </th>
-    </tr>
-
-    </thead>
-</table>
-
 <?php foreach ($active_boqs as $group_key => $boq_ids) { ?>
     <table style="width:100%;">
         <thead>

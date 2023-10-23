@@ -69,7 +69,7 @@ if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
 // ---------------------------------------------------------
 
 // set font
-$pdf->setFont('helvetica', '', 11);
+$pdf->setFont('dejavusans', '', 11);
 
 // add a page
 $pdf->AddPage();
@@ -80,7 +80,7 @@ $html = '<h1>Example of Spot Colors</h1>Spot colors are single ink colors, rathe
 $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, 'J', true);
 
 
-$pdf->setFont('helvetica', '', 10);
+$pdf->setFont('dejavusans', '', 10);
 
 // Define some new spot colors
 // $c, $m, $y and $k (2nd, 3rd, 4th and 5th parameter) are the CMYK color components.

@@ -1196,118 +1196,83 @@ class Payment extends CI_Controller
     }
 
     public
-    function print($id, $target)
+    function print($payment_id, $target)
     {
-        $contract_id = contract_id_module("payment", $id);
-        $payment_no = get_from_id("payment", "hakedis_no", "$id");
+
         $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
 
-        $viewData = new stdClass();
-        $contract = $this->Contract_model->get(array(
-            "id" => $contract_id
-        ));
-
-        $calculates = $this->Boq_model->get_all(array(
-            "contract_id" => $contract_id,
-            "payment_no" => $payment_no,
-        ));
-
-        $project_id = project_id_cont($contract_id);
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "print";
-        $viewData->contract = $contract;
-        $viewData->calculates = $calculates;
-        $viewData->active_boqs = json_decode($active_boqs, true);
-        $viewData->project_id = $project_id;
-        $viewData->target = $target;
-
-        $item = $this->Payment_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->item = $item;
-
-        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$item->hakedis_no");
-
-        if ($boq_control) {
-            $boq = $this->Boq_model->get(array(
-                    "id" => $boq_control
-                )
-            );
-            $viewData->boq = $boq;
-
-        } else {
-            $boq = null;
-            $viewData->boq = null;
-
-        }
-
-        $viewData->item_files = $this->Payment_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
-    }
-
-    public function export_pdf()
-    {
+        $contract_id = get_from_id("payment", "contract_id", "$payment_id");
+        $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
 
         $body = $this->input->post('body');
-        $head = $this->input->post('header');
         $this->load->library('pdf_creator');
-        $headerText = "asdasdasd";
+        $pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf = new Pdf_creator();
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-        $pdf->setFooterData(array(0,64,0), array(0,64,128));
+// UTF-8 karakter kodlamasını kullan
+        $pdf->setLanguageArray(array('a_meta_charset' => 'UTF-8'));
 
-// set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+// Başlık metni ayarlayın
+        if ($target == "green") {
+            $pdf->headerText = "METRAJ İCMALİ";
+        } elseif ($target == "calculate") {
+            $pdf->headerText = "METRAJ CETVELİ";
+        }
 
-// set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+// Sayfa ayarları
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
-// set margins
+// Header metinleri
+        $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
+        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+
+// HTML tabloyu oluşturun
+
+
+// Sayfa kenar boşluklarını ayarlayın
         $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-
-        $pdf->SetFont('dejavusans', '', 14, '', true);
-
-// Add a page
-// This method has several options, check the source code documentation for more information.
         $pdf->AddPage();
 
-// set text shadow effect
 
-// Set some content to print
-        $html_head = $head;
-        $html = $body;
+        $table_header_1 = array(
+            "Sıra No" => array(25, 14, 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
+            "Poz No" => array(25, 14, 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
+            "Yapılan İşin Cinsi" => array(96, 14, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Birimi" => array(25, 14, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Hakediş Miktarları" => array(99, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+        );
 
-// Print text using writeHTMLCell()
-        $pdf->writeHTMLCell(0, 0, 100, 10, $html_head, 0, 1, 0, true, '', true);
+        $table_header_2 = array(
+            "" => array(171, 7, 0),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Toplam Mik." => array(33, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Önceki Mik" => array(33, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Bu Mik" => array(33, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+        );
 
-        $pdf->writeHTMLCell(0, 0, '', 30, $html, 0, 1, 0, true, '', true);
-        $pdf->SetY(40); // Hücrenin sonlandığı yatay konumu 40 birim aşağıda
+        foreach ($table_header_1 as $header => $properties) {
+            $cell_width = $properties[0];
+            $cell_height = $properties[1];
+            $border = $properties[2];
 
-// ---------------------------------------------------------
+            $pdf->Cell($cell_width, $cell_height, $header, $border);
+        }
+        $pdf->Ln();
+        foreach ($table_header_2 as $header => $properties) {
+            $cell_width = $properties[0];
+            $cell_height = $properties[1];
+            $border = $properties[2];
 
-// Close and output PDF document
-// This method has several options, check the source code documentation for more information.
+            $pdf->Cell($cell_width, $cell_height, $header, $border);
+        }
+
+
+
+// Gövde içeriği ekleyin
+
+// PDF dosyasını görüntüleme veya kaydetme
         $pdf->Output('example_001.pdf', 'I');
 
-//============================================================+
-// END OF FILE
-//============================================================+
     }
+
 }

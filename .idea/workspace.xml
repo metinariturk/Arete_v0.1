@@ -25,17 +25,19 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/helpers/tcpdf/fonts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/helpers/tcpdf/examples/images" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\fonts" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\examples\images" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\fonts" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\print" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\add" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\fonts" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\logo" />
@@ -67,6 +69,7 @@
       <workItem from="1697657683369" duration="13107000" />
       <workItem from="1697698905096" duration="16547000" />
       <workItem from="1697886045656" duration="11637000" />
+      <workItem from="1698080305715" duration="15939000" />
     </task>
     <servers />
   </component>
