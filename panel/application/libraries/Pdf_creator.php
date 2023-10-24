@@ -45,7 +45,7 @@ class Pdf_creator extends TCPDF
 
     public function Header()
     {
-        $this->SetFont('dejavusans', 'I', 9);
+        $this->SetFont('dejavusans', '', 9);
         $this->SetMargins(10, 50, 10);
         $page_number_location = $this->getPageWidth()-32;
         $paymnet_no_location = $this->getPageWidth()-42;
@@ -69,7 +69,7 @@ class Pdf_creator extends TCPDF
         $table_header_1 = array(
             "Sıra No" => array(15, 10, 1, "C", 1),
             "Poz No" => array(25, 10, 1, "C", 1),
-            "Yapılan İşin Cinsi" => array(140, 10, 1, "L", 1),
+            " Yapılan İşin Cinsi" => array(140, 10, 1, "L", 1),
             "Birimi" => array(16, 10, 1, "C", 1),
             "Hakediş Miktarları" => array(84, 5, 1, "C", 1),
         );
@@ -80,6 +80,7 @@ class Pdf_creator extends TCPDF
         foreach ($table_header_1 as $header => $properties) {
             $this->SetLineWidth(0.2); // Çizgi kalınlığını 0.2 mm olarak ayarlayın (varsayılan değer 0.2'dir)
 
+            $this->SetFont('dejavusans', 'B', 9);
             $this->Cell($properties[0], $properties[1], $header, $properties[2], 0, $properties[3], $properties[4]);
 
             if ($header == "Hakediş Miktarları") {

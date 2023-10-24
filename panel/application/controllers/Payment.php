@@ -1246,8 +1246,11 @@ class Payment extends CI_Controller
         $pdf->SetFillColor(150, 150, 150); // Gri rengi ayarlayın (RGB renk kodu)
 
         $i = 0;
+        $j = 0;
         foreach ($active_boqs as $group_key => $boq_ids) {
             $i = $i + 2;
+            $j = $j + 1;
+            $k = 0;
 
             $say = count($boq_ids);
 
@@ -1257,15 +1260,15 @@ class Payment extends CI_Controller
                 $i = 1;
             }
             $pdf->Ln();
-            $pdf->SetFont('dejavusans', '', 9); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+            $pdf->SetFont('dejavusans', 'B', 9); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
 
             $group_name = boq_name($group_key);
             $pdf->SetFillColor(192, 192, 192);
-            $pdf->Cell(15, 5, $i, 1, 0, "L", 1);
-            $pdf->Cell(25, 5, $group_key, 1, 0, "L", 1);
-            $pdf->Cell(240, 5, $group_name, 1, 0, "L", 1);
+            $pdf->Cell(15, 5, intToRoman($j), 1, 0, "C", 1);
+            $pdf->Cell(265, 5, mb_strtoupper($group_name), 1, 0, "L", 1);
             $pdf->Ln();
             foreach ($boq_ids as $boq_id) {
+                $k = $k+1;
                 $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
                     return $item->boq_id == $boq_id;
                 });
@@ -1297,7 +1300,7 @@ class Payment extends CI_Controller
                 $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
 
                 $now = (!empty($foundItems)) ? money_format($foundItem->total) : "0.00";
-                $pdf->Cell(15, 5, $i, 1, 0, "L", 0);
+                $pdf->Cell(15, 5, $k, 1, 0, "C", 0);
                 $pdf->Cell(25, 5, $boq_id, 1, 0, "L", 0);
                 $pdf->Cell(140, 5, $name, 1, 0, "L", 0);
                 $pdf->Cell(16, 5, $unit, 1, 0, "C", 0);
