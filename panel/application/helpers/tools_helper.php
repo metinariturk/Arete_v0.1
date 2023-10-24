@@ -1602,3 +1602,15 @@ if ($formattedPhoneNumber) {
 } else {
     return "Invalid Phone Number!";
 }
+
+function recursive_count($array) {
+    $count = 0;
+    foreach ($array as $element) {
+        if (is_array($element)) {
+            $count += recursive_count($element);
+        } else {
+            $count++;
+        }
+    }
+    return $count;
+}

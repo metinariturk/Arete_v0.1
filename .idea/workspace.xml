@@ -25,7 +25,11 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/helpers/tcpdf/examples/images" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -70,6 +74,7 @@
       <workItem from="1697698905096" duration="16547000" />
       <workItem from="1697886045656" duration="11637000" />
       <workItem from="1698080305715" duration="15939000" />
+      <workItem from="1698167256315" duration="16459000" />
     </task>
     <servers />
   </component>

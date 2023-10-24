@@ -1,5 +1,6 @@
 <?php
 
+
 class Payment extends CI_Controller
 {
     public $viewFolder = "";
@@ -1200,8 +1201,12 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
         $active_boqs_json = get_from_id("contract", "active_boq", "$contract_id");
-        $active_boqs = json_decode($active_boqs_json,true);
+        $active_boqs = json_decode($active_boqs_json, true);
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
+        $calculates = $this->Boq_model->get_all(array(
+            "contract_id" => $contract_id,
+            "payment_no" => $payment_no,
+        ));
 
         $item = $this->Payment_model->get(
             array(
@@ -1210,7 +1215,6 @@ class Payment extends CI_Controller
         );
         $viewData = new stdClass();
         $viewData->item = $item;
-
 
 
         $this->load->library('pdf_creator');
@@ -1225,49 +1229,46 @@ class Payment extends CI_Controller
         } elseif ($target == "calculate") {
             $pdf->headerText = "METRAJ CETVELİ";
         }
+        $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
 
-
+        $pdf->custom_footer = array(
+            "Firma Adı" => "Biberci İnşaat",
+            "İnşaat Mühendisi" => "Musab ÖZKAĞNICI",
+            "Mimar" => "Buse ÖZÜPAK",
+            "Elk Mühendisi" => "Caner Özüpak",
+            "Mak Mühendisi" => "Abdullah KIRIŞKA",
+            "Haberleşme Müh" => "Abdullah KIRIŞKA"
+        );
+        $page_width = $pdf->getPageWidth() ;
         $pdf->AddPage();
         $pdf->SetFontSize(10);
+        $pdf->Cell($page_width, 5, "", 0, 0, "L", 0);
+        $pdf->SetFillColor(150, 150, 150); // Gri rengi ayarlayın (RGB renk kodu)
 
-        $pdf->SetFillColor(192, 192, 192); // Gri rengi ayarlayın (RGB renk kodu)
-
-        $table_header_1 = array(
-            "Sıra No" => array(25, 10, 1, "C", 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
-            "Poz No" => array(25, 10, 1, "C", 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
-            "Yapılan İşin Cinsi" => array(96, 10, 1, "L", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Birimi" => array(25, 10, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Hakediş Miktarları" => array(99, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-        );
-        foreach ($table_header_1 as $header => $properties) {
-            $pdf->Cell($properties[0], $properties[1], $header, 1, 0, $properties[3], $properties[4]);
-        }
-        $table_header_2 = array(
-            "" => array(171, 5, 0, "L", 0),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Toplam Mik." => array(33, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Önceki Mik" => array(33, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Bu Mik" => array(33, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-        );
-        $pdf->Ln();
-        foreach ($table_header_2 as $header1 => $properties1) {
-
-            $pdf->Cell($properties1[0], $properties1[1], $header1, $properties1[2], 0, $properties1[3], $properties1[4]);
-
-        }
-        $pdf->Ln();
-
+        $i = 0;
         foreach ($active_boqs as $group_key => $boq_ids) {
-            $group_name = boq_name($group_key);
-            $pdf->Cell(25, 5, "", 1, 0, "L", 0);
-            $pdf->Cell(25, 5, $group_key, 1, 0, "L", 0);
-            $pdf->Cell(220, 5, $group_name, 1, 0, "L", 0);
-            $pdf->Ln();
+            $i = $i + 2;
 
+            $say = count($boq_ids);
+
+            $last_cell = $i + $say;
+            if ($last_cell > 26) {
+                $pdf->AddPage(); // Yeni bir sayfa ekleyin
+                $i = 1;
+            }
+            $pdf->Ln();
+            $pdf->SetFont('dejavusans', '', 9); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+            $group_name = boq_name($group_key);
+            $pdf->SetFillColor(192, 192, 192);
+            $pdf->Cell(15, 5, $i, 1, 0, "L", 1);
+            $pdf->Cell(25, 5, $group_key, 1, 0, "L", 1);
+            $pdf->Cell(240, 5, $group_name, 1, 0, "L", 1);
+            $pdf->Ln();
             foreach ($boq_ids as $boq_id) {
                 $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
                     return $item->boq_id == $boq_id;
                 });
-
                 $old_total_array = $this->Boq_model->get_all(
                     array(
                         "contract_id" => $item->contract_id,
@@ -1275,48 +1276,38 @@ class Payment extends CI_Controller
                         "boq_id" => $boq_id,
                     )
                 );
-
                 if (!empty($old_total_array)) {
                     $old_total = sum_anything_and_and("boq", "total", "contract_id", $item->contract_id, "payment_no <", $item->hakedis_no, "boq_id", "$boq_id");
                 } else {
                     $old_total = 0;
                 }
-
                 if (!empty($foundItems)) {
                     foreach ($foundItems as $foundItem) {
-                        $pdf->Cell(25, 5, "", 1, 0, "L", 0);
-                        $pdf->Cell(25, 5, $group_key, 1, 0, "L", 0);
-                        $pdf->Cell(96, 5, $group_name, 1, 0, "L", 0);
-                        $pdf->Cell(25, 5, $group_name, 1, 0, "L", 0);
-                        $pdf->Cell(33, 5, $group_name, 1, 0, "L", 0);
-                        $pdf->Cell(33, 5, $group_name, 1, 0, "L", 0);
-                        $pdf->Cell(33, 5, $group_name, 1, 0, "L", 0);
-                        $pdf->Ln();
-                        echo($boq_id);
-                        echo boq_name($boq_id);
-                        echo boq_unit($boq_id);
-                        echo money_format($foundItem->total + $old_total);
-                        echo money_format($old_total);
-                        echo money_format($foundItem->total);
+                        $i = $i + 1;
+                        $name = yazim_duzeni(boq_name($boq_id));
+                        $unit = mb_strtolower(boq_unit($boq_id));
+                        $total = money_format($foundItem->total + $old_total);
                     }
                 } else {
-                    echo($boq_id);
-                    echo boq_name($boq_id);
-                    echo boq_unit($boq_id);
-                    echo money_format($old_total);
-                    echo money_format($old_total);
-                    echo "0.00";
+                    $i = $i + 1;
+                    $name = yazim_duzeni(boq_name($boq_id));
+                    $unit = mb_strtolower(boq_unit($boq_id));
+                    $total = money_format($old_total);
                 }
+                $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+                $now = (!empty($foundItems)) ? money_format($foundItem->total) : "0.00";
+                $pdf->Cell(15, 5, $i, 1, 0, "L", 0);
+                $pdf->Cell(25, 5, $boq_id, 1, 0, "L", 0);
+                $pdf->Cell(140, 5, $name, 1, 0, "L", 0);
+                $pdf->Cell(16, 5, $unit, 1, 0, "C", 0);
+                $pdf->Cell(28, 5, $total, 1, 0, "R", 0);
+                $pdf->Cell(28, 5, money_format($old_total), 1, 0, "R", 0);
+                $pdf->Cell(28, 5, $now, 1, 0, "R", 0);
+                $pdf->Ln();
             }
         }
-
-
-
-
-
         $pdf->Output('example.pdf');
-
-
     }
 
 }
