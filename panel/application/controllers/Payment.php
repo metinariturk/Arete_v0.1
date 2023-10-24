@@ -1198,80 +1198,124 @@ class Payment extends CI_Controller
     public
     function print($payment_id, $target)
     {
-
-        $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
-
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
+        $active_boqs_json = get_from_id("contract", "active_boq", "$contract_id");
+        $active_boqs = json_decode($active_boqs_json,true);
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
 
-        $body = $this->input->post('body');
+        $item = $this->Payment_model->get(
+            array(
+                "id" => $payment_id
+            )
+        );
+        $viewData = new stdClass();
+        $viewData->item = $item;
+
+
+
         $this->load->library('pdf_creator');
-        $pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-// UTF-8 karakter kodlamasını kullan
-        $pdf->setLanguageArray(array('a_meta_charset' => 'UTF-8'));
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->SetPageOrientation('L');
 
-// Başlık metni ayarlayın
+        $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
+        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
         if ($target == "green") {
             $pdf->headerText = "METRAJ İCMALİ";
         } elseif ($target == "calculate") {
             $pdf->headerText = "METRAJ CETVELİ";
         }
 
-// Sayfa ayarları
-        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
-// Header metinleri
-        $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
-
-// HTML tabloyu oluşturun
-
-
-// Sayfa kenar boşluklarını ayarlayın
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
         $pdf->AddPage();
+        $pdf->SetFontSize(10);
 
+        $pdf->SetFillColor(192, 192, 192); // Gri rengi ayarlayın (RGB renk kodu)
 
         $table_header_1 = array(
-            "Sıra No" => array(25, 14, 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
-            "Poz No" => array(25, 14, 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
-            "Yapılan İşin Cinsi" => array(96, 14, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Birimi" => array(25, 14, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Hakediş Miktarları" => array(99, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Sıra No" => array(25, 10, 1, "C", 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
+            "Poz No" => array(25, 10, 1, "C", 1),  // Genişlik: 30mm, Yükseklik: 10mm, Kenarlık: 1
+            "Yapılan İşin Cinsi" => array(96, 10, 1, "L", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Birimi" => array(25, 10, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Hakediş Miktarları" => array(99, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
         );
-
-        $table_header_2 = array(
-            "" => array(171, 7, 0),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Toplam Mik." => array(33, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Önceki Mik" => array(33, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-            "Bu Mik" => array(33, 7, 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
-        );
-
         foreach ($table_header_1 as $header => $properties) {
-            $cell_width = $properties[0];
-            $cell_height = $properties[1];
-            $border = $properties[2];
+            $pdf->Cell($properties[0], $properties[1], $header, 1, 0, $properties[3], $properties[4]);
+        }
+        $table_header_2 = array(
+            "" => array(171, 5, 0, "L", 0),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Toplam Mik." => array(33, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Önceki Mik" => array(33, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+            "Bu Mik" => array(33, 5, 1, "C", 1),  // Genişlik: 60mm, Yükseklik: 10mm, Kenarlık: 1
+        );
+        $pdf->Ln();
+        foreach ($table_header_2 as $header1 => $properties1) {
 
-            $pdf->Cell($cell_width, $cell_height, $header, $border);
+            $pdf->Cell($properties1[0], $properties1[1], $header1, $properties1[2], 0, $properties1[3], $properties1[4]);
+
         }
         $pdf->Ln();
-        foreach ($table_header_2 as $header => $properties) {
-            $cell_width = $properties[0];
-            $cell_height = $properties[1];
-            $border = $properties[2];
 
-            $pdf->Cell($cell_width, $cell_height, $header, $border);
+        foreach ($active_boqs as $group_key => $boq_ids) {
+            $group_name = boq_name($group_key);
+            $pdf->Cell(25, 5, "", 1, 0, "L", 0);
+            $pdf->Cell(25, 5, $group_key, 1, 0, "L", 0);
+            $pdf->Cell(220, 5, $group_name, 1, 0, "L", 0);
+            $pdf->Ln();
+
+            foreach ($boq_ids as $boq_id) {
+                $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
+                    return $item->boq_id == $boq_id;
+                });
+
+                $old_total_array = $this->Boq_model->get_all(
+                    array(
+                        "contract_id" => $item->contract_id,
+                        "payment_no <" => $item->hakedis_no,
+                        "boq_id" => $boq_id,
+                    )
+                );
+
+                if (!empty($old_total_array)) {
+                    $old_total = sum_anything_and_and("boq", "total", "contract_id", $item->contract_id, "payment_no <", $item->hakedis_no, "boq_id", "$boq_id");
+                } else {
+                    $old_total = 0;
+                }
+
+                if (!empty($foundItems)) {
+                    foreach ($foundItems as $foundItem) {
+                        $pdf->Cell(25, 5, "", 1, 0, "L", 0);
+                        $pdf->Cell(25, 5, $group_key, 1, 0, "L", 0);
+                        $pdf->Cell(96, 5, $group_name, 1, 0, "L", 0);
+                        $pdf->Cell(25, 5, $group_name, 1, 0, "L", 0);
+                        $pdf->Cell(33, 5, $group_name, 1, 0, "L", 0);
+                        $pdf->Cell(33, 5, $group_name, 1, 0, "L", 0);
+                        $pdf->Cell(33, 5, $group_name, 1, 0, "L", 0);
+                        $pdf->Ln();
+                        echo($boq_id);
+                        echo boq_name($boq_id);
+                        echo boq_unit($boq_id);
+                        echo money_format($foundItem->total + $old_total);
+                        echo money_format($old_total);
+                        echo money_format($foundItem->total);
+                    }
+                } else {
+                    echo($boq_id);
+                    echo boq_name($boq_id);
+                    echo boq_unit($boq_id);
+                    echo money_format($old_total);
+                    echo money_format($old_total);
+                    echo "0.00";
+                }
+            }
         }
 
 
 
-// Gövde içeriği ekleyin
 
-// PDF dosyasını görüntüleme veya kaydetme
-        $pdf->Output('example_001.pdf', 'I');
+
+        $pdf->Output('example.pdf');
+
 
     }
 

@@ -113,3 +113,39 @@
 
 
 
+foreach ($boq_ids as $boq_id) {
+    $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
+        return $item->boq_id == $boq_id;
+    });
+
+   $old_total_array = $this->Boq_model->get_all(
+        array(
+            "contract_id" => $item->contract_id,
+            "payment_no <" => $item->hakedis_no,
+            "boq_id" => $boq_id,
+        ),
+    );
+   if (!empty($old_total_array)) { ?>
+         $old_total = sum_anything_and_and("boq", "total", "contract_id", $item->contract_id, "payment_no <", $item->hakedis_no, "boq_id", "$boq_id");
+     } else {
+        $old_total = 0;
+    }
+
+     if (!empty($foundItems)) {
+        foreach ($foundItems as $foundItem) {
+                     echo($boq_id);
+                     echo boq_name($boq_id);
+                     echo boq_unit($boq_id);
+                     echo money_format($foundItem->total + $old_total);
+                     echo money_format($old_total);
+                     echo money_format($foundItem->total);
+         }
+     } else {
+                 echo($boq_id);
+                 echo boq_name($boq_id);
+                 echo boq_unit($boq_id);
+                 echo money_format($old_total);
+                 echo money_format($old_total);
+                0.00
+     }
+ }
