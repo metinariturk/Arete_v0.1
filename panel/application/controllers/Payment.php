@@ -1197,7 +1197,7 @@ class Payment extends CI_Controller
     }
 
     public
-    function print_green($payment_id)
+    function print_green($payment_id, $hide_zero = null)
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
         $active_boqs_json = get_from_id("contract", "active_boq", "$contract_id");
@@ -1287,32 +1287,57 @@ class Payment extends CI_Controller
                         $i = $i + 1;
                         $name = yazim_duzeni(boq_name($boq_id));
                         $unit = mb_strtolower(boq_unit($boq_id));
-                        $total = money_format($foundItem->total + $old_total);
+                        $total = $foundItem->total + $old_total;
                     }
                 } else {
                     $i = $i + 1;
                     $name = yazim_duzeni(boq_name($boq_id));
                     $unit = mb_strtolower(boq_unit($boq_id));
-                    $total = money_format($old_total);
+                    $total = $old_total;
                 }
                 $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                $now = (!empty($foundItems)) ? $foundItem->total : "0.00";
 
-                $now = (!empty($foundItems)) ? money_format($foundItem->total) : "0.00";
-                $pdf->Cell(15, 5, $k, 1, 0, "C", 0);
-                $pdf->Cell(25, 5, $boq_id, 1, 0, "L", 0);
-                $pdf->Cell(140, 5, $name, 1, 0, "L", 0);
-                $pdf->Cell(16, 5, $unit, 1, 0, "C", 0);
-                $pdf->Cell(28, 5, $total, 1, 0, "R", 0);
-                $pdf->Cell(28, 5, money_format($old_total), 1, 0, "R", 0);
-                $pdf->Cell(28, 5, $now, 1, 0, "R", 0);
-                $pdf->Ln();
+
+                if ($hide_zero == 1) {
+                    if ($total != 0) {
+                        $pdf->Cell(15, 5, $k, 1, 0, "C", 0);
+                        $pdf->Cell(25, 5, $boq_id, 1, 0, "L", 0);
+                        $pdf->Cell(140, 5, $name, 1, 0, "L", 0);
+                        $pdf->Cell(16, 5, $unit, 1, 0, "C", 0);
+                        $pdf->Cell(28, 5, money_format($total), 1, 0, "R", 0);
+                        $pdf->Cell(28, 5, money_format($old_total), 1, 0, "R", 0);
+                        $pdf->Cell(28, 5, money_format($now), 1, 0, "R", 0);
+                        $pdf->Ln();
+                    }
+                } elseif ($hide_zero == 0) {
+                    $pdf->Cell(15, 5, $k, 1, 0, "C", 0);
+                    $pdf->Cell(25, 5, $boq_id, 1, 0, "L", 0);
+                    $pdf->Cell(140, 5, $name, 1, 0, "L", 0);
+                    $pdf->Cell(16, 5, $unit, 1, 0, "C", 0);
+                    $pdf->Cell(28, 5, money_format($total), 1, 0, "R", 0);
+                    $pdf->Cell(28, 5, money_format($old_total), 1, 0, "R", 0);
+                    $pdf->Cell(28, 5, money_format($now), 1, 0, "R", 0);
+                    $pdf->Ln();
+                } elseif ($hide_zero == 2) {
+                    if (!empty($foundItems)) {
+                        $pdf->Cell(15, 5, $k, 1, 0, "C", 0);
+                        $pdf->Cell(25, 5, $boq_id, 1, 0, "L", 0);
+                        $pdf->Cell(140, 5, $name, 1, 0, "L", 0);
+                        $pdf->Cell(16, 5, $unit, 1, 0, "C", 0);
+                        $pdf->Cell(28, 5, money_format($total), 1, 0, "R", 0);
+                        $pdf->Cell(28, 5, money_format($old_total), 1, 0, "R", 0);
+                        $pdf->Cell(28, 5, money_format($now), 1, 0, "R", 0);
+                        $pdf->Ln();
+                    }
+                }
             }
         }
         $pdf->Output('example.pdf');
     }
 
     public
-    function print_calculate($payment_id)
+    function print_calculate($payment_id, $seperate_group = null)
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
         $active_boqs_json = get_from_id("contract", "active_boq", "$contract_id");
@@ -1336,7 +1361,6 @@ class Payment extends CI_Controller
 
         $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
         $pdf->SetPageOrientation('P');
-        $pdf->AddPage();
 
 
         $pdf->module = "calculate";
@@ -1354,88 +1378,74 @@ class Payment extends CI_Controller
             "Mak Mühendisi" => "Abdullah KIRIŞKA",
             "Haberleşme Müh" => "Abdullah KIRIŞKA"
         );
+
+        if ($seperate_group != 1) {
+            $pdf->AddPage();
+        }
+
         $page_width = $pdf->getPageWidth() - $pdf->getMargins()['left'] - $pdf->getMargins()['right'];
 
-        $i = 0;
-        $j = 0;
-        $k = 0;
-        $k = 0;
-
+        $k = 1;
 
         foreach ($active_boqs as $group_key => $boq_ids) {
-
-            foreach ($boq_ids as $boq_id) {
-                foreach ($calculates as $calculation_item) {
-                    if ($calculation_item->boq_id == $boq_id) {
-                        $calculation_datas = json_decode($calculation_item->calculation, true);
-                        $eleman_sayisi = count($calculation_datas);
-                    }
-                }
-            }
-
-            $i = $i + 2;
-            $j = $j + 1;
-            $k = $k + 2;
-            $last = 0;
-
-            $son_satir = $eleman_sayisi + $k;
-            if (($son_satir > 40 and $eleman_sayisi > 3) or ($k > 40) or ($last>45)) {
+            if ($seperate_group == 1) {
                 $pdf->AddPage();
-                $k = 2;
             }
-
+            $pdf->setLineWidth(0.1);
+            $pdf->SetFillColor(139, 139, 139);
             $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-            $pdf->Cell($page_width, 5, $k . " burası " . mb_strtoupper(boq_name($group_key)), 0, 0, "L", 0);
+            $pdf->Cell($page_width * 10 / 100, 5, $group_key, 1, 0, "L", 1);
+            $pdf->Cell($page_width * 90 / 100, 5, mb_strtoupper(boq_name($group_key)), 1, 0, "L", 1);
             $pdf->Ln();
-
+            $k = $k + 1;
             foreach ($boq_ids as $boq_id) {
                 foreach ($calculates as $calculation_item) {
                     if ($calculation_item->boq_id == $boq_id) {
                         $calculation_datas = json_decode($calculation_item->calculation, true);
-                        $k = $k + 1;
-                        $pdf->Cell($page_width, 5, count($boq_ids) . " " . mb_strtoupper(boq_name($boq_id)) . " - " . boq_unit($boq_id), 0, 0, "L", 0);
-                        $pdf->Ln();
                         $pdf->SetFillColor(192, 192, 192);
+                        $pdf->setLineWidth(0.1);
+                        $pdf->Cell($page_width * 10 / 100, 5, $boq_id, 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 90 / 100, 5, mb_strtoupper(boq_name($boq_id)) . " - " . boq_unit($boq_id), 1, 0, "L", 1);
+                        $pdf->Ln();
+                        $k = $k + 1;
+                        $pdf->SetFillColor(224, 224, 224);
+
+                        $pdf->setLineWidth(0.1);
                         $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
-                        $k = $k + 1;
-                        $pdf->Cell($page_width * 10 / 100, 5, $k . "Bölüm", 1, 0, "L", 1);
-                        $pdf->Cell($page_width * 40 / 100, 5, "Açıklama", 1, 0, "L", 1);
-                        $pdf->Cell($page_width * 8 / 100, 5, "Miktar", 1, 0, "L", 1);
-                        $pdf->Cell($page_width * 8 / 100, 5, "En", 1, 0, "L", 1);
-                        $pdf->Cell($page_width * 8 / 100, 5, "Boy", 1, 0, "L", 1);
-                        $pdf->Cell($page_width * 8 / 100, 5, "Yükseklik", 1, 0, "L", 1);
-                        $pdf->Cell($page_width * 18 / 100, 5, "Toplam", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 10 / 100, 5, "Bölüm", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 45 / 100, 5, "Açıklama", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "Miktar", 1, 0, "C", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "En", 1, 0, "C", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "Boy", 1, 0, "C", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "Yükseklik", 1, 0, "C", 1);
+                        $pdf->Cell($page_width * 13 / 100, 5, "Toplam", 1, 0, "C", 1);
                         $pdf->Ln();
+                        $k = $k + 1;
                         $pdf->SetFillColor();
-
                         foreach ($calculation_datas as $calculation_data) {
-                            $k = $k + 1;
-                            if ($k > 45) {
-                                $pdf->AddPage();
-                                $k = 2;
-                            }
                             $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                            $pdf->setLineWidth(0.1);
 
-                            $pdf->Cell($page_width * 10 / 100, 5, $k, 1, 0, "L", 0);
-                            $pdf->Cell($page_width * 40 / 100, 5, $calculation_data["n"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["q"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["w"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["h"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["l"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width * 18 / 100, 5, $calculation_data["t"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 10 / 100, 5, $calculation_data["s"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 45 / 100, 5, $calculation_data["n"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, money_format($calculation_data["q"]), 1, 0, "R", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, money_format($calculation_data["w"]), 1, 0, "R", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, money_format($calculation_data["h"]), 1, 0, "R", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, money_format($calculation_data["l"]), 1, 0, "R", 0);
+                            $pdf->Cell($page_width * 13 / 100, 5, money_format($calculation_data["t"]), 1, 0, "R", 0);
                             $pdf->Ln();
+                            $k = $k + 1;
                         }
-                        $k = $k + 1;
-                        $last = $k;
 
-
-                        $pdf->Cell($page_width * 74 / 100, 5, "", 0, 0, "R", 0);
+                        $pdf->Cell($page_width * 79 / 100, 5, "", 0, 0, "R", 0);
                         $pdf->Cell($page_width * 8 / 100, 5, "Toplam", 1, 0, "R", 0);
-                        $pdf->Cell($page_width * 18 / 100, 5, $calculation_item->total, 1, 0, "L", 0);
+                        $pdf->Cell($page_width * 13 / 100, 5, money_format($calculation_item->total), 1, 0, "L", 0);
                         $pdf->Ln();
+                        $k = $k + 1;
                     }
                 }
                 $pdf->Ln();
+                $k = $k + 1;
             }
 
 

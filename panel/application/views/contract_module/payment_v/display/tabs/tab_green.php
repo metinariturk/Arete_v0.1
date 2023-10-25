@@ -153,7 +153,9 @@
         <div>
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
         </div>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id"); ?>">Önizleme</a>
+        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
+        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır Olanları Gizle</a>
+        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece Bu Hakediş</a>
 
     </div>
 </div>

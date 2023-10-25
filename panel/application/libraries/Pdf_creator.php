@@ -3,7 +3,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once APPPATH . 'helpers/tcpdf/tcpdf.php';
 
-
 class Pdf_creator extends TCPDF
 {
     public $headerText = "";
@@ -25,23 +24,19 @@ class Pdf_creator extends TCPDF
         $this->SetY(-20);
         $this->SetFont('dejavusans', 'I', 8);
         $this->SetFooterMargin(20);
-
         $tableWidth = $this->getPageWidth() - $this->getMargins()['left'] - $this->getMargins()['right'];
         $cellHeight = 10;
         $total_key = count(array_keys($this->custom_footer));
         $cellWidth = $tableWidth * (1 / $total_key);
-
         foreach ($this->custom_footer as $rowLabel => $key) {
             $this->Cell($cellWidth, $cellHeight, $rowLabel, 0, 0, 'C');
         }
         $this->Ln();
         $this->SetY($this->GetY() - $this->getFontSize()); // Hücrenin başlangıç yüksekliğini sıfıra ayarla
-
         foreach ($this->custom_footer as $rowLabel => $key) {
             $this->Cell($cellWidth, $cellHeight, $key, 0, 0, 'C');
         }
     }
-
 
     public function Header()
     {
@@ -59,7 +54,6 @@ class Pdf_creator extends TCPDF
         $this->setFont('dejavusans', 'I', 9);
         $this->Cell($paymnet_no_location, 15, $this->headerSubText, 0, 0, 'L', 0); // headerSubText sola hizalı
         $this->Cell(25, 15, $this->headerPaymentNo, 0, 1, 'R', 0); // headerPa
-
         if ($this->module == "green") {
             $table_header_1 = array(
                 "Sıra No" => array(15, 10, 1, "C", 1),
@@ -72,13 +66,10 @@ class Pdf_creator extends TCPDF
             $this->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
             foreach ($table_header_1 as $header => $properties) {
                 $this->SetLineWidth(0.2); // Çizgi kalınlığını 0.2 mm olarak ayarlayın (varsayılan değer 0.2'dir)
-
                 $this->SetFont('dejavusans', 'B', 9);
                 $this->Cell($properties[0], $properties[1], $header, $properties[2], 0, $properties[3], $properties[4]);
-
                 if ($header == "Hakediş Miktarları") {
                     $this->Ln();
-
                     $this->Cell(196, 5, "", 0, 0, "C", 0);
                     $this->Cell(28, 5, "Toplam", 1, 0, "C", 1);
                     $this->Cell(28, 5, "Önceki Hak.", 1, 0, "C", 1);
