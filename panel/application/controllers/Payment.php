@@ -1364,58 +1364,74 @@ class Payment extends CI_Controller
 
         foreach ($active_boqs as $group_key => $boq_ids) {
 
+            foreach ($boq_ids as $boq_id) {
+                foreach ($calculates as $calculation_item) {
+                    if ($calculation_item->boq_id == $boq_id) {
+                        $calculation_datas = json_decode($calculation_item->calculation, true);
+                        $eleman_sayisi = count($calculation_datas);
+                    }
+                }
+            }
+
             $i = $i + 2;
             $j = $j + 1;
             $k = $k + 2;
+            $last = 0;
 
-            if ($k>38 and $last>42){
+            $son_satir = $eleman_sayisi + $k;
+            if (($son_satir > 40 and $eleman_sayisi > 3) or ($k > 40) or ($last>45)) {
                 $pdf->AddPage();
                 $k = 2;
             }
 
             $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-            $pdf->Cell($page_width, 5,$k." burası ".mb_strtoupper(boq_name($group_key)), 0, 0, "L", 0);
+            $pdf->Cell($page_width, 5, $k . " burası " . mb_strtoupper(boq_name($group_key)), 0, 0, "L", 0);
             $pdf->Ln();
 
             foreach ($boq_ids as $boq_id) {
                 foreach ($calculates as $calculation_item) {
                     if ($calculation_item->boq_id == $boq_id) {
                         $calculation_datas = json_decode($calculation_item->calculation, true);
-                        $k = $k+1;
-                        $pdf->Cell($page_width, 5,$k ." ".mb_strtoupper(boq_name($boq_id))." - ".boq_unit($boq_id), 0, 0, "L", 0);
+                        $k = $k + 1;
+                        $pdf->Cell($page_width, 5, count($boq_ids) . " " . mb_strtoupper(boq_name($boq_id)) . " - " . boq_unit($boq_id), 0, 0, "L", 0);
                         $pdf->Ln();
                         $pdf->SetFillColor(192, 192, 192);
                         $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
-                        $k = $k+1;
-                        $pdf->Cell($page_width*10/100, 5,$k."Bölüm", 1, 0, "L", 1);
-                        $pdf->Cell($page_width*40/100, 5,"Açıklama", 1, 0, "L", 1);
-                        $pdf->Cell($page_width*8/100, 5,"Miktar", 1, 0, "L", 1);
-                        $pdf->Cell($page_width*8/100, 5,"En", 1, 0, "L", 1);
-                        $pdf->Cell($page_width*8/100, 5,"Boy", 1, 0, "L", 1);
-                        $pdf->Cell($page_width*8/100, 5,"Yükseklik", 1, 0, "L", 1);
-                        $pdf->Cell($page_width*18/100, 5,"Toplam", 1, 0, "L", 1);
+                        $k = $k + 1;
+                        $pdf->Cell($page_width * 10 / 100, 5, $k . "Bölüm", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 40 / 100, 5, "Açıklama", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "Miktar", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "En", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "Boy", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 8 / 100, 5, "Yükseklik", 1, 0, "L", 1);
+                        $pdf->Cell($page_width * 18 / 100, 5, "Toplam", 1, 0, "L", 1);
                         $pdf->Ln();
                         $pdf->SetFillColor();
 
                         foreach ($calculation_datas as $calculation_data) {
-                            $k = $k+1;
+                            $k = $k + 1;
+                            if ($k > 45) {
+                                $pdf->AddPage();
+                                $k = 2;
+                            }
                             $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
 
-                            $pdf->Cell($page_width*10/100, 5,$k, 1, 0, "L", 0);
-                            $pdf->Cell($page_width*40/100, 5,$calculation_data["n"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width*8/100, 5,$calculation_data["q"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width*8/100, 5,$calculation_data["w"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width*8/100, 5,$calculation_data["h"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width*8/100, 5,$calculation_data["l"], 1, 0, "L", 0);
-                            $pdf->Cell($page_width*18/100, 5,$calculation_data["t"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 10 / 100, 5, $k, 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 40 / 100, 5, $calculation_data["n"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["q"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["w"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["h"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 8 / 100, 5, $calculation_data["l"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width * 18 / 100, 5, $calculation_data["t"], 1, 0, "L", 0);
                             $pdf->Ln();
                         }
-                        $k = $k+1;
+                        $k = $k + 1;
                         $last = $k;
 
-                        $pdf->Cell($page_width*74/100, 5,"", 0, 0, "R", 0);
-                        $pdf->Cell($page_width*8/100, 5,$last."Toplam", 1, 0, "R", 0);
-                        $pdf->Cell($page_width*18/100, 5,$calculation_item->total, 1, 0, "L", 0);
+
+                        $pdf->Cell($page_width * 74 / 100, 5, "", 0, 0, "R", 0);
+                        $pdf->Cell($page_width * 8 / 100, 5, "Toplam", 1, 0, "R", 0);
+                        $pdf->Cell($page_width * 18 / 100, 5, $calculation_item->total, 1, 0, "L", 0);
                         $pdf->Ln();
                     }
                 }
@@ -1424,10 +1440,6 @@ class Payment extends CI_Controller
 
 
         }
-
-
-
-
 
 
         $pdf->Output('example.pdf');
