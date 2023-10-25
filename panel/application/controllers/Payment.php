@@ -1197,7 +1197,7 @@ class Payment extends CI_Controller
     }
 
     public
-    function print($payment_id, $target)
+    function print_green($payment_id)
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
         $active_boqs_json = get_from_id("contract", "active_boq", "$contract_id");
@@ -1222,13 +1222,11 @@ class Payment extends CI_Controller
         $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
         $pdf->SetPageOrientation('L');
 
+        $pdf->module = "green";
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
         $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
-        if ($target == "green") {
-            $pdf->headerText = "METRAJ İCMALİ";
-        } elseif ($target == "calculate") {
-            $pdf->headerText = "METRAJ CETVELİ";
-        }
+
+        $pdf->headerText = "METRAJ İCMALİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
 
         $pdf->custom_footer = array(
@@ -1239,7 +1237,7 @@ class Payment extends CI_Controller
             "Mak Mühendisi" => "Abdullah KIRIŞKA",
             "Haberleşme Müh" => "Abdullah KIRIŞKA"
         );
-        $page_width = $pdf->getPageWidth() ;
+        $page_width = $pdf->getPageWidth();
         $pdf->AddPage();
         $pdf->SetFontSize(10);
         $pdf->Cell($page_width, 5, "", 0, 0, "L", 0);
@@ -1255,7 +1253,7 @@ class Payment extends CI_Controller
             $say = count($boq_ids);
 
             $last_cell = $i + $say;
-            if ($last_cell > 26) {
+            if ($last_cell > 24) {
                 $pdf->AddPage(); // Yeni bir sayfa ekleyin
                 $i = 1;
             }
@@ -1268,7 +1266,7 @@ class Payment extends CI_Controller
             $pdf->Cell(265, 5, mb_strtoupper($group_name), 1, 0, "L", 1);
             $pdf->Ln();
             foreach ($boq_ids as $boq_id) {
-                $k = $k+1;
+                $k = $k + 1;
                 $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
                     return $item->boq_id == $boq_id;
                 });
@@ -1310,6 +1308,128 @@ class Payment extends CI_Controller
                 $pdf->Ln();
             }
         }
+        $pdf->Output('example.pdf');
+    }
+
+    public
+    function print_calculate($payment_id)
+    {
+        $contract_id = get_from_id("payment", "contract_id", "$payment_id");
+        $active_boqs_json = get_from_id("contract", "active_boq", "$contract_id");
+        $active_boqs = json_decode($active_boqs_json, true);
+        $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
+        $calculates = $this->Boq_model->get_all(array(
+            "contract_id" => $contract_id,
+            "payment_no" => $payment_no,
+        ));
+
+        $item = $this->Payment_model->get(
+            array(
+                "id" => $payment_id
+            )
+        );
+        $viewData = new stdClass();
+        $viewData->item = $item;
+
+
+        $this->load->library('pdf_creator');
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->SetPageOrientation('P');
+        $pdf->AddPage();
+
+
+        $pdf->module = "calculate";
+        $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
+        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+
+        $pdf->headerText = "METRAJ CETVELİ";
+        $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
+
+        $pdf->custom_footer = array(
+            "Firma Adı" => "Biberci İnşaat",
+            "İnşaat Mühendisi" => "Musab ÖZKAĞNICI",
+            "Mimar" => "Buse ÖZÜPAK",
+            "Elk Mühendisi" => "Caner Özüpak",
+            "Mak Mühendisi" => "Abdullah KIRIŞKA",
+            "Haberleşme Müh" => "Abdullah KIRIŞKA"
+        );
+        $page_width = $pdf->getPageWidth() - $pdf->getMargins()['left'] - $pdf->getMargins()['right'];
+
+        $i = 0;
+        $j = 0;
+        $k = 0;
+        $k = 0;
+
+
+        foreach ($active_boqs as $group_key => $boq_ids) {
+
+            $i = $i + 2;
+            $j = $j + 1;
+            $k = $k + 2;
+
+            if ($k>38 and $last>42){
+                $pdf->AddPage();
+                $k = 2;
+            }
+
+            $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+            $pdf->Cell($page_width, 5,$k." burası ".mb_strtoupper(boq_name($group_key)), 0, 0, "L", 0);
+            $pdf->Ln();
+
+            foreach ($boq_ids as $boq_id) {
+                foreach ($calculates as $calculation_item) {
+                    if ($calculation_item->boq_id == $boq_id) {
+                        $calculation_datas = json_decode($calculation_item->calculation, true);
+                        $k = $k+1;
+                        $pdf->Cell($page_width, 5,$k ." ".mb_strtoupper(boq_name($boq_id))." - ".boq_unit($boq_id), 0, 0, "L", 0);
+                        $pdf->Ln();
+                        $pdf->SetFillColor(192, 192, 192);
+                        $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
+                        $k = $k+1;
+                        $pdf->Cell($page_width*10/100, 5,$k."Bölüm", 1, 0, "L", 1);
+                        $pdf->Cell($page_width*40/100, 5,"Açıklama", 1, 0, "L", 1);
+                        $pdf->Cell($page_width*8/100, 5,"Miktar", 1, 0, "L", 1);
+                        $pdf->Cell($page_width*8/100, 5,"En", 1, 0, "L", 1);
+                        $pdf->Cell($page_width*8/100, 5,"Boy", 1, 0, "L", 1);
+                        $pdf->Cell($page_width*8/100, 5,"Yükseklik", 1, 0, "L", 1);
+                        $pdf->Cell($page_width*18/100, 5,"Toplam", 1, 0, "L", 1);
+                        $pdf->Ln();
+                        $pdf->SetFillColor();
+
+                        foreach ($calculation_datas as $calculation_data) {
+                            $k = $k+1;
+                            $pdf->SetFont('dejavusans', '', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+                            $pdf->Cell($page_width*10/100, 5,$k, 1, 0, "L", 0);
+                            $pdf->Cell($page_width*40/100, 5,$calculation_data["n"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width*8/100, 5,$calculation_data["q"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width*8/100, 5,$calculation_data["w"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width*8/100, 5,$calculation_data["h"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width*8/100, 5,$calculation_data["l"], 1, 0, "L", 0);
+                            $pdf->Cell($page_width*18/100, 5,$calculation_data["t"], 1, 0, "L", 0);
+                            $pdf->Ln();
+                        }
+                        $k = $k+1;
+                        $last = $k;
+
+                        $pdf->Cell($page_width*74/100, 5,"", 0, 0, "R", 0);
+                        $pdf->Cell($page_width*8/100, 5,$last."Toplam", 1, 0, "R", 0);
+                        $pdf->Cell($page_width*18/100, 5,$calculation_item->total, 1, 0, "L", 0);
+                        $pdf->Ln();
+                    }
+                }
+                $pdf->Ln();
+            }
+
+
+        }
+
+
+
+
+
+
         $pdf->Output('example.pdf');
     }
 

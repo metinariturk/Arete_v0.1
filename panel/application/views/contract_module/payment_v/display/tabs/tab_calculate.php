@@ -160,7 +160,10 @@
         <div>
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
         </div>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print/$item->id/calculate"); ?>">Önizleme</a>
+        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_calculate/$item->id"); ?>">Önizleme</a>
     </div>
 
 </div>
+
+
+
