@@ -28,16 +28,16 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/helpers/tcpdf/examples/images" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/payment_v/display/tabs" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\examples\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\fonts" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\print" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\add" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\fonts" />
@@ -76,6 +76,7 @@
       <workItem from="1698080305715" duration="15939000" />
       <workItem from="1698167256315" duration="21251000" />
       <workItem from="1698250747628" duration="5350000" />
+      <workItem from="1698341023975" duration="6846000" />
     </task>
     <servers />
   </component>

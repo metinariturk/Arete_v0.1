@@ -3,7 +3,7 @@
 } ?>"
      id="green" role="tabpanel"
      aria-labelledby="green-tab">
-    Yeşil Defter
+    Metraj İcmali
 </div>
 
 

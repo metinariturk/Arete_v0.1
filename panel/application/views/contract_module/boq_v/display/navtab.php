@@ -23,7 +23,7 @@
                            role="tab"
                            aria-controls="green"
                            aria-selected="false">
-                            <span class="title">Yeşil Defter</span>
+                            <span class="title">Metraj İcmali</span>
                         </a>
                     </li>
                     <li>

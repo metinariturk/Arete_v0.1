@@ -31,7 +31,7 @@
                            role="tab"
                            aria-controls="green"
                            aria-selected="false">
-                            <span class="title">Yeşil Defter</span>
+                            <span class="title">Metraj İcmali</span>
                         </a>
                     </li>
                     <li>
@@ -45,6 +45,17 @@
                         </a>
                     </li>
                     <li>
+                        <a class="show"
+                           id="group_total-tab"
+                           data-bs-toggle="pill"
+                           href="#group_total"
+                           role="tab"
+                           aria-controls="group_total"
+                           aria-selected="false">
+                            <span class="title">Grup İcmali</span>
+                        </a>
+                    </li>
+                    <li>
                         <a id="genel-tab"
                            data-bs-toggle="pill"
                            href="#genel"
@@ -52,17 +63,6 @@
                            aria-controls="genel"
                            aria-selected="false">
                             <span class "title">Hakediş Kapağı</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="show"
-                           id="images-tab"
-                           data-bs-toggle="pill"
-                           href="#images"
-                           role="tab"
-                           aria-controls="images"
-                           aria-selected="false">
-                            <span class="title">Görseller</span>
                         </a>
                     </li>
                     <li>
