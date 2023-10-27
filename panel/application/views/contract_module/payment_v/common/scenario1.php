@@ -19,23 +19,26 @@
         var valorKES_b = valorKES_b_s * valorE / 100; // Stopaj Oranı Hesap
         document.getElementById('KES_b').value = valorKES_b.toFixed(2); //  Stopaj Oranı Yaz
 
-        var valorKES_c_s = document.getElementById('KES_c_s').value; // Örneğin: "4/10"
-        var kesirParcalari = valorKES_c_s.split('/'); // Kesir ifadesini parçalar
-        if (valorKES_c_s === "" || valorKES_c_s === "0") {
-            valorKES_c_s = 0; // Boş veya 0 değeri için varsayılan olarak 0 atanır.
-        } else if (kesirParcalari.length === 2) {
-            var pay = parseFloat(kesirParcalari[0]);
-            var payda = parseFloat(kesirParcalari[1]);
-            if (!isNaN(pay) && !isNaN(payda) && payda !== 0) {
-                var sonuc = pay / payda; // Kesiri sayıya dönüştür
-                valorKES_c_s = sonuc;
-                var valorKES_c = valorKES_c_s * valorF; // Stopaj Oranı Hesap
-                document.getElementById('valorKES_c').value = valorKES_c.toFixed(2); //  Stopaj Oranı Yaz
-            } else {
-                console.error("Geçersiz kesir ifadesi");
-            }
-        } else {
-            console.error("Kesir ifadesini çözme hatası");
-        }
+        var valorKES_c_s = Number(document.getElementById('KES_c_s').value, 10); //Stopaj Oranı Seç
+        var valorKES_c = valorKES_c_s * valorF; // Stopaj Oranı Hesap
+        document.getElementById('KES_c').value = valorKES_c.toFixed(2); //  Stopaj Oranı Yaz
+
+        var valorKES_d = Number(document.getElementById('KES_d').value, 10); //Stopaj Oranı Seç
+        var valorKES_e = Number(document.getElementById('KES_e').value, 10); //Stopaj Oranı Seç
+        var valorKES_f = Number(document.getElementById('KES_f').value, 10); //Stopaj Oranı Seç
+        var valorKES_g = Number(document.getElementById('KES_g').value, 10); //Stopaj Oranı Seç
+        var valorKES_h = Number(document.getElementById('KES_h').value, 10); //Stopaj Oranı Seç
+        var valorKES_i = Number(document.getElementById('KES_i').value, 10); //Stopaj Oranı Seç
+        var valorH = valorKES_c_s + valorKES_a +valorKES_b + valorKES_c + valorKES_d + valorKES_e + valorKES_f + valorKES_g + valorKES_h + valorKES_i; // Stopaj Oranı Hesap
+        document.getElementById('H').value = valorH.toFixed(2); //  Stopaj Oranı Yaz
+
+        var valorI_s = Number(document.getElementById('I_s').value, 10); //Avans Mahsup Oranı Seç
+        var valorI = valorI_s * valorE / 100; // Avans Mahsup Hesap
+        document.getElementById('I').value = valorI.toFixed(2); // Avans Mahsup Yaz
+
+        var valorX = valorG - valorH - valorI; // Stopaj Oranı Hesap
+        document.getElementById('X').value = valorX.toFixed(2); // Avans Mahsup Yaz
+
+
     }
 </script>

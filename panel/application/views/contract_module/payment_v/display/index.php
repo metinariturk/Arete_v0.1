@@ -9,10 +9,7 @@
     <?php $this->load->view("includes/head"); ?>
 
     <style>
-        table, tr, td, th {
-            border: 0.75pt solid black;
-            font-size: 9pt;
-        }
+
 
         td {
             height: 15pt;
@@ -20,37 +17,44 @@
 
         td.calculate-row-right {
             text-align: right;
-
+            border: 1px solid #a8b5cf;
         }
 
         td.total-group-row-right {
             text-align: right;
+            border: 1px solid #a8b5cf;
         }
 
         td.calculate-row-left {
             text-align: left;
+            border: 1px solid #a8b5cf;
         }
 
         td.total-group-row-left {
             text-align: left;
+            border: 1px solid #a8b5cf;
         }
 
         td.calculate-row-center {
             text-align: center;
+            border: 1px solid #a8b5cf;
         }
 
         td.total-group-row-center {
             text-align: center;
+            border: 1px solid #a8b5cf;
         }
 
         td.total-group-header-center {
             background-color: #e7e7e7;
             text-align: center;
+            border: 1px solid #a8b5cf;
         }
 
         td.calculate-header-center {
             background-color: #e7e7e7;
             text-align: center;
+            border: 1px solid #a8b5cf;
         }
     </style>
 </head>

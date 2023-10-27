@@ -12,44 +12,45 @@
             </tr>
             </thead>
             <tbody>
-            <tr style="font-weight: bold; font-size: 14pt; text-align: left">
+            <tr class="total-group-row-left">
                 <td colspan="2">İşin Adı: <?php echo mb_strtoupper(contract_name($contract->id)); ?></td>
                 <td style="text-align: right">Hakediş No:<?php echo $item->hakedis_no; ?> No lu</td>
             </tr>
             <tr>
-                <td colspan="3" style="font-weight: bold; text-align: center"><?php echo $item->imalat_tarihi; ?>
+                <td class="total-group-row-left" colspan="3"
+                    style="font-weight: bold; text-align: center"><?php echo $item->imalat_tarihi; ?>
                     TARİHİNE KADAR YAPILAN İŞİN
                 </td>
             </tr>
             <tr>
-                <td class="w-5">A</td>
-                <td>Sözleşme Fiyatları İle Yapılan İşin Tutarı</td>
-                <td></td>
+                <td class="w-5 total-group-row-center">A</td>
+                <td class="total-group-row-left">Sözleşme Fiyatları İle Yapılan İşin Tutarı</td>
+                <td class="total-group-row-left"></td>
             </tr>
             <tr>
-                <td class="w-5">B</td>
-                <td>Fiyat Farkı Tutarı</td>
-                <td></td>
+                <td class="w-5 total-group-row-center">B</td>
+                <td class="total-group-row-left">Fiyat Farkı Tutarı</td>
+                <td class="total-group-row-left"></td>
             </tr>
             <tr>
-                <td class="w-5">C</td>
-                <td style="font-weight: bold">Toplam Tutar (A+B)</td>
-                <td>
+                <td class="w-5 total-group-row-center">C</td>
+                <td class="total-group-row-left" style="font-weight: bold">Toplam Tutar (A+B)</td>
+                <td class="total-group-row-left">
                 </td>
             </tr>
             <tr>
-                <td colspan="3"></td>
+                <td class="total-group-row-left" colspan="3"></td>
             </tr>
             <tr>
-                <td>D</td>
-                <td>Bir Önceki Hakedişin Toplam Tutarı</td>
-                <td><?php echo money_format((sum_payments("bu_imalat", $contract->id))) . " " . get_currency($contract->id); ?></td>
+                <td class="w-5 total-group-row-center">D</td>
+                <td class="total-group-row-left">Bir Önceki Hakedişin Toplam Tutarı</td>
+                <td class="total-group-row-left"><?php echo money_format((sum_payments("bu_imalat", $contract->id))) . " " . get_currency($contract->id); ?></td>
             </tr>
             <tr>
-                <td>E</td>
-                <td>Bu Hakedişin Tutarı (C-D)
+                <td class="w-5 total-group-row-center">E</td>
+                <td class="total-group-row-left">Bu Hakedişin Tutarı (C-D)
                 </td>
-                <td>
+                <td class="total-group-row-left">
                     <input type="number" step=".01" id="E" name="bu_imalat"
                            value="<?php echo $boq->total; ?>"
                            onblur="calcular()" required
@@ -57,9 +58,9 @@
                 </td>
             </tr>
             <tr>
-                <td>F</td>
-                <td>KDV (E x <select id="F_a" onblur="calcular()" onclick="calcular()"
-                                     data-plugin="select2" name="kdv_oran">
+                <td class="w-5 total-group-row-center">F</td>
+                <td class="total-group-row-left">KDV (E x <select id="F_a" onblur="calcular()" onclick="calcular()"
+                                                                  data-plugin="select2" name="kdv_oran">
                         <option value="<?php echo $contract->kdv_oran; ?>">
                             %<?php echo $contract->kdv_oran; ?></option>
                         <?php $oranlar = str_getcsv($settings->KDV_oran);
@@ -68,17 +69,17 @@
                         <?php } ?>
                     </select> )
                 </td>
-                <td>
+                <td class="total-group-row-left">
                     <input id="F" type="number" step=".01" name="kdv_tutar" onblur="calcular()"
-                           onfocus="calcular()" onblur="calcular()"
+                           onfocus="calcular()"
                            readonly
                            value="<?php echo $contract->kdv_oran * $boq->total / 100; ?>">
                 </td>
             </tr>
             <tr>
-                <td>G</td>
-                <td style="font-weight: bold">Tahakkuk Tutarı</td>
-                <td>
+                <td class="w-5 total-group-row-center">G</td>
+                <td class="total-group-row-left" style="font-weight: bold">Tahakkuk Tutarı</td>
+                <td class="total-group-row-left">
                     <input type="number" step=".01" id="G" name="taahhuk"
                            value="<?php echo $contract->kdv_oran * $boq->total / 100 + $boq->total; ?>"
                            onblur="calcular()" readonly
@@ -86,10 +87,11 @@
                 </td>
             </tr>
             <tr>
-                <td rowspan="8" style="-webkit-transform:rotate(180deg);text-align:center; writing-mode:tb-rl; ">
+                <td rowspan="9"
+                    style="-webkit-transform:rotate(180deg);text-align:center; writing-mode:tb-rl; border: 1px solid #a8b5cf;">
                     <p style="width: 20px; padding-left: 40px "><strong>KESİNTİLER VE MAHSUPLAR</strong></p>
                 </td>
-                <td>a)Gelir / Kurumlar Vergisi (E x
+                <td class="total-group-row-left">a)Gelir / Kurumlar Vergisi (E x
                     <select id="KES_a_s" onblur="calcular()" onclick="calcular()"
                             data-plugin="select2" name="stopaj_oran">
                         <option value="<?php echo $contract->stopaj_oran; ?>"
@@ -103,7 +105,7 @@
                     </select>
                     )
                 </td>
-                <td>
+                <td class="total-group-row-left">
                     <input id="KES_a" type="number" step=".01" name="stopaj_tutar" onblur="calcular()"
                            readonly
                            onfocus="calcular()" onblur="calcular()"
@@ -112,7 +114,7 @@
                 </td>
             </tr>
             <tr>
-                <td>b)Damga Vergisi (E x
+                <td class="total-group-row-left">b)Damga Vergisi (E x
                     <select name="damga_oran" id="KES_b_s" onclick="calcular()"
                             onfocus="calcular()">
                         <option value="<?php echo $contract->damga_oran; ?>"
@@ -125,14 +127,15 @@
                     </select>
                     )
                 </td>
-                <td><input id="KES_b" type="number" step=".01" name="stopaj_tutar" onblur="calcular()"
-                           readonly
-                           onfocus="calcular()" onblur="calcular()"
-                           value="<?php echo $contract->damga_oran * $boq->total; ?>">
+                <td class="total-group-row-left"><input id="KES_b" type="number" step=".01" name="stopaj_tutar"
+                                                        onblur="calcular()"
+                                                        readonly
+                                                        onfocus="calcular()" onblur="calcular()"
+                                                        value="<?php echo $contract->damga_oran * $boq->total; ?>">
                 </td>
             </tr>
             <tr>
-                <td>c)KDV Tevkifatı (F x
+                <td class="total-group-row-left">c)KDV Tevkifatı (F x
                     <select name="damga_oran" id="KES_c_s" onclick="calcular()"
                             onfocus="calcular()">
                         <option value="<?php echo $contract->tevkifat_oran; ?>"
@@ -140,48 +143,129 @@
                             <?php echo $contract->tevkifat_oran; ?></option>
                         <?php $oranlar = str_getcsv($settings->kdv_tevkifat_oran);
                         foreach ($oranlar as $oran) { ?>
-                            <option value="<?php echo $oran; ?>"><?php echo $oran; ?></option>";
+                            <option value="<?php
+                            $oran_bol = explode("/", $oran);
+                            if (count($oran_bol) == 2) {
+                                echo $oran_bol[0] / $oran_bol[1];
+                            } else {
+                                echo 0;
+                            } ?>"><?php echo $oran; ?></option>";
                         <?php } ?>
                     </select>
                     )
                 </td>
-                <td><input id="KES_c" type="number" step=".01" name="stopaj_tutar" onblur="()"
+                <td class="total-group-row-left">
+                    <input id="KES_c" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
                            readonly
-                           onfocus="calcular()" onblur="()"
-                           value="<?php echo $contract->damga_oran * $boq->total; ?>">
+                           onfocus="calcular()"
+                           value="<?php
+                           $parcalar = explode("/", $contract->damga_oran);
+                           if (count($parcalar) == 2) {
+                               echo $parcalar[0] / $parcalar[1] * $boq->total;
+                           } else {
+                               echo 0;
+                           } ?>">
                 </td>
             </tr>
             <tr>
-                <td>d)Sosyal Sigortalar Kurumu Kesintisi</td>
-                <td></td>
+                <td class="total-group-row-left">d)Sosyal Sigortalar Kurumu Kesintisi</td>
+                <td class="total-group-row-left">
+                    <input id="KES_d" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
+                </td>
             </tr>
             <tr>
-                <td>e)Geçici Kabul Kesintisi</td>
-                <td></td>
+                <td class="total-group-row-left">e)Geçici Kabul Kesintisi</td>
+                <td class="total-group-row-left">
+                    <input id="KES_e" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
+                </td>
             </tr>
             <tr>
-                <td>f)İdare Makinesi Kiraları</td>
-                <td></td>
+                <td class="total-group-row-left">f)İdare Makinesi Kiraları</td>
+                <td class="total-group-row-left">
+                    <input id="KES_f" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
+                </td>
             </tr>
             <tr>
-                <td>g)Gecikme Cezası</td>
-                <td></td>
+                <td class="total-group-row-left">g)Gecikme Cezası</td>
+                <td class="total-group-row-left">
+                    <input id="KES_g" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
+                </td>
             </tr
             <tr>
-                <td>h)İş Sağlığı ve Güvenliği Cezası</td>
-                <td></td>
+                <td class="total-group-row-left">h)İş Sağlığı ve Güvenliği Cezası</td>
+                <td class="total-group-row-left">
+                    <input id="KES_h" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
+                </td>
             </tr>
             <tr>
-                <td>H</td>
-                <td style="font-weight: bold">Kesinti ve Mahsuplar Toplamı
+                <td class="total-group-row-left">i)Diğer</td>
+                <td class="total-group-row-left">
+                    <input id="KES_i" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
                 </td>
-                <td></td>
+            </tr>
+
+            <tr>
+                <td class="total-group-row-center">H</td>
+                <td class="total-group-row-left" style="font-weight: bold">Kesinti ve Mahsuplar Toplamı
+                </td>
+                <td class="total-group-row-left">
+                    <input id="H" type="number" step=".01" name="stopaj_tutar"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
+                </td>
             </tr>
             <tr>
-                <td></td>
-                <td style="font-weight: bold">Yükleniciye Ödenecek Tutar (G-H)
+                <td class="total-group-row-center">I</td>
+                <td class="total-group-row-left" style="font-weight: bold">Avans Mahsubu<br>
+                    <i>Toplam Verilen
+                        Avans <?php echo money_format(sum_from_table("advance", "avans_miktar", $contract->id)) . " " . get_currency($contract->id); ?>
+                    </i>
+                    <br>
+                    <i>Toplam Mahsup Edilen
+                        Avans <?php echo money_format(sum_payments("avans_mahsup_miktar", $contract->id)) . " " . get_currency($contract->id); ?>
+                    </i>
+                    <br>
+                    <input type="number" step=".01" id="I_s" name="avans_mahsup_oran"
+                           onblur="calcular()" onfocus="calcular()"
+                           value="<?php echo $contract->avans_mahsup_oran; ?>">
+
                 </td>
-                <td></td>
+                <td class="total-group-row-left">
+                    <input id="I" type="number" step=".01" name=""
+                           onblur="calcular()"
+                           onfocus="calcular()">
+                </td>
+            </tr>
+            <tr>
+                <td class="total-group-row-center"></td>
+                <td class="total-group-row-left" style="font-weight: bold">Yükleniciye Ödenecek Tutar (G-H-I)
+                </td>
+                <td class="total-group-row-left">
+                    <input id="X" type="number" step=".01" name="total"
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                          >
+                </td>
             </tr>
             <tr>
                 <td></td>
