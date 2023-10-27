@@ -10,7 +10,7 @@
                 <strong><?php echo contract_name($item->contract_id); ?></strong>
             </p>
             <p style="text-align:center; font-size:14pt;">
-                <strong>METRAJ İCMALİ</strong>
+                <strong>YAPILAN İŞLER LİSTESİ</strong>
             </p>
             <table>
                 <tbody>
@@ -50,79 +50,69 @@
                         </p>
                     </td>
                 </tr>
-                <tr style="height:14.1pt;">
+                <tr>
                     <td rowspan="2"
-                        style="width:3%; background-color:#e7e7e7; text-align: center;  border: 0.75pt solid black; border-width:0.75pt;">
+                        style="width:3%;" class="calculate-header-center">
                         <p><strong>Sıra No</strong></p>
                     </td>
                     <td rowspan="2"
-                        style="width:9%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                        style="width:9%;" class="calculate-header-center">
                         <p><strong>Poz No</strong></p>
                     </td>
                     <td rowspan="2"
-                        style="width:25%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                        style="width:25%;" class="calculate-header-center">
                         <p><strong>Yapılan İşin Cinsi</strong></p>
                     </td>
-
                     <td rowspan="2"
-                        style="width:4%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                        style="width:4%;" class="calculate-header-center">
                         <p><strong>Birimi</strong></p>
                     </td>
-                    <td style="width:8%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                    <td style="width:8%;" class="calculate-header-center">
                         <p><strong>A</strong></p>
                     </td>
-                    <td style="width:8%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                    <td style="width:8%;" class="calculate-header-center">
                         <p><strong>B</strong></p>
                     </td>
-                    <td style="width:8%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>C</strong>
-                        </p>
+                    <td style="width:8%;" class="calculate-header-center">
+                        <p><strong>C</strong></p>
                     </td>
-                    <td style="width:8%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                    <td style="width:8%;" class="calculate-header-center">
                         <p><strong>D=B-C</strong>
                         </p>
                     </td>
-                    <td style="width:9%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                    <td style="width:9%;" class="calculate-header-center">
                         <p><strong>E=AxB</strong>
                         </p>
                     </td>
-                    <td style="width:9%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>F=AxC</strong>
-                        </p>
+                    <td style="width:9%;" class="calculate-header-center">
+                        <p><strong>F=AxC</strong></p>
                     </td>
-                    <td style="width:9%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>G=E-F</strong>
-                        </p>
+                    <td style="width:9%;" class="calculate-header-center">
+                        <p><strong>G=E-F</strong></p>
                     </td>
                 </tr>
-                <tr style="height:14.1pt;">
-                    <td style="background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                <tr>
+                    <td class="calculate-header-center">
                         <p><strong>Tekif Birim Fiyatı</strong></p>
                     </td>
-                    <td style="background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
+                    <td class="calculate-header-center">
                         <p><strong>Toplam Miktarı</strong></p>
                     </td>
-                    <td style="background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Önceki Hakediş Miktarı</strong>
-                        </p>
+                    <td class="calculate-header-center">
+                        <p><strong>Önceki Hakediş Miktarı</strong></p>
                     </td>
-                    <td style="background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Bu Hakediş Miktarı</strong>
-                        </p>
+                    <td class="calculate-header-center">
+                        <p><strong>Bu Hakediş Miktarı</strong></p>
                     </td>
-                    <td style="background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Toplam İmalat İhzarat</strong>
-                        </p>
+                    <td class="calculate-header-center">
+                        <p><strong>Toplam İmalat İhzarat</strong></p>
                     </td>
-                    <td style="background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Bir Önceki Tutarı</strong>
-                        </p>
+                    <td class="calculate-header-center">
+                        <p><strong>Bir Önceki Tutarı</strong></p>
                     </td>
-                    <td style="background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Bu Hakediş</strong>
-                        </p>
+                    <td class="calculate-header-center">
+                        <p><strong>Bu Hakediş</strong></p>
                     </td>
-
                 </tr>
 
                 </thead>
@@ -150,92 +140,92 @@
                         // Hedef boq_id bulundu, $foundItems içinde saklanır.
                         foreach ($foundItems as $foundItem) { ?>
                             <tr>
-                                <td style="border: 0.75pt solid black; text-align:center; border-width:0.75pt;">
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
+                                <td class="calculate-row-center"></td>
+                                <td class="calculate-row-center">
                                     <?php echo($boq_id); ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
+                                <td class="calculate-row-left">
                                     <?php echo boq_name($boq_id); ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="calculate-row-right">
                                     <?php echo boq_unit($boq_id); ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    <?php $price = (float)$prices[$group_key][$boq_id]['price'];
-
-                                    if (!isset($price)) {
-                                        $price = 0;
-                                    }
-
-                                    echo money_format($price);
-
+                                <?php
+                                if (!isset($price)) {
+                                    $price = 0;
+                                }
+                                if (isset($prices[$group_key][$boq_id]['price'])) {
+                                    $price = (float)$prices[$group_key][$boq_id]['price'];
+                                }
+                                ?>
+                                <td class="calculate-row-right <?php if ($price == 0) { echo "bg-danger"; } ?>">
+                                    <?php echo money_format($price); ?>
+                                </td>
+                                <td class="calculate-row-right">
+                                    <?php $all_time = ($foundItem->total + $old_total);
+                                    echo money_format($all_time);
                                     ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    <?php $all_time = ($foundItem->total + $old_total);
-                                    echo money_format($all_time); ?>
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="calculate-row-right">
                                     <?php echo money_format($old_total); ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="calculate-row-right">
                                     <?php echo money_format($foundItem->total); ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="calculate-row-right">
                                     <?php echo money_format($price * $all_time); ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="calculate-row-right">
                                     <?php echo money_format($price * $old_total); ?>
                                 </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="calculate-row-right">
                                     <?php echo money_format($price * $foundItem->total); ?>
                                 </td>
                             </tr>
                         <?php } ?>
                     <?php } else { ?>
                         <tr>
-                            <td style="border: 0.75pt solid black; text-align:center; border-width:0.75pt;">
+                            <td class="calculate-row-center">
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
+                            <td class="calculate-row-center">
                                 <?php echo($boq_id); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
+                            <td class="calculate-row-left">
                                 <?php echo boq_name($boq_id); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="calculate-row-right">
                                 <?php echo boq_unit($boq_id); ?>
                             </td>
-                            <?php $price = (float)$prices[$group_key][$boq_id]['price']; ?>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;"
-                                class="<?php if (empty($price)) {
-                                    echo "bg-danger";
-                                } ?>">
-                                <?php
-                                if (!isset($price)) {
-                                    $price = 0;
-                                }
-                                echo money_format($price);
 
-                                ?>
+                            <?php
+                            if (!isset($price)) {
+                                $price = 0;
+                            }
+                            if (isset($prices[$group_key][$boq_id]['price'])) {
+                                $price = (float)$prices[$group_key][$boq_id]['price'];
+                            }
+                            ?>
+
+                            <td class="calculate-row-right <?php if ($price == 0) { echo "bg-danger"; } ?>">
+                                <?php echo money_format($price); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="calculate-row-right">
                                 <?php echo money_format($old_total); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="calculate-row-right">
                                 <?php echo money_format($old_total); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                0.00
+                            <td class="calculate-row-right">
+                                0,00
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="calculate-row-right">
                                 <?php echo money_format($price * $old_total); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="calculate-row-right">
                                 <?php echo money_format($price * $old_total); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                0.00
+                            <td class="calculate-row-right">
+                                0,00
                             </td>
                         </tr>
                     <?php } ?>

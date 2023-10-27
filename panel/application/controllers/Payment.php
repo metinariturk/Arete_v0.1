@@ -286,6 +286,7 @@ class Payment extends CI_Controller
         $payment_no = get_from_id("payment", "hakedis_no", "$id");
         $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
         $prices = get_from_id("contract", "price", "$contract_id");
+        $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();
         $contract = $this->Contract_model->get(array(
@@ -308,6 +309,7 @@ class Payment extends CI_Controller
         $viewData->active_boqs = json_decode($active_boqs, true);
         $viewData->project_id = $project_id;
         $viewData->active_tab = $active_tab;
+        $viewData->settings = $settings;
         $viewData->prices = json_decode($prices, true);
 
 

@@ -19,7 +19,6 @@
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("toplam_imalat"); ?></div>
             Negatif Değerde Hakediş Yaptığımın Farkındayım<input type="checkbox" name="is_negative">
-
         <?php } ?>
     </div>
 </div>

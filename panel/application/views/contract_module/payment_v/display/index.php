@@ -5,14 +5,54 @@
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/photoswipe.css">
 
     <?php $this->load->view("includes/head"); ?>
 
+    <style>
+        table, tr, td, th {
+            border: 0.75pt solid black;
+            font-size: 9pt;
+        }
 
-    <!-- Plugins css start-->
+        td {
+            height: 15pt;
+        }
 
-    <!-- Plugins css Ends-->
+        td.calculate-row-right {
+            text-align: right;
+
+        }
+
+        td.total-group-row-right {
+            text-align: right;
+        }
+
+        td.calculate-row-left {
+            text-align: left;
+        }
+
+        td.total-group-row-left {
+            text-align: left;
+        }
+
+        td.calculate-row-center {
+            text-align: center;
+        }
+
+        td.total-group-row-center {
+            text-align: center;
+        }
+
+        td.total-group-header-center {
+            background-color: #e7e7e7;
+            text-align: center;
+        }
+
+        td.calculate-header-center {
+            background-color: #e7e7e7;
+            text-align: center;
+        }
+    </style>
 </head>
 <body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -36,8 +76,17 @@
 <?php $this->load->view("includes/include_script"); ?>
 
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
+<?php $this->load->view("{$viewModule}/{$viewFolder}/common/scenario1.php"); ?>
+<script>
+    const columns = document.querySelectorAll('td[class^="w-"]');
 
-
+    // Her bir sütunu dolaşın ve genişliklerini ayarlayın
+    columns.forEach((column) => {
+        const className = column.classList[0]; // Sınıf adını alın, örneğin "w-3"
+        const width = parseInt(className.split('-')[1]); // "w-3" sınıfından 3 rakamını alın
+        column.style.width = width + '%'; // Genişliği ayarlayın
+    });
+</script>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

@@ -56,6 +56,17 @@
                         </a>
                     </li>
                     <li>
+                        <a class="show"
+                           id="report-tab"
+                           data-bs-toggle="pill"
+                           href="#report"
+                           role="tab"
+                           aria-controls="report"
+                           aria-selected="false">
+                            <span class="title">Hakediş Raporu</span>
+                        </a>
+                    </li>
+                    <li>
                         <a id="genel-tab"
                            data-bs-toggle="pill"
                            href="#genel"

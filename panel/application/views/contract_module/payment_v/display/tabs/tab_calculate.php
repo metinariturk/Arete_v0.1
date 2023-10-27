@@ -59,14 +59,15 @@
                             <thead>
                             <tr>
                                 <td>
-                                    <p style="margin-top:3pt; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
-                                        <strong><?php echo boq_name($group_key); ?></strong></p>
+                                    <p style="margin-top:3pt; margin-bottom:3pt; widows:0; orphans:0; font-size:11pt;">
+                                        <strong><?php echo mb_strtoupper(boq_name($group_key)); ?></strong></p>
                                 </td>
+
                             </tr>
                             </thead>
                         </table>
                     <?php } ?>
-                <?php } ?>
+                <?php } break?>
             <?php } ?>
             <?php foreach ($boq_ids as $boq_id) { ?>
                 <?php foreach ($calculates as $calculation_item) { ?>

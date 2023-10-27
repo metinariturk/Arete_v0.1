@@ -14,6 +14,7 @@
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_green"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_works_done"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/group_total"); ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/report"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_graph"); ?>
                             </div>
                         </div>
