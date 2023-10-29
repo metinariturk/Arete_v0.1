@@ -524,7 +524,7 @@ class Payment extends CI_Controller
         $hak_no = $this->input->post('hakedis_no');
 
         $a = $this->input->post('toplam_imalat');
-        $last_total_imalat = sum_payments("bu_imalat", $contract_id);
+        $last_total_imalat = sum_payments("E", $contract_id);
         $b = $this->input->post('toplam_ihzarat');
 
 
@@ -564,7 +564,7 @@ class Payment extends CI_Controller
             $this->form_validation->set_rules("imalat_tarihi", "İmalat Tarihi", "trim|callback_sitedel_paymentday[$last_payment_day]"); //2
         }
 
-        $this->form_validation->set_rules("bu_imalat", "Bu İmalat Bedeli", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("E", "Bu İmalat Bedeli", "required|numeric|trim"); //2
         if ($is_negative != "on") {
             $this->form_validation->set_rules("toplam_imalat", "Toplam İmalat Bedeli", "required|greater_than_equal_to[$last_total_imalat]|less_than_equal_to[$c]|numeric|trim"); //2
         }
@@ -646,7 +646,7 @@ class Payment extends CI_Controller
                     "toplam_imalat" => $this->input->post('toplam_imalat'),
                     "toplam_ihzarat" => $this->input->post('toplam_ihzarat'),
                     "toplam_imalat_ihzarat" => $this->input->post('toplam_imalat') + $ihzarat,
-                    "bu_imalat" => $this->input->post('bu_imalat'),
+                    "E" => $this->input->post('bu_imalat'),
                     "bu_ihzarat" => $this->input->post('bu_ihzarat'),
                     "bu_imalat_ihzarat" => $this->input->post('bu_imalat') + $this->input->post('bu_ihzarat'),
                     "bu_fiyat_fark" => $this->input->post('bu_fiyat_fark'),
@@ -1459,4 +1459,98 @@ class Payment extends CI_Controller
         $pdf->Output('example.pdf');
     }
 
+    public function update_payment($id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+        $contract_id = contract_id_module("payment", "$id");
+
+        $settings_id = get_from_any("payment_settings", "id", "contract_id", "$contract_id");
+
+        $gecici_teminat = ($this->input->post("gecici_teminat") == "on") ? 1 : 0;
+        $gecici_teminat_oran = $this->input->post("gecici_teminat_oran");
+        $fiyat_fark = ($this->input->post("fiyat_fark") == "on") ? 1 : 0;
+        $fiyat_fark_kes = ($this->input->post("fiyat_fark_kes") == "on") ? 1 : 0;
+        $damga_vergisi = ($this->input->post("damga_vergisi") == "on") ? 1 : 0;
+        $damga_oran = $this->input->post("damga_oran");
+        $stopaj = ($this->input->post("stopaj") == "on") ? 1 : 0;
+        $stopaj_oran = $this->input->post("stopaj_oran");
+        $kdv = ($this->input->post("kdv") == "on") ? 1 : 0;
+        $kdv_oran = $this->input->post("kdv_oran");
+        $tevkifat_oran = $this->input->post("tevkifat_oran");
+        $avans = ($this->input->post("avans") == "on") ? 1 : 0;
+        $avans_oran = $this->input->post("avans_oran");
+        $avans_mahsup = ($this->input->post("avans_mahsup") == "on") ? 1 : 0;
+        $avans_stopaj = ($this->input->post("avans_stopaj") == "on") ? 1 : 0;
+
+
+        $this->load->model("Payment_settings_model");
+
+        if (empty($settings_id)) {
+            $insert = $this->Payment_settings_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "gecici_teminat" => $gecici_teminat,
+                    "gecici_teminat_oran" => $gecici_teminat_oran,
+                    "fiyat_fark" => $fiyat_fark,
+                    "fiyat_fark_kesintisi" => $fiyat_fark_kes,
+                    "damga_vergisi" => $damga_vergisi,
+                    "damga_vergisi_oran" => $damga_oran,
+                    "stopaj" => $stopaj,
+                    "stopaj_oran" => $stopaj_oran,
+                    "kdv" => $kdv,
+                    "kdv_oran" => $kdv_oran,
+                    "tevkifat_oran" => $tevkifat_oran,
+                    "avans" => $avans,
+                    "avans_oran" => $avans_oran,
+                    "avans_mahsup" => $avans_mahsup,
+                    "avans_stopaj" => $avans_stopaj,
+                )
+            );
+        } else {
+            $update = $this->Payment_settings_model->update(
+                array(
+                    "id" => $settings_id,
+                ),
+                array(
+                    "contract_id" => $contract_id,
+                    "gecici_teminat" => $gecici_teminat,
+                    "gecici_teminat_oran" => $gecici_teminat_oran,
+                    "fiyat_fark" => $fiyat_fark,
+                    "fiyat_fark_kesintisi" => $fiyat_fark_kes,
+                    "damga_vergisi" => $damga_vergisi,
+                    "damga_vergisi_oran" => $damga_oran,
+                    "stopaj" => $stopaj,
+                    "stopaj_oran" => $stopaj_oran,
+                    "kdv" => $kdv,
+                    "kdv_oran" => $kdv_oran,
+                    "tevkifat_oran" => $tevkifat_oran,
+                    "avans" => $avans,
+                    "avans_oran" => $avans_oran,
+                    "avans_mahsup" => $avans_mahsup,
+                    "avans_stopaj" => $avans_stopaj
+                )
+            );
+        }
+
+
+        // TODO Alert sistemi eklenecek...
+        if ($insert) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde güncellendi",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Güncelleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+        }
+
+        $this->session->set_flashdata("alert", $alert);
+        redirect(base_url("$this->Module_Name/$this->Display_route/$id/settings"));
+    }
 }

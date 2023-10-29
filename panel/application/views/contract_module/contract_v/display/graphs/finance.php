@@ -58,7 +58,7 @@
             <?php if (!empty($costincs)) { ?>
                 <?php $top_limit = $item->sozlesme_bedel + sum_anything("costinc", "artis_miktar", "contract_id", "$item->id"); ?>
                 <?php $sub_limit = $item->sozlesme_bedel + sum_anything("costinc", "artis_miktar", "contract_id", "$item->id"); ?>
-                <?php $amount_payed = sum_anything("payment", "bu_imalat", "contract_id", "$item->id") +
+                <?php $amount_payed = sum_anything("payment", "E", "contract_id", "$item->id") +
                     sum_anything("payment", "bu_ihzarat", "contract_id", "$item->id"); ?>
 
                 <?php
@@ -77,7 +77,7 @@
                         <td>
                             <?php $top_limit = $item->sozlesme_bedel + sum_anything_and("costinc", "artis_miktar", "contract_id", "$item->id", "id<=", "$costinc->id"); ?>
                             <?php $sub_limit = $item->sozlesme_bedel + sum_anything_and("costinc", "artis_miktar", "contract_id", "$item->id", "id<", "$costinc->id"); ?>
-                            <?php $amount_payed = sum_anything("payment", "bu_imalat", "contract_id", "$item->id") +
+                            <?php $amount_payed = sum_anything("payment", "E", "contract_id", "$item->id") +
                                 sum_anything("payment", "bu_ihzarat", "contract_id", "$item->id"); ?>
                             <?php if ($amount_payed >= $top_limit) {
                                 echo money_format($costinc->artis_miktar) . " " . $item->para_birimi;
@@ -90,7 +90,7 @@
                         <td>
                             <?php $top_limit = $item->sozlesme_bedel + sum_anything_and("costinc", "artis_miktar", "contract_id", "$item->id", "id<=", "$costinc->id"); ?>
                             <?php $sub_limit = $item->sozlesme_bedel + sum_anything_and("costinc", "artis_miktar", "contract_id", "$item->id", "id<", "$costinc->id"); ?>
-                            <?php $amount_payed = sum_anything("payment", "bu_imalat", "contract_id", "$item->id") +
+                            <?php $amount_payed = sum_anything("payment", "E", "contract_id", "$item->id") +
                                 sum_anything("payment", "bu_ihzarat", "contract_id", "$item->id"); ?>
                             <?php if ($amount_payed >= $top_limit) {
                                 echo money_format(0) . " " . $item->para_birimi;
@@ -103,7 +103,7 @@
                         <td>%
                             <?php $top_limit = $item->sozlesme_bedel + sum_anything_and("costinc", "artis_miktar", "contract_id", "$item->id", "id<=", "$costinc->id"); ?>
                             <?php $sub_limit = $item->sozlesme_bedel + sum_anything_and("costinc", "artis_miktar", "contract_id", "$item->id", "id<", "$costinc->id"); ?>
-                            <?php $amount_payed = sum_anything("payment", "bu_imalat", "contract_id", "$item->id") +
+                            <?php $amount_payed = sum_anything("payment", "E", "contract_id", "$item->id") +
                                 sum_anything("payment", "bu_ihzarat", "contract_id", "$item->id"); ?>
                             <?php if ($amount_payed >= $top_limit) {
                                 echo 100;

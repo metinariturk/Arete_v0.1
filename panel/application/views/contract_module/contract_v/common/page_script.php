@@ -116,7 +116,7 @@ if (!empty($extimes)) {
 
 
 <?php $contract_price = $item->sozlesme_bedel;
-$amount_payed = sum_anything("payment", "bu_imalat", "contract_id", "$item->id") +
+$amount_payed = sum_anything("payment", "E", "contract_id", "$item->id") +
     sum_anything("payment", "bu_ihzarat", "contract_id", "$item->id");
 $price_perc = round($amount_payed / $contract_price * 100);
 if ($price_perc > 100) {

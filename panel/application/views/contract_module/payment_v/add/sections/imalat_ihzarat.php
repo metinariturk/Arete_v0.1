@@ -3,12 +3,12 @@
     <div class="col-sm-5">
         <div class="col-form-label">Toplam İmalat Bedeli</div>
         <small>Önceki
-            Toplam <?php echo money_format((sum_payments("bu_imalat", $contract->id))) . " " . get_currency($contract->id); ?>
+            Toplam <?php echo money_format((sum_payments("E", $contract->id))) . " " . get_currency($contract->id); ?>
         </small>
     </div>
     <div class="col-sm-6">
         <input type="number" step=".01" id="X" hidden
-               value="<?php echo sum_payments("bu_imalat", $contract->id); ?>" onblur="calcular()"
+               value="<?php echo sum_payments("E", $contract->id); ?>" onblur="calcular()"
                onfocus="calcular()">
         <input type="number" step=".01" id="A1" onblur="calcular()" onfocus="calcular()"
                onChange="calcular()" required readonly
@@ -63,20 +63,20 @@
     </div>
     <div class="col-sm-6">
         <?php if (isset($boq)) { ?>
-        <input type="number" step=".01" id="A3" name="bu_imalat"
-               value="<?php echo isset($form_error) ? set_value("bu_imalat") : "$boq->total"; ?>"
-               class="form-control <?php cms_isset(form_error("bu_imalat"), "is-invalid", ""); ?>"
+        <input type="number" step=".01" id="A3" name="E"
+               value="<?php echo isset($form_error) ? set_value("E") : "$boq->total"; ?>"
+               class="form-control <?php cms_isset(form_error("E"), "is-invalid", ""); ?>"
                onblur="calcular()" required
                onfocus="calcular()">
         <?php } else { ?>
-            <input type="number" step=".01" id="A3" name="bu_imalat"
-                   value="<?php echo isset($form_error) ? set_value("bu_imalat") : ""; ?>"
-                   class="form-control <?php cms_isset(form_error("bu_imalat"), "is-invalid", ""); ?>"
+            <input type="number" step=".01" id="A3" name="E"
+                   value="<?php echo isset($form_error) ? set_value("E") : ""; ?>"
+                   class="form-control <?php cms_isset(form_error("E"), "is-invalid", ""); ?>"
                    onblur="calcular()" required
                    onfocus="calcular()">
         <?php } ?>
         <?php if (isset($form_error)) { ?>
-            <div class="invalid-feedback"><?php echo form_error("bu_imalat"); ?></div>
+            <div class="invalid-feedback"><?php echo form_error("E"); ?></div>
         <?php } ?>
     </div>
 </div>

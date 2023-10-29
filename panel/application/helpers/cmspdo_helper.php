@@ -159,7 +159,7 @@ function sum_connected_contract_payments_ci($ids, $currency)
 {
     $ci =& get_instance();
     $ci->load->database();
-    $ci->db->select_sum('bu_imalat_ihzarat');
+    $ci->db->select_sum('E');
     $ci->db->where_in('contract_id', $ids);
     $ci->db->where_in('currency', $currency);
     $query = $ci->db->get('payment');

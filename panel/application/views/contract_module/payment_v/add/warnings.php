@@ -4200,7 +4200,7 @@
                                                             <td class="total-group-row-left">Bu Hakedişin Tutarı (C-D)
                                                             </td>
                                                             <td class="total-group-row-left">
-                                                                <input type="number" step=".01" id="E" name="bu_imalat" value="310.00" onblur="calcular()" required="" onfocus="calcular()" data-bs-original-title="" title="">
+                                                                <input type="number" step=".01" id="E" name="E" value="310.00" onblur="calcular()" required="" onfocus="calcular()" data-bs-original-title="" title="">
                                                             </td>
                                                         </tr>
                                                         <tr>
