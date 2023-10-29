@@ -69,7 +69,8 @@
             </tr>
             </thead>
             <tbody>
-        <?php foreach ($active_boqs as $group_key => $boq_ids) { ?>
+            <?php $report_total = 0; ?>
+            <?php foreach ($active_boqs as $group_key => $boq_ids) { ?>
             <?php
             $all_time = 0;
             $old_time = 0;
@@ -131,7 +132,8 @@
                     <p><strong><?php echo money_format($old_time); ?></strong></p>
                 </td>
                 <td class ="w-8 total-group-row-right">
-                    <p><strong><?php echo money_format($this_time); ?></strong></p>
+                    <p><strong><?php echo money_format($this_time);
+                    ?></strong></p>
                 </td>
             </tr>
             <?php } ?>

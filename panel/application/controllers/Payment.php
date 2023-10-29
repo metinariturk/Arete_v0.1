@@ -287,7 +287,7 @@ class Payment extends CI_Controller
         $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
         $prices = get_from_id("contract", "price", "$contract_id");
         $settings = $this->Settings_model->get();
-
+        $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
         $viewData = new stdClass();
         $contract = $this->Contract_model->get(array(
             "id" => $contract_id
@@ -310,6 +310,7 @@ class Payment extends CI_Controller
         $viewData->project_id = $project_id;
         $viewData->active_tab = $active_tab;
         $viewData->settings = $settings;
+        $viewData->payment_settings = $payment_settings;
         $viewData->prices = json_decode($prices, true);
 
 
@@ -334,7 +335,6 @@ class Payment extends CI_Controller
         } else {
             $boq = null;
             $viewData->boq = null;
-
         }
 
 

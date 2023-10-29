@@ -3,11 +3,32 @@
 } ?>"
      id="report" role="tabpanel"
      aria-labelledby="report-tab">
+    <?php
+    $sum_of_total_this_payment = 0;
+
+    foreach ($calculates as $calculate) {
+        $desiredKey = $calculate->boq_id;
+        $price = null;
+
+        array_map(function ($subarray) use ($desiredKey, &$price) {
+            if (isset($subarray[$desiredKey]['price'])) {
+                $price = $subarray[$desiredKey]['price'];
+            }
+        }, $prices);
+
+        if ($price !== null) {
+            $total_this_payment = $price * $calculate->total;
+            $sum_of_total_this_payment += $total_this_payment;
+        }
+    }
+    ?>
+    <?php $total_old_payment = sum_payments("bu_imalat", $contract->id); ?>
     <div class="col-sm-8 offset-2">
         <table style="width: 18cm">
             <thead>
             <tr>
-                <th colspan="3" class="text-center"><p style="font-weight: bold; font-size: 14pt; text-align: center">
+                <th colspan="3" class="text-center"><p
+                            style="font-weight: bold; font-size: 14pt; text-align: center">
                         HAKEDİŞ RAPORU</p></th>
             </tr>
             </thead>
@@ -25,17 +46,31 @@
             <tr>
                 <td class="w-5 total-group-row-center">A</td>
                 <td class="total-group-row-left">Sözleşme Fiyatları İle Yapılan İşin Tutarı</td>
-                <td class="total-group-row-left"></td>
+                <td class="total-group-row-left">
+                    <input type="number" step=".01" id="A" name="fiyat_fark"
+                           value="<?php echo $total_old_payment+$sum_of_total_this_payment; ?>" readonly
+                           onblur="calcular()"
+                           onfocus="calcular()">
+                </td>
             </tr>
             <tr>
                 <td class="w-5 total-group-row-center">B</td>
                 <td class="total-group-row-left">Fiyat Farkı Tutarı</td>
-                <td class="total-group-row-left"></td>
+                <td class="total-group-row-left">
+                    <input type="number" step=".01" id="B" name="fiyat_fark"
+                           value=""
+                           onblur="calcular()"
+                           onfocus="calcular()">
+                </td>
             </tr>
             <tr>
                 <td class="w-5 total-group-row-center">C</td>
                 <td class="total-group-row-left" style="font-weight: bold">Toplam Tutar (A+B)</td>
                 <td class="total-group-row-left">
+                    <input type="number" step=".01" id="C" name="fiyat_fark"
+                           value="" readonly
+                           onblur="calcular()"
+                           onfocus="calcular()">
                 </td>
             </tr>
             <tr>
@@ -44,7 +79,13 @@
             <tr>
                 <td class="w-5 total-group-row-center">D</td>
                 <td class="total-group-row-left">Bir Önceki Hakedişin Toplam Tutarı</td>
-                <td class="total-group-row-left"><?php echo money_format((sum_payments("bu_imalat", $contract->id))) . " " . get_currency($contract->id); ?></td>
+                <td class="total-group-row-left">
+                    <input type="number" step=".01" id="D" name=""
+                           value="<?php echo $total_old_payment = $total_old_payment ?? 0; ?>"
+                           readonly
+                           onblur="calcular()"
+                           onfocus="calcular()">
+                </td>
             </tr>
             <tr>
                 <td class="w-5 total-group-row-center">E</td>
@@ -52,7 +93,7 @@
                 </td>
                 <td class="total-group-row-left">
                     <input type="number" step=".01" id="E" name="bu_imalat"
-                           value="<?php echo $boq->total; ?>"
+                           value="<?php echo $sum_of_total_this_payment; ?>"
                            onblur="calcular()" required
                            onfocus="calcular()">
                 </td>
@@ -178,7 +219,12 @@
                 </td>
             </tr>
             <tr>
-                <td class="total-group-row-left">e)Geçici Kabul Kesintisi</td>
+                <td class="total-group-row-left">e)Geçici Kabul Kesintisi %
+                    <input id="KES_e_s" type="number" step=".01" name=""
+                           onblur="calcular()"
+                           onfocus="calcular()"
+                           value="">
+                </td>
                 <td class="total-group-row-left">
                     <input id="KES_e" type="number" step=".01" name="stopaj_tutar"
                            onblur="calcular()"
@@ -264,7 +310,7 @@
                     <input id="X" type="number" step=".01" name="total"
                            onblur="calcular()"
                            onfocus="calcular()"
-                          >
+                    >
                 </td>
             </tr>
             <tr>
@@ -275,10 +321,13 @@
             </tr>
             </tbody>
         </table>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır
+        <a class="btn btn-primary" target="_blank"
+           href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
+        <a class="btn btn-primary" target="_blank"
+           href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır
             Olanları Gizle</a>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece
+        <a class="btn btn-primary" target="_blank"
+           href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece
             Bu Hakediş</a>
     </div>
 </div>

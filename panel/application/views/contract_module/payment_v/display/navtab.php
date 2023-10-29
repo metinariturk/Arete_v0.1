@@ -96,6 +96,16 @@
                             <span class="title">İmzalar</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="show" id="settings-tab"
+                           data-bs-toggle="pill"
+                           href="#settings"
+                           role="tab"
+                           aria-controls="settings"
+                           aria-selected="false">
+                            <span class="title">Ayarlar</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -69,8 +69,10 @@
                 <?php if ($item->avans_durum == 1) { ?>
                     <th class="text-center"><?php echo money_format(sum_payments("avans_mahsup_miktar", "$item->id")) . " " . $item->para_birimi; ?></th>
                     <th class="text-center">%
-                        <?php echo round(((sum_payments("avans_mahsup_miktar", "$item->id") /
-                                sum_payments("bu_imalat_ihzarat", "$item->id")) * 100), 2); ?></th>
+                    <?php $value = sum_payments("bu_imalat_ihzarat", "$item->id");
+                    if ($value != 0) {
+                        echo round((sum_payments("avans_mahsup_miktar", "$item->id") / $value * 100), 2); ?></th>
+                    <?php } ?>
                 <?php } ?>
             </tr>
             </tfoot>
