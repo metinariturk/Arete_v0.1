@@ -29,6 +29,35 @@ function get_last_fn($module)
     }
 }
 
+function get_book($table)
+{
+    $ci =& get_instance();
+    $ci->load->database();
+
+    return $ci->db->where(array())->get($table)->result();
+}
+
+function get_main_categories($table)
+{
+    $ci =& get_instance();
+    $ci->load->database();
+    return $ci->db->where(array("main_category" => 1))->order_by("sort ASC")->get($table)->result();
+}
+
+function sub_item($table, $parent_id)
+{
+    $ci =& get_instance();
+    $ci->load->database();
+    return $ci->db->where(array("parent" => $parent_id))->order_by("sort ASC")->get($table)->result();
+}
+
+function item_explain($table, $item_id)
+{
+    $ci =& get_instance();
+    $ci->load->database();
+    return $ci->db->where(array("id" => $item_id))->get($table)->row();
+}
+
 function get_from_id($table, $column, $id)
 {
     $ci = &get_instance();
@@ -531,26 +560,6 @@ function file_name_digits()
     return "4";
 }
 
-function is_color_selected($surec_durum, $color)
-{
-    $t = get_instance();
-    $t->load->model("Settings_model");
-    $settings = $t->Settings_model->get();
-    $settings_color = $settings->surec_color;
-
-    $obj = json_decode($settings_color);
-
-    if (isset($obj->{$surec_durum})) {
-        $selected = $obj->{$surec_durum};
-    } else {
-        $selected = null;
-    }
-    if (isset($selected)) {
-        cms_if_echo($selected, $color, "checked", "");
-    } else {
-        echo "";
-    }
-}
 
 function match_value($surec_durum)
 {

@@ -366,7 +366,7 @@ class Bond extends CI_Controller
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
                 "greater_than" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
                 "numeric" => "<b>{field}</b> alanı bir sayı olmalıdır",
-                "bond_contractday" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden 30 günden fazla eski olamaz",
+                "bond_contractday" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden eski olamaz",
                 "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
                                            <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
@@ -1698,7 +1698,7 @@ class Bond extends CI_Controller
         $date_diff = date_minus($bond_day, $contract_day);
         $days_diff = $date_diff / (60 * 60 * 24); // Tarih farkını gün cinsine dönüştürme
 
-        if ($days_diff >= -30 && $days_diff <= 30) {
+        if ($days_diff >= 0) {
             return TRUE;
         } else {
             return FALSE;

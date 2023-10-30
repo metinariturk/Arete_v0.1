@@ -12,6 +12,7 @@
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_report"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_3"); ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6"); ?>
 
                                 <?php if ($item->subcont != 1) { ?>
                                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_2"); ?>
@@ -23,7 +24,6 @@
                                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_10"); ?>
                                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_11"); ?>
                                 <?php } ?>
-                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_a"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_b"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_12"); ?>

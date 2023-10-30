@@ -58,29 +58,6 @@
         </div>
 
         <div class="mb-2">
-            <div class="row">
-                <div class="col-sm-4 col-md-3">
-                    <div class="col-form-label">Mahsup Oran (%)</div>
-                    <div>
-                        % <?php echo get_from_any("contract", "avans_mahsup_oran", "id", "$contract_id"); ?>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-md-3">
-                    <div class="col-form-label">Avans Oran</div>
-                    <div>
-                        <input hidden type="text" id="calD" value="" name="avans_oran">
-                        %<span id="calC" onblur="calcular()" onfocus="calcular()"></span>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-md-3">
-                    <div class="col-form-label">Sözleşme Tutarı</div>
-                    <input hidden id="calB" value="<?php echo get_from_id("contract", "sozlesme_bedel", $contract_id); ?>">
-                    <span><?php echo money_format(get_from_id("contract", "sozlesme_bedel", $contract_id)) . " " . get_currency($contract_id); ?></span>
-                </div>
-            </div>
-
-        </div>
-        <div class="mb-2">
             <div class="col-form-label">Açıklama</div>
             <textarea class="form-control <?php cms_isset(form_error("aciklama"), "is-invalid", ""); ?>"
                       name="aciklama"

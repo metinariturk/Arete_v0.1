@@ -525,7 +525,7 @@ class Contract extends CI_Controller
         }
 
         $is_sub = $this->input->post("is_sub") == 1 ? 1 : 0;
-        $is_main = $this->input->post("is_sub") == 1 ? 1 : 0;
+        $is_main = $is_sub == 1 ? 0 : 1;
         $project_code = project_code($project_id);
 
         $file_name_len = file_name_digits();
@@ -604,7 +604,7 @@ class Contract extends CI_Controller
                     "para_birimi" => $this->input->post("para_birimi"),
                     "subcont" => $is_sub,
                     "durumu" => "1",
-                    "main_contract" => $this->input->post("main_contract"),
+                    "main_contract" => $is_main,
 
                 )
             );

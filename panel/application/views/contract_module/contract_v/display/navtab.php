@@ -43,19 +43,17 @@
                             </span>
                         </a>
                     </li>
-                    <?php if ($item->avans_durum == 1) { ?>
-                        <li><a class="show" id="avans-tab" data-bs-toggle="pill"
-                               href="#avans" role="tab" aria-controls="avans"
-                               aria-selected="false">
+                    <li><a class="show" id="avans-tab" data-bs-toggle="pill"
+                           href="#avans" role="tab" aria-controls="avans"
+                           aria-selected="false">
                             <span class="title">
                                Avans
                             </span>
-                                <span class="badge pull-right">
+                            <span class="badge pull-right">
                                 (<?php echo count($advances) ?>)
                             </span>
-                            </a>
-                        </li>
-                    <?php } ?>
+                        </a>
+                    </li>
                     <?php if ($item->subcont != 1) { ?>
                         <li><a class="show" id="teminat-tab" data-bs-toggle="pill"
                                href="#teminat" role="tab" aria-controls="teminat"
@@ -69,6 +67,7 @@
                             </a>
                         </li>
                     <?php } ?>
+
                     <li><a class="show" id="payment-tab" data-bs-toggle="pill"
                            href="#payment" role="tab" aria-controls="payment"
                            aria-selected="false">

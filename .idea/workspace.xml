@@ -28,25 +28,25 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/models" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/book_v/common" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\examples\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\fonts" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\print" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\js" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\db" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf\fonts" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers\tcpdf" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -127,6 +127,15 @@
             <option name="methodName" value="save" />
           </properties>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Book.php</url>
+          <line>269</line>
+          <properties>
+            <option name="className" value="\Book" />
+            <option name="methodName" value="show_book" />
+          </properties>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>

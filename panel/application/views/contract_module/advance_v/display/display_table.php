@@ -22,12 +22,7 @@
     <tr>
         <td><strong>Avans Oran</strong></td>
         <td><strong>:</strong></td>
-        <td>% <?php echo $item->avans_oran; ?></td>
-    </tr>
-    <tr>
-        <td><strong>Mahsup Oran</strong></td>
-        <td><strong>:</strong></td>
-        <td>% <?php echo get_from_id("contract","avans_mahsup_oran","id","$item->contract_id"); ?></td>
+        <td>% <?php echo money_format($item->avans_miktar / contract_price($item->contract_id) * 100); ?></td>
     </tr>
     <tr>
         <td><strong>Avans Açıklama</strong></td>

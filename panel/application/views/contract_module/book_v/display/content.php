@@ -4,41 +4,28 @@
     <div class="card-body">
         <div class="row">
             <h3 class="text-center">
-                Pozlar<button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#main_category" data-whatever="@getbootstrap">
-                    <i class="fa fa-plus"></i>
-                </button>
-                <div class="modal fade" id="main_category" tabindex="-1" role="dialog" aria-labelledby="main_category" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Yeni Altgrup</h5>
-                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="category" action="<?php echo base_url("$this->Module_Name/add_main"); ?>"
-                                      url="<?php echo base_url("$this->Module_Name/add_main"); ?>"
-                                      method="post" enctype="multipart">
-                                    <div class="mb-3">
-                                        <label class="col-form-label" for="recipient-name">Ana İş Grubu:</label>
-                                        <input type="text" name="main_group" placeholder="İş Grubu Adı" class="form-control"/>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">İptal</button>
-                                <span class="btn btn-primary" type="button" id="submitBtn" data-bs-dismiss="modal" onclick="main(this)" form-id="category">Kaydet
-                                    </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                Aktif Poz Kitapları
             </h3>
-            <hr>
         </div>
-
-
-        <div class="refresh_list">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/common/list"); ?>
+        <div class="row">
+            <div class="col-3">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/common/books"); ?>
+            </div>
+            <div class="col-4">
+                <div class="refresh_list">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/list"); ?>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="refresh_poz">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/poz"); ?>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="refresh_explain">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/explain"); ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>

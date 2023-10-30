@@ -50,4 +50,32 @@
             $(".refresh_list").html(response);
         });
     }
+
+    function show_book(anchor) {
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".refresh_list").html(response);
+            $(".sortable").sortable();
+        })
+    }
+
+    function show_sub(anchor) {
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".refresh_poz").html(response);
+            $(".sortable").sortable();
+        })
+    }
+
+    function show_explain(anchor) {
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+            $(".refresh_explain").html(response);
+            $(".sortable").sortable();
+        });
+    }
 </script>

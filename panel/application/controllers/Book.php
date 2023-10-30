@@ -20,6 +20,7 @@ class Book extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "book_v";
         $this->load->model("Book_model");
+        $this->load->model("Books_model");
         $this->load->model("Contract_model");
 
         $this->Module_Name = "book";
@@ -37,20 +38,16 @@ class Book extends CI_Controller
     {
         $viewData = new stdClass();
 
-        /** Tablodan Verilerin Getirilmesi.. */
-        $items = $this->Book_model->get_all(array());
-        $main_categories = $this->Book_model->get_all(array(
-            'main_category' => 1
-        ));
+        $all_books = $this->Books_model->get_all(array());
 
+        $viewData->all_books = $all_books;
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
-        $viewData->items = $items;
-        $viewData->main_categories = $main_categories;
+
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
     }
 
     public function file_form()
@@ -64,6 +61,7 @@ class Book extends CI_Controller
         $main_categories = $this->Book_model->get_all(array(
             'main_category' => 1
         ));
+
 
         $viewData->main_categories = $main_categories;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -157,7 +155,6 @@ class Book extends CI_Controller
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
 
         echo $render_html;
-
 
     }
 
@@ -265,6 +262,63 @@ class Book extends CI_Controller
         $viewData->main_categories = $main_categories;
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function show_book($book_id)
+    {
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $book_name = "book_".strtolower(get_from_any("books","book_name","id",$book_id));
+        $book_items = get_book($book_name);
+
+        $viewData->book_items = $book_items;
+        $viewData->book_name = $book_name;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function show_item($book_name, $category_id)
+    {
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $sub_items = sub_item($book_name, $category_id);
+
+        $viewData->book_name = $book_name;
+
+        $viewData->sub_items = $sub_items;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/poz", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function show_explain($book_name, $item_id)
+    {
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $item = item_explain($book_name,$item_id);
+        $viewData->book_name = $book_name;
+        $viewData->item = $item;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/explain", $viewData, true);
 
         echo $render_html;
 

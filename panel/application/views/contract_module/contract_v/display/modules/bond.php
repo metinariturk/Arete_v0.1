@@ -21,33 +21,33 @@
                     <?php echo $bond->id; ?>
                 </td>
                 <td class="d-none d-sm-table-cell">
-                    <a  href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
+                    <a href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
                         <?php echo $bond->dosya_no; ?>
                     </a>
                 </td>
                 <td>
-                    <a  href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
+                    <a href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
                         <?php echo dateFormat_dmy($bond->teslim_tarihi); ?>
                     </a> /
                     <?php if (!empty($bond->gecerlilik_tarihi)) { ?>
-                        <a  href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
+                        <a href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
                             <?php echo dateFormat_dmy($bond->gecerlilik_tarihi); ?>
                         </a>
                     <?php } else { ?>
-                        <a  href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
+                        <a href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
                             Süresiz Teminat
                         </a>
                     <?php } ?>
                 </td>
 
                 <td class="d-none d-sm-table-cell">
-                    <a  href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
+                    <a href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
                         <?php echo module_name($bond->teminat_gerekce); ?>
                     </a>
                 </td>
                 <td>
-                    <a  href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
-                        <?php echo $bond->teminat_miktar; ?> <?php echo "$item->para_birimi"; ?>
+                    <a href="<?php echo base_url("bond/file_form/$bond->id"); ?>">
+                        <?php echo $bond->teminat_miktar; ?><?php echo "$item->para_birimi"; ?>
                     </a>
                 </td>
                 <td>

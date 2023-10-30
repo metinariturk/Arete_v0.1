@@ -1,6 +1,8 @@
 <!-- latest jquery-->
 <script src="<?php echo base_url("assets"); ?>/js/config.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/jquery-3.5.1.min.js"></script><!--Jquery-->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 
 <!-- Bootstrap js-->
 

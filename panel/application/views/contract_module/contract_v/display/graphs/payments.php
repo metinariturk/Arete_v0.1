@@ -68,10 +68,11 @@
                 <?php if ($item->avans_durum == 1) { ?>
                     <th class="text-center"><?php echo money_format(sum_payments("I", "$item->id")) . " " . $item->para_birimi; ?></th>
                     <th class="text-center">%
-                    <?php $value = sum_payments("E", "$item->id");
-                    if ($value != 0) {
-                        echo round((sum_payments("I", "$item->id") / $value * 100), 2); ?></th>
-                    <?php } ?>
+                        <?php $value = sum_payments("E", "$item->id");
+                        if ($value != 0) {
+                            echo round((sum_payments("I", "$item->id") / $value * 100), 2); ?>
+                        <?php } ?>
+                    </th>
                 <?php } ?>
             </tr>
             </tfoot>
@@ -80,8 +81,7 @@
     <div class="col-12 text-center">
         <button class="btn btn-pill btn-outline-info btn-xs d-print-none"
                 onclick="myFunction(this)"
-                data-id="payments"
-        >Sayfayı Ayır
+                data-id="payments">Sayfayı Ayır
         </button>
     </div>
     <div class="col-12" id="payments" style="display: none; page-break-after: always;">
