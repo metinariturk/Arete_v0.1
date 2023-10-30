@@ -33,7 +33,7 @@
                             <td><?php echo money_format($advance->avans_miktar); ?><?php echo $item->para_birimi; ?></td>
                             <td><?php $top_limit = sum_anything_and("advance", "avans_miktar", "contract_id", "$item->id", "id<=", "$advance->id"); ?>
                                 <?php $sub_limit = sum_anything_and("advance", "avans_miktar", "contract_id", "$item->id", "id<", "$advance->id"); ?>
-                                <?php $mahsup_avans = sum_anything("payment", "avans_mahsup_miktar", "contract_id", "$item->id"); ?>
+                                <?php $mahsup_avans = sum_anything("payment", "I", "contract_id", "$item->id"); ?>
                                 <?php if ($mahsup_avans >= $top_limit) {
                                     echo money_format($advance->avans_miktar) . " " . $item->para_birimi;
                                 } elseif ($mahsup_avans < $top_limit and $mahsup_avans > $sub_limit) {
@@ -44,7 +44,7 @@
                             </td>
                             <td><?php $top_limit = sum_anything_and("advance", "avans_miktar", "contract_id", "$item->id", "id<=", "$advance->id"); ?>
                                 <?php $sub_limit = sum_anything_and("advance", "avans_miktar", "contract_id", "$item->id", "id<", "$advance->id"); ?>
-                                <?php $mahsup_avans = sum_anything("payment", "avans_mahsup_miktar", "contract_id", "$item->id"); ?>
+                                <?php $mahsup_avans = sum_anything("payment", "I", "contract_id", "$item->id"); ?>
                                 <?php if ($mahsup_avans >= $top_limit) {
                                     echo money_format(0) . " " . $item->para_birimi;
                                 } elseif ($mahsup_avans < $top_limit and $mahsup_avans > $sub_limit) {
@@ -63,7 +63,7 @@
                     <td class="text-center">GENEL</td>
                     <td><?php $total_advance = sum_anything("advance", "avans_miktar", "contract_id", "$item->id");
                         echo money_format($total_advance) . " " . $item->para_birimi; ?></td>
-                    <td><?php $mahsup_avans = sum_anything("payment", "avans_mahsup_miktar", "contract_id", "$item->id");
+                    <td><?php $mahsup_avans = sum_anything("payment", "I", "contract_id", "$item->id");
                         echo money_format($mahsup_avans) . " " . $item->para_birimi; ?></td>
                     <td><?php echo money_format($total_advance - $mahsup_avans) . " " . $item->para_birimi; ?></td>
                 </tr>

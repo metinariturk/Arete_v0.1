@@ -17,10 +17,10 @@
                 </td>
                 <td style="color: #0b43c6; font-weight: bolder;"><?php echo money_format($contract->sozlesme_bedel) . " " . get_currency($contract->id); ?></td>
                 <td  style="color: #0b43c6; font-weight: bolder;"><?php
-                    $main_payment_total = sum_from_table("payment", "bu_imalat_ihzarat", "$contract->id");
+                    $main_payment_total = sum_from_table("payment", "E", "$contract->id");
                     echo money_format($main_payment_total) . " " . get_currency($contract->id); ?></td>
                 <td  style="color: #0b43c6; font-weight: bolder;">
-                    % <?php echo money_format(100 * sum_from_table("payment", "bu_imalat_ihzarat", "$contract->id") / $contract->sozlesme_bedel); ?></td>
+                    % <?php echo money_format(100 * sum_from_table("payment", "E", "$contract->id") / $contract->sozlesme_bedel); ?></td>
             </tr>
         <?php } ?>
 
@@ -40,10 +40,10 @@
                     </a>
                 </td>
                 <td style="color: #a43207; font-weight: bolder;"><?php echo money_format($subcontract->sozlesme_bedel) . " " . get_currency($subcontract->id); ?></td>
-                <td  style="color: #a43207; font-weight: bolder;">-<?php $sub_cont_payment = sum_from_table("payment", "bu_imalat_ihzarat", "$subcontract->id");
+                <td  style="color: #a43207; font-weight: bolder;">-<?php $sub_cont_payment = sum_from_table("payment", "E", "$subcontract->id");
                 echo money_format($sub_cont_payment) . " " . get_currency($subcontract->id); ?></td>
                 <td  style="color: #a43207; font-weight: bolder;">
-                    % <?php echo money_format(100 * sum_from_table("payment", "bu_imalat_ihzarat", "$subcontract->id") / $subcontract->sozlesme_bedel); ?></td>
+                    % <?php echo money_format(100 * sum_from_table("payment", "E", "$subcontract->id") / $subcontract->sozlesme_bedel); ?></td>
             </tr>
             <?php $sub_total_payment = $sub_total_payment + $sub_cont_payment; ?>
         <?php } ?>

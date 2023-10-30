@@ -360,8 +360,6 @@ class Payment extends CI_Controller
             )
         );
 
-        $file_name_len = file_name_digits();
-        $file_name = "HAK-" . $this->input->post('dosya_no');
         $hak_no = $this->input->post('hakedis_no');
 
         if ($hak_no != 1) {
@@ -380,7 +378,6 @@ class Payment extends CI_Controller
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[payment.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
         $this->form_validation->set_rules("hakedis_no", "Hakediş No", "required|numeric|trim"); //2
         if ($hak_no == 1) {
             $this->form_validation->set_rules("imalat_tarihi", "İmalat Tarihi", "trim|callback_sitedel_paymentday[$yer_teslimi_tarihi]"); //2
@@ -396,11 +393,6 @@ class Payment extends CI_Controller
                 "limit_advance" => "<b>{field}</b> en fazla kadar olmalıdır.",
                 "sitedel_paymentday" => "Uygulama <b>{field}</b>  $warning <b>{param}</b> tarhihinden daha ileri bir tarih olmalı",
                 "greater_than_equal_to" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
-                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
-                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
-                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "duplicate_name_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
-                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
             )
         );
 
@@ -430,7 +422,6 @@ class Payment extends CI_Controller
             $insert = $this->Payment_model->add(
                 array(
                     "contract_id" => $contract_id,
-                    "dosya_no" => $file_name,
                     "hakedis_no" => $this->input->post('hakedis_no'),
                     "imalat_tarihi" => $imalat_tarihi,
                 )
@@ -443,7 +434,7 @@ class Payment extends CI_Controller
                     "module" => $this->Module_Name,
                     "connected_module_id" => $this->db->insert_id(),
                     "connected_contract_id" => $contract_id,
-                    "file_order" => $file_name,
+                    "file_order" => $hak_no,
                     "createdAt" => date("Y-m-d H:i:s"),
                     "createdBy" => active_user_id(),
                 )
@@ -519,8 +510,6 @@ class Payment extends CI_Controller
             )
         );
 
-        $file_name_len = file_name_digits();
-        $file_name = "HAK-" . $this->input->post('dosya_no');
         $hak_no = $this->input->post('hakedis_no');
 
         $a = $this->input->post('toplam_imalat');
@@ -555,7 +544,6 @@ class Payment extends CI_Controller
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[payment.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
         $this->form_validation->set_rules("hakedis_no", "Hakediş No", "required|numeric|trim"); //2
         if ($hak_no == 1) {
             $this->form_validation->set_rules("imalat_tarihi", "İmalat Tarihi", "trim|callback_sitedel_paymentday[$yer_teslimi_tarihi]"); //2
@@ -605,11 +593,6 @@ class Payment extends CI_Controller
                 "sitedel_paymentday" => "Uygulama <b>{field}</b>  $warning <b>{param}</b> tarhihinden daha ileri bir tarih olmalı",
                 "greater_than_equal_to" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
                 "less_than_equal_to" => "<b>{field}</b> sözleşme ve keşif artışları dahil <b>{param}</b> $currency'den fazla hakediş girişi yapılamaz . Keşif artışı tanımlamak için sözleşme ekranından keşif artışı verebilirsiniz.",
-                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
-                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
-                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "duplicate_name_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
-                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
             )
         );
 
@@ -1539,14 +1522,14 @@ class Payment extends CI_Controller
         if ($insert) {
             $alert = array(
                 "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde güncellendi",
+                "text" => "Hakediş Ayarları Yapıldı, Hakediş Girişi Yapabilirsiniz",
                 "type" => "success"
             );
         } else {
             $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Güncelleme sırasında bir problem oluştu",
-                "type" => "danger"
+                "title" => "İşlem Başarılı",
+                "text" => "Hakediş Ayarları Güncellendi",
+                "type" => "success"
             );
         }
 

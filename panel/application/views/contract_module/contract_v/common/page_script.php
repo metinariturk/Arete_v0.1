@@ -68,7 +68,7 @@ if (!empty($extimes)) {
     ?>
 
     <?php $sub_limit = 0; ?>
-    <?php $amount_payed = sum_anything("payment", "bu_imalat_ihzarat", "contract_id", "$item->id"); ?>
+    <?php $amount_payed = sum_anything("payment", "E", "contract_id", "$item->id"); ?>
     <?php if ($amount_payed >= $top_limit) {
         $finance_perc = $amount_payed / $top_limit * 100;
     } elseif ($amount_payed < $top_limit and $amount_payed > $sub_limit) {
@@ -116,8 +116,7 @@ if (!empty($extimes)) {
 
 
 <?php $contract_price = $item->sozlesme_bedel;
-$amount_payed = sum_anything("payment", "E", "contract_id", "$item->id") +
-    sum_anything("payment", "bu_ihzarat", "contract_id", "$item->id");
+$amount_payed = sum_anything("payment", "E", "contract_id", "$item->id");
 $price_perc = round($amount_payed / $contract_price * 100);
 if ($price_perc > 100) {
     $price_perc = 100;
@@ -126,7 +125,7 @@ if ($price_perc > 100) {
 
 <?php $total_advance = sum_anything("advance", "avans_miktar", "contract_id", "$item->id"); ?>
 <?php if ($total_advance > 0) { ?>
-    <?php $advance_payback = sum_anything("payment", "avans_mahsup_miktar", "contract_id", "$item->id"); ?>
+    <?php $advance_payback = sum_anything("payment", "I", "contract_id", "$item->id"); ?>
 
     <script>
         var options11 = {
@@ -217,7 +216,7 @@ $total_bond = sum_anything("bond", "teminat_miktar", "contract_id", "$item->id")
 
 <?php } ?>
 <?php
-$payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
+$payments_array = json_encode((array_column($payments, 'E')));
 $payments_name_array = json_encode((array_column($payments, 'hakedis_no')));
 
 if (!empty($item->workplan_payment)) {
@@ -225,7 +224,7 @@ if (!empty($item->workplan_payment)) {
     $workplan_payment = $item->workplan_payment;
 } else {
     $number = json_encode(range(1, count($payments)));
-    $workplan_payment = json_encode(array_fill(0, count(array_column($payments, 'bu_imalat_ihzarat')), 0));
+    $workplan_payment = json_encode(array_fill(0, count(array_column($payments, 'E')), 0));
 }
 ?>
 
@@ -279,10 +278,10 @@ if (!empty($item->workplan_payment)) {
     }
 } else {
     $number = json_encode(range(1, count($payments)));
-    $total_workplan = array_fill(0, count(array_column($payments, 'bu_imalat_ihzarat')), 0);
+    $total_workplan = array_fill(0, count(array_column($payments, 'E')), 0);
 }
 
-$payments_array = array_column($payments, 'bu_imalat_ihzarat');
+$payments_array = array_column($payments, 'E');
 
 $total_payments = array();
 $runningSum_payments = 0;
@@ -291,7 +290,7 @@ foreach ($payments_array as $payment) {
     $total_payments[] = $runningSum_payments;
 }
 
-$payments_array = json_encode((array_column($payments, 'bu_imalat_ihzarat')));
+$payments_array = json_encode((array_column($payments, 'E')));
 
 ?>
 

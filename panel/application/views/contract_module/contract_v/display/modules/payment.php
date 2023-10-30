@@ -28,12 +28,12 @@
                 </td>
                 <td>
                     <a  href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                        <?php echo money_format($payment->bu_imalat_ihzarat); ?> <?php echo "$item->para_birimi"; ?>
+                        <?php echo money_format($payment->E); ?> <?php echo "$item->para_birimi"; ?>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">
                     <a  href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                       <?php echo money_format($payment->net_bedel); ?> <?php echo "$item->para_birimi"; ?>
+                       <?php echo money_format($payment->balance); ?> <?php echo "$item->para_birimi"; ?>
                     </a>
                 </td>
                 <td>
@@ -75,11 +75,11 @@
         <td class="d-none d-sm-table-cell">
         </td>
         <td>
-            <?php echo money_format(sum_anything("payment", "bu_imalat_ihzarat", "contract_id", $item->id)); ?>
+            <?php echo money_format(sum_anything("payment", "E", "contract_id", $item->id)); ?>
             <?php echo "$item->para_birimi"; ?>
         </td>
         <td  class="d-none d-sm-table-cell">
-            <?php echo money_format(sum_anything("payment", "net_bedel", "contract_id", $item->id)); ?> <?php echo "$item->para_birimi"; ?>
+            <?php echo money_format(sum_anything("payment", "balance", "contract_id", $item->id)); ?> <?php echo "$item->para_birimi"; ?>
         </td>
     </tr>
     </tfoot>

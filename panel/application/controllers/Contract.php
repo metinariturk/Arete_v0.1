@@ -525,6 +525,7 @@ class Contract extends CI_Controller
         }
 
         $is_sub = $this->input->post("is_sub") == 1 ? 1 : 0;
+        $is_main = $this->input->post("is_sub") == 1 ? 1 : 0;
         $project_code = project_code($project_id);
 
         $file_name_len = file_name_digits();
@@ -581,6 +582,11 @@ class Contract extends CI_Controller
             $sozlesme_ad = mb_convert_case($this->input->post("sozlesme_ad"), MB_CASE_TITLE, "UTF-8");
 
 
+            if (empty($this->input->post("main_contract"))){
+                $main_contract = null;
+            } else {
+                $main_contract = $this->input->post("main_contract");
+            }
             // Veritabanına Ekleme İşlemi
             $insert = $this->Contract_model->add(
                 array(
@@ -597,7 +603,6 @@ class Contract extends CI_Controller
                     "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
                     "para_birimi" => $this->input->post("para_birimi"),
                     "subcont" => $is_sub,
-                    "sitedel_date" => $yer_teslim,
                     "durumu" => "1",
                     "main_contract" => $this->input->post("main_contract"),
 

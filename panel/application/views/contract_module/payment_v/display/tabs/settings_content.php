@@ -29,7 +29,7 @@
                         </div>
                         <div class="col-md-4" id="section2"
                              style="display:<?= isset($payment_settings) && $payment_settings->gecici_teminat == 1 ? 'block' : 'none' ?>;">
-                            <input class="form-control" type="number"
+                            <input class="form-control" type="number" step="any"
                                    placeholder="Teminat Oranı %"
                                    name="gecici_teminat_oran"
                                    value="<?php echo isset($payment_settings) ? $payment_settings->gecici_teminat_oran : 0; ?>"/>
@@ -258,7 +258,7 @@
                         <div class="col-md-4" id="section16"
                              style="display:<?= isset($payment_settings) && $payment_settings->gecici_teminat == 1 ? 'block' : 'none' ?>;">
                             <input class="form-control" type="number"
-                                   placeholder="Avans Oranı %"
+                                   placeholder="Avans Oranı %" step="any"
                                    name="avans_oran"
                                    value="<?php echo isset($payment_settings) ? $payment_settings->avans_oran : 0; ?>"/>
                         </div>

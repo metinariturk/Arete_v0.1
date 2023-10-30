@@ -39,18 +39,17 @@
                 foreach ($payments as $payment) { ?>
                     <tr>
                         <td class="text-center"><a href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                                <b><?php echo $payment->hakedis_no . " - " . $payment->dosya_no; ?></b></a>
+                                <b><?php echo $payment->hakedis_no; ?></b></a>
                         </td>
-                        <td class="text-center"><?php echo money_format($payment->bu_imalat_ihzarat) . " " . $item->para_birimi; ?></td>
+                        <td class="text-center"><?php echo money_format($payment->E) . " " . $item->para_birimi; ?></td>
                         <?php if ($item->fiyat_fark == 1) { ?>
                             <td class="text-center"><?php echo money_format($payment->bu_fiyat_fark) . " " . $item->para_birimi; ?></td>
                         <?php } ?>
-                        <td class="text-center"><?php echo money_format($payment->kdv_tutar) . " " . $item->para_birimi; ?></td>
-                        <td class="text-center"><?php echo money_format($payment->kesinti_toplam) . " " . $item->para_birimi; ?></td>
-                        <td class="text-center"><?php echo money_format($payment->net_bedel) . " " . $item->para_birimi; ?></td>
+                        <td class="text-center"><?php echo money_format($payment->F) . " " . $item->para_birimi; ?></td>
+                        <td class="text-center"><?php echo money_format($payment->H) . " " . $item->para_birimi; ?></td>
+                        <td class="text-center"><?php echo money_format($payment->balance) . " " . $item->para_birimi; ?></td>
                         <?php if ($item->avans_durum == 1) { ?>
-                            <td class="text-center"> <?php echo money_format($payment->avans_mahsup_miktar) . " " . $item->para_birimi; ?></td>
-                            <td class="text-center"> <?php echo "%" . round($payment->avans_mahsup_oran); ?></td>
+                            <td class="text-center"> <?php echo money_format($payment->I) . " " . $item->para_birimi; ?></td>
                         <?php } ?>
                     </tr>
                 <?php } ?>
@@ -59,19 +58,19 @@
             <tfoot>
             <tr>
                 <th class="text-center">TOPLAM</th>
-                <th class="text-center"><?php echo money_format(sum_payments("bu_imalat_ihzarat", "$item->id")) . " " . $item->para_birimi; ?></th>
+                <th class="text-center"><?php echo money_format(sum_payments("E", "$item->id")) . " " . $item->para_birimi; ?></th>
                 <?php if ($item->fiyat_fark == 1) { ?>
-                    <th class="text-center"><?php echo money_format(sum_payments("bu_fiyat_fark", "$item->id")) . " " . $item->para_birimi; ?></th>
+                    <th class="text-center"><?php echo money_format(sum_payments("B", "$item->id")) . " " . $item->para_birimi; ?></th>
                 <?php } ?>
-                <th class="text-center"><?php echo money_format(sum_payments("kdv_tutar", "$item->id")) . " " . $item->para_birimi; ?></th>
-                <th class="text-center"><?php echo money_format(sum_payments("kesinti_toplam", "$item->id")) . " " . $item->para_birimi; ?></th>
-                <th class="text-center"><?php echo money_format(sum_payments("net_bedel", "$item->id")) . " " . $item->para_birimi; ?></th>
+                <th class="text-center"><?php echo money_format(sum_payments("F", "$item->id")) . " " . $item->para_birimi; ?></th>
+                <th class="text-center"><?php echo money_format(sum_payments("H", "$item->id")) . " " . $item->para_birimi; ?></th>
+                <th class="text-center"><?php echo money_format(sum_payments("balance", "$item->id")) . " " . $item->para_birimi; ?></th>
                 <?php if ($item->avans_durum == 1) { ?>
-                    <th class="text-center"><?php echo money_format(sum_payments("avans_mahsup_miktar", "$item->id")) . " " . $item->para_birimi; ?></th>
+                    <th class="text-center"><?php echo money_format(sum_payments("I", "$item->id")) . " " . $item->para_birimi; ?></th>
                     <th class="text-center">%
-                    <?php $value = sum_payments("bu_imalat_ihzarat", "$item->id");
+                    <?php $value = sum_payments("E", "$item->id");
                     if ($value != 0) {
-                        echo round((sum_payments("avans_mahsup_miktar", "$item->id") / $value * 100), 2); ?></th>
+                        echo round((sum_payments("I", "$item->id") / $value * 100), 2); ?></th>
                     <?php } ?>
                 <?php } ?>
             </tr>

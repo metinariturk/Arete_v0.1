@@ -25,7 +25,8 @@
             }
         }
         ?>
-        <?php $total_old_payment = sum_payments("E", $contract->id); ?>
+        <?php $total_old_payment = sum_payments("D", $contract->id); ?>
+        <?php $total_old_fiyat_fark = sum_payments("B1", $contract->id); ?>
         <div class="col-sm-8 offset-2">
             <table style="width: 18cm">
                 <thead>
@@ -62,6 +63,16 @@
                     <td class="total-group-row-left">
                         <input type="number" step=".01" id="B" name="fiyat_fark"
                                value=""
+                               onblur="calcular()"
+                               onfocus="calcular()">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="w-5 total-group-row-center"></td>
+                    <td class="total-group-row-left">Önceki Fiyat Farkı Toplamı</td>
+                    <td class="total-group-row-left">
+                        <input type="number" step=".01" id="B1" name="fiyat_fark_onceki"
+                               value="<?php echo $total_old_fiyat_fark; ?>" readonly
                                onblur="calcular()"
                                onfocus="calcular()">
                     </td>

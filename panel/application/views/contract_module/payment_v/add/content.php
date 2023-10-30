@@ -67,7 +67,6 @@ if (empty($contract_id)) { ?>
             </div>
             <div class="card">
                 <div class="cord-body">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/info_form"); ?>
                 </div>
             </div>
         </div>

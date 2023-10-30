@@ -185,7 +185,6 @@ class Advance extends CI_Controller
 
     public function save($contract_id)
     {
-        $contract_id = contract_id_module("advance", $id);
 
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -284,9 +283,16 @@ class Advance extends CI_Controller
             //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
         } else {
 
+            $viewData = new stdClass();
+
             $project_id = project_id_cont("$contract_id");
 
-            $viewData = new stdClass();
+            $viewData->contract_id = $contract_id;
+
+            $viewData->project_id = $project_id;
+
+            $project_id = project_id_cont("$contract_id");
+
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;

@@ -490,7 +490,7 @@ function fill_empty_digits()
     $t = get_instance();
     $t->load->model("Settings_model");
     $settings = $t->Settings_model->get();
-    $settings_digits = $settings->file_name_digits;
+    $settings_digits = 4;
     return str_repeat("0", $settings_digits - 1);
 }
 
