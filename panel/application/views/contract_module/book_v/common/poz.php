@@ -1,7 +1,8 @@
 <?php if (isset($sub_items)) { ?>
-    <table class="table table-sm table-striped">
+    <table class="table" style="font-size: 11px">
         <thead>
         <tr>
+            <th style="width: 5%;"><i class="fa fa-reorder"></i></th>
             <th>Poz No</th>
             <th>Tanımı</th>
             <th>Birimi</th>
@@ -10,6 +11,9 @@
         <tbody class="sortable">
         <?php foreach ($sub_items as $sub_item) { ?>
             <tr>
+                <td style="width: 5%;">
+                    <i class="fa fa-reorder"></i>
+                </td>
                 <td>
                     <a id="category" href="#"
                        url="<?php echo base_url("$this->Module_Name/show_explain/$book_name/$sub_item->id"); ?>"

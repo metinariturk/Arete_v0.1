@@ -27,18 +27,6 @@
             })
     }
 
-    function test(anchor) {
-
-        var $form = anchor.getAttribute('form-id');
-
-        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
-        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
-
-        $.post(formAction, formData, function (response) {
-            $(".refresh_list").html(response);
-        });
-    }
-
     function main(anchor) {
 
         var $form = anchor.getAttribute('form-id');
@@ -57,7 +45,14 @@
 
         $.post($url, {}, function (response) {
             $(".refresh_list").html(response);
-            $(".sortable").sortable();
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
         })
     }
 
@@ -67,7 +62,14 @@
 
         $.post($url, {}, function (response) {
             $(".refresh_poz").html(response);
-            $(".sortable").sortable();
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
         })
     }
 
@@ -75,7 +77,27 @@
         var $url = anchor.getAttribute('url');
         $.post($url, {}, function (response) {
             $(".refresh_explain").html(response);
-            $(".sortable").sortable();
         });
     }
+
+
+</script>
+<script>
+    $(document).ready(function() {
+        $("#saveButton").click(function() {
+            // Form verilerini al
+            var bookName = $("input[name='book_name']").val();
+            var year = $("input[name='year']").val();
+
+            // Burada form verilerini işleyebilirsiniz, örneğin bir AJAX isteği gönderilir.
+
+
+            // Formun temizlenmesi
+            $("input[name='book_name']").val('');
+            $("input[name='year']").val('');
+
+            // Modal penceresinin kapanmamasını sağla
+            return false; // Formun sayfayı yenilememesi ve modalın kapanmaması için kullanılır
+        });
+    });
 </script>

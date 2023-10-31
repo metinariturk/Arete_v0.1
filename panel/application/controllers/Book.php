@@ -10,10 +10,11 @@ class Book extends CI_Controller
     {
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -158,6 +159,39 @@ class Book extends CI_Controller
 
     }
 
+    public function add_book()
+    {
+
+        echo "asd";
+        die();
+
+        $insert = $this->Book_model->add(
+            array(
+                "book_name" => "",
+                "name" => "book_year",
+                "is_Active" => 1,
+                "db_name" => $db_name,
+            )
+        );
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $main_categories = $this->Book_model->get_all(array(
+            'main_category' => 1
+        ));
+
+        $viewData->main_categories = $main_categories;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+
+        echo $render_html;
+
+    }
+
     public function add_main()
     {
         $parent_name = $this->input->post('main_group');
@@ -198,10 +232,10 @@ class Book extends CI_Controller
                 "id" => $id
             ),
             array(
-                "deleted" =>1,
+                "deleted" => 1,
                 "main_category" => null,
-                "sub_category" =>null,
-                "parent" =>null
+                "sub_category" => null,
+                "parent" => null
             )
         );
 
@@ -230,10 +264,10 @@ class Book extends CI_Controller
                 "id" => $id
             ),
             array(
-                "deleted" =>1,
+                "deleted" => 1,
                 "main_category" => null,
-                "sub_category" =>null,
-                "parent" =>null
+                "sub_category" => null,
+                "parent" => null
             )
         );
 
@@ -274,7 +308,7 @@ class Book extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
-        $book_name = "book_".strtolower(get_from_any("books","book_name","id",$book_id));
+        $book_name = "book_" . strtolower(get_from_any("books", "book_name", "id", $book_id));
         $book_items = get_book($book_name);
 
         $viewData->book_items = $book_items;
@@ -314,7 +348,7 @@ class Book extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
 
-        $item = item_explain($book_name,$item_id);
+        $item = item_explain($book_name, $item_id);
         $viewData->book_name = $book_name;
         $viewData->item = $item;
 
@@ -322,6 +356,25 @@ class Book extends CI_Controller
 
         echo $render_html;
 
+    }
+
+    public function rankSetter($table)
+    {
+
+        $data = $this->input->post("data");
+        parse_str($data, $order);
+
+        $items = $order['ord'];
+        foreach ($items as $rank => $id) {
+            $where = array(
+                "id" => $id,
+            );
+            $data = array(
+                "sort" => $rank,
+            );
+            rank_group($table, $where, $data);
+        }
+        print_r($items);
     }
 
 }

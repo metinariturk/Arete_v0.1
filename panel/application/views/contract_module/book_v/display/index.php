@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
     <?php $this->load->view("includes/head"); ?>
-
-
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
 </head>
-<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
+<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
@@ -25,15 +23,7 @@
 </div>
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
-
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
-
-<script>
-    $(document).ready(function () {
-        $(".sortable").sortable();
-    });
-</script>
-
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

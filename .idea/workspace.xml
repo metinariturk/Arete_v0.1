@@ -83,6 +83,7 @@
       <workItem from="1698432689769" duration="29956000" />
       <workItem from="1698609198720" duration="7965000" />
       <workItem from="1698649108834" duration="9103000" />
+      <workItem from="1698733547300" duration="14364000" />
     </task>
     <servers />
   </component>
@@ -127,15 +128,6 @@
             <option name="methodName" value="save" />
           </properties>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Book.php</url>
-          <line>269</line>
-          <properties>
-            <option name="className" value="\Book" />
-            <option name="methodName" value="show_book" />
-          </properties>
-          <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>

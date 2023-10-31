@@ -37,6 +37,15 @@ function get_book($table)
     return $ci->db->where(array())->get($table)->result();
 }
 
+function rank_group($table, $where = array(),$data=array())
+{
+    $ci =& get_instance();
+    $ci->load->database();
+
+
+    return $ci->db->where($where)->update($table, $data);
+}
+
 function get_main_categories($table)
 {
     $ci =& get_instance();

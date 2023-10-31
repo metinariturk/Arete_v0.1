@@ -1,19 +1,32 @@
 <?php if (isset($item)) { ?>
-    <table class="table table-responsive-sm">
+    <table class="table" style="font-size: 11px">
         <thead>
         <tr>
-            <th>Poz No</th>
-            <th>
-                <?php echo $item->id; ?> - <?php echo $item->name; ?> - <?php echo $item->unit; ?>
+            <th colspan="2">
+                <?php echo $item->poz_no; ?>
             </th>
         </tr>
         <tr>
-            <th colspan="2">Tarifi</th>
+            <th>
+                <?php echo $item->name; ?>
+            </th>
+            <th style="  text-align: center; vertical-align: top; ">
+                <?php echo $item->unit; ?>
+            </th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td colspan="2"><?php echo $item->tarif; ?></td>
+            <td>
+                <div class="row">
+                    <div class="col-1"  style="transform: rotate(90deg)";>
+                        Tarifi
+                    </div>
+                    <div class="col-11">
+                        <?php echo $item->tarif; ?>
+                    </div>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
