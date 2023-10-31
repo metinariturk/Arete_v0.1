@@ -44,7 +44,6 @@
                 </div>
                 <div class="mb-2">
                     <div class="col-form-label">Teminat Türü</div>
-
                     <select id="select2-demo-1" style="width: 100%;"
                             class="form-control <?php cms_isset(form_error("teminat_turu"), "is-invalid", ""); ?>"
                             data-plugin="select2" name="teminat_turu">
@@ -63,7 +62,6 @@
 
                 <div class="mb-2">
                     <div class="col-form-label">Teminat Veren Banka</div>
-
                     <select id="select2-demo-1" style="width: 100%;" class="form-control <?php cms_isset(form_error("teminat_banka"), "is-invalid", ""); ?>"
                             data-plugin="select2" name="teminat_banka">
                         <option selected="selected"
@@ -86,7 +84,6 @@
     </div>
     <div class="col-6">
         <div class="card">
-
             <div class="card-body">
                 <div class="mb-2">
                     <div class="col-form-label">Teminat Tutar</div>

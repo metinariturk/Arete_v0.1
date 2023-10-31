@@ -1,4 +1,5 @@
 <?php
+
 $sidebarList = array(
     array(
         "title" => "Ana Sayfa",
@@ -56,10 +57,7 @@ $sidebarList = array(
                 "title" => "Katalog",
                 "url" => base_url("Catalog")
             ),
-            array(
-                "title" => "Poz Kitabı",
-                "url" => base_url("Book")
-            )
+
         )
     ),
     array(
@@ -255,10 +253,39 @@ $sidebarList = array(
         )
     ),
     array(
+        "title" => "Poz Kitapları",
+        "icon" => "book",
+        "url" => "#",
+
+        "submodules" => array(
+            array(
+                "title" => "Hızlı Bakış",
+                "url" => base_url("book")
+            ),
+            array(
+                "title" => "Yeni Kitap",
+                "url" => base_url("book/new_book")
+            ),
+
+            array(
+                "title" => "Poz Arama",
+                "url" => base_url("emailsettings")
+            ),
+            array(
+                "title" => "Poz Ekleme",
+                "url" => base_url("emailsettings")
+            )
+        )
+    ),
+
+    array(
         "title" => "ÇIKIŞ",
         "icon" => "box",
         "url" => base_url("logout")
     ),
+
+
+
 );
 
 foreach ($sidebarList as $module) { ?>

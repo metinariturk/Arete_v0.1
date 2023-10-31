@@ -1,5 +1,5 @@
 <?php if (isset($item)) { ?>
-    <table class="table" style="font-size: 11px">
+    <table class="display">
         <thead>
         <tr>
             <th colspan="2">
@@ -19,8 +19,8 @@
         <tr>
             <td>
                 <div class="row">
-                    <div class="col-1"  style="transform: rotate(90deg)";>
-                        Tarifi
+                    <div class="col-1"  style="writing-mode: vertical-rl; text-align: center";>
+                        <strong>Tarifi</strong>
                     </div>
                     <div class="col-11">
                         <?php echo $item->tarif; ?>

@@ -51,6 +51,24 @@ class Book extends CI_Controller
 
     }
 
+    public function new_book()
+    {
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "new_book";
+
+        $book_items = $this->Books_model->get_all(array());
+        $viewData->book_items = $book_items;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+    }
+
+
     public function file_form()
     {
         $viewData = new stdClass();
@@ -162,33 +180,181 @@ class Book extends CI_Controller
     public function add_book()
     {
 
-        echo "asd";
-        die();
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
 
-        $insert = $this->Book_model->add(
+        $code = $this->input->post("code");
+        $table_name = "book_" . $code;
+        $book_name = $this->input->post("book_name");
+        $year = $this->input->post("year");
+        $owner = $this->input->post("owner");
+
+        $this->load->library("form_validation");
+
+
+        $this->form_validation->set_rules("code", "Kitap Kodu", "max_length[4]|alpha_numeric|trim|callback_duplicate_code_check");
+        $this->form_validation->set_rules("book_name", "Kitap Adı", "required|trim");
+        $this->form_validation->set_rules("year", "Yıl", "required|trim|numeric|exact_length[4]");
+        $this->form_validation->set_rules("owner", "Kurum / Kuruluş", "required|trim");
+
+
+        $this->form_validation->set_message(
             array(
-                "book_name" => "",
-                "name" => "book_year",
-                "is_Active" => 1,
-                "db_name" => $db_name,
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "is_natural" => "<b>{field}</b> natural alanı rakamlardan oluşmalıdır",
+                "numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
+                "max_length" => "<b>{field}</b> en fazla <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "exact_length" => "<b>{field}</b> alanı <b>{param}</b> karakter uzunluğunda olmalıdır 2023 gibi",
+                "alpha_numeric" => "<b>{field}</b> geçersiz karakter içeriyor üğişçö gibi",
+                "duplicate_code_check" => "<b>{field}</b> {param} $code daha önce kullanılmış.",
             )
         );
 
-        $viewData = new stdClass();
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
+        if ($validate) {
+            $this->load->dbforge();
 
-        $main_categories = $this->Book_model->get_all(array(
-            'main_category' => 1
-        ));
+            $fields = array(
+                'id' => array(
+                    'type' => 'INT',
+                    'constraint' => 11,
+                    'unsigned' => TRUE,
+                    'auto_increment' => TRUE
+                ),
+                'name' => array(
+                    'type' => 'VARCHAR',
+                    'constraint' => 255,
+                    'null' => FALSE,
+                    'collation' => 'utf8_turkish_ci'
+                ),
+                'parent' => array(
+                    'type' => 'INT',
+                    'constraint' => 11,
+                    'null' => TRUE,
+                    'default' => NULL
+                ),
+                'sub_category' => array(
+                    'type' => 'INT',
+                    'constraint' => 11,
+                    'null' => TRUE,
+                    'default' => NULL
+                ),
+                'main_category' => array(
+                    'type' => 'INT',
+                    'constraint' => 11,
+                    'null' => TRUE,
+                    'default' => NULL
+                ),
+                'deleted' => array(
+                    'type' => 'INT',
+                    'constraint' => 11,
+                    'null' => TRUE,
+                    'default' => NULL
+                ),
+                'unit' => array(
+                    'type' => 'VARCHAR',
+                    'constraint' => 255,
+                    'null' => TRUE,
+                    'default' => NULL,
+                    'collation' => 'utf8_turkish_ci'
+                ),
+                'book' => array(
+                    'type' => 'INT',
+                    'constraint' => 11,
+                    'null' => TRUE,
+                    'default' => NULL
+                ),
+                'tarif' => array(
+                    'type' => 'LONGTEXT',
+                    'null' => TRUE,
+                    'collation' => 'utf8_general_ci'
+                ),
+                'poz_no' => array(
+                    'type' => 'VARCHAR',
+                    'constraint' => 40,
+                    'null' => TRUE,
+                    'default' => NULL,
+                    'collation' => 'utf8_general_ci'
+                ),
+                'sort' => array(
+                    'type' => 'INT',
+                    'constraint' => 11,
+                    'null' => TRUE,
+                    'default' => NULL
+                ),
+            );
 
-        $viewData->main_categories = $main_categories;
+            $this->dbforge->add_field($fields);
+            $this->dbforge->add_key('id', TRUE);
+            $this->dbforge->add_key('name', TRUE);
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+// Tabloyu InnoDB ile oluşturur ve karakter setini ayarlar
+            $this->dbforge->create_table("$table_name", TRUE, array(
+                'ENGINE' => 'InnoDB',
+                'AUTO_INCREMENT' => 298,
+                'CHARACTER SET' => 'utf8',
+                'COLLATE' => 'utf8_general_ci',
+                'ROW_FORMAT' => 'DYNAMIC'
+            ));
 
-        echo $render_html;
+// Yabancı anahtar kontrollerini etkinleştir
+            $this->db->query('SET FOREIGN_KEY_CHECKS = 1;');
+
+            $insert = $this->Books_model->add(
+                array(
+                    "book_name" => $book_name,
+                    "book_year" => $year,
+                    "is_Active" => 1,
+                    "db_name" => $table_name,
+                    "owner" => $owner,
+                )
+            );
+
+            // TODO Alert sistemi eklenecek...
+            if ($insert) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Kayıt başarılı bir şekilde eklendi",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                    "type" => "danger"
+                );
+            }
+            // İşlemin Sonucunu Session'a yazma işlemi...
+            $this->session->set_flashdata("alert", $alert);
+            redirect(base_url("$this->Module_Name/new_book"));
+            //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
+        } else {
+
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Form verilerinde eksik veya hatalı giriş var.",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+            $book_items = $this->Books_model->get_all(array());
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "new_book";
+            $viewData->form_error = true;
+
+            $viewData->book_items = $book_items;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        }
+
 
     }
 
@@ -375,6 +541,37 @@ class Book extends CI_Controller
             rank_group($table, $where, $data);
         }
         print_r($items);
+    }
+
+    public function duplicate_code_check($table_name)
+    {
+        $table_name = "book_" . $table_name;
+
+        $var = count_data("books", "db_name", $table_name);
+        if (($var > 0)) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public
+    function isActiveSetter($id)
+    {
+
+        if ($id) {
+
+            $isActive = ($this->input->post("data") === "true") ? 1 : 0;
+
+            $this->Books_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "isActive" => $isActive
+                )
+            );
+        }
     }
 
 }

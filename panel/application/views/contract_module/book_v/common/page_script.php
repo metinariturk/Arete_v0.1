@@ -36,6 +36,17 @@
 
         $.post(formAction, formData, function (response) {
             $(".refresh_list").html(response);
+            $('#book').DataTable();
+            $('#list').DataTable();
+            $('#poz').DataTable();
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
         });
     }
 
@@ -45,6 +56,9 @@
 
         $.post($url, {}, function (response) {
             $(".refresh_list").html(response);
+            $('#book').DataTable();
+            $('#list').DataTable();
+            $('#poz').DataTable();
             $(".sortable").sortable({
                 stop: function (event, ui) {
                     var $data = $(this).sortable("serialize");
@@ -62,10 +76,15 @@
 
         $.post($url, {}, function (response) {
             $(".refresh_poz").html(response);
+            $('#book').DataTable();
+            $('#list').DataTable();
+            $('#poz').DataTable();
+
             $(".sortable").sortable({
                 stop: function (event, ui) {
                     var $data = $(this).sortable("serialize");
                     var $data_url = $(this).data("url");
+
                     $.post($data_url, {data: $data}, function (response) {
                     })
                 }
@@ -77,6 +96,17 @@
         var $url = anchor.getAttribute('url');
         $.post($url, {}, function (response) {
             $(".refresh_explain").html(response);
+            $('#book').DataTable();
+            $('#list').DataTable();
+            $('#poz').DataTable();
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
         });
     }
 
@@ -99,5 +129,18 @@
             // Modal penceresinin kapanmamasını sağla
             return false; // Formun sayfayı yenilememesi ve modalın kapanmaması için kullanılır
         });
+    });
+</script>
+<script>
+    $('#book').DataTable();
+    $('#list').DataTable();
+    $('#poz').DataTable();
+    $(".sortable").sortable({
+        stop: function (event, ui) {
+            var $data = $(this).sortable("serialize");
+            var $data_url = $(this).data("url");
+            $.post($data_url, {data: $data}, function (response) {
+            })
+        }
     });
 </script>

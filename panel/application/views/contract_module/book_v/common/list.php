@@ -1,5 +1,5 @@
 <?php if (isset($book_items)) { ?>
-    <table class="table" style="font-size: 11px">
+    <table class="display" id="list" style="font-size: 12px;">
         <thead>
         <tr>
             <th style="width: 5%;"><i class="fa fa-reorder"></i> </th>

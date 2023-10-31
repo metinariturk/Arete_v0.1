@@ -1,5 +1,5 @@
 <?php if (isset($sub_items)) { ?>
-    <table class="table" style="font-size: 11px">
+    <table class="display" id="poz" style="font-size: 12px;">
         <thead>
         <tr>
             <th style="width: 5%;"><i class="fa fa-reorder"></i></th>
@@ -24,7 +24,6 @@
                 </td>
                 <td><?php echo $sub_item->name; ?></td>
                 <td><?php echo $sub_item->unit; ?></td>
-                <td></td>
             </tr>
         <?php } ?>
         </tbody>
