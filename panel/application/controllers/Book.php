@@ -62,7 +62,14 @@ class Book extends CI_Controller
         $viewData->subViewFolder = "new_book";
 
         $book_items = $this->Books_model->get_all(array());
-        $viewData->book_items = $book_items;
+
+        $criteria = array(
+            'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
+        );
+
+        $sortedBooks = sortArrayByCriteria($book_items, $criteria);
+
+        $viewData->sortedBooks = $sortedBooks;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
@@ -183,6 +190,8 @@ class Book extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+
+
 
         $code = $this->input->post("code");
         $table_name = "book_" . $code;
@@ -307,7 +316,7 @@ class Book extends CI_Controller
                 array(
                     "book_name" => $book_name,
                     "book_year" => $year,
-                    "is_Active" => 1,
+                    "isActive" => 1,
                     "db_name" => $table_name,
                     "owner" => $owner,
                 )
@@ -474,7 +483,7 @@ class Book extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
-        $book_name = "book_" . strtolower(get_from_any("books", "book_name", "id", $book_id));
+        $book_name = strtolower(get_from_any("books", "db_name", "id", $book_id));
         $book_items = get_book($book_name);
 
         $viewData->book_items = $book_items;

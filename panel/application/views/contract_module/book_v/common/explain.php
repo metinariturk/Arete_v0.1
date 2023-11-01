@@ -22,7 +22,7 @@
                     <div class="col-1"  style="writing-mode: vertical-rl; text-align: center";>
                         <strong>Tarifi</strong>
                     </div>
-                    <div class="col-11">
+                    <div class="col-11" style="text-align:justify;">
                         <?php echo $item->tarif; ?>
                     </div>
                 </div>

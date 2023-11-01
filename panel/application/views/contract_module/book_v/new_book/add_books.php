@@ -2,9 +2,6 @@
     <table class="display" id="book" style="font-size: 12px;">
         <thead>
         <tr>
-            <th colspan="4">Poz Kitabı Adı</th>
-        </tr>
-        <tr>
             <th style="width: 50px;">Kodu</th>
             <th style="width: 50px;">Adı</th>
             <th style="width: 100px;">Yılı</th>
@@ -13,12 +10,11 @@
             <th style="width: 50px;">Durum</th>
         </tr>
         </thead>
-        <tbody>
-        <?php foreach ($book_items as $book) { ?>
+        <tbody class="sortable">
+        <?php foreach ($sortedBooks as $book) { ?>
             <tr>
-
                 <td>
-                    <?php echo $book->book_year; ?>
+                    <?php echo $book->db_name; ?>
                 </td>
                 <td>
                     <a id="category"

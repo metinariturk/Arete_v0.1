@@ -1643,3 +1643,20 @@ function intToRoman($num) {
 
     return $result;
 }
+
+function sortArrayByCriteria($array, $criteria) {
+    usort($array, function ($a, $b) use ($criteria) {
+        foreach ($criteria as $key => $order) {
+            if ($a->$key != $b->$key) {
+                if ($order === 'asc') {
+                    return ($a->$key < $b->$key) ? -1 : 1;
+                } else {
+                    return ($a->$key > $b->$key) ? -1 : 1;
+                }
+            }
+        }
+        return 0;
+    });
+
+    return $array;
+}

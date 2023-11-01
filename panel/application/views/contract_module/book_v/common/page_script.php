@@ -59,6 +59,7 @@
             $('#book').DataTable();
             $('#list').DataTable();
             $('#poz').DataTable();
+
             $(".sortable").sortable({
                 stop: function (event, ui) {
                     var $data = $(this).sortable("serialize");
