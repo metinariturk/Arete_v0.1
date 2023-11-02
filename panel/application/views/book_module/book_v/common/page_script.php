@@ -93,6 +93,25 @@
         })
     }
 
+    function add_group(anchor) {
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".add_group").html(response);
+
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
+        })
+    }
+
     function show_explain(anchor) {
         var $url = anchor.getAttribute('url');
         $.post($url, {}, function (response) {

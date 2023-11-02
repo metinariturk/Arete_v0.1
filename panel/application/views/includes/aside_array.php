@@ -268,13 +268,9 @@ $sidebarList = array(
             ),
 
             array(
-                "title" => "Poz Arama",
-                "url" => base_url("emailsettings")
-            ),
-            array(
                 "title" => "Poz Ekleme",
-                "url" => base_url("emailsettings")
-            )
+                "url" => base_url("book/new_item")
+            ),
         )
     ),
 

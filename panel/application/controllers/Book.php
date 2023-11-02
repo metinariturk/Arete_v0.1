@@ -18,7 +18,7 @@ class Book extends CI_Controller
             redirect(base_url("sifre-yenile"));
         }
 
-        $this->moduleFolder = "contract_module";
+        $this->moduleFolder = "book_module";
         $this->viewFolder = "book_v";
         $this->load->model("Book_model");
         $this->load->model("Books_model");
@@ -62,6 +62,30 @@ class Book extends CI_Controller
         $viewData->subViewFolder = "new_book";
 
         $book_items = $this->Books_model->get_all(array());
+
+        $criteria = array(
+            'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
+        );
+
+        $sortedBooks = sortArrayByCriteria($book_items, $criteria);
+
+        $viewData->sortedBooks = $sortedBooks;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+    }
+
+    public function new_item()
+    {
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "new_item";
+
+        $book_items = $this->Books_model->get_all(array("isActive" => 1));
 
         $criteria = array(
             'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
