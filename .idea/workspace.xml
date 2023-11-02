@@ -28,25 +28,25 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/book_module/book_v/new_item" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/models" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v\new_item" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v\new_book" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v\common" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\db" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\js" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\db" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -132,12 +132,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Book.php</url>
-          <line>203</line>
+          <line>359</line>
           <properties>
             <option name="className" value="\Book" />
-            <option name="methodName" value="add_book" />
+            <option name="methodName" value="show_main" />
           </properties>
-          <option name="timeStamp" value="11" />
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>

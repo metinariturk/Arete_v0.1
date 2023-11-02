@@ -2,6 +2,9 @@
     <table class="table" style="font-size: 12px;">
         <thead>
         <tr>
+            <th colspan="3" style="text-align:center; width: 50px;">POZ KİTAPLARI<p>&nbsp;</p></th>
+        </tr>
+        <tr>
             <th style="width: 50px;">Kitap Adı</th>
             <th style="width: 50px;">Kurum/Kuruluş</th>
             <th style="width: 50px;">Poz Sayısı</th>
@@ -12,8 +15,8 @@
             <tr>
                 <td>
                     <a id="category" href="#"
-                       url="<?php echo base_url("$this->Module_Name/add_group/$book->id"); ?>"
-                       onclick="add_book(this)" method="post" enctype="multipart">
+                       url="<?php echo base_url("$this->Module_Name/show_main/$book->id"); ?>"
+                       onclick="show_main(this)" method="post" enctype="multipart">
                         <?php echo $book->book_name; ?>
                     </a>
                 </td>

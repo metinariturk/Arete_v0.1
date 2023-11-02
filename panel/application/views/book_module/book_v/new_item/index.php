@@ -22,8 +22,69 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
-<?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
+<script>
+    function show_main(anchor) {
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".refresh_addmain").html(response);
+
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
+        })
+    }
+
+    function show_sub(anchor) {
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".refresh_addsub").html(response);
+
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
+        })
+    }
+
+    function add_main(anchor) {
+
+        var $form = anchor.getAttribute('form-id');
+
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".refresh_addmain").html(response);
+        });
+    }
+
+    function add_sub(anchor) {
+
+        var $form = anchor.getAttribute('form-id');
+
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".refresh_addsub").html(response);
+        });
+    }
+</script>
+
+
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>
