@@ -85,6 +85,7 @@
       <workItem from="1698649108834" duration="9103000" />
       <workItem from="1698733547300" duration="14364000" />
       <workItem from="1698906304068" duration="5044000" />
+      <workItem from="1699029702194" duration="6082000" />
     </task>
     <servers />
   </component>
@@ -132,7 +133,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Book.php</url>
-          <line>359</line>
+          <line>305</line>
           <properties>
             <option name="className" value="\Book" />
             <option name="methodName" value="show_main" />

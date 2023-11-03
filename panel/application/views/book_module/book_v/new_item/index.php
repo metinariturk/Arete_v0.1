@@ -109,7 +109,7 @@
         var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
 
         $.post(formAction, formData, function (response) {
-            $(".refresh_title").html(response);
+            $(".refresh_addtitle").html(response);
         });
     }
 

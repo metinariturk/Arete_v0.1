@@ -24,6 +24,7 @@ class Book extends CI_Controller
         $this->load->model("Books_model");
         $this->load->model("Books_main_model");
         $this->load->model("Books_sub_model");
+        $this->load->model("Books_title_model");
         $this->load->model("Contract_model");
 
         $this->Module_Name = "book";
@@ -375,17 +376,16 @@ class Book extends CI_Controller
         ));
 
         $sub = $this->Books_sub_model->get(array(
-            'id' => $main_id,
+            'id' => $sub_id,
         ));
 
         $viewData->book_id = $book_id;
         $viewData->main_id = $main_id;
-        $viewData->sub = $sub;
         $viewData->book = $book;
         $viewData->main = $main;
         $viewData->sub = $sub;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/title", $viewData, true);
 
         echo $render_html;
     }
@@ -393,34 +393,87 @@ class Book extends CI_Controller
     public function add_main($book_id)
     {
 
-        $code = $this->input->post("main_group_code");
-        $book_name = $this->input->post("group_name");
+        $main_code = $this->input->post("main_group_code");
+        $main_name = $this->input->post("group_name");
 
-        $insert = $this->Books_main_model->add(
+        $isset_control = get_from_any_and("books_main","main_code","$main_code","main_name", "$main_name");
+
+        $this->load->library("form_validation");
+
+
+        $this->form_validation->set_rules("main_group_code", "Grup Kodu", "min_length[1]|max_length[3]|required|alpha_numeric|trim");
+        $this->form_validation->set_rules("group_name", "Grup Adı", "min_length[3]|required|trim");
+
+
+        $this->form_validation->set_message(
             array(
-                "book_id" => $book_id,
-                "main_code" => $code,
-                "main_name" => $book_name,
-                "isActive" => 1,
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "max_length" => "<b>{field}</b> en fazla <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "min_length" => "<b>{field}</b> en az <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "alpha_numeric" => "<b>{field}</b> geçersiz karakter içeriyor üğişçö gibi",
             )
         );
 
-        $viewData = new stdClass();
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
+        if ($validate) {
+            if (empty($isset_control)) {
+                $insert = $this->Books_main_model->add(
+                    array(
+                        "book_id" => $book_id,
+                        "main_code" => $main_code,
+                        "main_name" => $main_name,
+                        "isActive" => 1,
+                    )
+                );
+                $error = "Kayıt Eklendi";
+            } else {
+                $error = "Bu Kod ve İsim Daha Önce Kullanılmış";
+            }
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->viewModule = $this->moduleFolder;
 
 
-        $book = $this->Books_model->get(array(
-            'id' => $book_id,
-        ));
-        $viewData->book = $book;
+            $book = $this->Books_model->get(array(
+                'id' => $book_id,
+            ));
+            $viewData->book = $book;
+            $viewData->error = $error;
 
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
 
-        echo $render_html;
+            echo $render_html;
+
+        } else {
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->viewModule = $this->moduleFolder;
+
+            $error = "Kayıt Eklenemedi";
+            $book = $this->Books_model->get(array(
+                'id' => $book_id,
+            ));
+            $viewData->book = $book;
+            $viewData->error = $error;
+            $viewData->form_error = true;
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
+
+            echo $render_html;
+
+        }
+
+
+
     }
 
     public function add_sub($main_id)
@@ -465,10 +518,12 @@ class Book extends CI_Controller
         echo $render_html;
     }
 
-    public function add_title($main_id)
+    public function add_title($sub_id)
     {
 
+        $main_id = get_from_any("books_sub","main_id","id","$sub_id");
         $book_id = get_from_any("books_main","book_id","id","$main_id");
+
         $code = $this->input->post("title_code");
         $book_name = $this->input->post("title_name");
 
@@ -476,7 +531,7 @@ class Book extends CI_Controller
             array(
                 "book_id" => $book_id,
                 "main_id" => $main_id,
-                "sub_id" => $main_id,
+                "sub_id" => $sub_id,
                 "title_code" => $code,
                 "title_name" => $book_name,
                 "isActive" => 1,
@@ -497,13 +552,18 @@ class Book extends CI_Controller
             'id' => $main_id,
         ));
 
+        $sub = $this->Books_sub_model->get(array(
+            'id' => $sub_id,
+        ));
+
 
         $viewData->book_id = $book_id;
         $viewData->main_id = $main_id;
         $viewData->book = $book;
         $viewData->main = $main;
+        $viewData->sub = $sub;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/title", $viewData, true);
 
         echo $render_html;
     }
