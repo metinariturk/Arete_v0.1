@@ -9,8 +9,7 @@
                 <th colspan="3" style="text-align:center; width: 50px;"><?php echo $book->book_name." ".$book->book_year; ?> POZ KİTABI<p>ANA GRUPLAR</p></th>
             </tr>
             <tr>
-                <th style="width: 50px;">Grup Kodu</th>
-                <th style="width: 50px;">Grup Adı</th>
+                <th style="width: 50px;">Grup Kodu/Adı</th>
                 <th style="width: 50px;">Poz Sayısı</th>
             </tr>
             </thead>
@@ -28,13 +27,11 @@
                             <a id="category" href="#"
                                url="<?php echo base_url("$this->Module_Name/show_sub/$main_group->id"); ?>"
                                onclick="show_sub(this)" method="post" enctype="multipart">
-                                <?php echo $main_group->main_code; ?>
+                                <?php echo $main_group->main_code; ?>.<?php echo $main_group->main_name; ?>
                             </a>
                         </td>
                         <td>
-                            <?php echo $main_group->main_name; ?>
-                        </td>
-                        <td>
+
                         </td>
                     </tr>
                 <?php } ?>

@@ -3,17 +3,22 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/book_table"); ?>
                     </div>
-                    <div class="col-md-4 refresh_addmain">
+                    <div class="col-md-3 refresh_addmain">
                         <?php if (!empty($book_id)) { ?>
                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/main_group"); ?>
                         <?php } ?>
                     </div>
-                    <div class="col-md-4 refresh_addsub">
+                    <div class="col-md-3 refresh_addsub">
                         <?php if (!empty($main_id)) { ?>
                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/sub_group"); ?>
+                        <?php } ?>
+                    </div>
+                    <div class="col-md-3 refresh_addtitle">
+                        <?php if (!empty($sub_id)) { ?>
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/title"); ?>
                         <?php } ?>
                     </div>
                 </div>

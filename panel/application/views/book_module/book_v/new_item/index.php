@@ -59,6 +59,24 @@
         })
     }
 
+    function show_title(anchor) {
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".refresh_addtitle").html(response);
+
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
+        })
+    }
+
     function add_main(anchor) {
 
         var $form = anchor.getAttribute('form-id');
@@ -82,6 +100,19 @@
             $(".refresh_addsub").html(response);
         });
     }
+
+    function add_title(anchor) {
+
+        var $form = anchor.getAttribute('form-id');
+
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".refresh_title").html(response);
+        });
+    }
+
 </script>
 
 

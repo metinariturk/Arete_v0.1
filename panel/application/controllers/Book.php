@@ -119,61 +119,6 @@ class Book extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function save()
-    {
-        $main_category = $this->input->post("main_category");
-
-        $sub_category = $this->input->post("sub_category");
-
-        if (!empty($main_category)) {
-            $insert2 = $this->Book_model->add(
-                array(
-                    "name" => $this->input->post("main_category"),
-                    "main_category" => "1",
-                )
-            );
-        }
-
-        if (!empty($sub_category)) {
-            $insert2 = $this->Book_model->add(
-                array(
-                    "name" => $this->input->post("sub_category"),
-                    "sub_category" => "1",
-                    "parent" => $this->input->post("parent"),
-                )
-            );
-        }
-
-        if ($insert or $insert2) {
-
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-
-        } else {
-
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Lütfen Form Verilerini Doldurunuz",
-                "type" => "danger"
-            );
-        }
-
-        // İşlemin Sonucunu Session'a yazma işlemi...
-        $this->session->set_flashdata("alert", $alert);
-        redirect(base_url("$this->Module_Name/new_form"));
-
-        $alert = array(
-            "title" => "İşlem Başarısız",
-            "text" => "Form verilerinde eksik veya hatalı giriş var.",
-            "type" => "danger"
-        );
-        $this->session->set_flashdata("alert", $alert);
-
-    }
-
     public function add_book()
     {
 
@@ -409,6 +354,42 @@ class Book extends CI_Controller
         echo $render_html;
     }
 
+    public function show_title($sub_id)
+    {
+        $main_id = get_from_any("books_sub","main_id","id","$sub_id");
+
+        $book_id = get_from_any("books_main","book_id","id","$main_id");
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $book = $this->Books_model->get(array(
+            'id' => $book_id,
+        ));
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $main_id,
+        ));
+
+        $sub = $this->Books_sub_model->get(array(
+            'id' => $main_id,
+        ));
+
+        $viewData->book_id = $book_id;
+        $viewData->main_id = $main_id;
+        $viewData->sub = $sub;
+        $viewData->book = $book;
+        $viewData->main = $main;
+        $viewData->sub = $sub;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
+
+        echo $render_html;
+    }
+
     public function add_main($book_id)
     {
 
@@ -483,6 +464,50 @@ class Book extends CI_Controller
 
         echo $render_html;
     }
+
+    public function add_title($main_id)
+    {
+
+        $book_id = get_from_any("books_main","book_id","id","$main_id");
+        $code = $this->input->post("title_code");
+        $book_name = $this->input->post("title_name");
+
+        $insert = $this->Books_title_model->add(
+            array(
+                "book_id" => $book_id,
+                "main_id" => $main_id,
+                "sub_id" => $main_id,
+                "title_code" => $code,
+                "title_name" => $book_name,
+                "isActive" => 1,
+            )
+        );
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $book = $this->Books_model->get(array(
+            'id' => $book_id,
+        ));
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $main_id,
+        ));
+
+
+        $viewData->book_id = $book_id;
+        $viewData->main_id = $main_id;
+        $viewData->book = $book;
+        $viewData->main = $main;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
+
+        echo $render_html;
+    }
+
 
     public function delete_sub($id)
     {
