@@ -14,17 +14,16 @@
         </tr>
         </thead>
         <tbody class="sortable">
-        <?php $sub_groups = $this->Books_sub_model->get_all(
-            array(
-                "book_id" => $book_id,
-                "main_id" => $main_id,
-                "isActive" => 1,
-            )
-        ); ?>
         <?php if (isset($sub_groups)) { ?>
             <?php foreach ($sub_groups as $sub_group) { ?>
                 <tr>
                     <td>
+                        <a onclick="deletesub(this)"
+                           url="<?php echo base_url("$this->Module_Name/delete_sub/$sub_group->id"); ?>"
+                           warning="Alt İş Grubunu Silmek Üzeresiniz">
+                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                               aria-hidden="true"></i>
+                        </a>
                         <a id="category" href="#"
                            url="<?php echo base_url("$this->Module_Name/show_title/$sub_group->id"); ?>"
                            onclick="show_title(this)" method="post" enctype="multipart">

@@ -120,6 +120,153 @@ class Book extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
+    public function show_book($book_id)
+    {
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $book_name = strtolower(get_from_any("books", "db_name", "id", $book_id));
+        $book_items = get_book($book_name);
+
+        $viewData->book_items = $book_items;
+        $viewData->book_name = $book_name;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function show_main($book_id)
+    {
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $viewData->book_id = $book_id;
+
+        $book = $this->Books_model->get(array(
+            'id' => $book_id,
+            "isActive" => 1
+        ));
+
+        $viewData->book = $book;
+
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
+
+        echo $render_html;
+    }
+
+    public function show_sub($main_id)
+    {
+        $book_id = get_from_any("books_main", "book_id", "id", "$main_id");
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $book = $this->Books_model->get(array(
+            'id' => $book_id,
+        ));
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $main_id,
+        ));
+
+        $sub_groups = $this->Books_sub_model->get_all(
+            array("main_id"=>$main->id, "isActive" => 1)
+        );
+
+        $viewData->book_id = $book_id;
+        $viewData->main_id = $main_id;
+        $viewData->book = $book;
+        $viewData->sub_groups = $sub_groups;
+        $viewData->main = $main;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
+
+        echo $render_html;
+    }
+
+    public function show_title($sub_id)
+    {
+        $main_id = get_from_any("books_sub", "main_id", "id", "$sub_id");
+
+        $book_id = get_from_any("books_main", "book_id", "id", "$main_id");
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $book = $this->Books_model->get(array(
+            'id' => $book_id,
+        ));
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $main_id,
+        ));
+
+        $sub = $this->Books_sub_model->get(array(
+            'id' => $sub_id,
+        ));
+
+        $viewData->book_id = $book_id;
+        $viewData->main_id = $main_id;
+        $viewData->book = $book;
+        $viewData->main = $main;
+        $viewData->sub = $sub;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/title", $viewData, true);
+
+        echo $render_html;
+    }
+
+    public function show_item($book_name, $category_id)
+    {
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $sub_items = sub_item($book_name, $category_id);
+
+        $viewData->book_name = $book_name;
+
+        $viewData->sub_items = $sub_items;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/poz", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function show_explain($book_name, $item_id)
+    {
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $item = item_explain($book_name, $item_id);
+        $viewData->book_name = $book_name;
+        $viewData->item = $item;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/explain", $viewData, true);
+
+        echo $render_html;
+
+    }
+
     public function add_book()
     {
 
@@ -302,101 +449,13 @@ class Book extends CI_Controller
 
     }
 
-
-    public function show_main($book_id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $viewData->book_id = $book_id;
-
-        $book = $this->Books_model->get(array(
-            'id' => $book_id,
-        ));
-
-        $viewData->book = $book;
-
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
-
-        echo $render_html;
-    }
-
-    public function show_sub($main_id)
-    {
-        $book_id = get_from_any("books_main","book_id","id","$main_id");
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $book = $this->Books_model->get(array(
-            'id' => $book_id,
-        ));
-
-        $main = $this->Books_main_model->get(array(
-            'id' => $main_id,
-        ));
-
-
-        $viewData->book_id = $book_id;
-        $viewData->main_id = $main_id;
-        $viewData->book = $book;
-        $viewData->main = $main;
-
-
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
-
-        echo $render_html;
-    }
-
-    public function show_title($sub_id)
-    {
-        $main_id = get_from_any("books_sub","main_id","id","$sub_id");
-
-        $book_id = get_from_any("books_main","book_id","id","$main_id");
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $book = $this->Books_model->get(array(
-            'id' => $book_id,
-        ));
-
-        $main = $this->Books_main_model->get(array(
-            'id' => $main_id,
-        ));
-
-        $sub = $this->Books_sub_model->get(array(
-            'id' => $sub_id,
-        ));
-
-        $viewData->book_id = $book_id;
-        $viewData->main_id = $main_id;
-        $viewData->book = $book;
-        $viewData->main = $main;
-        $viewData->sub = $sub;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/title", $viewData, true);
-
-        echo $render_html;
-    }
-
     public function add_main($book_id)
     {
 
         $main_code = $this->input->post("main_group_code");
         $main_name = $this->input->post("group_name");
 
-        $isset_control = get_from_any_and("books_main","main_code","$main_code","main_name", "$main_name");
+        $isset_control = get_from_any_and_and("books_main", "main_code", "$main_code", "main_name", "$main_name","book_id",$book_id);
 
         $this->load->library("form_validation");
 
@@ -473,20 +532,30 @@ class Book extends CI_Controller
         }
 
 
-
     }
 
     public function add_sub($main_id)
     {
+        $main = $this->Books_main_model->get(array(
+            'id' => $main_id,
+        ));
 
-        $book_id = get_from_any("books_main","book_id","id","$main_id");
+        $book = $this->Books_model->get(array(
+            'id' => $main->book_id,
+        ));
+
+        $sub_groups = $this->Books_sub_model->get_all(array(
+            'main_id' => $main->id,
+            'isActive' => 1,
+        ));
+
         $code = $this->input->post("sub_group_code");
         $book_name = $this->input->post("sub_group_name");
 
         $insert = $this->Books_sub_model->add(
             array(
-                "book_id" => $book_id,
-                "main_id" => $main_id,
+                "book_id" => $book->id,
+                "main_id" => $main->id,
                 "sub_code" => $code,
                 "sub_name" => $book_name,
                 "isActive" => 1,
@@ -499,17 +568,7 @@ class Book extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
 
-        $book = $this->Books_model->get(array(
-            'id' => $book_id,
-        ));
-
-        $main = $this->Books_main_model->get(array(
-            'id' => $main_id,
-        ));
-
-
-        $viewData->book_id = $book_id;
-        $viewData->main_id = $main_id;
+        $viewData->sub_groups = $sub_groups;
         $viewData->book = $book;
         $viewData->main = $main;
 
@@ -521,8 +580,8 @@ class Book extends CI_Controller
     public function add_title($sub_id)
     {
 
-        $main_id = get_from_any("books_sub","main_id","id","$sub_id");
-        $book_id = get_from_any("books_main","book_id","id","$main_id");
+        $main_id = get_from_any("books_sub", "main_id", "id", "$sub_id");
+        $book_id = get_from_any("books_main", "book_id", "id", "$main_id");
 
         $code = $this->input->post("title_code");
         $book_name = $this->input->post("title_name");
@@ -569,19 +628,22 @@ class Book extends CI_Controller
     }
 
 
-    public function delete_sub($id)
+    public function delete_main($main_id)
     {
-        $delete = $this->Book_model->update(
+
+        $main = $this->Books_main_model->get(array("id"=>$main_id));
+
+        $delete = $this->Books_main_model->delete(
             array(
-                "id" => $id
+                "id" => $main->id
             ),
-            array(
-                "deleted" => 1,
-                "main_category" => null,
-                "sub_category" => null,
-                "parent" => null
-            )
         );
+
+        if ($delete) {
+            $error = "Kayıt Silindi";
+        } else {
+            $error = "Kayıt Silinemedi";
+        }
 
         $viewData = new stdClass();
 
@@ -589,43 +651,39 @@ class Book extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
 
-        $main_categories = $this->Book_model->get_all(array(
-            'main_category' => 1
+
+        $book = $this->Books_model->get(array(
+            'id' => $main->book_id,
         ));
 
-        $viewData->main_categories = $main_categories;
+        $viewData->book = $book;
+        $viewData->main = $main;
+        $viewData->error = $error;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
 
         echo $render_html;
 
+
     }
 
-    public function delete_main($id)
+    public function delete_sub($sub_id)
     {
-        $delete = $this->Book_model->update(
+
+        $sub = $this->Books_sub_model->get(array("id"=>$sub_id));
+
+        $delete = $this->Books_sub_model->delete(
             array(
-                "id" => $id
+                "id" => $sub->id
             ),
-            array(
-                "deleted" => 1,
-                "main_category" => null,
-                "sub_category" => null,
-                "parent" => null
-            )
         );
 
-        $delete = $this->Book_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-        $delete = $this->Book_model->delete(
-            array(
-                "parent" => $id
-            )
-        );
+        if ($delete) {
+            $error = "Kayıt Silindi";
+        } else {
+            $error = "Kayıt Silinemedi";
+        }
 
         $viewData = new stdClass();
 
@@ -633,74 +691,33 @@ class Book extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
 
-        $main_categories = $this->Book_model->get_all(array(
-            'main_category' => 1
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $sub->main_id,
         ));
 
-        $viewData->main_categories = $main_categories;
+        $book = $this->Books_model->get(array(
+            'id' => $sub->book_id,
+        ));
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+        $sub_groups = $this->Books_sub_model->get_all(array("main_id"=>$sub->main_id));
 
-        echo $render_html;
+        $viewData->book = $book;
+        $viewData->book = $book;
+        $viewData->sub_groups = $sub_groups;
+        $viewData->main = $main;
+        $viewData->error = $error;
 
-    }
 
-    public function show_book($book_id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $book_name = strtolower(get_from_any("books", "db_name", "id", $book_id));
-        $book_items = get_book($book_name);
-
-        $viewData->book_items = $book_items;
-        $viewData->book_name = $book_name;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
 
         echo $render_html;
 
-    }
-
-    public function show_item($book_name, $category_id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $sub_items = sub_item($book_name, $category_id);
-
-        $viewData->book_name = $book_name;
-
-        $viewData->sub_items = $sub_items;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/poz", $viewData, true);
-
-        echo $render_html;
 
     }
 
-    public function show_explain($book_name, $item_id)
-    {
-        $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
 
-        $item = item_explain($book_name, $item_id);
-        $viewData->book_name = $book_name;
-        $viewData->item = $item;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/explain", $viewData, true);
-
-        echo $render_html;
-
-    }
 
     public function rankSetter($table)
     {

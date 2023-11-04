@@ -17,7 +17,7 @@
                     <h6><?php echo filenamedisplay($file->img_url); ?></h6>
                     <p class="mb-1"><?php echo file_size($file->size) ?></p>
                     <a onclick="deleteConfirmationFile(this)"
-                       url="<?php echo base_url("$this->Module_Name/fileDelete/$file->id"); ?>"
+                       url="<?php echo base_url("$this->Module_Name/fileDelete/$file->id"); ?>">
                     <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
                        aria-hidden="true"></i>
                     </a>

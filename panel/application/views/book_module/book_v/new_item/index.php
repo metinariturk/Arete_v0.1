@@ -113,6 +113,61 @@
         });
     }
 
+    function deletemain(btn) {
+        var $url = btn.getAttribute('url');
+        var $warning = btn.getAttribute('warning');
+
+        swal({
+            title: $warning,
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Sil"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    $.post($url, {}, function (response) {
+                        $(".refresh_addmain").html(response);
+                    })
+
+                    swal("Dosya Başarılı Bir Şekilde Silindi", {
+                        icon: "success",
+                    });
+
+                } else {
+                    swal("Dosya Güvende");
+                }
+            })
+    }
+
+    function deletesub(btn) {
+        var $url = btn.getAttribute('url');
+        var $warning = btn.getAttribute('warning');
+
+        swal({
+            title: $warning,
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Sil"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    $.post($url, {}, function (response) {
+                        $(".refresh_addsub").html(response);
+                    })
+
+                    swal("Dosya Başarılı Bir Şekilde Silindi", {
+                        icon: "success",
+                    });
+
+                } else {
+                    swal("Dosya Güvende");
+                }
+            })
+    }
 </script>
 
 

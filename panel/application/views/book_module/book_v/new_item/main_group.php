@@ -24,8 +24,12 @@
             <?php foreach ($main_groups as $main_group) { ?>
                 <tr>
                     <td>
-                        <i class="fa fa-times-circle-o" aria-hidden="true"></i>
-
+                        <a onclick="deletemain(this)"
+                           url="<?php echo base_url("$this->Module_Name/delete_main/$main_group->id"); ?>"
+                           warning="Ana İş Grubunu Silmek Üzeresiniz">
+                        <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                           aria-hidden="true"></i>
+                        </a>
                         <a id="category" href="#"
                            url="<?php echo base_url("$this->Module_Name/show_sub/$main_group->id"); ?>"
                            onclick="show_sub(this)" method="post" enctype="multipart">
