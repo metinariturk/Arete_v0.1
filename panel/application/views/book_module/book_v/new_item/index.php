@@ -42,6 +42,7 @@
     }
 
     function show_sub(anchor) {
+        $(".refresh_addsub").show();
 
         var $url = anchor.getAttribute('url');
 
@@ -60,6 +61,7 @@
     }
 
     function show_title(anchor) {
+        $(".refresh_addtitle").show();
 
         var $url = anchor.getAttribute('url');
 
@@ -129,6 +131,8 @@
 
                     $.post($url, {}, function (response) {
                         $(".refresh_addmain").html(response);
+                        $(".refresh_addsub").hide();
+                        $(".refresh_addtitle").hide();
                     })
 
                     swal("Dosya Başarılı Bir Şekilde Silindi", {
@@ -157,6 +161,36 @@
 
                     $.post($url, {}, function (response) {
                         $(".refresh_addsub").html(response);
+                        $(".refresh_addtitle").hide();
+                    })
+
+                    swal("Dosya Başarılı Bir Şekilde Silindi", {
+                        icon: "success",
+                    });
+
+                } else {
+                    swal("Dosya Güvende");
+                }
+            })
+    }
+
+    function deletetitle(btn) {
+        var $url = btn.getAttribute('url');
+        var $warning = btn.getAttribute('warning');
+
+        swal({
+            title: $warning,
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Sil"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    $.post($url, {}, function (response) {
+                        $(".refresh_addtitle").html(response);
+                        $(".refresh_additem").hide();
                     })
 
                     swal("Dosya Başarılı Bir Şekilde Silindi", {

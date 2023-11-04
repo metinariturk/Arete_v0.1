@@ -1,5 +1,5 @@
 <form id="add_sub"
-      action="<?php echo base_url("$this->Module_Name/add_sub/$main_id"); ?>"
+      action="<?php echo base_url("$this->Module_Name/add_sub/$main->id"); ?>"
       method="post"
       enctype="multipart/form-data" autocomplete="off">
     <table class="table" style="font-size: 12px;">
@@ -52,6 +52,7 @@
             <?php } ?>
         </div>
     </div>
+    <p><?php if (isset($error)) { echo $error;} ?></p>
     <a form-id="add_sub" id="save_button" onclick="add_sub(this)"
        class="btn btn-success">
         <i class="fa fa-plus fa-lg"></i> Ekle

@@ -24,19 +24,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/models" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/book_module/book_v/new_item",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v\new_item" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v\new_book" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v" />
@@ -130,15 +130,6 @@
             <option name="methodName" value="save" />
           </properties>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Book.php</url>
-          <line>141</line>
-          <properties>
-            <option name="className" value="\Book" />
-            <option name="methodName" value="show_main" />
-          </properties>
-          <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>

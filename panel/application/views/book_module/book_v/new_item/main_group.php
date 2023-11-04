@@ -14,12 +14,7 @@
         </tr>
         </thead>
         <tbody class="sortable">
-        <?php $main_groups = $this->Books_main_model->get_all(
-            array(
-                "book_id" => $book->id,
-                "isActive" => 1,
-            )
-        ); ?>
+
         <?php if (isset($main_groups)) { ?>
             <?php foreach ($main_groups as $main_group) { ?>
                 <tr>

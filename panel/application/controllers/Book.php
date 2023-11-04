@@ -154,6 +154,13 @@ class Book extends CI_Controller
             "isActive" => 1
         ));
 
+        $main_groups = $this->Books_main_model->get_all(array(
+                "book_id" => $book->id,
+                "isActive" => 1
+            )
+        );
+
+        $viewData->main_groups = $main_groups;
         $viewData->book = $book;
 
 
@@ -179,8 +186,11 @@ class Book extends CI_Controller
             'id' => $main_id,
         ));
 
-        $sub_groups = $this->Books_sub_model->get_all(
-            array("main_id"=>$main->id, "isActive" => 1)
+        $sub_groups = $this->Books_sub_model->get_all(array(
+                "main_id" => $main->id,
+                "book_id" => $main->book_id,
+                "isActive" => 1
+            )
         );
 
         $viewData->book_id = $book_id;
@@ -197,7 +207,6 @@ class Book extends CI_Controller
     public function show_title($sub_id)
     {
         $main_id = get_from_any("books_sub", "main_id", "id", "$sub_id");
-
         $book_id = get_from_any("books_main", "book_id", "id", "$main_id");
 
         $viewData = new stdClass();
@@ -218,9 +227,15 @@ class Book extends CI_Controller
             'id' => $sub_id,
         ));
 
+        $titles = $this->Books_title_model->get_all(array(
+            'sub_id' => $sub_id,
+            'book_id' => $book_id,
+        ));
+
         $viewData->book_id = $book_id;
         $viewData->main_id = $main_id;
         $viewData->book = $book;
+        $viewData->titles = $titles;
         $viewData->main = $main;
         $viewData->sub = $sub;
 
@@ -452,10 +467,14 @@ class Book extends CI_Controller
     public function add_main($book_id)
     {
 
+        $book = $this->Books_model->get(array(
+            'id' => $book_id,
+        ));
+
         $main_code = $this->input->post("main_group_code");
         $main_name = $this->input->post("group_name");
 
-        $isset_control = get_from_any_and_and("books_main", "main_code", "$main_code", "main_name", "$main_name","book_id",$book_id);
+        $isset_control = get_from_any_and_and("books_main", "main_code", "$main_code", "main_name", "$main_name", "book_id", $book_id);
 
         $this->load->library("form_validation");
 
@@ -480,9 +499,9 @@ class Book extends CI_Controller
             if (empty($isset_control)) {
                 $insert = $this->Books_main_model->add(
                     array(
-                        "book_id" => $book_id,
-                        "main_code" => $main_code,
-                        "main_name" => $main_name,
+                        "book_id" => $book->id,
+                        "main_code" => mb_convert_case($main_code, MB_CASE_UPPER, 'UTF-8'),
+                        "main_name" => mb_convert_case($main_name, MB_CASE_UPPER, 'UTF-8'),
                         "isActive" => 1,
                     )
                 );
@@ -497,11 +516,14 @@ class Book extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->viewModule = $this->moduleFolder;
 
+            $main_groups = $this->Books_main_model->get_all(array(
+                    "book_id" => $book->id,
+                    "isActive" => 1
+                )
+            );
 
-            $book = $this->Books_model->get(array(
-                'id' => $book_id,
-            ));
             $viewData->book = $book;
+            $viewData->main_groups = $main_groups;
             $viewData->error = $error;
 
 
@@ -518,9 +540,12 @@ class Book extends CI_Controller
             $viewData->viewModule = $this->moduleFolder;
 
             $error = "Kayıt Eklenemedi";
-            $book = $this->Books_model->get(array(
-                'id' => $book_id,
-            ));
+            $main_groups = $this->Books_main_model->get_all(array(
+                    "book_id" => $book->id,
+                    "isActive" => 1
+                )
+            );
+            $viewData->main_groups = $main_groups;
             $viewData->book = $book;
             $viewData->error = $error;
             $viewData->form_error = true;
@@ -544,94 +569,202 @@ class Book extends CI_Controller
             'id' => $main->book_id,
         ));
 
-        $sub_groups = $this->Books_sub_model->get_all(array(
-            'main_id' => $main->id,
-            'isActive' => 1,
-        ));
 
-        $code = $this->input->post("sub_group_code");
-        $book_name = $this->input->post("sub_group_name");
+        $sub_code = $this->input->post("sub_group_code");
+        $sub_name = $this->input->post("sub_group_name");
 
-        $insert = $this->Books_sub_model->add(
+        $isset_control = get_from_any_and_and("books_sub", "sub_code", "$sub_code", "sub_name", "$sub_name", "book_id", $book->id);
+
+        $this->load->library("form_validation");
+
+
+        $this->form_validation->set_rules("sub_group_code", "Alt Grup Kodu", "min_length[1]|max_length[3]|required|alpha_numeric|trim");
+        $this->form_validation->set_rules("sub_group_name", "Alt  Grup Adı", "min_length[3]|required|trim");
+
+
+        $this->form_validation->set_message(
             array(
-                "book_id" => $book->id,
-                "main_id" => $main->id,
-                "sub_code" => $code,
-                "sub_name" => $book_name,
-                "isActive" => 1,
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "max_length" => "<b>{field}</b> en fazla <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "min_length" => "<b>{field}</b> en az <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "alpha_numeric" => "<b>{field}</b> geçersiz karakter içeriyor üğişçö gibi",
             )
         );
 
-        $viewData = new stdClass();
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
+        if ($validate) {
+            if (empty($isset_control)) {
+                setlocale(LC_ALL, 'tr_TR.UTF-8');
 
-        $viewData->sub_groups = $sub_groups;
-        $viewData->book = $book;
-        $viewData->main = $main;
+                $insert = $this->Books_sub_model->add(
+                    array(
+                        "book_id" => $book->id,
+                        "main_id" => $main->id,
+                        "sub_code" => mb_convert_case($sub_code, MB_CASE_UPPER, 'UTF-8'),
+                        "sub_name" => mb_convert_case($sub_name, MB_CASE_UPPER, 'UTF-8'),
+                        "isActive" => 1,
+                    )
+                );
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
+                $sub_groups = $this->Books_sub_model->get_all(array(
+                        "main_id" => $main->id,
+                        "book_id" => $main->book_id,
+                        "isActive" => 1
+                    )
+                );
 
-        echo $render_html;
+                $viewData = new stdClass();
+
+                /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+                $viewData->viewFolder = $this->viewFolder;
+                $viewData->viewModule = $this->moduleFolder;
+                $viewData->subViewFolder = "new_item";
+                $error = "Kayıt Eklendi";
+
+                $viewData->sub_groups = $sub_groups;
+                $viewData->book = $book;
+                $viewData->main = $main;
+                $viewData->error = $error;
+
+                $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$viewData->subViewFolder/sub_group", $viewData, true);
+
+                echo $render_html;
+            } else {
+
+                $sub_groups = $this->Books_sub_model->get_all(array(
+                    'main_id' => $main->id,
+                    'book_id' => $main->book_id,
+                    'isActive' => 1,
+                ));
+
+                $viewData = new stdClass();
+
+                /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+                $viewData->viewFolder = $this->viewFolder;
+                $viewData->viewModule = $this->moduleFolder;
+                $viewData->subViewFolder = "new_item";
+                $viewData->form_error = true;
+                $error = "Bu Kayıt Mevcut";
+
+                $viewData->sub_groups = $sub_groups;
+                $viewData->book = $book;
+                $viewData->main = $main;
+                $viewData->error = $error;
+
+                $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$viewData->subViewFolder/sub_group", $viewData, true);
+
+                echo $render_html;
+            }
+        } else {
+            $sub_groups = $this->Books_sub_model->get_all(array(
+                'main_id' => $main->id,
+                'book_id' => $main->book_id,
+                'isActive' => 1,
+            ));
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->subViewFolder = "new_item";
+            $viewData->form_error = true;
+            $error = "Kayıt Eklenemedi";
+
+            $viewData->sub_groups = $sub_groups;
+            $viewData->book = $book;
+            $viewData->main = $main;
+            $viewData->error = $error;
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$viewData->subViewFolder/sub_group", $viewData, true);
+
+            echo $render_html;
+        }
     }
 
     public function add_title($sub_id)
     {
+        $sub = $this->Books_sub_model->get(array('id' => $sub_id));
+        $main = $this->Books_main_model->get(array('id' => $sub->main_id, 'book_id' => $sub->book_id));
+        $book = $this->Books_model->get(array('id' => $sub->book_id));
 
-        $main_id = get_from_any("books_sub", "main_id", "id", "$sub_id");
-        $book_id = get_from_any("books_main", "book_id", "id", "$main_id");
+        $title_code = $this->input->post("title_group_code");
+        $title_name = $this->input->post("title_group_name");
 
-        $code = $this->input->post("title_code");
-        $book_name = $this->input->post("title_name");
+        $isset_control = get_from_any_and_and("books_title", "title_code", "$title_code", "title_name", "$title_name", "book_id", $book->id);
 
-        $insert = $this->Books_title_model->add(
+        $this->load->library("form_validation");
+
+
+        $this->form_validation->set_rules("title_group_code", "Başlık Kodu", "min_length[1]|max_length[3]|required|alpha_numeric|trim");
+        $this->form_validation->set_rules("title_group_name", "Başlık Adı", "min_length[3]|required|trim");
+
+
+        $this->form_validation->set_message(
             array(
-                "book_id" => $book_id,
-                "main_id" => $main_id,
-                "sub_id" => $sub_id,
-                "title_code" => $code,
-                "title_name" => $book_name,
-                "isActive" => 1,
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "max_length" => "<b>{field}</b> en fazla <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "min_length" => "<b>{field}</b> en az <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "alpha_numeric" => "<b>{field}</b> geçersiz karakter içeriyor üğişçö gibi",
+            )
+        );
+
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            if (empty($isset_control)) {
+                setlocale(LC_ALL, 'tr_TR.UTF-8');
+
+                $insert = $this->Books_title_model->add(
+                    array(
+                        "book_id" => $book->id,
+                        "main_id" => $main->id,
+                        "sub_id" => $sub->id,
+                        "title_code" => mb_convert_case($title_code, MB_CASE_UPPER, 'UTF-8'),
+                        "title_name" => mb_convert_case($title_name, MB_CASE_UPPER, 'UTF-8'),
+                        "isActive" => 1,
+                    )
+                );
+                $error = "Kayıt Eklendi";
+            } else {
+                $error = "Bu Kayıt Mevcut";
+            }
+        } else {
+            $error = "Kayıt Eklenemedi";
+        }
+
+        $titles = $this->Books_title_model->get_all(array(
+                "sub_id" => $sub->id,
+                "book_id" => $book->id,
+                "isActive" => 1
             )
         );
 
         $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
-
-        $book = $this->Books_model->get(array(
-            'id' => $book_id,
-        ));
-
-        $main = $this->Books_main_model->get(array(
-            'id' => $main_id,
-        ));
-
-        $sub = $this->Books_sub_model->get(array(
-            'id' => $sub_id,
-        ));
-
-
-        $viewData->book_id = $book_id;
-        $viewData->main_id = $main_id;
-        $viewData->book = $book;
-        $viewData->main = $main;
+        $viewData->subViewFolder = "new_item";
         $viewData->sub = $sub;
+        $viewData->book = $book;
+        $viewData->titles = $titles;
+        $viewData->main = $main;
+        $viewData->error = $error;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/title", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$viewData->subViewFolder/title", $viewData, true);
 
         echo $render_html;
     }
 
-
     public function delete_main($main_id)
     {
+        $book = $this->Books_model->get(array(
+            'id' => $main->book_id,
+        ));
 
-        $main = $this->Books_main_model->get(array("id"=>$main_id));
+        $main = $this->Books_main_model->get(array("id" => $main_id));
 
         $delete = $this->Books_main_model->delete(
             array(
@@ -639,24 +772,34 @@ class Book extends CI_Controller
             ),
         );
 
-        if ($delete) {
-            $error = "Kayıt Silindi";
+        $delete_sub = $this->Books_sub_model->delete(
+            array(
+                "main_id" => $main->id,
+                "book_id" => $main->book_id
+            ),
+        );
+
+        if ($delete and $delete_sub) {
+            $error = "Tüm Alt Gruplarıyla Birlikte Kayıt Silindi";
         } else {
             $error = "Kayıt Silinemedi";
         }
 
         $viewData = new stdClass();
 
+        $main_groups = $this->Books_main_model->get_all(
+            array(
+                "book_id" => $main->book_id,
+                "isActive" => 1,
+            )
+        );
+
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
 
-
-        $book = $this->Books_model->get(array(
-            'id' => $main->book_id,
-        ));
-
         $viewData->book = $book;
+        $viewData->main_groups = $main_groups;
         $viewData->main = $main;
         $viewData->error = $error;
 
@@ -671,53 +814,118 @@ class Book extends CI_Controller
     public function delete_sub($sub_id)
     {
 
-        $sub = $this->Books_sub_model->get(array("id"=>$sub_id));
+        $sub = $this->Books_sub_model->get(array("id" => $sub_id));
 
-        $delete = $this->Books_sub_model->delete(
+
+        $book = $this->Books_model->get(array(
+            'id' => $sub->book_id,
+        ));
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $sub->main_id,
+        ));
+
+        $delete_sub = $this->Books_sub_model->delete(
             array(
                 "id" => $sub->id
             ),
         );
 
-        if ($delete) {
-            $error = "Kayıt Silindi";
+        $delete_title = $this->Books_title_model->delete(
+            array(
+                "book_id" => $sub->book_id,
+                "sub_id" => $sub->id
+            ),
+        );
+
+        if ($delete_title and $delete_sub) {
+            $error = "Tüm Alt Başlıklarıyla Birlikte Kayıt Silindi";
         } else {
             $error = "Kayıt Silinemedi";
         }
 
+        $sub_groups = $this->Books_sub_model->get_all(
+            array(
+                "book_id" => $sub->book_id,
+                "main_id" => $sub->main_id,
+                "isActive" => 1,
+            )
+        );
         $viewData = new stdClass();
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
 
-
-        $main = $this->Books_main_model->get(array(
-            'id' => $sub->main_id,
-        ));
-
-        $book = $this->Books_model->get(array(
-            'id' => $sub->book_id,
-        ));
-
-        $sub_groups = $this->Books_sub_model->get_all(array("main_id"=>$sub->main_id));
-
-        $viewData->book = $book;
         $viewData->book = $book;
         $viewData->sub_groups = $sub_groups;
         $viewData->main = $main;
+        $viewData->sub = $sub;
         $viewData->error = $error;
 
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/main_group", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
 
         echo $render_html;
 
-
     }
 
+    public function delete_title($title_id)
+    {
+
+        $title = $this->Books_title_model->get(array("id" => $title_id));
 
 
+        $book = $this->Books_model->get(array(
+            'id' => $title->book_id,
+        ));
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $title->main_id,
+        ));
+
+        $delete_title = $this->Books_title_model->delete(
+            array(
+                "id" => $title->id
+            ),
+        );
+
+        $delete_item = $this->Books_item_model->delete(
+            array(
+                "book_id" => $title->book_id,
+                "title_id" => $title->id
+            ),
+        );
+
+        if ($delete_title and $delete_item) {
+            $error = "Tüm Alt Başlıklarıyla Birlikte Kayıt Silindi";
+        } else {
+            $error = "Kayıt Silinemedi";
+        }
+
+        $titles = $this->Books_title_model->get_all(
+            array(
+                "book_id" => $title->book_id,
+                "main_id" => $title->main_id,
+                "isActive" => 1,
+            )
+        );
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+
+        $viewData->book = $book;
+        $viewData->sub_groups = $sub_groups;
+        $viewData->main = $main;
+        $viewData->sub = $sub;
+        $viewData->error = $error;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/sub_group", $viewData, true);
+
+        echo $render_html;
+
+    }
 
     public function rankSetter($table)
     {
