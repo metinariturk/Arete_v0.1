@@ -1,57 +1,103 @@
-<form id="add_title"
-      action="<?php echo base_url("$this->Module_Name/add_title/$sub->id"); ?>"
+<form id="add_item"
+      action="<?php echo base_url("$this->Module_Name/add_item/$title->id"); ?>"
       method="post"
       enctype="multipart/form-data" autocomplete="off">
-        <table class="table" style="font-size: 12px;">
-            <thead>
-            <tr>
-                <th colspan="3" style="text-align:center; width: 50px;"><?php echo $sub->sub_code." - ".$sub->sub_name; ?> GRUBU<p>BAŞLIKLARI</p></th>
-            </tr>
-            <tr>
-                <th style="width: 50px;">Alt Grup Kodu</th>
-            </tr>
-            </thead>
-            <tbody class="sortable">
-            <?php if (isset($titles)) { ?>
-                <?php foreach ($titles as $title) { ?>
-                    <tr>
-                        <td>
-                            <a onclick="deletetitle(this)"
-                               url="<?php echo base_url("$this->Module_Name/delete_title/$title->id"); ?>"
-                               warning="Başlığı Silmek Üzeresiniz - Başlık Altındaki Pozlar Da Silinecek">
-                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
-                                   aria-hidden="true"></i>
-                            </a>
-                            <a id="category" href="#"
-                               url="<?php echo base_url("$this->Module_Name/show_item/$title->id"); ?>"
-                               onclick="show_item(this)" method="post" enctype="multipart">
-                                <?php echo $title->title_code; ?>.<?php echo $title->title_name; ?>
-                            </a>
-                        </td>
-                    </tr>
+    <div class="row">
+        <div class="col-2">
+            <table class="table" style="font-size: 12px;">
+                <thead>
+                <tr>
+                    <th colspan="3"
+                        style="text-align:center; width: 50px;"><?php echo $title->title_code . " - " . $title->title_name; ?>
+                        BAŞLIĞI<p>POZLARI</p></th>
+                </tr>
+                </thead>
+                <tbody class="sortable">
+                <?php if (isset($items)) { ?>
+                    <?php foreach ($items as $item) { ?>
+                        <tr>
+                            <td>
+                                <a onclick="deletetitle(this)"
+                                   url="<?php echo base_url("$this->Module_Name/delete_item/$item->id"); ?>"
+                                   warning="Başlığı Silmek Üzeresiniz - Başlık Altındaki Pozlar Da Silinecek">
+                                    <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                                       aria-hidden="true"></i>
+                                </a>
+                                <a id="category" href="#"
+                                   url="<?php echo base_url("$this->Module_Name/show_detail/$item->id"); ?>"
+                                   onclick="show_detail(this)" method="post" enctype="multipart">
+                                    <?php echo $item->item_code; ?>.<?php echo $item->item_name; ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 <?php } ?>
-            <?php } ?>
-            </tbody>
-        </table>
-    <div class="div">
-        <div class="mb-2">
-            <div class="col-form-label">Yeni Başlık</div>
-            <input step="any" class="form-control <?php cms_isset(form_error("title_group_code"), "is-invalid", ""); ?>"
-                   name="title_group_code" value="<?php echo isset($form_error) ? set_value("title_group_code") : ""; ?>"
-                   placeholder="Başlık Kodu 01 - A - I vs."/>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-5">
+            <div class="detail">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/new_item/detail"); ?>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="mb-2">
+                <div class="col-form-label">Yeni Poz</div>
+                <input step="any" class="form-control <?php cms_isset(form_error("item_code"), "is-invalid", ""); ?>"
+                       name="item_code" value="<?php echo isset($form_error) ? set_value("item_code") : ""; ?>"
+                       placeholder="Poz Kodu 01 - A - I vs."/>
+                <?php if (isset($form_error)) { ?>
+                    <div class="invalid-feedback"><?php echo form_error("item_code"); ?></div>
+                <?php } ?>
+            </div>
+            <div class="mb-2">
+
+                <input step="any" class="form-control <?php cms_isset(form_error("item_name"), "is-invalid", ""); ?>"
+                       name="item_name" value="<?php echo isset($form_error) ? set_value("item_name") : ""; ?>"
+                       placeholder="Poz Adı - 19 CM BİMSBETON DUVAR YAPILMASI  vs."/>
+                <?php if (isset($form_error)) { ?>
+                    <div class="invalid-feedback"><?php echo form_error("item_name"); ?></div>
+                <?php } ?>
+            </div>
+            <div class="mb-2">
+
+                <input step="any" class="form-control <?php cms_isset(form_error("item_unit"), "is-invalid", ""); ?>"
+                       name="item_unit" value="<?php echo isset($form_error) ? set_value("item_unit") : ""; ?>"
+                       placeholder="Birim"/>
+                <?php if (isset($form_error)) { ?>
+                    <div class="invalid-feedback"><?php echo form_error("item_unit"); ?></div>
+                <?php } ?>
+            </div>
+            <div class="mb-2">
+
+                <input type="number" step="any" class="form-control <?php cms_isset(form_error("item_price"), "is-invalid", ""); ?>"
+                       name="item_price" value="<?php echo isset($form_error) ? set_value("item_price") : ""; ?>"
+                       id="sayiInput" onblur="convertToCustomDecimal(this)" onfocus="convertToCustomDecimal(this)"
+                       placeholder="Birim Fiyat"/>
+                <?php if (isset($form_error)) { ?>
+                    <div class="invalid-feedback"><?php echo form_error("item_price"); ?></div>
+                <?php } ?>
+            </div>
+            <div class="mb-2">
+                <textarea step="any" placeholder="Tarifi"
+                          class="form-control <?php cms_isset(form_error("item_explain"), "is-invalid", ""); ?>"
+                          name="item_explain"
+                          value="<?php echo isset($form_error) ? set_value("item_explain") : ""; ?>"></textarea>
+            </div>
             <?php if (isset($form_error)) { ?>
-                <div class="invalid-feedback"><?php echo form_error("title_group_code"); ?></div>
+                <div class="invalid-feedback"><?php echo form_error("item_explain"); ?></div>
             <?php } ?>
-            <input step="any" class="form-control <?php cms_isset(form_error("title_group_name"), "is-invalid", ""); ?>"
-                   name="title_group_name" value="<?php echo isset($form_error) ? set_value("title_group_name") : ""; ?>"
-                   placeholder="Başlık Adı - Döşeme İşleri - Duvar İşleri vs."/>
-            <?php if (isset($form_error)) { ?>
-                <div class="invalid-feedback"><?php echo form_error("title_group_name"); ?></div>
-            <?php } ?>
+
+            <p><?php if (isset($error)) { echo $error;} ?></p>
+
+            <div class="row">
+                <div class="col-12">
+                    <a form-id="add_item" id="save_button" onclick="add_item(this)"
+                       class="btn btn-success">
+                        <i class="fa fa-plus fa-lg"></i> Ekle
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-    <a  form-id="add_title" id="save_button" onclick="add_title(this)"
-            class="btn btn-success">
-        <i class="fa fa-plus fa-lg"></i> Ekle
-    </a>
 </form>

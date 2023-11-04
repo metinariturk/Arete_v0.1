@@ -8,7 +8,7 @@
                 <th colspan="3" style="text-align:center; width: 50px;"><?php echo $sub->sub_code." - ".$sub->sub_name; ?> GRUBU<p>BAŞLIKLARI</p></th>
             </tr>
             <tr>
-                <th style="width: 50px;">Alt Grup Kodu</th>
+                <th style="width: 50px;">Başlık Kodu</th>
             </tr>
             </thead>
             <tbody class="sortable">
@@ -50,6 +50,7 @@
             <?php } ?>
         </div>
     </div>
+    <p><?php if (isset($error)) { echo $error;} ?></p>
     <a  form-id="add_title" id="save_button" onclick="add_title(this)"
             class="btn btn-success">
         <i class="fa fa-plus fa-lg"></i> Ekle

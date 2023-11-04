@@ -22,9 +22,10 @@
                         <?php } ?>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
-                    <div class="col-md-3 refresh_additem">
-                        <?php if (!empty($sub_id)) { ?>
+                    <div class="col-md-12 refresh_additem">
+                        <?php if (!empty($item_id)) { ?>
                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/item"); ?>
                         <?php } ?>
                     </div>

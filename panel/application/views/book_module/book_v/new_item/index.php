@@ -79,6 +79,44 @@
         })
     }
 
+    function show_item(anchor) {
+        $(".refresh_additem").show();
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".refresh_additem").html(response);
+
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
+        })
+    }
+
+    function show_detail(anchor) {
+        $(".detail").show();
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".detail").html(response);
+
+            $(".sortable").sortable({
+                stop: function (event, ui) {
+                    var $data = $(this).sortable("serialize");
+                    var $data_url = $(this).data("url");
+                    $.post($data_url, {data: $data}, function (response) {
+                    })
+                }
+            });
+        })
+    }
+
     function add_main(anchor) {
 
         var $form = anchor.getAttribute('form-id');
@@ -112,6 +150,20 @@
 
         $.post(formAction, formData, function (response) {
             $(".refresh_addtitle").html(response);
+        });
+    }
+
+    function add_item(anchor) {
+        var $form = anchor.getAttribute('form-id');
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".refresh_additem").html(response);
+
+            // Formun işlemi tamamlanıp sunucudan yanıt alındığında formu temizle
+            var form = document.getElementById($form);
+            form.reset();
         });
     }
 
@@ -202,6 +254,7 @@
                 }
             })
     }
+
 </script>
 
 
