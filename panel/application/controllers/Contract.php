@@ -26,31 +26,31 @@ class Contract extends CI_Controller
         $this->viewFolder = "contract_v";
 
         // Modelleri yükleme
-        $this->load->model("Contract_model");
-        $this->load->model("Contract_file_model");
-        $this->load->model("Drawings_file_model");
-        $this->load->model("Project_model");
-        $this->load->model("Settings_model");
-        $this->load->model("Company_model");
-        $this->load->model("User_model");
-        $this->load->model("City_model");
-        $this->load->model("District_model");
-        $this->load->model("Payment_model");
-        $this->load->model("Bond_model");
-        $this->load->model("Book_model");
-        $this->load->model("Drawings_model");
-        $this->load->model("Order_model");
         $this->load->model("Advance_model");
-        $this->load->model("Costinc_model");
-        $this->load->model("Extime_model");
-        $this->load->model("Catalog_model");
         $this->load->model("Auction_model");
+        $this->load->model("Bond_model");
+        $this->load->model("Books_model");
+        $this->load->model("Catalog_model");
+        $this->load->model("City_model");
+        $this->load->model("Company_model");
         $this->load->model("Condition_model");
-        $this->load->model("Site_model");
-        $this->load->model("Newprice_model");
-        $this->load->model("Safety_model");
-        $this->load->model("Favorite_model");
+        $this->load->model("Contract_file_model");
+        $this->load->model("Contract_model");
+        $this->load->model("Costinc_model");
         $this->load->model("Delete_model");
+        $this->load->model("District_model");
+        $this->load->model("Drawings_file_model");
+        $this->load->model("Drawings_model");
+        $this->load->model("Extime_model");
+        $this->load->model("Favorite_model");
+        $this->load->model("Newprice_model");
+        $this->load->model("Order_model");
+        $this->load->model("Payment_model");
+        $this->load->model("Project_model");
+        $this->load->model("Safety_model");
+        $this->load->model("Settings_model");
+        $this->load->model("Site_model");
+        $this->load->model("User_model");
 
         // Modül bilgileri
         $this->Module_Name = "Contract";
@@ -146,42 +146,45 @@ class Contract extends CI_Controller
         ));
 
         $type = get_from_any("contract", "subcont", "id", "$id");
+        $book_id = get_from_any("contract", "book", "id", "$id");
 
         $viewData = new stdClass();
-        $payments = $this->Payment_model->get_all(array('contract_id' => $id));
-        $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
-        $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
-        $main_categories = $this->Book_model->get_all(array('main_category' => 1));
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
-        $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
-        $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
-        $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
-        $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
+        $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
+        $book = $this->Books_model->get(array('id' => $book_id));
+        $books = $this->Books_model->get_all(array('isActive' => 1));
         $catalogs = $this->Catalog_model->get_all(array('contract_id' => $id));
-        $master_catalog = $this->Catalog_model->get(array('contract_id' => $id, "master" => 1));
+        $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
+        $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
+        $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
+        $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
+        $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
+        $payments = $this->Payment_model->get_all(array('contract_id' => $id));
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
+        $master_catalog = $this->Catalog_model->get(array('contract_id' => $id, "master" => 1));
 
         // View'e gönderilecek Değişkenlerin Set Edilmesi
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
-        $viewData->payments = $payments;
-        $viewData->bonds = $bonds;
-        $viewData->payment_no = $payment_no;
-        $viewData->main_bond = $main_bond;
+        $viewData->active_tab = $active_tab;
         $viewData->advances = $advances;
-        $viewData->drawings = $drawings;
-        $viewData->main_categories = $main_categories;
+        $viewData->bonds = $bonds;
+        $viewData->book = $book;
+        $viewData->books = $books;
+        $viewData->catalogs = $catalogs;
         $viewData->costincs = $costincs;
+        $viewData->drawings = $drawings;
+        $viewData->extimes = $extimes;
+        $viewData->fav = $fav;
+        $viewData->main_bond = $main_bond;
         $viewData->master_catalog = $master_catalog;
         $viewData->newprices = $newprices;
-        $viewData->extimes = $extimes;
-        $viewData->active_tab = $active_tab;
+        $viewData->payment_no = $payment_no;
+        $viewData->payments = $payments;
         $viewData->settings = $settings;
-        $viewData->catalogs = $catalogs;
         $viewData->sites = $sites;
-        $viewData->fav = $fav;
 
         $form_errors = $this->session->flashdata('form_errors');
 
@@ -191,7 +194,6 @@ class Contract extends CI_Controller
             $viewData->form_errors = null;
 
         }
-
 
         if ($active_tab == "workplan" && isset($error)) {
             $viewData->error_workplan = "Ödenek Dilimleri Toplamı Sözleşme Toplam Bedeli ile Aynı Olmalıdır<br>Fark Tutar = " . money_format($error);
@@ -203,14 +205,14 @@ class Contract extends CI_Controller
 
         $viewData->item = $this->Contract_model->get(array("id" => $id));
 
-        $boqs = get_from_id("contract", "active_boq", "$id");
-        $viewData->workgroups = json_decode($boqs, true);
+        $active_boqs = get_from_id("contract", "active_boq", "$id");
+        $viewData->workgroups = json_decode($active_boqs, true);
+        $viewData->active_boqs = json_decode($active_boqs, true);
 
         // İlgili dosya verilerini al
         $viewData->item_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "contract"));
         $viewData->sitedel_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "sitedel"));
         $viewData->workplan_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "workplan"));
-        $viewData->main_categories = $this->Book_model->get_all(array('main_category' => 1));
         $viewData->provision_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "provision"));
         $viewData->final_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "final"));
 
@@ -2561,6 +2563,81 @@ class Contract extends CI_Controller
         }
     }
 
+    public function add_book($contract_id, $book_id=null)
+    {
+
+        $update = $this->Contract_model->update(
+            array(
+                "id" => $contract_id
+            ),
+            array(
+                "book" => $book_id,
+            )
+        );
+
+        $book = $this->Books_model->get(array("id" => $book_id));
+        $books = $this->Books_model->get_all(array("isActive" => 1));
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+        $viewData->book = $book;
+        $viewData->books = $books;
+
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+
+        echo $render_boq;
+
+    }
+
+    public function add_maingroup($contract_id)
+    {
+        $mainGroup = $this->input->post('main_group');
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+        print_r($item->active_boq);
+        $activeBoq = json_decode($item->active_boq, true);
+
+        $activeBoq[] = array('main' => $mainGroup);
+
+        $updatedActiveBoq = json_encode($activeBoq);
+
+        $update = $this->Contract_model->update(
+            array(
+                "id" => $contract_id
+            ),
+            array(
+                "active_boq" => $updatedActiveBoq,
+            )
+        );
+
+        $book = $this->Books_model->get(array("id" => $item->book));
+        $books = $this->Books_model->get_all(array("isActive" => 1));
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $active_boqs = json_decode($item->active_boq,true);
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+        $viewData->book = $book;
+        $viewData->active_boqs = $active_boqs;
+        $viewData->books = $books;
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+
+        echo $render_boq;
+
+    }
+
+
 
     public function add_boq($contract_id, $boq_id)
     {
@@ -2591,7 +2668,7 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
 
 
-        $main_categories = $this->Book_model->get_all(array('main_category' => 1));
+        $main_categories = $this->Books_model->get_all(array('main_category' => 1));
 
 
         $item = $this->Contract_model->get(
@@ -2650,7 +2727,7 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
 
 
-        $main_categories = $this->Book_model->get_all(array('main_category' => 1));
+        $main_categories = $this->Books_model->get_all(array('main_category' => 1));
 
 
         $item = $this->Contract_model->get(

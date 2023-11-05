@@ -535,6 +535,32 @@ $payments_array = json_encode((array_column($payments, 'E')));
 </script>
 
 <script>
+    function add_book(anchor) {
+        var $url = anchor.getAttribute('data-url');
+        $.post($url, {}, function (response) {
+            $(".refresh_list").html(response);
+        })
+    }
+</script>
+
+<script>
+    function add_main() {
+        var mainGroupInput = document.getElementById('main_group');
+        var addMainLink = document.getElementById('add_main');
+        var url = addMainLink.getAttribute('data-url');
+        var mainGroupValue = mainGroupInput.value;
+
+        // Eğer mainGroupValue boş değilse, URL'ye göndermek için AJAX kullanabilirsiniz.
+        if (mainGroupValue !== '') {
+            // AJAX isteği burada yapabilirsiniz, örneğin jQuery kullanarak:
+            $.post(url, { main_group: mainGroupValue }, function (response) {
+                $(".refresh_list").html(response);
+            });
+        }
+    }
+</script>
+
+<script>
     // Checkbox öğesini seçiyoruz
     var checkbox = document.getElementById("toggleCheckbox");
 
