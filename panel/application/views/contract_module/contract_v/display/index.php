@@ -33,6 +33,7 @@
 </div>
 
 <?php $this->load->view("includes/include_script"); ?>
+<?php $this->load->view("includes/include_datatable"); ?>
 
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 

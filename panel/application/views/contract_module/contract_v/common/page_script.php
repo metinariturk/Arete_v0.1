@@ -544,19 +544,28 @@ $payments_array = json_encode((array_column($payments, 'E')));
 </script>
 
 <script>
-    function add_main() {
-        var mainGroupInput = document.getElementById('main_group');
-        var addMainLink = document.getElementById('add_main');
-        var url = addMainLink.getAttribute('data-url');
-        var mainGroupValue = mainGroupInput.value;
+    function add_main(anchor) {
 
-        // Eğer mainGroupValue boş değilse, URL'ye göndermek için AJAX kullanabilirsiniz.
-        if (mainGroupValue !== '') {
-            // AJAX isteği burada yapabilirsiniz, örneğin jQuery kullanarak:
-            $.post(url, { main_group: mainGroupValue }, function (response) {
-                $(".refresh_list").html(response);
-            });
-        }
+        var $form = anchor.getAttribute('form-id');
+
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".refresh_group").html(response);
+        });
+    }
+
+    function add_sub(anchor) {
+
+        var $form = anchor.getAttribute('form-id');
+
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".refresh_group").html(response);
+        });
     }
 </script>
 
@@ -624,5 +633,69 @@ $payments_array = json_encode((array_column($payments, 'E')));
 
         // Toplam maliyeti "total_contract" input alanına yaz
         document.getElementById("total_contract").value = formatNumberWithSpaces(totalContract.toFixed(2));
+    }
+</script>
+
+<script>
+    function show_main(anchor) {
+        $(".book_list").show();
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".book_list").html(response);
+
+        })
+    }
+</script>
+
+<script>
+    function show_sub(anchor) {
+        $(".book_list").show();
+
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".book_list").html(response);
+
+        })
+    }
+</script>
+
+<script>
+    function show_items(anchor) {
+        $(".book_list").show();
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+            $(".book_list").html(response);
+            $('#list').DataTable();
+        })
+    }
+</script>
+
+<script>
+    function open_contract_group(anchor) {
+        $(".contract_group").show();
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+            $(".contract_group").html(response);
+            $('#list').DataTable();
+        })
+    }
+</script>
+
+
+<script>
+    function add_in_group(anchor) {
+        var $url = anchor.getAttribute('url');
+
+        var table = document.querySelector("table.active_group");
+
+        var groupId = table.getAttribute("group-id");
+        var $new_url = $url + "/" + groupId;
+
+        $.post($new_url, {}, function (response) {
+            $(".contract_group").html(response);
+        })
     }
 </script>

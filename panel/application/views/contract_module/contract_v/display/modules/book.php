@@ -12,7 +12,7 @@
         <tr>
             <td>
                 <a id="category" href="#"
-                   url="<?php echo base_url("$this->Module_Name/show_main/$book->id"); ?>"
+                   url="<?php echo base_url("$this->Module_Name/show_main/$item->id/$book->id"); ?>"
                    onclick="show_main(this)" method="post" enctype="multipart">
                     <?php echo $book->book_name; ?>-<?php echo $book->owner; ?>(
                     <?php echo count(get_book($book->db_name)); ?>)

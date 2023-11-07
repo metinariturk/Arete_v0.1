@@ -25,15 +25,17 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/book_module/book_v/new_item" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/contract_v/display/modules" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v\new_item" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modules" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v\new_item" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v\new_book" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\db" />
@@ -80,6 +82,7 @@
       <workItem from="1698733547300" duration="14364000" />
       <workItem from="1698906304068" duration="5044000" />
       <workItem from="1699029702194" duration="11026000" />
+      <workItem from="1699370136131" duration="20522000" />
     </task>
     <servers />
   </component>
@@ -91,7 +94,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>2495</line>
+          <line>2505</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="add_group" />
@@ -124,6 +127,15 @@
             <option name="methodName" value="save" />
           </properties>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
+          <line>2857</line>
+          <properties>
+            <option name="className" value="\Contract" />
+            <option name="methodName" value="save_price" />
+          </properties>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>

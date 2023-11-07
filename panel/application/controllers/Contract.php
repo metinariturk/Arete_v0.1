@@ -30,12 +30,17 @@ class Contract extends CI_Controller
         $this->load->model("Auction_model");
         $this->load->model("Bond_model");
         $this->load->model("Books_model");
+        $this->load->model("Books_main_model");
+        $this->load->model("Books_sub_model");
+        $this->load->model("Books_title_model");
+        $this->load->model("Books_item_model");
         $this->load->model("Catalog_model");
         $this->load->model("City_model");
         $this->load->model("Company_model");
         $this->load->model("Condition_model");
         $this->load->model("Contract_file_model");
         $this->load->model("Contract_model");
+        $this->load->model("Contract_price_model");
         $this->load->model("Costinc_model");
         $this->load->model("Delete_model");
         $this->load->model("District_model");
@@ -163,6 +168,13 @@ class Contract extends CI_Controller
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
         $master_catalog = $this->Catalog_model->get(array('contract_id' => $id, "master" => 1));
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
+        $book_items = $this->Books_model->get_all(array());
+        $criteria = array(
+            'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
+        );
+
+        $sortedBooks = sortArrayByCriteria($book_items, $criteria);
 
         // View'e gönderilecek Değişkenlerin Set Edilmesi
         $viewData->viewModule = $this->moduleFolder;
@@ -179,12 +191,14 @@ class Contract extends CI_Controller
         $viewData->extimes = $extimes;
         $viewData->fav = $fav;
         $viewData->main_bond = $main_bond;
+        $viewData->main_groups = $main_groups;
         $viewData->master_catalog = $master_catalog;
         $viewData->newprices = $newprices;
         $viewData->payment_no = $payment_no;
         $viewData->payments = $payments;
         $viewData->settings = $settings;
         $viewData->sites = $sites;
+        $viewData->sortedBooks = $sortedBooks;
 
         $form_errors = $this->session->flashdata('form_errors');
 
@@ -205,9 +219,6 @@ class Contract extends CI_Controller
 
         $viewData->item = $this->Contract_model->get(array("id" => $id));
 
-        $active_boqs = get_from_id("contract", "active_boq", "$id");
-        $viewData->workgroups = json_decode($active_boqs, true);
-        $viewData->active_boqs = json_decode($active_boqs, true);
 
         // İlgili dosya verilerini al
         $viewData->item_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "contract"));
@@ -584,7 +595,7 @@ class Contract extends CI_Controller
             $sozlesme_ad = mb_convert_case($this->input->post("sozlesme_ad"), MB_CASE_TITLE, "UTF-8");
 
 
-            if (empty($this->input->post("main_contract"))){
+            if (empty($this->input->post("main_contract"))) {
                 $main_contract = null;
             } else {
                 $main_contract = $this->input->post("main_contract");
@@ -957,7 +968,6 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
-
 
 
     public function sitedel_date($id)
@@ -2563,7 +2573,7 @@ class Contract extends CI_Controller
         }
     }
 
-    public function add_book($contract_id, $book_id=null)
+    public function add_book($contract_id, $book_id = null)
     {
 
         $update = $this->Contract_model->update(
@@ -2595,61 +2605,177 @@ class Contract extends CI_Controller
 
     }
 
-    public function add_maingroup($contract_id)
+
+    public function add_main_group($contract_id)
     {
-        $mainGroup = $this->input->post('main_group');
-        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $group_name = $this->input->post('main_group');
 
-        print_r($item->active_boq);
-        $activeBoq = json_decode($item->active_boq, true);
+        $this->load->library("form_validation");
 
-        $activeBoq[] = array('main' => $mainGroup);
+        $this->form_validation->set_rules("main_group", "Grup Kodu", "min_length[3]|max_length[30]|required|trim");
 
-        $updatedActiveBoq = json_encode($activeBoq);
-
-        $update = $this->Contract_model->update(
+        $this->form_validation->set_message(
             array(
-                "id" => $contract_id
-            ),
-            array(
-                "active_boq" => $updatedActiveBoq,
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "max_length" => "<b>{field}</b> en fazla <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "min_length" => "<b>{field}</b> en az <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "alpha_numeric" => "<b>{field}</b> geçersiz karakter içeriyor üğişçö gibi",
             )
         );
 
-        $book = $this->Books_model->get(array("id" => $item->book));
-        $books = $this->Books_model->get_all(array("isActive" => 1));
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-        $active_boqs = json_decode($item->active_boq,true);
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
 
-        $viewData = new stdClass();
+        if ($validate) {
+            $insert = $this->Contract_price_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "main_group" => 1,
+                    "group_name" => $group_name,
+                )
+            );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->item = $item;
-        $viewData->book = $book;
-        $viewData->active_boqs = $active_boqs;
-        $viewData->books = $books;
+            $item = $this->Contract_model->get(array("id" => $contract_id));
 
+            $book_items = $this->Books_model->get_all(array());
+            $criteria = array(
+                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
+            );
+            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
+
+            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->item = $item;
+            $viewData->sortedBooks = $sortedBooks;
+
+            $viewData->main_groups = $main_groups;
+            $viewData->sub_groups = $sub_groups;
+
+        } else {
+
+            $item = $this->Contract_model->get(array("id" => $contract_id));
+            $book_items = $this->Books_model->get_all(array());
+            $criteria = array(
+                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
+            );
+
+            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
+
+            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->item = $item;
+            $viewData->main_groups = $main_groups;
+            $viewData->sub_groups = $sub_groups;
+            $viewData->sortedBooks = $sortedBooks;
+            $viewData->form_error = true;
+
+        }
         $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+        echo $render_boq;
 
+    }
+
+    public function add_sub_group($contract_id)
+    {
+        $main_group = $this->input->post('main_group_id');
+        $group_name = $this->input->post('sub_group_name');
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("main_group_id", "Grup Kodu", "integer|trim");
+        $this->form_validation->set_rules("sub_group_name", "Grup Kodu", "min_length[3]|max_length[30]|required|trim");
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "max_length" => "<b>{field}</b> en fazla <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "min_length" => "<b>{field}</b> en az <b>{param}</b> karakter uzunluğunda olmalıdır",
+                "alpha_numeric" => "<b>{field}</b> geçersiz karakter içeriyor üğişçö gibi",
+            )
+        );
+
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+
+            $insert = $this->Contract_price_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "sub_group" => 1,
+                    "parent" => $main_group,
+                    "group_name" => $group_name,
+                )
+            );
+
+            $item = $this->Contract_model->get(array("id" => $contract_id));
+
+            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+            $book_items = $this->Books_model->get_all(array());
+            $criteria = array(
+                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
+            );
+
+            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->item = $item;
+            $viewData->main_groups = $main_groups;
+            $viewData->sub_groups = $sub_groups;
+            $viewData->sortedBooks = $sortedBooks;
+
+        } else {
+
+            $item = $this->Contract_model->get(array("id" => $contract_id));
+
+            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+            $book_items = $this->Books_model->get_all(array());
+            $criteria = array(
+                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
+            );
+
+            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->item = $item;
+            $viewData->main_groups = $main_groups;
+            $viewData->sub_groups = $sub_groups;
+            $viewData->sortedBooks = $sortedBooks;
+            $viewData->form_error = true;
+
+        }
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
         echo $render_boq;
 
     }
 
 
-
     public function add_boq($contract_id, $boq_id)
     {
 
-        $active_boqs = json_decode(get_from_id("contract", "active_boq", $contract_id), true);
         $get_main_group = get_from_any("book", "parent", "id", $boq_id);
-
-
-        if (empty($active_boqs) || !isset($active_boqs[$get_main_group]) || !in_array($boq_id, $active_boqs[$get_main_group])) {
-            $active_boqs[$get_main_group][] = $boq_id;
-        }
-        $modified_group = $active_boqs;
 
 
         $update = $this->Contract_model->update(
@@ -2657,7 +2783,7 @@ class Contract extends CI_Controller
                 "id" => $contract_id
             ),
             array(
-                "active_boq" => json_encode($modified_group),
+                "groups" => json_encode($modified_group),
             )
         );
 
@@ -2678,7 +2804,6 @@ class Contract extends CI_Controller
         );
         $viewData->item = $item;
 
-        $viewData->workgroups = json_decode($item->active_boq, true);
         $viewData->main_categories = $main_categories;
 
         $viewData->item_files = $this->Contract_file_model->get_all(
@@ -2696,29 +2821,8 @@ class Contract extends CI_Controller
     public function delete_boq($contract_id, $boq_id)
     {
 
-        $active_boqs = json_decode(get_from_id("contract", "active_boq", $contract_id), true);
         $get_main_group = get_from_any("book", "parent", "id", $boq_id);
 
-
-        foreach ($active_boqs as &$subArray) {
-            if (($index = array_search($boq_id, $subArray)) !== false) {
-                unset($subArray[$index]);
-                if (empty($subArray)) {
-                    unset($active_boqs[$get_main_group]);
-                }
-            }
-        }
-
-        $modified_group = $active_boqs;
-
-        $update = $this->Contract_model->update(
-            array(
-                "id" => $contract_id
-            ),
-            array(
-                "active_boq" => json_encode($modified_group),
-            )
-        );
 
         $viewData = new stdClass();
 
@@ -2737,7 +2841,6 @@ class Contract extends CI_Controller
         );
         $viewData->item = $item;
 
-        $viewData->workgroups = json_decode($item->active_boq, true);
         $viewData->main_categories = $main_categories;
 
         $viewData->item_files = $this->Contract_file_model->get_all(
@@ -2790,6 +2893,124 @@ class Contract extends CI_Controller
 
     }
 
+    public function show_main($contract_id, $book_id)
+    {
+        $main_groups = $this->Books_main_model->get_all(array(
+            'book_id' => $book_id,
+        ));
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+
+        $viewData->main_groups = $main_groups;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/book_main", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function show_sub($contract_id, $main_id)
+    {
+        $sub_groups = $this->Books_sub_model->get_all(array(
+            'main_id' => $main_id,
+        ));
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+
+        $viewData->sub_groups = $sub_groups;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/book_sub", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function show_item($contract_id, $sub_id)
+    {
+        $book_titles = $this->Books_title_model->get_all(array(
+            'sub_id' => $sub_id,
+        ));
+
+
+        $book_items = $this->Books_item_model->get_all(array(
+            'sub_id' => $sub_id,
+        ));
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+
+        $viewData->item = $item;
+        $viewData->book_titles = $book_titles;
+        $viewData->book_items = $book_items;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/book_items", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function open_sub($contract_id, $sub_id)
+    {
+        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_id));
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+
+        $viewData->sub_cont_items = $sub_cont_items;
+        $viewData->sub_id = $sub_id;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/group_items", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function add_item($contract_id, $sub_id)
+    {
+        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_id));
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+
+        $viewData->sub_cont_items = $sub_cont_items;
+        $viewData->sub_id = $sub_id;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/group_items", $viewData, true);
+
+        echo $render_html;
+
+    }
 
 }
 
