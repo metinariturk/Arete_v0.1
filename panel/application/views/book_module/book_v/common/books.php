@@ -50,7 +50,7 @@
                 <?php echo $book->book_year; ?>
             </td>
             <td>
-                <?php echo count(get_book($book->db_name)); ?>
+                <?php  ?>
             </td>
         </tr>
     <?php } ?>

@@ -32,6 +32,7 @@ class Contract extends CI_Controller
         $this->load->model("Books_model");
         $this->load->model("Books_main_model");
         $this->load->model("Books_sub_model");
+        $this->load->model("Books_item_model");
         $this->load->model("Books_title_model");
         $this->load->model("Books_item_model");
         $this->load->model("Catalog_model");
@@ -165,6 +166,7 @@ class Contract extends CI_Controller
         $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
         $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id,"main_group" => 1),"rank ASC");
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
         $master_catalog = $this->Catalog_model->get(array('contract_id' => $id, "master" => 1));
@@ -196,6 +198,7 @@ class Contract extends CI_Controller
         $viewData->newprices = $newprices;
         $viewData->payment_no = $payment_no;
         $viewData->payments = $payments;
+        $viewData->prices_main_groups = $prices_main_groups;
         $viewData->settings = $settings;
         $viewData->sites = $sites;
         $viewData->sortedBooks = $sortedBooks;
@@ -2631,7 +2634,7 @@ class Contract extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "main_group" => 1,
-                    "group_name" => $group_name,
+                    "name" => $group_name,
                 )
             );
 
@@ -2686,6 +2689,52 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
+
+    public function back_main($contract_id)
+    {
+
+        $item = $this->Contract_model->get(array('id' => $contract_id));
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+        $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+
+        $viewData->main_groups = $main_groups;
+        $viewData->sub_groups = $sub_groups;
+
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/contract_group", $viewData, true);
+        echo $render_boq;
+
+    }
+
+    public function back_to_book($contract_id)
+    {
+
+        $book_items = $this->Books_model->get_all(array());
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+        $sortedBooks = sortArrayByCriteria($book_items, (array('isActive' => 1)));
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->sortedBooks = $sortedBooks;
+        $viewData->item = $item;
+
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/book", $viewData, true);
+        echo $render_boq;
+
+    }
+
 
     public function add_sub_group($contract_id)
     {
@@ -2716,7 +2765,7 @@ class Contract extends CI_Controller
                     "contract_id" => $contract_id,
                     "sub_group" => 1,
                     "parent" => $main_group,
-                    "group_name" => $group_name,
+                    "name" => $group_name,
                 )
             );
 
@@ -2770,7 +2819,6 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
-
 
     public function add_boq($contract_id, $boq_id)
     {
@@ -2893,11 +2941,13 @@ class Contract extends CI_Controller
 
     }
 
+
     public function show_main($contract_id, $book_id)
     {
         $main_groups = $this->Books_main_model->get_all(array(
             'book_id' => $book_id,
         ));
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
 
 
@@ -2923,6 +2973,10 @@ class Contract extends CI_Controller
             'main_id' => $main_id,
         ));
 
+        $main_group =  $this->Books_main_model->get(array(
+            'id' => $main_id,
+        ));
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
 
         $viewData = new stdClass();
@@ -2932,6 +2986,8 @@ class Contract extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
+        $viewData->main_id = $main_id;
+        $viewData->book_id = $main_group->book_id;
 
         $viewData->sub_groups = $sub_groups;
 
@@ -2947,6 +3003,9 @@ class Contract extends CI_Controller
             'sub_id' => $sub_id,
         ));
 
+        $sub_group = $this->Books_sub_model->get(array(
+            'id' => $sub_id,
+        ));
 
         $book_items = $this->Books_item_model->get_all(array(
             'sub_id' => $sub_id,
@@ -2963,6 +3022,7 @@ class Contract extends CI_Controller
         $viewData->item = $item;
         $viewData->book_titles = $book_titles;
         $viewData->book_items = $book_items;
+        $viewData->main_id = $sub_group->main_id;
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/book_items", $viewData, true);
 
@@ -2972,7 +3032,10 @@ class Contract extends CI_Controller
 
     public function open_sub($contract_id, $sub_id)
     {
-        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_id));
+        $sub_cont_items = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_id" => $sub_id));
+        $main_group = $this->Contract_price_model->get(array("contract_id" => $contract_id));
+        $sub_group = $this->Contract_price_model->get(array("id" => $sub_id));
+        $item = $this->Contract_model->get(array('id' => $contract_id));
 
 
         $viewData = new stdClass();
@@ -2981,20 +3044,42 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
+        $viewData->item = $item;
 
         $viewData->sub_cont_items = $sub_cont_items;
+        $viewData->main_group = $main_group;
         $viewData->sub_id = $sub_id;
+        $viewData->sub_group = $sub_group;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/group_items", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
 
         echo $render_html;
 
     }
 
-    public function add_item($contract_id, $sub_id)
+    public function add_item_sub($contract_id, $item_id, $sub_id)
     {
-        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_id));
+        $item = $this->Contract_model->get(array('id' => $contract_id));
+        $sub_group = $this->Contract_price_model->get(array('id' => $sub_id));
+        $main_group = $this->Contract_price_model->get(array('id' => $sub_group->parent));
+        $book_item = $this->Books_item_model->get(array('id' => $item_id));
 
+        $item_isset = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "book_id" => $book_item->book_id, "item_id" => $item_id));
+
+        if (empty($item_isset)) {
+            $insert = $this->Contract_price_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "book_id" => $book_item->book_id,
+                    "sub_id" => $sub_id,
+                    "item_id" => $book_item->id,
+                    "name" => $book_item->item_name,
+                    "unit" => $book_item->item_unit,
+                )
+            );
+        }
+
+        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_id));
 
         $viewData = new stdClass();
 
@@ -3002,11 +3087,46 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
-
+        $viewData->item = $item;
+        $viewData->main_group = $main_group;
+        $viewData->sub_group = $sub_group;
         $viewData->sub_cont_items = $sub_cont_items;
         $viewData->sub_id = $sub_id;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/group_items", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function delete_item_sub($contract_id, $item_id, $sub_id)
+    {
+        $item = $this->Contract_model->get(array('id' => $contract_id));
+        $sub_group = $this->Contract_price_model->get(array('id' => $sub_id));
+        $main_group = $this->Contract_price_model->get(array('id' => $sub_group->parent));
+        $book_item = $this->Books_item_model->get(array('id' => $item_id));
+
+            $delete = $this->Contract_price_model->delete(
+                array(
+                    "id" => $item_id,
+                )
+            );
+
+        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_id));
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->main_group = $main_group;
+        $viewData->sub_group = $sub_group;
+        $viewData->sub_cont_items = $sub_cont_items;
+        $viewData->sub_id = $sub_id;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
 
         echo $render_html;
 

@@ -2,18 +2,11 @@
 <html lang="en">
 <head>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
-
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/photoswipe.css">
-
     <?php $this->load->view("includes/head"); ?>
-
-
-    <!-- Plugins css start-->
-
-    <!-- Plugins css Ends-->
 </head>
-<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
+<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
@@ -41,9 +34,9 @@
     function openList1() {
         var list = document.getElementById("ollist");
 
-        if (list.style.display == "none"){
+        if (list.style.display == "none") {
             list.style.display = "block";
-        }else{
+        } else {
             list.style.display = "none";
         }
     }

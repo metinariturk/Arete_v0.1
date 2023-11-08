@@ -33,7 +33,6 @@
                     <?php echo $book->owner; ?>
                 </td>
                 <td>
-                    <?php echo count(get_book($book->db_name)); ?>
                 </td>
                 <td>
                     <div class="media-body text-center icon-state switch-outline">

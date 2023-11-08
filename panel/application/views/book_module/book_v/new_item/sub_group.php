@@ -5,29 +5,27 @@
     <table class="table" style="font-size: 12px;">
         <thead>
         <tr>
-            <th colspan="3"
-                style="text-align:center; width: 50px;"><?php echo $main->main_code . " - " . $main->main_name; ?> GRUBU
-                <p>ALT GRUPLARI</p></th>
-        </tr>
-        <tr>
-            <th style="width: 50px;">Alt Grup Kodu/Adı</th>
+            <th colspan="3" style="text-align:center; width: 50px;"><?php echo $main->main_name; ?> ANA GRUBU<p>ALT GRUPLARI</p></th>
         </tr>
         </thead>
-        <tbody class="sortable">
+        <tbody class="sortable" data-url="<?php echo base_url("book/sub_rankSetter"); ?>">
         <?php if (isset($sub_groups)) { ?>
             <?php foreach ($sub_groups as $sub_group) { ?>
-                <tr>
+                <tr id="sub-<?php echo $sub_group->id; ?>">
+                    <td><i class="fa fa-reorder"></i></td>
+                    <td>
+                        <a id="category" href="#"
+                           url="<?php echo base_url("$this->Module_Name/show_title/$sub_group->id"); ?>"
+                           onclick="show_title(this)" method="post" enctype="multipart">
+                            <?php echo $sub_group->sub_code; ?>. <?php echo $sub_group->sub_name; ?>
+                        </a>
+                    </td>
                     <td>
                         <a onclick="deletesub(this)"
                            url="<?php echo base_url("$this->Module_Name/delete_sub/$sub_group->id"); ?>"
                            warning="Alt İş Grubunu Silmek Üzeresiniz">
                             <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
                                aria-hidden="true"></i>
-                        </a>
-                        <a id="category" href="#"
-                           url="<?php echo base_url("$this->Module_Name/show_title/$sub_group->id"); ?>"
-                           onclick="show_title(this)" method="post" enctype="multipart">
-                            <?php echo $sub_group->sub_code; ?>. <?php echo $sub_group->sub_name; ?>
                         </a>
                     </td>
                 </tr>

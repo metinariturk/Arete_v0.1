@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="row">
                 <div class="col-md-6">
                     <form id="add_main"
@@ -37,7 +37,7 @@
                                 <div class="mb-2">
                                     <select class="form-control" name="main_group_id">
                                         <?php foreach ($main_groups as $main_group) { ?>
-                                            <option value="<?php echo $main_group->id; ?>"><?php echo $main_group->group_name; ?></option>
+                                            <option value="<?php echo $main_group->id; ?>"><?php echo $main_group->name; ?></option>
                                         <?php } ?>
                                     </select>
                                     <input value="<?php echo isset($form_error) ? set_value("sub_group_name") : ""; ?>"
@@ -58,14 +58,14 @@
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12 book_list">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/book"); ?>
-                </div>
-            </div>
         </div>
-        <div class="col-md-4 contract_group">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/contract_group"); ?>
+        <div class="row">
+            <div class="col-md-6 book_list">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/book"); ?>
+            </div>
+            <div class="col-md-6 contract_group">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/contract_group"); ?>
+            </div>
         </div>
     </div>
 </div>

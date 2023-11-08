@@ -1,3 +1,4 @@
+
 <script>
     function delete_sub(anchor) {
         var $url = anchor.getAttribute('url');
@@ -39,14 +40,6 @@
             $('#book').DataTable();
             $('#list').DataTable();
             $('#poz').DataTable();
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         });
     }
 
@@ -59,15 +52,6 @@
             $('#book').DataTable();
             $('#list').DataTable();
             $('#poz').DataTable();
-
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         })
     }
 
@@ -80,16 +64,6 @@
             $('#book').DataTable();
             $('#list').DataTable();
             $('#poz').DataTable();
-
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         })
     }
 
@@ -99,16 +73,6 @@
 
         $.post($url, {}, function (response) {
             $(".add_group").html(response);
-
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         })
     }
 
@@ -119,14 +83,6 @@
             $('#book').DataTable();
             $('#list').DataTable();
             $('#poz').DataTable();
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         });
     }
 
@@ -155,12 +111,4 @@
     $('#book').DataTable();
     $('#list').DataTable();
     $('#poz').DataTable();
-    $(".sortable").sortable({
-        stop: function (event, ui) {
-            var $data = $(this).sortable("serialize");
-            var $data_url = $(this).data("url");
-            $.post($data_url, {data: $data}, function (response) {
-            })
-        }
-    });
 </script>

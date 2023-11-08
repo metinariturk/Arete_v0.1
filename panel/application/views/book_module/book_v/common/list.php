@@ -8,7 +8,7 @@
             <th style="width: 5%;">Poz Sayısı</th>
         </tr>
         </thead>
-        <tbody class="sortable" data-url="<?php echo base_url("book/rankSetter/$book_name"); ?>">
+        <tbody class="sortable">
         <?php $main_groups = get_main_categories($book_name); ?>
         <?php foreach ($main_groups as $main_group) { ?>
             <tr id="ord-<?php echo $main_group->id; ?>">

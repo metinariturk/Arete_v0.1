@@ -3,6 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
+
 </head>
 <body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -22,7 +23,19 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
+<?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
+
 <script>
+    $(".sortable").sortable();
+    $(".sortable").on("sortupdate", function(event, ui){
+        var $data = $(this).sortable("serialize");
+        var $data_url = $(this).data("url");
+        $.post($data_url, {data : $data}, function(response){})
+    })
+</script>
+
+<script>
+
     function show_main(anchor) {
 
         var $url = anchor.getAttribute('url');
@@ -30,14 +43,12 @@
         $.post($url, {}, function (response) {
             $(".refresh_addmain").html(response);
 
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function(event, ui){
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data : $data}, function(response){})
+            })
         })
     }
 
@@ -48,15 +59,13 @@
 
         $.post($url, {}, function (response) {
             $(".refresh_addsub").html(response);
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function(event, ui){
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data : $data}, function(response){})
+            })
 
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         })
     }
 
@@ -67,15 +76,13 @@
 
         $.post($url, {}, function (response) {
             $(".refresh_addtitle").html(response);
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function(event, ui){
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data : $data}, function(response){})
+            })
 
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         })
     }
 
@@ -86,15 +93,13 @@
 
         $.post($url, {}, function (response) {
             $(".refresh_additem").html(response);
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function(event, ui){
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data : $data}, function(response){})
+            })
 
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         })
     }
 
@@ -105,15 +110,13 @@
 
         $.post($url, {}, function (response) {
             $(".detail").html(response);
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function(event, ui){
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data : $data}, function(response){})
+            })
 
-            $(".sortable").sortable({
-                stop: function (event, ui) {
-                    var $data = $(this).sortable("serialize");
-                    var $data_url = $(this).data("url");
-                    $.post($data_url, {data: $data}, function (response) {
-                    })
-                }
-            });
         })
     }
 
@@ -243,6 +246,34 @@
                     $.post($url, {}, function (response) {
                         $(".refresh_addtitle").html(response);
                         $(".refresh_additem").hide();
+                    })
+
+                    swal("Dosya Başarılı Bir Şekilde Silindi", {
+                        icon: "success",
+                    });
+
+                } else {
+                    swal("Dosya Güvende");
+                }
+            })
+    }
+
+    function deleteitem(btn) {
+        var $url = btn.getAttribute('url');
+        var $warning = btn.getAttribute('warning');
+
+        swal({
+            title: $warning,
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Sil"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    $.post($url, {}, function (response) {
+                        $(".refresh_additem").html(response);
                     })
 
                     swal("Dosya Başarılı Bir Şekilde Silindi", {

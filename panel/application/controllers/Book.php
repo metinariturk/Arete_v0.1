@@ -43,7 +43,7 @@ class Book extends CI_Controller
     {
         $viewData = new stdClass();
 
-        $all_books = $this->Books_model->get_all(array());
+        $all_books = $this->Books_model->get_all(array(),"rank ASC");
 
         $viewData->all_books = $all_books;
 
@@ -65,7 +65,7 @@ class Book extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "new_book";
 
-        $book_items = $this->Books_model->get_all(array());
+        $book_items = $this->Books_model->get_all(array(),"rank ASC");
 
         $criteria = array(
             'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
@@ -89,7 +89,7 @@ class Book extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "new_item";
 
-        $book_items = $this->Books_model->get_all(array("isActive" => 1));
+        $book_items = $this->Books_model->get_all(array("isActive" => 1),"rank ASC");
 
         $criteria = array(
             'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
@@ -128,9 +128,7 @@ class Book extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $book_name = strtolower(get_from_any("books", "db_name", "id", $book_id));
-        $book_items = get_book($book_name);
 
-        $viewData->book_items = $book_items;
         $viewData->book_name = $book_name;
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/common/list", $viewData, true);
@@ -157,7 +155,7 @@ class Book extends CI_Controller
         $main_groups = $this->Books_main_model->get_all(array(
                 "book_id" => $book->id,
                 "isActive" => 1
-            )
+            ), "rank ASC"
         );
 
         $viewData->main_groups = $main_groups;
@@ -190,7 +188,7 @@ class Book extends CI_Controller
                 "main_id" => $main->id,
                 "book_id" => $main->book_id,
                 "isActive" => 1
-            )
+            ) , "rank ASC"
         );
 
         $viewData->book_id = $book_id;
@@ -228,7 +226,7 @@ class Book extends CI_Controller
         $titles = $this->Books_title_model->get_all(array(
             'sub_id' => $sub->id,
             'book_id' => $book->id,
-        ));
+        ), "rank ASC");
 
         $viewData->book = $book;
         $viewData->titles = $titles;
@@ -257,7 +255,7 @@ class Book extends CI_Controller
 
         $items = $this->Books_item_model->get_all(array(
             'title_id' => $title->id,
-        ));
+        ), "rank ASC");
 
         $viewData = new stdClass();
 
@@ -478,7 +476,7 @@ class Book extends CI_Controller
             );
             $this->session->set_flashdata("alert", $alert);
 
-            $book_items = $this->Books_model->get_all(array());
+            $book_items = $this->Books_model->get_all(array(),"rank ASC");
 
             $viewData = new stdClass();
 
@@ -551,7 +549,7 @@ class Book extends CI_Controller
             $main_groups = $this->Books_main_model->get_all(array(
                     "book_id" => $book->id,
                     "isActive" => 1
-                )
+                ), "rank ASC"
             );
 
             $viewData->book = $book;
@@ -575,7 +573,7 @@ class Book extends CI_Controller
             $main_groups = $this->Books_main_model->get_all(array(
                     "book_id" => $book->id,
                     "isActive" => 1
-                )
+                ) , "rank ASC"
             );
             $viewData->main_groups = $main_groups;
             $viewData->book = $book;
@@ -644,7 +642,7 @@ class Book extends CI_Controller
                         "main_id" => $main->id,
                         "book_id" => $main->book_id,
                         "isActive" => 1
-                    )
+                    ) , "rank ASC"
                 );
 
                 $viewData = new stdClass();
@@ -669,7 +667,7 @@ class Book extends CI_Controller
                     'main_id' => $main->id,
                     'book_id' => $main->book_id,
                     'isActive' => 1,
-                ));
+                ) , "rank ASC");
 
                 $viewData = new stdClass();
 
@@ -694,7 +692,7 @@ class Book extends CI_Controller
                 'main_id' => $main->id,
                 'book_id' => $main->book_id,
                 'isActive' => 1,
-            ));
+            ) , "rank ASC");
 
             $viewData = new stdClass();
 
@@ -772,7 +770,7 @@ class Book extends CI_Controller
                 "sub_id" => $sub->id,
                 "book_id" => $book->id,
                 "isActive" => 1
-            )
+            ), "rank ASC"
         );
 
         $viewData = new stdClass();
@@ -859,7 +857,7 @@ class Book extends CI_Controller
                 "title_id" => $title->id,
                 "book_id" => $book->id,
                 "isActive" => 1
-            )
+            ), "rank ASC"
         );
 
         $viewData = new stdClass();
@@ -914,7 +912,7 @@ class Book extends CI_Controller
             array(
                 "book_id" => $main->book_id,
                 "isActive" => 1,
-            )
+            ), "rank ASC"
         );
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -972,7 +970,7 @@ class Book extends CI_Controller
                 "book_id" => $sub->book_id,
                 "main_id" => $sub->main_id,
                 "isActive" => 1,
-            )
+            ) , "rank ASC"
         );
         $viewData = new stdClass();
 
@@ -1037,7 +1035,7 @@ class Book extends CI_Controller
                 "book_id" => $title->book_id,
                 "main_id" => $title->main_id,
                 "isActive" => 1,
-            )
+            ), "rank ASC"
         );
 
         $viewData = new stdClass();
@@ -1053,23 +1051,152 @@ class Book extends CI_Controller
         echo $render_html;
     }
 
-    public function rankSetter($table)
+    public function delete_item($item_id)
     {
+        $item = $this->Books_item_model->get(array(
+                "id" => $item_id
+            )
+        );
 
+        $title = $this->Books_title_model->get(array(
+                "id" => $item->title_id
+            )
+        );
+
+        $book = $this->Books_model->get(array(
+            'id' => $title->book_id,
+        ));
+
+        $main = $this->Books_main_model->get(array(
+            'id' => $title->main_id,
+        ));
+
+        $sub = $this->Books_sub_model->get(array(
+            'id' => $title->sub_id,
+        ));
+
+        $delete_item = $this->Books_item_model->delete(
+            array(
+                "id" => $item_id
+            ),
+        );
+
+        if ($delete_item) {
+            $error = "Kayıt Silindi";
+        } else {
+            $error = "Kayıt Silinemedi";
+        }
+
+        $items = $this->Books_item_model->get_all(
+            array(
+                "book_id" => $title->book_id,
+                "title_id" => $title->id,
+                "isActive" => 1,
+            ), "rank ASC"
+        );
+
+        $viewData = new stdClass();
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->book = $book;
+        $viewData->items = $items;
+        $viewData->main = $main;
+        $viewData->title = $title;
+        $viewData->sub = $sub;
+        $viewData->error = $error;
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/new_item/item", $viewData, true);
+        echo $render_html;
+    }
+
+    public function book_rankSetter()
+    {
         $data = $this->input->post("data");
         parse_str($data, $order);
+        $items = $order["book"];
 
-        $items = $order['ord'];
         foreach ($items as $rank => $id) {
-            $where = array(
-                "id" => $id,
+            $this->Books_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "rank" => $rank,
+                )
             );
-            $data = array(
-                "sort" => $rank,
-            );
-            rank_group($table, $where, $data);
         }
-        print_r($items);
+    }
+
+    public function main_rankSetter()
+    {
+        $data = $this->input->post("data");
+        parse_str($data, $order);
+        $items = $order["ord"];
+
+        foreach ($items as $rank => $id) {
+            $this->Books_main_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "rank" => $rank,
+                )
+            );
+        }
+    }
+
+    public function sub_rankSetter()
+    {
+        $data = $this->input->post("data");
+        parse_str($data, $order);
+        $items = $order["sub"];
+
+        foreach ($items as $rank => $id) {
+            $this->Books_sub_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "rank" => $rank,
+                )
+            );
+        }
+    }
+
+    public function title_rankSetter()
+    {
+        $data = $this->input->post("data");
+        parse_str($data, $order);
+        $items = $order["sub"];
+
+        foreach ($items as $rank => $id) {
+            $this->Books_title_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "rank" => $rank,
+                )
+            );
+        }
+    }
+
+    public function item_rankSetter()
+    {
+        $data = $this->input->post("data");
+        parse_str($data, $order);
+        $items = $order["sub"];
+
+        foreach ($items as $rank => $id) {
+            $this->Books_item_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "rank" => $rank,
+                )
+            );
+        }
     }
 
     public function duplicate_code_check($table_name)
@@ -1084,8 +1211,7 @@ class Book extends CI_Controller
         }
     }
 
-    public
-    function isActiveSetter($id)
+    public function isActiveSetter($id)
     {
 
         if ($id) {

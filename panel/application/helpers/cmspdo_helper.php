@@ -29,14 +29,6 @@ function get_last_fn($module)
     }
 }
 
-function get_book($table)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-
-    return $ci->db->where(array())->get($table)->result();
-}
-
 function get_all_book()
 {
     $ci =& get_instance();

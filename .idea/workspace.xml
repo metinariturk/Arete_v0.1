@@ -83,6 +83,7 @@
       <workItem from="1698906304068" duration="5044000" />
       <workItem from="1699029702194" duration="11026000" />
       <workItem from="1699370136131" duration="20522000" />
+      <workItem from="1699440042372" duration="27624000" />
     </task>
     <servers />
   </component>
@@ -94,7 +95,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>2505</line>
+          <line>2508</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="add_group" />
@@ -130,12 +131,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>2857</line>
+          <line>2905</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="save_price" />
           </properties>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
+          <line>2944</line>
+          <properties>
+            <option name="className" value="\Contract" />
+            <option name="methodName" value="show_main" />
+          </properties>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>

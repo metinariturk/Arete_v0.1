@@ -535,15 +535,6 @@ $payments_array = json_encode((array_column($payments, 'E')));
 </script>
 
 <script>
-    function add_book(anchor) {
-        var $url = anchor.getAttribute('data-url');
-        $.post($url, {}, function (response) {
-            $(".refresh_list").html(response);
-        })
-    }
-</script>
-
-<script>
     function add_main(anchor) {
 
         var $form = anchor.getAttribute('form-id');
@@ -669,6 +660,7 @@ $payments_array = json_encode((array_column($payments, 'E')));
         $.post($url, {}, function (response) {
             $(".book_list").html(response);
             $('#list').DataTable();
+            $('#try').DataTable();
         })
     }
 </script>
@@ -688,13 +680,44 @@ $payments_array = json_encode((array_column($payments, 'E')));
 <script>
     function add_in_group(anchor) {
         var $url = anchor.getAttribute('url');
-
         var table = document.querySelector("table.active_group");
-
         var groupId = table.getAttribute("group-id");
         var $new_url = $url + "/" + groupId;
-
         $.post($new_url, {}, function (response) {
+            $(".contract_group").html(response);
+            $('#list').DataTable();
+        })
+
+    }
+</script>
+
+
+<script>
+    function back_main(anchor) {
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".contract_group").html(response);
+        })
+    }
+</script>
+
+<script>
+    function back_to_book(anchor) {
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".book_list").html(response);
+        })
+    }
+
+</script>
+
+<script>
+    function delete_item(anchor) {
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
             $(".contract_group").html(response);
         })
     }

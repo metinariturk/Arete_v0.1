@@ -5,30 +5,30 @@
     <table class="table" style="font-size: 12px;">
         <thead>
         <tr>
-            <th colspan="3"
-                style="text-align:center; width: 50px;"><?php echo $book->book_name . " " . $book->book_year; ?> POZ
-                KİTABI<p>ANA GRUPLAR</p></th>
-        </tr>
-        <tr>
-            <th style="width: 50px;">Grup Kodu/Adı</th>
+            <th colspan="3" style="text-align:center; width: 50px;"><?php echo $book->book_name . " " . $book->book_year; ?> POZ
+                KİTABI<p>ANA GRUPLARI</p></th>
         </tr>
         </thead>
-        <tbody class="sortable">
+        <tbody class="sortable" data-url="<?php echo base_url("book/main_rankSetter"); ?>">
 
         <?php if (isset($main_groups)) { ?>
             <?php foreach ($main_groups as $main_group) { ?>
-                <tr>
+                <tr id="ord-<?php echo $main_group->id; ?>">
+                    <td><i class="fa fa-reorder"></i></td>
                     <td>
-                        <a onclick="deletemain(this)"
-                           url="<?php echo base_url("$this->Module_Name/delete_main/$main_group->id"); ?>"
-                           warning="Ana İş Grubunu Silmek Üzeresiniz">
-                        <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
-                           aria-hidden="true"></i>
-                        </a>
+
                         <a id="category" href="#"
                            url="<?php echo base_url("$this->Module_Name/show_sub/$main_group->id"); ?>"
                            onclick="show_sub(this)" method="post" enctype="multipart">
                             <?php echo $main_group->main_code; ?>.<?php echo $main_group->main_name; ?>
+                        </a>
+                    </td>
+                    <td>
+                        <a onclick="deletemain(this)"
+                           url="<?php echo base_url("$this->Module_Name/delete_main/$main_group->id"); ?>"
+                           warning="Ana İş Grubunu Silmek Üzeresiniz">
+                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                               aria-hidden="true"></i>
                         </a>
                     </td>
                 </tr>

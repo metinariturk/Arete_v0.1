@@ -1,10 +1,16 @@
 <table class="table" style="width:100%; font-size: 12px;">
     <thead>
     <tr>
-        <th colspan="3" style="text-align:center; width: 50px;">POZ KİTAPLARI<p>&nbsp;</p></th>
-    </tr>
-    <tr>
-        <th style="width: 50px;">Kitap Adı</th>
+        <th colspan="3" style="text-align:center; width: 50px;">
+            <a id="category" href="#"
+               url="<?php echo base_url("$this->Module_Name/back_to_book/$item->id"); ?>"
+               onclick="back_to_book(this)" method="post"
+               enctype="multipart">
+                <i class="fa fa-angle-double-left"></i>
+            </a>
+
+                Ana Başlıklar
+        </th>
     </tr>
     </thead>
     <tbody class="sortable">
