@@ -314,7 +314,6 @@
                 var formId = btn.getAttribute('form');
 
 
-
                 // Serialize the form data
                 var formData = new FormData(document.getElementById(formId));
 

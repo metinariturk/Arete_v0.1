@@ -78,7 +78,7 @@
             <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
             <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
             <div class="pswp__caption">
-                <div class="pswp__caption__center">asdasd</div>
+                <div class="pswp__caption__center">XX</div>
             </div>
         </div>
     </div>

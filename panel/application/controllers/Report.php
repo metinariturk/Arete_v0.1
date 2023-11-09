@@ -600,10 +600,6 @@ function file_upload($id)
 
             $source_path = "$path/$file_name";
 
-            if (class_exists('image_lab')) {
-                echo "asd";
-            }
-
             $config['image_library'] = 'gd2';
             $config['source_image'] = $source_path;
             $config['create_thumb'] = TRUE;

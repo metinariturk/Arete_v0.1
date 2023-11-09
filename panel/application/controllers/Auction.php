@@ -1962,9 +1962,7 @@ class Auction extends CI_Controller
 
             $uploaded_file = $this->upload->data("file_name");
             $source_path = "$upload_orginal_path/$file_name";
-            if (class_exists('image_lab')) {
-                echo "asd";
-            }
+
 
             $config['image_library'] = 'gd2';
             $config['source_image'] = $source_path;

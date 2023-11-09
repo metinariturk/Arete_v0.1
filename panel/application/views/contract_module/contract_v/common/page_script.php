@@ -722,3 +722,42 @@ $payments_array = json_encode((array_column($payments, 'E')));
         })
     }
 </script>
+<script>
+    function hesaplaT(inputId) {
+        // "q-X" ve "p-X" inputlarının id'sinden tüm inputları alın
+        var qInput = document.querySelector('input[id="q-' + inputId + '"]');
+        var pInput = document.querySelector('input[id="p-' + inputId + '"]');
+        var tInput = document.querySelector('input[id="t-' + inputId + '"]');
+
+        if (qInput && pInput && tInput) {
+            // q ve p değerlerini alın
+            var q = parseFloat(qInput.value) || 0;
+            var p = parseFloat(pInput.value) || 0;
+
+            // Çarpma işlemi
+            var t = q * p;
+
+            // Sonucu t-X inputuna yazın
+            tInput.value = t.toFixed(2);
+
+        }
+    }
+
+    // Tüm "q-X" inputlarına bir "input" olay dinleyici ekleyin
+    var qInputs = document.querySelectorAll('input[id^="q-"]');
+    qInputs.forEach(function(qInput) {
+        var inputId = qInput.id.split('-')[1];
+        qInput.addEventListener('input', function() {
+            hesaplaT(inputId);
+        });
+    });
+
+    // Tüm "p-X" inputlarına bir "input" olay dinleyici ekleyin
+    var pInputs = document.querySelectorAll('input[id^="p-"]');
+    pInputs.forEach(function(pInput) {
+        var inputId = pInput.id.split('-')[1];
+        pInput.addEventListener('input', function() {
+            hesaplaT(inputId);
+        });
+    });
+</script>

@@ -3,18 +3,36 @@
         <tbody>
         <?php foreach ($main_groups as $main_group) { ?>
             <tr>
+                <td style="font-size: medium">
+                    <?php echo $main_group->code; ?>
+                </td>
                 <td style="font-size: large">
                     <?php echo $main_group->name; ?>
+                </td>
+                <td>
+                    <a id="category" href="#"
+                       url="<?php echo base_url("$this->Module_Name/delete_main/$item->id/$main_group->id"); ?>"
+                       onclick="delete_item(this)" method="post" enctype="multipart">
+                        <i class="fa fa-minus-circle"></i>
+                    </a>
                 </td>
             </tr>
             <?php $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->id, "sub_group" => 1, "parent" => $main_group->id)); ?>
             <?php foreach ($sub_groups as $sub_group) { ?>
                 <tr>
-                    <td style="padding-left: 40px;">
+                    <td style="padding-left: 20px;"><?php echo $main_group->code; ?>.<?php echo $sub_group->code; ?></td>
+                    <td>
                         <a id="category" href="#"
                            url="<?php echo base_url("$this->Module_Name/open_sub/$item->id/$sub_group->id"); ?>"
                            onclick="open_contract_group(this)" method="post" enctype="multipart">
                             <?php echo $sub_group->name; ?>
+                        </a>
+                    </td>
+                    <td>
+                        <a id="category" href="#"
+                           url="<?php echo base_url("$this->Module_Name/delete_sub/$item->id/$sub_group->id"); ?>"
+                           onclick="delete_item(this)" method="post" enctype="multipart">
+                            <i class="fa fa-minus-circle"></i>
                         </a>
                     </td>
                 </tr>
@@ -47,7 +65,7 @@
         <tbody>
         <?php foreach ($sub_cont_items as $sub_cont_item) { ?>
             <tr>
-                <td style="padding-left: 40px;">
+                <td>
                     <?php echo $sub_cont_item->item_id; ?>
                 </td>
                 <td>
@@ -58,7 +76,7 @@
                 </td>
                 <td>
                     <a id="category" href="#"
-                       url="<?php echo base_url("$this->Module_Name/delete_item_sub/$item->id/$sub_cont_item->id/$sub_id"); ?>"
+                       url="<?php echo base_url("$this->Module_Name/delete_item/$item->id/$sub_cont_item->id"); ?>"
                        onclick="delete_item(this)" method="post" enctype="multipart">
                         <i class="fa fa-minus-circle"></i>
                     </a>

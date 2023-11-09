@@ -120,5 +120,42 @@
         padding: 10px;
     }
 
+    /* Genel tablo stilleri */
+    .table-container {
+        width: 100%;
+    }
+
+    /* Başlık satırı stilleri */
+    .table-header {
+        margin-top: 3pt;
+        margin-bottom: 3pt;
+        widows: 0;
+        orphans: 0;
+        font-size: 11pt;
+    }
+
+    /* Alt grup stilleri */
+    .sub-group {
+        margin-top: 3pt;
+        margin-bottom: 3pt;
+        widows: 0;
+        orphans: 0;
+        font-size: 11pt;
+    }
+
+    /* Tablo başlık hücreleri */
+    .table-header-cell {
+        background-color: #e7e7e7;
+        text-align: center;
+    }
+
+    /* Tablo hücreleri */
+    .table-cell {
+        border-style: solid;
+        border-width: 0.75pt;
+        text-align: left;
+        font-size: 9pt;
+    }
+
 
 </style>

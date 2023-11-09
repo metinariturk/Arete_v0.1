@@ -166,7 +166,7 @@ class Contract extends CI_Controller
         $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
         $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id,"main_group" => 1),"rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "rank ASC");
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
         $master_catalog = $this->Catalog_model->get(array('contract_id' => $id, "master" => 1));
@@ -2612,10 +2612,12 @@ class Contract extends CI_Controller
     public function add_main_group($contract_id)
     {
         $group_name = $this->input->post('main_group');
+        $group_code = $this->input->post('main_code');
 
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("main_group", "Grup Kodu", "min_length[3]|max_length[30]|required|trim");
+        $this->form_validation->set_rules("main_code", "Grup Kodu", "min_length[1]|max_length[3]|required|trim");
 
         $this->form_validation->set_message(
             array(
@@ -2634,7 +2636,8 @@ class Contract extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "main_group" => 1,
-                    "name" => $group_name,
+                    "name" => mb_strtoupper($group_name),
+                    "code" => $group_code,
                 )
             );
 
@@ -2740,11 +2743,13 @@ class Contract extends CI_Controller
     {
         $main_group = $this->input->post('main_group_id');
         $group_name = $this->input->post('sub_group_name');
+        $group_code = $this->input->post('sub_group_code');
 
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("main_group_id", "Grup Kodu", "integer|trim");
         $this->form_validation->set_rules("sub_group_name", "Grup Kodu", "min_length[3]|max_length[30]|required|trim");
+        $this->form_validation->set_rules("sub_group_code", "Grup Kodu", "min_length[1]|max_length[3]|required|trim");
 
         $this->form_validation->set_message(
             array(
@@ -2766,6 +2771,7 @@ class Contract extends CI_Controller
                     "sub_group" => 1,
                     "parent" => $main_group,
                     "name" => $group_name,
+                    "code" => $group_code,
                 )
             );
 
@@ -2911,14 +2917,17 @@ class Contract extends CI_Controller
 
         $boqs = $this->input->post("boq[]");
 
-
-        $update = $this->Contract_model->update(
-            array(
-                "id" => $contract_id
-            ),
-            array(
-                "price" => json_encode($boqs)
-            ));
+        foreach ($boqs as $boq=>$values) {
+            $update = $this->Contract_price_model->update(
+                array(
+                    "id" => $boq
+                ),
+                array(
+                    "qty" => $values['qty'],
+                    "price" => $values['price'],
+                    "total" => $values['total']
+                ));
+        }
 
 
         // TODO Alert sistemi eklenecek...
@@ -2973,7 +2982,7 @@ class Contract extends CI_Controller
             'main_id' => $main_id,
         ));
 
-        $main_group =  $this->Books_main_model->get(array(
+        $main_group = $this->Books_main_model->get(array(
             'id' => $main_id,
         ));
 
@@ -3062,7 +3071,15 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array('id' => $contract_id));
         $sub_group = $this->Contract_price_model->get(array('id' => $sub_id));
         $main_group = $this->Contract_price_model->get(array('id' => $sub_group->parent));
+
         $book_item = $this->Books_item_model->get(array('id' => $item_id));
+
+        $book_name = get_from_any("books", "code", "id", "$book_item->book_id");
+        $main_code = get_from_any("books_main", "main_code", "id", "$book_item->main_id");
+        $sub_code = get_from_any("books_sub", "sub_code", "id", "$book_item->sub_id");
+        $title_code = get_from_any("books_title", "title_code", "id", "$book_item->title_id");
+
+        $code = $book_name . "." . $main_code . "." . $sub_code . "." . $title_code . "." . $book_item->item_code;
 
         $item_isset = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "book_id" => $book_item->book_id, "item_id" => $item_id));
 
@@ -3071,10 +3088,12 @@ class Contract extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "book_id" => $book_item->book_id,
-                    "sub_id" => $sub_id,
+                    "main_id" => $main_group->id,
+                    "sub_id" => $sub_group->id,
                     "item_id" => $book_item->id,
                     "name" => $book_item->item_name,
                     "unit" => $book_item->item_unit,
+                    "code" => $code,
                 )
             );
         }
@@ -3099,20 +3118,19 @@ class Contract extends CI_Controller
 
     }
 
-    public function delete_item_sub($contract_id, $item_id, $sub_id)
+    public function delete_item($contract_id, $item_id)
     {
         $item = $this->Contract_model->get(array('id' => $contract_id));
-        $sub_group = $this->Contract_price_model->get(array('id' => $sub_id));
+        $book_item = $this->Contract_price_model->get(array('id' => $item_id));
+        $sub_group = $this->Contract_price_model->get(array('id' => $book_item->sub_id));
         $main_group = $this->Contract_price_model->get(array('id' => $sub_group->parent));
-        $book_item = $this->Books_item_model->get(array('id' => $item_id));
 
-            $delete = $this->Contract_price_model->delete(
-                array(
-                    "id" => $item_id,
-                )
-            );
-
-        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_id));
+        $delete = $this->Contract_price_model->delete(
+            array(
+                "id" => $item_id,
+            )
+        );
+        $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_group->id));
 
         $viewData = new stdClass();
 
@@ -3124,7 +3142,89 @@ class Contract extends CI_Controller
         $viewData->main_group = $main_group;
         $viewData->sub_group = $sub_group;
         $viewData->sub_cont_items = $sub_cont_items;
-        $viewData->sub_id = $sub_id;
+        $viewData->sub_id = $sub_group->id;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+
+    public function delete_sub($contract_id, $sub_id)
+    {
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+
+        $delete_sub = $this->Contract_price_model->delete(
+            array(
+                "contract_id" => $contract_id,
+                "sub_id" => $sub_id,
+            )
+        );
+
+        $delete_sub = $this->Contract_price_model->delete(
+            array(
+                "id" => $sub_id,
+            )
+        );
+
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+        $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->main_groups = $main_groups;
+        $viewData->sub_groups = $sub_groups;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function delete_main($contract_id, $main_id)
+    {
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+
+        $delete_item = $this->Contract_price_model->delete(
+            array(
+                "contract_id" => $contract_id,
+                "main_id" => $main_id,
+            )
+        );
+
+        $delete_sub = $this->Contract_price_model->delete(
+            array(
+                "contract_id" => $contract_id,
+                "parent" => $main_id,
+            )
+        );
+
+        $delete_main = $this->Contract_price_model->delete(
+            array(
+                "id" => $main_id,
+            )
+        );
+
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+        $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->main_groups = $main_groups;
+        $viewData->sub_groups = $sub_groups;
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
 
