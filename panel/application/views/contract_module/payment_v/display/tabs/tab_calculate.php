@@ -78,7 +78,9 @@
                 <?php $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_id" => $sub_group->id)); ?>
                 <?php foreach ($contract_items as $contract_item) { ?>
                     <?php $calculate = $this->Boq_model->get(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "boq_id" => $contract_item->id)); ?>
-                    <table style="width:100%;">
+                    <?php if (isset($calculate)) { ?>
+
+                        <table style="width:100%;">
                         <thead>
                         <tr>
                             <td colspan="7">
@@ -118,6 +120,7 @@
                         </tr>
                         </thead>
                         <tbody>
+
                         <?php foreach (json_decode($calculate->calculation, true) as $calculation_data) { ?>
                             <tr>
                                 <td style="border-style:solid; text-align:left; border-width:0.75pt;">
@@ -143,7 +146,18 @@
                                 </td>
                             </tr>
                         <?php } ?>
-                        </tbody>
+                        <tr>
+                            <td colspan="5">
+                            </td>
+                            <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <strong>Toplam</strong>
+                            </td>
+                            <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <strong><?php echo $calculate->total; ?></strong>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
                     </table>
                 <?php } ?>
             <?php } ?>

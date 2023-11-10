@@ -284,6 +284,8 @@ class Payment extends CI_Controller
     public
     function file_form($id, $active_tab = null)
     {
+        $total_payment = $this->input->post("total_payment") ?? 0;
+
         $contract_id = contract_id_module("payment", $id);
         $payment_no = get_from_id("payment", "hakedis_no", "$id");
         $main_groups = $this->Contract_price_model->get_all(array("contract_id"=> $contract_id, "main_group" => 1),"rank ASC");
@@ -312,6 +314,7 @@ class Payment extends CI_Controller
         $viewData->main_groups = $main_groups;
         $viewData->active_boqs = $active_boqs;
         $viewData->project_id = $project_id;
+        $viewData->total_payment = $total_payment;
         $viewData->active_tab = $active_tab;
         $viewData->settings = $settings;
         $viewData->payment_settings = $payment_settings;
@@ -325,21 +328,6 @@ class Payment extends CI_Controller
         );
 
         $viewData->item = $item;
-
-
-        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$item->hakedis_no");
-
-        if ($boq_control) {
-            $boq = $this->Boq_model->get(array(
-                    "id" => $boq_control
-                )
-            );
-            $viewData->boq = $boq;
-
-        } else {
-            $boq = null;
-            $viewData->boq = null;
-        }
 
 
         $viewData->item_files = $this->Payment_file_model->get_all(

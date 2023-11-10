@@ -7,6 +7,7 @@
        Hakediş ayalarını yapın sonra gelin
     <?php } else { ?>
 
+
         <?php $total_old_payment = sum_payments("D", $contract->id); ?>
         <?php $total_old_fiyat_fark = sum_payments("B1", $contract->id); ?>
         <div class="col-sm-8 offset-2">
@@ -34,7 +35,7 @@
                     <td class="total-group-row-left">Sözleşme Fiyatları İle Yapılan İşin Tutarı</td>
                     <td class="total-group-row-left">
                         <input type="number" step=".01" id="A" name="toplam"
-                               value="<?php echo $total_old_payment; ?>" readonly
+                               value="<?php echo $total_payment; ?>" readonly
                                onblur="calcular()"
                                onfocus="calcular()">
                     </td>
@@ -89,7 +90,7 @@
                     </td>
                     <td class="total-group-row-left">
                         <input type="number" step=".01" id="E" name="bu_hak_top"
-                               value=""
+                               value="<?php echo $total_payment; ?>"
                                onblur="calcular()" required
                                onfocus="calcular()">
                     </td>
@@ -110,7 +111,7 @@
                         <input id="F" type="number" step=".01" name="kdv_tutar" onblur="calcular()"
                                onfocus="calcular()"
                                readonly
-                               value="<?php echo $payment_settings->kdv_oran * $boq->total / 100; ?>">
+                               value="<?php echo $payment_settings->kdv_oran * $total_payment; ?> / 100; ?>">
                     </td>
                 </tr>
                 <tr>
@@ -118,7 +119,7 @@
                     <td class="total-group-row-left" style="font-weight: bold">Tahakkuk Tutarı</td>
                     <td class="total-group-row-left">
                         <input type="number" step=".01" id="G" name="taahhuk"
-                               value="<?php echo $payment_settings->kdv_oran * $boq->total / 100 + $boq->total; ?>"
+                               value="<?php echo $payment_settings->kdv_oran * $total_payment / 100 + $total_payment; ?>"
                                onblur="calcular()" readonly
                                onfocus="calcular()">
                     </td>
@@ -146,7 +147,7 @@
                         <input id="KES_a" type="number" step=".01" name="stopaj_tutar" onblur="calcular()"
                                readonly
                                onfocus="calcular()" onblur="calcular()"
-                               value="<?php echo $payment_settings->stopaj_oran * $boq->total; ?>">
+                               value="<?php echo $payment_settings->stopaj_oran * $total_payment; ?>">
 
                     </td>
                 </tr>
@@ -168,7 +169,7 @@
                                                             onblur="calcular()"
                                                             readonly
                                                             onfocus="calcular()" onblur="calcular()"
-                                                            value="<?php echo $payment_settings->damga_vergisi_oran * $boq->total; ?>">
+                                                            value="<?php echo $payment_settings->damga_vergisi_oran * $total_payment; ?>">
                     </td>
                 </tr>
                 <tr>

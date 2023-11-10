@@ -119,7 +119,12 @@
         column.style.width = width + '%'; // Genişliği ayarlayın
     });
 </script>
-
+<script>
+    function submitForm() {
+        // Formu gönder
+        document.getElementById("myForm").submit();
+    }
+</script>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

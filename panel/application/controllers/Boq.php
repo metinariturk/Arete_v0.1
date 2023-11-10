@@ -114,6 +114,7 @@ class Boq extends CI_Controller
             redirect(base_url("error"));
         }
 
+
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
         $isset_boq =
@@ -161,6 +162,9 @@ class Boq extends CI_Controller
 
         $boq_id = ($this->input->post('boq_id'));
 
+        $contract_item = $this->Contract_price_model->get(array("id"=> $boq_id));
+
+
         $old_record = get_from_any_and_and(
             "boq",
             "contract_id", "$contract_id",
@@ -197,6 +201,8 @@ class Boq extends CI_Controller
                     "calculation" => json_encode($boq_array),
                     "total" => $boq_total,
                     "createdAt" => date("Y-m-d H:i:s"),
+                    "sub_id" => $contract_item->sub_id,
+                    "main_id" => $contract_item->main_id,
                 )
             );
             if ($update) {
@@ -218,6 +224,8 @@ class Boq extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "boq_id" => $boq_id,
+                    "sub_id" => $contract_item->sub_id,
+                    "main_id" => $contract_item->main_id,
                     "payment_no" => $payment->hakedis_no,
                     "calculation" => json_encode($boq_array),
                     "total" => $boq_total,

@@ -40,199 +40,144 @@
                 </tbody>
             </table>
         </div>
-        <?php foreach ($active_boqs as $group_key => $boq_ids) { ?>
-            <table style="width:100%;">
-                <thead>
-                <tr>
-                    <td colspan="7">
-                        <p style="margin-top:3pt; width:100%; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
-                            <strong><?php echo $group_key . " - " . boq_name($group_key); ?></strong>
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td rowspan="2"
-                        style="width:3%;" class="calculate-header-center">
-                        <p><strong>Sıra No</strong></p>
-                    </td>
-                    <td rowspan="2"
-                        style="width:9%;" class="calculate-header-center">
-                        <p><strong>Poz No</strong></p>
-                    </td>
-                    <td rowspan="2"
-                        style="width:25%;" class="calculate-header-center">
-                        <p><strong>Yapılan İşin Cinsi</strong></p>
-                    </td>
-                    <td rowspan="2"
-                        style="width:4%;" class="calculate-header-center">
-                        <p><strong>Birimi</strong></p>
-                    </td>
-                    <td style="width:8%;" class="calculate-header-center">
-                        <p><strong>A</strong></p>
-                    </td>
-                    <td style="width:8%;" class="calculate-header-center">
-                        <p><strong>B</strong></p>
-                    </td>
-                    <td style="width:8%;" class="calculate-header-center">
-                        <p><strong>C</strong></p>
-                    </td>
-                    <td style="width:8%;" class="calculate-header-center">
-                        <p><strong>D=B-C</strong>
-                        </p>
-                    </td>
-                    <td style="width:9%;" class="calculate-header-center">
-                        <p><strong>E=AxB</strong>
-                        </p>
-                    </td>
-                    <td style="width:9%;" class="calculate-header-center">
-                        <p><strong>F=AxC</strong></p>
-                    </td>
-                    <td style="width:9%;" class="calculate-header-center">
-                        <p><strong>G=E-F</strong></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="calculate-header-center">
-                        <p><strong>Tekif Birim Fiyatı</strong></p>
-                    </td>
-                    <td class="calculate-header-center">
-                        <p><strong>Toplam Miktarı</strong></p>
-                    </td>
-                    <td class="calculate-header-center">
-                        <p><strong>Önceki Hakediş Miktarı</strong></p>
-                    </td>
-                    <td class="calculate-header-center">
-                        <p><strong>Bu Hakediş Miktarı</strong></p>
-                    </td>
-                    <td class="calculate-header-center">
-                        <p><strong>Toplam İmalat İhzarat</strong></p>
-                    </td>
-                    <td class="calculate-header-center">
-                        <p><strong>Bir Önceki Tutarı</strong></p>
-                    </td>
-                    <td class="calculate-header-center">
-                        <p><strong>Bu Hakediş</strong></p>
-                    </td>
-                </tr>
+        <?php foreach ($main_groups as $main_group) { ?>
+        <table style="width:100%;">
+            <thead>
+            <tr>
+                <td colspan="7">
+                    <p style="margin-top:3pt; width:100%; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
+                        <strong><?php echo $main_group->code . " - " . $main_group->name; ?></strong>
+                    </p>
+                </td>
+            </tr>
 
-                </thead>
-                <tbody>
-                <?php foreach ($boq_ids as $boq_id) { ?>
-                    <?php
-                    $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
-                        return $item->boq_id == $boq_id;
-                    }); ?>
+            </thead>
+            <tbody>
 
-                    <?php $old_total_array = $this->Boq_model->get_all(
-                        array(
-                            "contract_id" => $item->contract_id,
-                            "payment_no <" => $item->hakedis_no,
-                            "boq_id" => $boq_id,
-                        ),
-                    ); ?>
-                    <?php if (!empty($old_total_array)) { ?>
-                        <?php $old_total = sum_anything_and_and("boq", "total", "contract_id", $item->contract_id, "payment_no <", $item->hakedis_no, "boq_id", "$boq_id"); ?>
-                    <?php } else {
-                        $old_total = 0;
-                    } ?>
+            <?php $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_group" => 1, "parent" => $main_group->id)); ?>
+            <?php foreach ($sub_groups as $sub_group) { ?>
+                <table style="width:100%;">
+                    <thead>
+                    <tr>
+                        <td colspan="7">
+                            <p style="margin-top:3pt; width:100%; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
+                                <strong><?php echo $sub_group->code . " - " . $sub_group->name; ?></strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"
+                            style="width:3%;" class="calculate-header-center">
+                            <p><strong>Sıra No</strong></p>
+                        </td>
+                        <td rowspan="2"
+                            style="width:9%;" class="calculate-header-center">
+                            <p><strong>Poz No</strong></p>
+                        </td>
+                        <td rowspan="2"
+                            style="width:25%;" class="calculate-header-center">
+                            <p><strong>Yapılan İşin Cinsi</strong></p>
+                        </td>
+                        <td rowspan="2"
+                            style="width:4%;" class="calculate-header-center">
+                            <p><strong>Birimi</strong></p>
+                        </td>
+                        <td style="width:8%;" class="calculate-header-center">
+                            <p><strong>A</strong></p>
+                        </td>
+                        <td style="width:8%;" class="calculate-header-center">
+                            <p><strong>B</strong></p>
+                        </td>
+                        <td style="width:8%;" class="calculate-header-center">
+                            <p><strong>C</strong></p>
+                        </td>
+                        <td style="width:8%;" class="calculate-header-center">
+                            <p><strong>D=B-C</strong>
+                            </p>
+                        </td>
+                        <td style="width:9%;" class="calculate-header-center">
+                            <p><strong>E=AxB</strong>
+                            </p>
+                        </td>
+                        <td style="width:9%;" class="calculate-header-center">
+                            <p><strong>F=AxC</strong></p>
+                        </td>
+                        <td style="width:9%;" class="calculate-header-center">
+                            <p><strong>G=E-F</strong></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="calculate-header-center">
+                            <p><strong>Tekif Birim Fiyatı</strong></p>
+                        </td>
+                        <td class="calculate-header-center">
+                            <p><strong>Toplam Miktarı</strong></p>
+                        </td>
+                        <td class="calculate-header-center">
+                            <p><strong>Önceki Hakediş Miktarı</strong></p>
+                        </td>
+                        <td class="calculate-header-center">
+                            <p><strong>Bu Hakediş Miktarı</strong></p>
+                        </td>
+                        <td class="calculate-header-center">
+                            <p><strong>Toplam İmalat İhzarat</strong></p>
+                        </td>
+                        <td class="calculate-header-center">
+                            <p><strong>Bir Önceki Tutarı</strong></p>
+                        </td>
+                        <td class="calculate-header-center">
+                            <p><strong>Bu Hakediş</strong></p>
+                        </td>
+                    </tr>
 
-                    <?php if (!empty($foundItems)) {
-                        // Hedef boq_id bulundu, $foundItems içinde saklanır.
-                        foreach ($foundItems as $foundItem) { ?>
-                            <tr>
-                                <td class="calculate-row-center"></td>
-                                <td class="calculate-row-center">
-                                    <?php echo($boq_id); ?>
-                                </td>
-                                <td class="calculate-row-left">
-                                    <?php echo boq_name($boq_id); ?>
-                                </td>
-                                <td class="calculate-row-right">
-                                    <?php echo boq_unit($boq_id); ?>
-                                </td>
-                                <?php
-                                if (!isset($price)) {
-                                    $price = 0;
-                                }
-                                if (isset($prices[$group_key][$boq_id]['price'])) {
-                                    $price = (float)$prices[$group_key][$boq_id]['price'];
-                                }
-                                ?>
-                                <td class="calculate-row-right <?php if ($price == 0) { echo "bg-danger"; } ?>">
-                                    <?php echo money_format($price); ?>
-                                </td>
-                                <td class="calculate-row-right">
-                                    <?php $all_time = ($foundItem->total + $old_total);
-                                    echo money_format($all_time);
-                                    ?>
-                                </td>
-                                <td class="calculate-row-right">
-                                    <?php echo money_format($old_total); ?>
-                                </td>
-                                <td class="calculate-row-right">
-                                    <?php echo money_format($foundItem->total); ?>
-                                </td>
-                                <td class="calculate-row-right">
-                                    <?php echo money_format($price * $all_time); ?>
-                                </td>
-                                <td class="calculate-row-right">
-                                    <?php echo money_format($price * $old_total); ?>
-                                </td>
-                                <td class="calculate-row-right">
-                                    <?php echo money_format($price * $foundItem->total); ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    <?php } else { ?>
+                    </thead>
+                    <tbody>
+                    <?php $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_id" => $sub_group->id)); ?>
+                    <?php $i = 1; ?>
+                    <?php foreach ($contract_items as $contract_item) { ?>
+                        <?php $calculate = $this->Boq_model->get(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "boq_id" => $contract_item->id)); ?>
+                        <?php $old_total = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "boq_id" => $contract_item->id), "total"); ?>
+                        <?php $this_total = isset($calculate->total) ? $calculate->total : 0; ?>
+
                         <tr>
-                            <td class="calculate-row-center">
+                            <td class="w5c" style="border: 0.75pt solid black; border-width:0.75pt;"><?php echo $i++; ?>
                             </td>
-                            <td class="calculate-row-center">
-                                <?php echo($boq_id); ?>
+                            <td  class="w15" style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
+                                <?php echo($contract_item->code); ?>
                             </td>
-                            <td class="calculate-row-left">
-                                <?php echo boq_name($boq_id); ?>
+                            <td  class="w35" style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
+                                <?php echo($contract_item->name); ?>
                             </td>
-                            <td class="calculate-row-right">
-                                <?php echo boq_unit($boq_id); ?>
+                            <td  class="w5c" style="border: 0.75pt solid black; border-width:0.75pt; font-size:9pt;">
+                                <?php echo($contract_item->unit); ?>
                             </td>
-
-                            <?php
-                            if (!isset($price)) {
-                                $price = 0;
-                            }
-                            if (isset($prices[$group_key][$boq_id]['price'])) {
-                                $price = (float)$prices[$group_key][$boq_id]['price'];
-                            }
-                            ?>
-
-                            <td class="calculate-row-right <?php if ($price == 0) { echo "bg-danger"; } ?>">
-                                <?php echo money_format($price); ?>
+                            <td  class="w5c" style="border: 0.75pt solid black; border-width:0.75pt; font-size:9pt;">
+                                <?php echo money_format($contract_item->price); ?>
                             </td>
-                            <td class="calculate-row-right">
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($old_total + $this_total); ?>
+                            </td>
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
                                 <?php echo money_format($old_total); ?>
                             </td>
-                            <td class="calculate-row-right">
-                                <?php echo money_format($old_total); ?>
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($this_total); ?>
                             </td>
-                            <td class="calculate-row-right">
-                                0,00
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format(($old_total + $this_total)*$contract_item->price); ?>
                             </td>
-                            <td class="calculate-row-right">
-                                <?php echo money_format($price * $old_total); ?>
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($old_total*$contract_item->price); ?>
                             </td>
-                            <td class="calculate-row-right">
-                                <?php echo money_format($price * $old_total); ?>
-                            </td>
-                            <td class="calculate-row-right">
-                                0,00
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($this_total*$contract_item->price); ?>
                             </td>
                         </tr>
                     <?php } ?>
-                <?php } ?>
-                </tbody>
-            </table>
-        <?php } ?>
+                    </tbody>
+                </table>
+            <?php } ?>
+            <?php } ?>
         <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
         <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır
             Olanları Gizle</a>

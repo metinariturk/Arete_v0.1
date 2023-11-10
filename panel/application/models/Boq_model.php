@@ -20,6 +20,16 @@ class Boq_model extends CI_Model
         return $this->db->where($where)->order_by($order)->get($this->tableName)->result();
     }
 
+    public function sum_all($where = array(), $column=null)
+    {
+        $result = $this->db->select_sum($column)->where($where)->get($this->tableName)->result();
+
+        // Sadece toplam değerini alın
+        $total = isset($result[0]->$column) ? $result[0]->$column : 0;
+
+        return $total;
+    }
+
     public function add($data = array())
     {
         return $this->db->insert($this->tableName, $data);

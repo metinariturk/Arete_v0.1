@@ -2,7 +2,13 @@
     function calcular() {
 
 
-        var valorE = Number(document.getElementById('E').value, 10); //Bu Hakedişin Tutarı Seç
+        var valorC = Number(document.getElementById('C').value, 10); //Bu Hakedişin Tutarı Seç
+
+        var valorD = Number(document.getElementById('D').value, 10); //Bu Hakedişin Tutarı Seç
+
+        var valorE = valorC - valorD; //Bu Hakediş*KDV Oranı Hesapla
+
+        document.getElementById('E').value = valorE.toFixed(2); // KDV Tutarı Yaz
 
         var valorF_a = Number(document.getElementById('F_a').value, 10); //KDV Oranı Seç
 
@@ -17,11 +23,11 @@
         document.getElementById('KES_a').value = valorKES_a.toFixed(2); //  Stopaj Oranı Yaz
 
         var valorKES_b_s = Number(document.getElementById('KES_b_s').value, 10); //Stopaj Oranı Seç
-        var valorKES_b = valorKES_b_s * valorE / 100; // Stopaj Oranı Hesap
+        var valorKES_b = valorKES_b_s * valorE / 1000; // Stopaj Oranı Hesap
         document.getElementById('KES_b').value = valorKES_b.toFixed(2); //  Stopaj Oranı Yaz
 
         var valorKES_c_s = Number(document.getElementById('KES_c_s').value, 10); //Stopaj Oranı Seç
-        var valorKES_c = valorKES_c_s * valorF; // Stopaj Oranı Hesap
+        var valorKES_c = valorKES_c_s * valorF / 10; // Stopaj Oranı Hesap
         document.getElementById('KES_c').value = valorKES_c.toFixed(2); //  Stopaj Oranı Yaz
 
         var valorKES_d = Number(document.getElementById('KES_d').value, 10); //Stopaj Oranı Seç
@@ -34,7 +40,7 @@
         var valorKES_g = Number(document.getElementById('KES_g').value, 10); //Stopaj Oranı Seç
         var valorKES_h = Number(document.getElementById('KES_h').value, 10); //Stopaj Oranı Seç
         var valorKES_i = Number(document.getElementById('KES_i').value, 10); //Stopaj Oranı Seç
-        var valorH = valorKES_c_s + valorKES_a + valorKES_b + valorKES_c + valorKES_d + valorKES_e + valorKES_f + valorKES_g + valorKES_h + valorKES_i; // Stopaj Oranı Hesap
+        var valorH = valorKES_a + valorKES_b + valorKES_c + valorKES_d + valorKES_e + valorKES_f + valorKES_g + valorKES_h + valorKES_i; // Stopaj Oranı Hesap
         document.getElementById('H').value = valorH.toFixed(2); //  Stopaj Oranı Yaz
 
         var valorI_s = Number(document.getElementById('I_s').value, 10); //Avans Mahsup Oranı Seç

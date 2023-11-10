@@ -1,5 +1,3 @@
-<script src="<?php echo base_url("assets"); ?>/js/datatable/datatables/datatable.custom.js"></script>
-
 
 <script>
     function deletePaymentModule(btn) {
@@ -109,3 +107,12 @@
     }
 
 </script>
+
+<script>
+    function getValueAndAssign() {
+        // total_payment id'li input elemanının değerini al
+        var totalPaymentValue = document.getElementById('total_payment').value;
+        console.log('Total Payment:', totalPaymentValue);
+    }
+</script>
+

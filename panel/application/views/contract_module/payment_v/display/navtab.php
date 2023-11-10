@@ -57,6 +57,17 @@
                     </li>
                     <li>
                         <a class="show"
+                           id="main_total-tab"
+                           data-bs-toggle="pill"
+                           href="#main_total"
+                           role="tab"
+                           aria-controls="main_total"
+                           aria-selected="false">
+                            <span class="title">Genel İcmal</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="show"
                            id="report-tab"
                            data-bs-toggle="pill"
                            href="#report"

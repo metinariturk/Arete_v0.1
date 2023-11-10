@@ -39,123 +39,103 @@
                 </tbody>
             </table>
         </div>
-        <?php foreach ($active_boqs as $group_key => $boq_ids) { ?>
-            <table style="width:100%;">
-                <thead>
-                <tr>
-                    <td colspan="7">
-                        <p style="margin-top:3pt; width:100%; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
-                            <strong><?php echo $group_key . " - " . boq_name($group_key); ?></strong>
-                        </p>
-                    </td>
-                </tr>
-                <tr style="height:14.1pt;">
-                    <td style="width:5%; background-color:#e7e7e7; text-align: center;  border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Sıra No</strong></p>
-                    </td>
-                    <td style="width:10%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Poz No</strong></p>
-                    </td>
-                    <td style="width:40%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Yapılan İşin Cinsi</strong></p>
-                    </td>
+        <?php foreach ($main_groups as $main_group) { ?>
+        <table style="width:100%;">
+            <thead>
+            <tr>
+                <td colspan="7">
+                    <p style="margin-top:3pt; width:100%; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
+                        <strong><?php echo $main_group->code . " - " . $main_group->name; ?></strong>
+                    </p>
+                </td>
+            </tr>
 
-                    <td style="width:8%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Birimi</strong></p>
-                    </td>
-                    <td style="width:13%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Toplam Miktarı</strong></p>
-                    </td>
-                    <td style="width:12%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Önceki Hakediş Miktarı</strong>
-                        </p>
-                    </td>
-                    <td style="width:12%; background-color:#e7e7e7; text-align: center; border: 0.75pt solid black; border-width:0.75pt;">
-                        <p><strong>Bu Hakediş Miktarı</strong>
-                        </p>
-                    </td>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($boq_ids as $boq_id) { ?>
-                    <?php
-                    $foundItems = array_filter($calculates, function ($item) use ($boq_id) {
-                        return $item->boq_id == $boq_id;
-                    }); ?>
+            </thead>
+            <tbody>
 
-                    <?php $old_total_array = $this->Boq_model->get_all(
-                        array(
-                            "contract_id" => $item->contract_id,
-                            "payment_no <" => $item->hakedis_no,
-                            "boq_id" => $boq_id,
-                        ),
-                    ); ?>
-                    <?php if (!empty($old_total_array)) { ?>
-                        <?php $old_total = sum_anything_and_and("boq", "total", "contract_id", $item->contract_id, "payment_no <", $item->hakedis_no, "boq_id", "$boq_id"); ?>
-                    <?php } else {
-                        $old_total = 0;
-                    } ?>
+            <?php $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_group" => 1, "parent" => $main_group->id)); ?>
+            <?php foreach ($sub_groups as $sub_group) { ?>
+                <table style="width:100%;">
+                    <thead>
+                    <tr>
+                        <td>
+                            <p style="font-size:10pt;">
+                                <strong><?php echo $sub_group->code . "." . $sub_group->name; ?></strong></p>
+                        </td>
+                    </tr>
+                    </thead>
+                </table>
+                <table style="width:100%;">
+                    <tbody>
+                    <tr style="height:14.1pt;">
+                        <td class="w5c" style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
+                            <p><strong>Sıra No</strong></p>
+                        </td>
+                        <td class="w15c" style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
+                            <p><strong>Poz No</strong></p>
+                        </td>
+                        <td class="w35c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                            <p><strong>Yapılan İşin Cinsi</strong></p>
+                        </td>
 
-                    <?php if (!empty($foundItems)) {
-                        // Hedef boq_id bulundu, $foundItems içinde saklanır.
-                        foreach ($foundItems as $foundItem) { ?>
-                            <tr>
-                                <td style="border: 0.75pt solid black; text-align:center; border-width:0.75pt;">
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
-                                    <?php echo($boq_id); ?>
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
-                                    <?php echo boq_name($boq_id); ?>
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    <?php echo boq_unit($boq_id); ?>
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    <?php echo money_format($foundItem->total + $old_total); ?>
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    <?php echo money_format($old_total); ?>
-                                </td>
-                                <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                    <?php echo money_format($foundItem->total); ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    <?php } else { ?>
+                        <td class="w5c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                            <p><strong>Birimi</strong></p>
+                        </td>
+                        <td class="w10c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                            <p><strong>Toplam Miktarı</strong></p>
+                        </td>
+                        <td class="w10c" style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
+                            <p><strong>Önceki Hakediş Miktarı</strong>
+                            </p>
+                        </td>
+                        <td class="w10c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                            <p><strong>Bu Hakediş Miktarı</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <?php $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_id" => $sub_group->id)); ?>
+                    <?php $i = 1; ?>
+                    <?php foreach ($contract_items as $contract_item) { ?>
+                        <?php $calculate = $this->Boq_model->get(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "boq_id" => $contract_item->id)); ?>
+                        <?php $old_total = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "boq_id" => $contract_item->id), "total"); ?>
+                        <?php $this_total = isset($calculate->total) ? $calculate->total : 0; ?>
+
                         <tr>
-                            <td style="border: 0.75pt solid black; text-align:center; border-width:0.75pt;">
+                            <td class="w5c" style="border: 0.75pt solid black; border-width:0.75pt;"><?php echo $i++; ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
-                                <?php echo($boq_id); ?>
+                            <td  class="w15" style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
+                                <?php echo($contract_item->code); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
-                                <?php echo boq_name($boq_id); ?>
+                            <td  class="w35" style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
+                                <?php echo($contract_item->name); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                <?php echo boq_unit($boq_id); ?>
+                            <td  class="w5c" style="border: 0.75pt solid black; border-width:0.75pt; font-size:9pt;">
+                                <?php echo($contract_item->unit); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($old_total + $this_total); ?>
+                            </td>
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
                                 <?php echo money_format($old_total); ?>
                             </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                <?php echo money_format($old_total); ?>
-                            </td>
-                            <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                0.00
+                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <?php echo money_format($this_total); ?>
                             </td>
                         </tr>
                     <?php } ?>
-                <?php } ?>
-                </tbody>
-            </table>
-        <?php } ?>
-        <div>
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
-        </div>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır Olanları Gizle</a>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece Bu Hakediş</a>
+                    </tbody>
+                </table>
+            <?php } ?>
+            <?php } ?>
+            <div>
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
+            </div>
+            <a class="btn btn-primary" target="_blank"
+               href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
+            <a class="btn btn-primary" target="_blank"
+               href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır Olanları Gizle</a>
+            <a class="btn btn-primary" target="_blank"
+               href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece Bu Hakediş</a>
 
     </div>
 </div>
