@@ -25,6 +25,24 @@
 </div>
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
+<script>
+    function open_contract_group(anchor) {
+        $(".renderGroup").show();
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+            $(".renderGroup").html(response);
+        })
+    }
+</script>
+<script>
+    function back_main(anchor) {
+        var $url = anchor.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".renderGroup").html(response);
+        })
+    }
+</script>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

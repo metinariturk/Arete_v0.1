@@ -6,25 +6,7 @@
     <?php if (empty($payment_settings)) { ?>
        Hakediş ayalarını yapın sonra gelin
     <?php } else { ?>
-        <?php
-        $sum_of_total_this_payment = 0;
 
-        foreach ($calculates as $calculate) {
-            $desiredKey = $calculate->boq_id;
-            $price = null;
-
-            array_map(function ($subarray) use ($desiredKey, &$price) {
-                if (isset($subarray[$desiredKey]['price'])) {
-                    $price = $subarray[$desiredKey]['price'];
-                }
-            }, $prices);
-
-            if ($price !== null) {
-                $total_this_payment = $price * $calculate->total;
-                $sum_of_total_this_payment += $total_this_payment;
-            }
-        }
-        ?>
         <?php $total_old_payment = sum_payments("D", $contract->id); ?>
         <?php $total_old_fiyat_fark = sum_payments("B1", $contract->id); ?>
         <div class="col-sm-8 offset-2">
@@ -52,7 +34,7 @@
                     <td class="total-group-row-left">Sözleşme Fiyatları İle Yapılan İşin Tutarı</td>
                     <td class="total-group-row-left">
                         <input type="number" step=".01" id="A" name="toplam"
-                               value="<?php echo $total_old_payment + $sum_of_total_this_payment; ?>" readonly
+                               value="<?php echo $total_old_payment; ?>" readonly
                                onblur="calcular()"
                                onfocus="calcular()">
                     </td>
@@ -107,7 +89,7 @@
                     </td>
                     <td class="total-group-row-left">
                         <input type="number" step=".01" id="E" name="bu_hak_top"
-                               value="<?php echo $sum_of_total_this_payment; ?>"
+                               value=""
                                onblur="calcular()" required
                                onfocus="calcular()">
                     </td>

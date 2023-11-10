@@ -3,7 +3,7 @@
     <div class="card-body">
         <fieldset>
             <h4 class="m-t-10 text-center"><?php echo contract_name($contract_id); ?></h4>
-            <h4 class="m-t-10 text-center"> <?php echo $payment_no; ?> Nolu Hakediş</h4>
+            <h4 class="m-t-10 text-center"> <?php echo $payment->hakedis_no; ?> Nolu Hakediş</h4>
             <h5 class="text-center"><?php echo boq_name($income); ?> </h5>
             <h6 class="text-center">Metraj Formu</h6>
             <hr>
@@ -53,7 +53,7 @@
                         data-bs-original-title=""
                         onclick="saveCalc(this)"
                         form="save_boq"
-                        data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment_no"); ?>"
+                        data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id"); ?>"
                         title="">
                     Kaydet/Satır Ekle
                 </button>
@@ -195,7 +195,6 @@
                     </div>
                 </div>
             </div>
-
         <?php } ?>
         <div class="container-fluid">
             <div class="card text-end">
@@ -205,7 +204,7 @@
                         data-bs-original-title=""
                         onclick="saveCalc(this)"
                         form="save_boq"
-                        data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment_no"); ?>"
+                        data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id"); ?>"
                         title="">
                     Kaydet/Satır Ekle
                 </button>
@@ -215,7 +214,7 @@
             <div class="card" style="height: 150px">
                 <div class="card-body">
                     <h4 class="m-t-10 text-center"><?php echo contract_name($contract_id); ?> </h4>
-                    <h5 class="text-center"> <?php echo $payment_no; ?> Nolu Hakediş </h5>
+                    <h5 class="text-center"> <?php echo $payment->hakedis_no; ?> Nolu Hakediş </h5>
                 </div>
             </div>
             <div class="card">
@@ -234,275 +233,277 @@
             $last_row = 10;
             $row_numbers = range(1, $last_row); ?>
         <?php } ?>
-        <script>
-            function renderCalculate(btn) {
-                var $url = btn.getAttribute('url');
+    </div>
+</div>
+<script>
+    function renderCalculate(btn) {
+        var $url = btn.getAttribute('url');
 
-                $.post($url, {}, function (response) {
-                    $(".dynamic").html(response);
-                })
-            }
-        </script>
+        $.post($url, {}, function (response) {
+            $(".dynamic").html(response);
+        })
+    }
+</script>
 
-        <script>
-            function delete_boq(btn) {
-                var $url = btn.getAttribute('url');
+<script>
+    function delete_boq(btn) {
+        var $url = btn.getAttribute('url');
 
-                swal({
-                    title: "Metrajı Silmek İstediğine Emin Misin?",
-                    text: "Bu işlem geri alınamaz!",
-                    icon: "warning",
-                    buttons: ["İptal", "Sil"],
-                    dangerMode: true,
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
+        swal({
+            title: "Metrajı Silmek İstediğine Emin Misin?",
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Sil"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
 
-                            $.post($url, {}, function (response) {
-                                $(".dynamic").html(response);
-                            })
-
-                            swal("Metraj Başarılı Bir Şekilde Silindi", {
-                                icon: "success",
-                            });
-
-                        } else {
-                            swal("Metraj Güvende");
-                        }
-                    })
-            }
-        </script>
-        <script>
-            function resetInputValues() {
-
-                swal({
-                    title: "Formu Temizlemek İstediğine Emin Misin?",
-                    text: "Bu işlem geri alınamaz!",
-                    icon: "warning",
-                    buttons: ["İptal", "Temizle"],
-                    dangerMode: true,
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
-
-                            var form = document.getElementById('save_boq');
-
-                            // Get all input elements within the form
-                            var inputElements = form.querySelectorAll('input');
-
-                            // Loop through the input elements and set their values to 0, except for the input with id "dont_delete"
-                            for (var i = 0; i < inputElements.length; i++) {
-                                var input = inputElements[i];
-                                if ((input.type === 'text' || input.type === 'number') && input.id !== 'dont_delete') {
-                                    input.value = '';
-                                }
-                            }
-
-                            swal("Form Temizlendi; Kaydetmediğiniz sürece sildiğiniz veriler saklanır", {
-                                icon: "success",
-                            });
-
-                        } else {
-                            swal("Temizleme İptal Edildi");
-                        }
-                    })
-            }
-        </script>
-        <script>
-            function saveCalc(btn) {
-                var url = btn.getAttribute('data-url');
-                var formId = btn.getAttribute('form');
-
-
-                // Serialize the form data
-                var formData = new FormData(document.getElementById(formId));
-
-                // Send an AJAX POST request
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        // Assuming the response contains the updated content
+                    $.post($url, {}, function (response) {
                         $(".dynamic").html(response);
+                    })
 
-                        var autoRefreshButton = document.querySelector('.auto-refresh-button');
-                        if (autoRefreshButton) {
-                            autoRefreshButton.click();
-                        }
+                    swal("Metraj Başarılı Bir Şekilde Silindi", {
+                        icon: "success",
+                    });
 
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(error);
-                    }
-                });
-            }
-        </script>
-        <script>
-            function saveCalcexit(btn) {
-                var url = btn.getAttribute('data-url');
-                var formId = btn.getAttribute('form');
-
-                // Serialize the form data
-                var formData = new FormData(document.getElementById(formId));
-
-                // Send an AJAX POST request
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        window.location.href = "<?php echo base_url("payment/file_form/$payment_id"); ?> // Replace with the URL you want to redirect to
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(error);
-                    }
-                });
-            }
-        </script>
-        <script>
-            function renderGroup(btn) {
-                var $url = btn.getAttribute('url');
-
-                $.post($url, {}, function (response) {
-                    $(".renderGroup").html(response);
-                })
-            }
-        </script>
-        <script>
-            function auto_refresh_list() {
-                var contractId = document.getElementById("myElement").getAttribute("data-contract-id");
-                var paymentNo = document.getElementById("myElement").getAttribute("data-payment-no");
-                var groupId = document.getElementById("myElement").getAttribute("data-group-id");
-
-                var url = base_url + "/" + this.Module_Name + "/select_group/" + contractId + "/" + paymentNo + "/" + groupId;
-
-                $.post($url, {}, function (response) {
-                    $(".renderGroup").html(response);
-                })
-            }
-        </script>
-
-        <script>
-            function calculateAndSetResult(income, row_number) {
-                var totalResult = 0;
-                var total = 0; // Toplamı saklamak için bir değişken tanımlayın
-                var allEmpty = true; // Tüm q, w, h, l değerleri boş mu?
-
-                for (var i = 1; i <= <?php echo $last_row; ?>; i++) {
-                    var q = parseFloat(document.getElementById('q_' + income + '_' + i).value);
-                    var w = parseFloat(document.getElementById('w_' + income + '_' + i).value);
-                    var h = parseFloat(document.getElementById('h_' + income + '_' + i).value);
-                    var l = parseFloat(document.getElementById('l_' + income + '_' + i).value);
-
-                    var qElement = document.getElementById('q_' + income + '_' + i);
-                    if (qElement) {
-                        var q = parseFloat(qElement.value);
-                        // Diğer işlemleri yapın
-                    } else {
-                        console.log("Element bulunamadı: q_" + income + "_" + i);
-                    }
-
-                    var n = document.getElementById('n_' + income + '_' + i).value.toLowerCase();
-
-                    var forbiddenWord = 'minha';
-
-                    var qInput = document.getElementById('q_' + income + '_' + i);
-                    var wInput = document.getElementById('w_' + income + '_' + i);
-                    var nInput = document.getElementById('n_' + income + '_' + i);
-                    var sInput = document.getElementById('s_' + income + '_' + i);
-                    var hInput = document.getElementById('h_' + income + '_' + i);
-                    var lInput = document.getElementById('l_' + income + '_' + i);
-                    var tInput = document.getElementById('t_' + income + '_' + i);
-
-                    if (n.includes(forbiddenWord)) {
-                        qInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
-                        wInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
-                        hInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
-                        lInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
-                        tInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
-                        nInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
-                        sInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
-                    } else {
-                        qInput.style.backgroundColor = '';
-                        wInput.style.backgroundColor = '';
-                        hInput.style.backgroundColor = '';
-                        lInput.style.backgroundColor = '';
-                        tInput.style.backgroundColor = '';
-                        nInput.style.backgroundColor = '';
-                        sInput.style.backgroundColor = '';
-                    }
-
-                    // Değerler boşsa, t değerini 0 olarak ayarla
-                    if (isNaN(q) && isNaN(w) && isNaN(h) && isNaN(l)) {
-                        document.getElementById('t_' + income + '_' + i).value = "0";
-                    } else {
-                        q = q || 1; // Eğer q değeri yoksa veya NaN ise 1 olarak ayarla
-                        w = w || 1; // Benzer şekilde diğer değerleri de düzelt
-                        h = h || 1;
-                        l = l || 1;
-
-                        var m = n.includes(forbiddenWord) ? -1 : 1;
-
-                        var result = m * q * w * h * l;
-                        result = result.toFixed(2);
-                        document.getElementById('t_' + income + '_' + i).value = result;
-                        totalResult += parseFloat(result);
-                        allEmpty = false; // En az bir değer dolu, allEmpty değerini false yap
-                    }
-
-                }
-
-                if (allEmpty) {
-                    document.getElementById('total_' + income).value = "0";
                 } else {
-                    document.getElementById('total_' + income).value = totalResult.toFixed(2);
+                    swal("Metraj Güvende");
+                }
+            })
+    }
+</script>
+<script>
+    function resetInputValues() {
+
+        swal({
+            title: "Formu Temizlemek İstediğine Emin Misin?",
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Temizle"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    var form = document.getElementById('save_boq');
+
+                    // Get all input elements within the form
+                    var inputElements = form.querySelectorAll('input');
+
+                    // Loop through the input elements and set their values to 0, except for the input with id "dont_delete"
+                    for (var i = 0; i < inputElements.length; i++) {
+                        var input = inputElements[i];
+                        if ((input.type === 'text' || input.type === 'number') && input.id !== 'dont_delete') {
+                            input.value = '';
+                        }
+                    }
+
+                    swal("Form Temizlendi; Kaydetmediğiniz sürece sildiğiniz veriler saklanır", {
+                        icon: "success",
+                    });
+
+                } else {
+                    swal("Temizleme İptal Edildi");
+                }
+            })
+    }
+</script>
+<script>
+    function saveCalc(btn) {
+        var url = btn.getAttribute('data-url');
+        var formId = btn.getAttribute('form');
+
+
+        // Serialize the form data
+        var formData = new FormData(document.getElementById(formId));
+
+        // Send an AJAX POST request
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // Assuming the response contains the updated content
+                $(".dynamic").html(response);
+
+                var autoRefreshButton = document.querySelector('.auto-refresh-button');
+                if (autoRefreshButton) {
+                    autoRefreshButton.click();
                 }
 
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+<script>
+    function saveCalcexit(btn) {
+        var url = btn.getAttribute('data-url');
+        var formId = btn.getAttribute('form');
+
+        // Serialize the form data
+        var formData = new FormData(document.getElementById(formId));
+
+        // Send an AJAX POST request
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                window.location.href = "<?php echo base_url("payment/file_form/$payment_id"); ?> // Replace with the URL you want to redirect to
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+<script>
+    function renderGroup(btn) {
+        var $url = btn.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".renderGroup").html(response);
+        })
+    }
+</script>
+<script>
+    function auto_refresh_list() {
+        var contractId = document.getElementById("myElement").getAttribute("data-contract-id");
+        var paymentNo = document.getElementById("myElement").getAttribute("data-payment-no");
+        var groupId = document.getElementById("myElement").getAttribute("data-group-id");
+
+        var url = base_url + "/" + this.Module_Name + "/select_group/" + contractId + "/" + paymentNo + "/" + groupId;
+
+        $.post($url, {}, function (response) {
+            $(".renderGroup").html(response);
+        })
+    }
+</script>
+
+<script>
+    function calculateAndSetResult(income, row_number) {
+        var totalResult = 0;
+        var total = 0; // Toplamı saklamak için bir değişken tanımlayın
+        var allEmpty = true; // Tüm q, w, h, l değerleri boş mu?
+
+        for (var i = 1; i <= <?php echo $last_row; ?>; i++) {
+            var q = parseFloat(document.getElementById('q_' + income + '_' + i).value);
+            var w = parseFloat(document.getElementById('w_' + income + '_' + i).value);
+            var h = parseFloat(document.getElementById('h_' + income + '_' + i).value);
+            var l = parseFloat(document.getElementById('l_' + income + '_' + i).value);
+
+            var qElement = document.getElementById('q_' + income + '_' + i);
+            if (qElement) {
+                var q = parseFloat(qElement.value);
+                // Diğer işlemleri yapın
+            } else {
+                console.log("Element bulunamadı: q_" + income + "_" + i);
             }
 
-        </script>
+            var n = document.getElementById('n_' + income + '_' + i).value.toLowerCase();
 
-        <script>
-            function toggleReadOnly(income) {
-                var toggleCheckbox = document.getElementById('toggleCheckbox');
-                var readonlyInput = document.getElementById('total_' + income);
+            var forbiddenWord = 'minha';
 
-                readonlyInput.readOnly = !toggleCheckbox.checked;
+            var qInput = document.getElementById('q_' + income + '_' + i);
+            var wInput = document.getElementById('w_' + income + '_' + i);
+            var nInput = document.getElementById('n_' + income + '_' + i);
+            var sInput = document.getElementById('s_' + income + '_' + i);
+            var hInput = document.getElementById('h_' + income + '_' + i);
+            var lInput = document.getElementById('l_' + income + '_' + i);
+            var tInput = document.getElementById('t_' + income + '_' + i);
 
-                var pointerEventsValue = toggleCheckbox.checked ? "none" : "auto"; // pointerEvents ayarı
-
-
-                for (var i = 1; i <= <?php echo $last_row; ?>; i++) {
-                    var qInput = document.getElementById('q_' + income + '_' + i);
-                    var wInput = document.getElementById('w_' + income + '_' + i);
-                    var nInput = document.getElementById('n_' + income + '_' + i);
-                    var sInput = document.getElementById('s_' + income + '_' + i);
-                    var hInput = document.getElementById('h_' + income + '_' + i);
-                    var lInput = document.getElementById('l_' + income + '_' + i);
-                    var tInput = document.getElementById('t_' + income + '_' + i);
-
-                    qInput.readOnly = toggleCheckbox.checked;
-                    qInput.style.pointerEvents = pointerEventsValue;
-                    wInput.readOnly = toggleCheckbox.checked;
-                    wInput.style.pointerEvents = pointerEventsValue;
-                    nInput.readOnly = toggleCheckbox.checked;
-                    nInput.style.pointerEvents = pointerEventsValue;
-                    sInput.readOnly = toggleCheckbox.checked;
-                    sInput.style.pointerEvents = pointerEventsValue;
-                    hInput.readOnly = toggleCheckbox.checked;
-                    hInput.style.pointerEvents = pointerEventsValue;
-                    lInput.readOnly = toggleCheckbox.checked;
-                    lInput.style.pointerEvents = pointerEventsValue;
-                    tInput.readOnly = toggleCheckbox.checked;
-                    tInput.style.pointerEvents = pointerEventsValue;
-                }
+            if (n.includes(forbiddenWord)) {
+                qInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                wInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                hInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                lInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                tInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                nInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+                sInput.style.backgroundColor = 'rgba(246,145,98,0.66)';
+            } else {
+                qInput.style.backgroundColor = '';
+                wInput.style.backgroundColor = '';
+                hInput.style.backgroundColor = '';
+                lInput.style.backgroundColor = '';
+                tInput.style.backgroundColor = '';
+                nInput.style.backgroundColor = '';
+                sInput.style.backgroundColor = '';
             }
-        </script>
+
+            // Değerler boşsa, t değerini 0 olarak ayarla
+            if (isNaN(q) && isNaN(w) && isNaN(h) && isNaN(l)) {
+                document.getElementById('t_' + income + '_' + i).value = "0";
+            } else {
+                q = q || 1; // Eğer q değeri yoksa veya NaN ise 1 olarak ayarla
+                w = w || 1; // Benzer şekilde diğer değerleri de düzelt
+                h = h || 1;
+                l = l || 1;
+
+                var m = n.includes(forbiddenWord) ? -1 : 1;
+
+                var result = m * q * w * h * l;
+                result = result.toFixed(2);
+                document.getElementById('t_' + income + '_' + i).value = result;
+                totalResult += parseFloat(result);
+                allEmpty = false; // En az bir değer dolu, allEmpty değerini false yap
+            }
+
+        }
+
+        if (allEmpty) {
+            document.getElementById('total_' + income).value = "0";
+        } else {
+            document.getElementById('total_' + income).value = totalResult.toFixed(2);
+        }
+
+    }
+
+</script>
+
+<script>
+    function toggleReadOnly(income) {
+        var toggleCheckbox = document.getElementById('toggleCheckbox');
+        var readonlyInput = document.getElementById('total_' + income);
+
+        readonlyInput.readOnly = !toggleCheckbox.checked;
+
+        var pointerEventsValue = toggleCheckbox.checked ? "none" : "auto"; // pointerEvents ayarı
+
+
+        for (var i = 1; i <= <?php echo $last_row; ?>; i++) {
+            var qInput = document.getElementById('q_' + income + '_' + i);
+            var wInput = document.getElementById('w_' + income + '_' + i);
+            var nInput = document.getElementById('n_' + income + '_' + i);
+            var sInput = document.getElementById('s_' + income + '_' + i);
+            var hInput = document.getElementById('h_' + income + '_' + i);
+            var lInput = document.getElementById('l_' + income + '_' + i);
+            var tInput = document.getElementById('t_' + income + '_' + i);
+
+            qInput.readOnly = toggleCheckbox.checked;
+            qInput.style.pointerEvents = pointerEventsValue;
+            wInput.readOnly = toggleCheckbox.checked;
+            wInput.style.pointerEvents = pointerEventsValue;
+            nInput.readOnly = toggleCheckbox.checked;
+            nInput.style.pointerEvents = pointerEventsValue;
+            sInput.readOnly = toggleCheckbox.checked;
+            sInput.style.pointerEvents = pointerEventsValue;
+            hInput.readOnly = toggleCheckbox.checked;
+            hInput.style.pointerEvents = pointerEventsValue;
+            lInput.readOnly = toggleCheckbox.checked;
+            lInput.style.pointerEvents = pointerEventsValue;
+            tInput.readOnly = toggleCheckbox.checked;
+            tInput.style.pointerEvents = pointerEventsValue;
+        }
+    }
+</script>
 
 
 

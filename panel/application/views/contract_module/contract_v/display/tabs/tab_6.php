@@ -52,6 +52,9 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-sm-7">
+                                                                        <input class="form-control" type="number" name="hakedis_no"
+                                                                               value="<?php echo last_payment($item->id); ?>" onblur="calcular()"
+                                                                               onfocus="calcular()">
                                                                         <input class="datepicker-here form-control digits <?php cms_isset(form_error("imalat_tarihi"), "is-invalid", ""); ?>"
                                                                                type="text" style="width: 100%"
                                                                                name="imalat_tarihi"

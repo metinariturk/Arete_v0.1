@@ -25,6 +25,8 @@ class Payment extends CI_Controller
         $this->load->model("Payment_file_model");
 
         $this->load->model("Contract_model");
+        $this->load->model("Contract_price_model");
+        $this->load->model("Books_main_model");
         $this->load->model("Project_model");
         $this->load->model("Boq_model");
         $this->load->model("Settings_model");
@@ -284,7 +286,8 @@ class Payment extends CI_Controller
     {
         $contract_id = contract_id_module("payment", $id);
         $payment_no = get_from_id("payment", "hakedis_no", "$id");
-        $active_boqs = get_from_id("contract", "active_boq", "$contract_id");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id"=> $contract_id, "main_group" => 1),"rank ASC");
+        $active_boqs = $this->Contract_price_model->get_all(array("contract_id"=> $contract_id, "main_group" => null,"sub_group" => null,),"rank ASC");
         $prices = get_from_id("contract", "price", "$contract_id");
         $settings = $this->Settings_model->get();
         $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
@@ -306,7 +309,8 @@ class Payment extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->contract = $contract;
         $viewData->calculates = $calculates;
-        $viewData->active_boqs = json_decode($active_boqs, true);
+        $viewData->main_groups = $main_groups;
+        $viewData->active_boqs = $active_boqs;
         $viewData->project_id = $project_id;
         $viewData->active_tab = $active_tab;
         $viewData->settings = $settings;

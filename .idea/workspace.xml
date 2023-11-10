@@ -26,16 +26,21 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "node.js.selected.package.tslint": "(autodetect)"
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/boq_v/add",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\boq_v\add" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modules" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v\new_item" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module\book_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\book_v\new_book" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\db" />
@@ -84,6 +89,7 @@
       <workItem from="1699029702194" duration="11026000" />
       <workItem from="1699370136131" duration="20522000" />
       <workItem from="1699440042372" duration="27624000" />
+      <workItem from="1699598057398" duration="12109000" />
     </task>
     <servers />
   </component>
@@ -95,16 +101,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>141</line>
-          <properties>
-            <option name="className" value="\Boq" />
-            <option name="methodName" value="file_form" />
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>76</line>
+          <line>55</line>
           <properties>
             <option name="className" value="\Boq" />
             <option name="methodName" value="new_form" />
@@ -113,7 +110,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>498</line>
+          <line>502</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="save" />
@@ -129,6 +126,11 @@
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>
           <line>5</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/display/tabs/tab_calculate.php</url>
+          <line>150</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
