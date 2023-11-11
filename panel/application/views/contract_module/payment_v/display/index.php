@@ -79,6 +79,12 @@
             border: 1px solid #a8b5cf;
         }
 
+        td.total-group-header-right {
+            background-color: #e7e7e7;
+            text-align: right;
+            border: 1px solid #a8b5cf;
+        }
+
         td.calculate-header-center {
             background-color: #e7e7e7;
             text-align: center;
@@ -125,6 +131,29 @@
         document.getElementById("myForm").submit();
     }
 </script>
+<script>
+    $(document).ready(function(){
+        $("#saveButton").on("click", function(){
+            $("#save_payment").submit();
+        });
+    });
+</script>
+<script>
+    function save_payment(anchor) {
+
+        var $form = anchor.getAttribute('form-id');
+
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".refresh_payment").html(response);
+        });
+    }
+
+</script>
+
+
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

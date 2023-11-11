@@ -284,12 +284,11 @@ class Payment extends CI_Controller
     public
     function file_form($id, $active_tab = null)
     {
-        $total_payment = $this->input->post("total_payment") ?? 0;
 
         $contract_id = contract_id_module("payment", $id);
         $payment_no = get_from_id("payment", "hakedis_no", "$id");
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id"=> $contract_id, "main_group" => 1),"rank ASC");
-        $active_boqs = $this->Contract_price_model->get_all(array("contract_id"=> $contract_id, "main_group" => null,"sub_group" => null,),"rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => null, "sub_group" => null,), "rank ASC");
         $prices = get_from_id("contract", "price", "$contract_id");
         $settings = $this->Settings_model->get();
         $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
@@ -298,10 +297,7 @@ class Payment extends CI_Controller
             "id" => $contract_id
         ));
 
-        $calculates = $this->Boq_model->get_all(array(
-            "contract_id" => $contract_id,
-            "payment_no" => $payment_no,
-        ));
+
 
         $project_id = project_id_cont($contract_id);
 
@@ -310,11 +306,9 @@ class Payment extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->contract = $contract;
-        $viewData->calculates = $calculates;
         $viewData->main_groups = $main_groups;
         $viewData->active_boqs = $active_boqs;
         $viewData->project_id = $project_id;
-        $viewData->total_payment = $total_payment;
         $viewData->active_tab = $active_tab;
         $viewData->settings = $settings;
         $viewData->payment_settings = $payment_settings;
@@ -488,103 +482,47 @@ class Payment extends CI_Controller
     }
 
     public
-    function save($contract_id)
+    function save($payment_id)
     {
 
-        $is_negative = $this->input->post("is_negative");
-
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
+        $payment = $this->Payment_model->get(array("id" => $payment_id));
+        $contract_id = contract_id_module("payment", $payment_id);
         $contract_code = contract_code($contract_id);
-
-        $contract = $this->Contract_model->get(array(
-                "id" => $contract_id
-            )
-        );
-
-        $hak_no = $this->input->post('hakedis_no');
-
-        $a = $this->input->post('toplam_imalat');
-        $last_total_imalat = sum_payments("E", $contract_id);
-        $b = $this->input->post('toplam_ihzarat');
-
-
-        $c = $a + $b;
-        $last_total_ihzarat = sum_payments("bu_ihzarat", $contract_id);
-
-
-        $limit = limit_cost($contract_id);
-
-        if ($hak_no != 1) {
-            $imalat_tarihi = dateFormat('Y-m-d', $this->input->post("imalat_tarihi"));
-            $last_payment_id = get_from_any_and("payment", "contract_id", "$contract_id", "hakedis_no", last_payment($contract_id));
-            $last_payment_day = dateFormat('d-m-Y', get_from_any("payment", "imalat_tarihi", "id", "$last_payment_id"));
-            $last_payment_no = get_from_id("payment", "hakedis_no", "$last_payment_id");
-            $warning = "son hakediş <b>" . "$last_payment_no" . " nolu </b> hakedişin tarihi olan";
-        }
-
-        if ($hak_no == 1) {
-            $imalat_tarihi = dateFormat('Y-m-d', $this->input->post("imalat_tarihi"));
-            $yer_teslimi_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sitedel_date", "id", "$contract_id"));
-            $warning = "yer teslimi tarihi olan";
-        }
-
-        $limit_advance = limit_advance($contract_id);
-        $setoff_advance = sum_payments("avans_mahsup_miktar", $contract_id);
-
-        $currency = get_currency($contract_id);
-
+        $project_id = project_id_cont($payment->contract_id);
+        $project_code = project_code($project_id);
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("hakedis_no", "Hakediş No", "required|numeric|trim"); //2
-        if ($hak_no == 1) {
-            $this->form_validation->set_rules("imalat_tarihi", "İmalat Tarihi", "trim|callback_sitedel_paymentday[$yer_teslimi_tarihi]"); //2
-        }
-        if ($hak_no != 1) {
-            $this->form_validation->set_rules("imalat_tarihi", "İmalat Tarihi", "trim|callback_sitedel_paymentday[$last_payment_day]"); //2
-        }
+        $this->form_validation->run();
 
-        $this->form_validation->set_rules("E", "Bu İmalat Bedeli", "required|numeric|trim"); //2
-        if ($is_negative != "on") {
-            $this->form_validation->set_rules("toplam_imalat", "Toplam İmalat Bedeli", "required|greater_than_equal_to[$last_total_imalat]|less_than_equal_to[$c]|numeric|trim"); //2
-        }
-        $this->form_validation->set_rules("bu_ihzarat", "Bu İhzarat Bedeli", "numeric|trim"); //2
-        $this->form_validation->set_rules("toplam_ihzarat", "Toplam İhzarat Bedeli", "greater_than_equal_to[$last_total_ihzarat]|less_than_equal_to[$c]|numeric|trim"); //2
-
-        if ($contract->fiyat_fark == 1) {
-            $this->form_validation->set_rules("bu_fiyat_fark", "Fiyat Farkı", "required|numeric|trim"); //2
-            $this->form_validation->set_rules("toplam_fiyat_fark", "Toplam Fiyat Farkı", "required|numeric|trim"); //2
-        }
-        $this->form_validation->set_rules("iif", "İmalat İhzarat ve Fiyat Farkı Toplamı", "numeric|trim"); //2
-        $this->form_validation->set_rules("ara_toplam", "Toplam Bedel", "numeric|trim"); //2
-        $this->form_validation->set_rules("bu_imalat_ihzarat", "Bu Hakediş Tutarı", "numeric|trim"); //2
-        $this->form_validation->set_rules("kdv_oran", "KDV Oran", "trim"); //2
-        $this->form_validation->set_rules("kdv_tutar", "KDV Tutar", "numeric|trim"); //2
-        $this->form_validation->set_rules("taahhuk", "Taahhuk Tutar", "numeric|trim"); //2
-        $this->form_validation->set_rules("stopaj_oran", "Stopaj Oranı", "numeric|trim"); //2
-        $this->form_validation->set_rules("stopaj_tutar", "Stopaj Tutar", "numeric|trim"); //2
-        $this->form_validation->set_rules("damga_oran", "Damga Vergisi Oranı", "numeric|trim"); //2
-        $this->form_validation->set_rules("damga_tutar", "Damga Vergisi Tutarı", "numeric|trim"); //2
-        $this->form_validation->set_rules("tevkifat_oran", "KDV Tevkifat Oranı", "numeric|trim"); //2
-        $this->form_validation->set_rules("tevkifat_tutar", "Tevkifat Tutar", "numeric|trim"); //2
-        $this->form_validation->set_rules("sgk", "SGK Kesintisi", "numeric|trim"); //2
-        $this->form_validation->set_rules("makine", "İş Makinesi Kesintisi", "numeric|trim"); //2
-        $this->form_validation->set_rules("gecikme", "Gecikme Cezası", "numeric|trim"); //2
-        $this->form_validation->set_rules("avans_mahsup_miktar", "Avans Mahsup", "numeric|trim"); //2
-        $this->form_validation->set_rules("gecici_kabul_kesinti", "Nakit Geçici Kabul Kesintisi", "numeric|trim"); //2
-        $this->form_validation->set_rules("diger_1", "Diğer Kesinti", "numeric|trim"); //2
-        $this->form_validation->set_rules("diger_2", "Diğer Kesinti", "numeric|trim"); //2
-        $this->form_validation->set_rules("kesinti_toplam", "Kesinti Toplamı", "numeric|trim"); //2
-        $this->form_validation->set_rules("fiyat_fark_teminat", "Fiyat Farkı Teminatı", "numeric|trim"); //2
-        $this->form_validation->set_rules("net_bedel", "Ödenecek Net Bedel", "numeric|trim"); //2
+        $this->form_validation->set_rules("A", "Sözleşme Fiyatları İle Yapılan İşin Tutarı", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("B", "Fiyat Farkı Tutarı", "numeric|trim"); //2
+        $this->form_validation->set_rules("B1", "Önceki Fiyat Farkı Toplamı", "numeric|trim"); //2
+        $this->form_validation->set_rules("C", "Toplam Tutar (A+B)", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("D", "Bir Önceki Hakedişin Toplam Tutarı", "numeric|trim"); //2
+        $this->form_validation->set_rules("E", "Bu Hakedişin Tutarı (C-D)", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("F", "KDV", "numeric|trim"); //2
+        $this->form_validation->set_rules("G", "Tahakkuk Tutarı", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("KES_a_s", "a)Gelir / Kurumlar Vergisi Oranı", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_a", "a)Gelir / Kurumlar Vergisi", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_b_s", "b)Damga Vergisi Oranı", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_b", "b)Damga Vergisi", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_c_s", "c)KDV Tevkifatı Oranı", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_c", "c)KDV Tevkifatı", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_d", "d)Sosyal Sigortalar Kurumu Kesintisi", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_e_s", "e)Geçici Kabul Kesintisi Oranı", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_e", "e)Geçici Kabul Kesintisi Oranı", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_f", "e)Geçici Kabul Kesintisi", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_g", " g)Gecikme Cezası", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_h", "h)İş Sağlığı ve Güvenliği Cezası", "numeric|trim"); //2
+        $this->form_validation->set_rules("KES_i", "i)Diğer", "numeric|trim"); //2
+        $this->form_validation->set_rules("H", "Kesinti ve Mahsuplar Toplamı", "numeric|trim"); //2
+        $this->form_validation->set_rules("I_s", "Avans Mahsup Oranı", "numeric|trim"); //2
+        $this->form_validation->set_rules("I", "Avans Mahsup Tutarı", "numeric|trim"); //2
+        $this->form_validation->set_rules("balance", "Ödenecek Tutar", "required|numeric|trim"); //2
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "numeric" => "<b>{field}</b> rakamlardan oluşmalıdır",
-                "limit_advance" => "<b>{field}</b> en fazla kadar olmalıdır.",
-                "sitedel_paymentday" => "Uygulama <b>{field}</b>  $warning <b>{param}</b> tarhihinden daha ileri bir tarih olmalı",
-                "greater_than_equal_to" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
-                "less_than_equal_to" => "<b>{field}</b> sözleşme ve keşif artışları dahil <b>{param}</b> $currency'den fazla hakediş girişi yapılamaz . Keşif artışı tanımlamak için sözleşme ekranından keşif artışı verebilirsiniz.",
+                "numeric" => "<b>{field}</b> rakamlardan oluşmalıdır"
             )
         );
 
@@ -593,63 +531,48 @@ class Payment extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no";
+            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$payment->hakedis_no";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
-                echo "Dosya Yolu Oluşturuldu: " . $path;
-            } else {
-                echo "<p>Aynı İsimde Dosya Mevcut: " . $path . "</p>";
             }
 
-            if ($this->input->post('hakedis_no') == "on") {
+            if ($this->input->post('final') == "on") {
                 $final = 1;
             } else {
                 $final = 0;
             }
 
-            if ($this->input->post('toplam_ihzarat') == null) {
-                $ihzarat = 0;
-            }
-
-            $insert = $this->Payment_model->add(
+            $update = $this->Payment_model->update(
                 array(
-                    "contract_id" => $contract_id,
-                    "dosya_no" => $file_name,
-                    "hakedis_no" => $this->input->post('hakedis_no'),
-                    "imalat_tarihi" => $imalat_tarihi,
-                    "toplam_imalat" => $this->input->post('toplam_imalat'),
-                    "toplam_ihzarat" => $this->input->post('toplam_ihzarat'),
-                    "toplam_imalat_ihzarat" => $this->input->post('toplam_imalat') + $ihzarat,
-                    "E" => $this->input->post('bu_imalat'),
-                    "bu_ihzarat" => $this->input->post('bu_ihzarat'),
-                    "bu_imalat_ihzarat" => $this->input->post('bu_imalat') + $this->input->post('bu_ihzarat'),
-                    "bu_fiyat_fark" => $this->input->post('bu_fiyat_fark'),
-                    "toplam_fiyat_fark" => $this->input->post('toplam_fiyat_fark'),
-                    "ara_toplam" => $this->input->post('ara_toplam'),
-                    "onceki_iif" => $this->input->post('onceki_iif'),
-                    "bu_iif" => $this->input->post('bu_iif'),
-                    "kdv_oran" => $this->input->post('kdv_oran'),
-                    "kdv_tutar" => $this->input->post('kdv_tutar'),
-                    "taahhuk" => $this->input->post('taahhuk'),
-                    "stopaj_oran" => $this->input->post('stopaj_oran'),
-                    "stopaj_tutar" => $this->input->post('stopaj_tutar'),
-                    "damga_oran" => $this->input->post('damga_oran'),
-                    "damga_tutar" => $this->input->post('damga_tutar'),
-                    "tevkifat_oran" => $this->input->post('tevkifat_oran'),
-                    "tevkifat_tutar" => $this->input->post('tevkifat_tutar'),
-                    "sgk" => $this->input->post('sgk'),
-                    "makine" => $this->input->post('makine'),
-                    "gecikme" => $this->input->post('gecikme'),
-                    "avans_mahsup_miktar" => $this->input->post('avans_mahsup_miktar'),
-                    "avans_mahsup_oran" => $this->input->post('avans_mahsup_oran'),
-                    "gecici_kabul_kesinti" => $this->input->post('gecici_kabul_kesinti'),
-                    "diger_1" => $this->input->post('diger_1'),
-                    "diger_2" => $this->input->post('diger_2'),
-                    "fiyat_fark_teminat" => $this->input->post('fiyat_fark_teminat'),
-                    "kesinti_toplam" => $this->input->post('kesinti_toplam'),
-                    "net_bedel" => $this->input->post('net_bedel'),
-                    "currency" => get_from_any("contract", "para_birimi", "id", "$contract_id"),
+                    "id" => $payment_id
+                ),
+                array(
+                    "A" => $this->input->post('A'),
+                    "B" => $this->input->post('B'),
+                    "B1" => $this->input->post('B1'),
+                    "C" => $this->input->post('C'),
+                    "D" => $this->input->post('D'),
+                    "E" => $this->input->post('E'),
+                    "F" => $this->input->post('F'),
+                    "G" => $this->input->post('G'),
+                    "KES_a_s" => $this->input->post('KES_a_s'),
+                    "KES_a" => $this->input->post('KES_a'),
+                    "KES_b_s" => $this->input->post('KES_b_s'),
+                    "KES_b" => $this->input->post('KES_b'),
+                    "KES_c_s" => $this->input->post('KES_c_s'),
+                    "KES_c" => $this->input->post('KES_c'),
+                    "KES_d" => $this->input->post('KES_d'),
+                    "KES_e_s" => $this->input->post('KES_e_s'),
+                    "KES_e" => $this->input->post('KES_e'),
+                    "KES_f" => $this->input->post('KES_f'),
+                    "KES_g" => $this->input->post('KES_g'),
+                    "KES_h" => $this->input->post('KES_h'),
+                    "KES_i" => $this->input->post('KES_i'),
+                    "H" => $this->input->post('H'),
+                    "I_s" => $this->input->post('I_s'),
+                    "I" => $this->input->post('I'),
+                    "balance" => $this->input->post('balance'),
                     "final" => $final,
                 )
             );
@@ -660,22 +583,20 @@ class Payment extends CI_Controller
                 array(
                     "module" => $this->Module_Name,
                     "connected_module_id" => $this->db->insert_id(),
-                    "connected_contract_id" => $contract_id,
-                    "file_order" => $file_name,
+                    "connected_contract_id" => $payment->contract_id,
+                    "file_order" => "",
                     "createdAt" => date("Y-m-d H:i:s"),
                     "createdBy" => active_user_id(),
                 )
             );
 
             // TODO Alert sistemi eklenecek...
-            if ($insert) {
-
+            if ($update) {
                 $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Hakediş başarılı bir şekilde eklendi",
+                    "title" => "Hakediş Bilgileri Eklendi",
+                    "text" => "Çıktı Almak İçin Butonları Kullanabilirsiniz",
                     "type" => "success"
                 );
-
             } else {
 
                 $alert = array(
@@ -687,149 +608,68 @@ class Payment extends CI_Controller
 
             // İşlemin Sonucunu Session'a yazma işlemi...
             $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
-
-        } else {
 
 
-            $error = array();
+            $active_tab = "report";
+            $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
+            $contract = $this->Contract_model->get(array("id"=>$contract_id));
 
-
-            $fiyat_fark = get_from_id("contract", "fiyat_fark", "$contract_id");
-            $fiyat_fark_teminat = get_from_id("contract", "fiyat_fark_teminat", "$contract_id");
-            $final_date = get_from_id("contract", "final_date", "$contract_id");
-            $sitedel_date = get_from_id("contract", "sitedel_date", "$contract_id");
-            $workplan = get_from_id("contract", "workplan_payment", "$contract_id");
-            $teminat_oran = get_from_id("contract", "teminat_oran", "$contract_id");
-            $advances = get_from_any_array("advance", "contract_id", "$contract_id");
-            $costincs = get_from_any_array("costinc", "contract_id", "$contract_id");
-
-            if ($fiyat_fark == 1) {
-                if ($fiyat_fark_teminat != 1) {
-                    $payment_fiyat_fark = sum_anything("payment", "bu_fiyat_fark", "contract_id", "$contract_id");
-                    $bond_fiyat_fark = sum_anything_and("bond", "teminat_miktar", "contract_id", "$contract_id", "teminat_gerekce", "price_diff");
-                    $min_bond = $payment_fiyat_fark * $teminat_oran / 100;
-                    if ($bond_fiyat_fark < $min_bond) {
-                        $fiyat_fark_error = "Fiyat Farkı Teminat Mektubu Giriniz veya Hakediş Ayarlarından Teminat Bedeli Hakedişten Düşülmesini Ayarlayınız.*" . base_url("bond/new_form_contract/$contract_id");
-                    } else {
-                        $fiyat_fark_error = null;
-                    }
-                } else {
-                    $fiyat_fark_error = null;
-                }
-            } else {
-                $fiyat_fark_error = null;
-            }
-
-
-            if (!empty($final_date)) {
-                $error_final = "Kesin Kabul Yapılmış Olan İşe Hakediş Girilemez*" . base_url("contract/file_form/$contract_id/final");
-            } else {
-                $error_final = null;
-            }
-
-            if (isset($advances)) {
-                foreach ($advances as $advance) {
-                    $teminat = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_avans_id", "$advance->id");
-                    if (empty($teminat)) {
-                        $error_advance = "Verilen avansa ait teminat mektubu bulunamadı. Avans teminatı girilmeden hakediş yapılamaz.*" . base_url("bond/new_form_advance/$advance->id");
-                    } else {
-                        $error_advance = null;
-                    }
-                }
-
-            } else {
-                $error_advance = null;
-            }
-
-            if (isset($costincs)) {
-                foreach ($costincs as $costinc) {
-                    $constinc_bond = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_kesif_id", "$costinc->id");
-                    if (empty($constinc_bond)) {
-                        $error_costinc = $costinc->dosya_no . "Verilen keşif artışına ait teminat mektubu bulunamadı. Keşif artışı teminatı girilmeden hakediş yapılamaz.*" . base_url("bond/new_form_costinc/$costinc->id");
-                    } else {
-                        $error_costinc = null;
-                    }
-                }
-            } else {
-                $error_costinc = null;
-            }
-
-            if (empty($sitedel_date)) {
-                $error_sitedel = "Yer Teslimi Yapılmamış Olan İşe Hakediş Girilemez*" . base_url("contract/file_form/$contract_id/sitedel");
-            } else {
-                $error_sitedel = null;
-            }
-
-            if (empty($workplan)) {
-                $error_workplan = "Ödeme Planı Oluşturulmadan Hakediş Girilemez*" . base_url("contract/file_form/$contract_id/workplan");
-            } else {
-                $error_workplan = null;
-            }
-
-            $teminat = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_gerekce", "contract");
-
-            if (empty($teminat)) {
-                $error_bond = "Sözleşme Teminatı Olmadan Hakediş Girilemez*" . base_url("bond/new_form_contract/$contract_id");
-            } else {
-                $error_bond = null;
-            }
-
-            $error_array = array(
-                $fiyat_fark_error,
-                $error_final,
-                $error_advance,
-                $error_costinc,
-                $error_sitedel,
-                $error_workplan,
-                $error_bond
-            );
-
-            $error_empty = !array_filter($error_array, function ($value) {
-                return !empty($value);
-            });
-
-            if (count_payments($contract_id) == 0) {
-                $payment_no = 1;
-            } else {
-                $payment_no = last_payment($contract_id) + 1;
-            }
-
-            $contract_type = get_from_id("contract", "official", "$contract_id");
-
-            if ($contract_type == 1) {
-                if ($error_empty) {
-                    $error_isset = true;
-                } else {
-                    $error_isset = false;
-                }
-            } else {
-                echo $error_isset = true;
-            }
 
             $viewData = new stdClass();
-
-            $contract = $this->Contract_model->get(array(
-                    "id" => $contract_id
-                )
-            );
-
-            $settings = $this->Settings_model->get();
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Add_Folder";
-            $viewData->form_error = true;
+            $viewData->active_tab = $active_tab;
+            $viewData->payment_settings = $payment_settings;
             $viewData->contract = $contract;
-            $viewData->payment_no = $this->input->post('hakedis_no');
-            $viewData->contract_id = $contract_id;
-            $viewData->project_id = $project_id;
-            $viewData->settings = $settings;
-            $viewData->error_array = $error_array;
-            $viewData->error_isset = $error_isset;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+            $item = $this->Payment_model->get(
+                array(
+                    "id" => $payment_id
+                )
+            );
+
+            $viewData->item = $item;
+
+
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_report", $viewData, true);
+
+            echo $render_html;
+
+        } else {
+
+            $active_tab = "report";
+            $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
+            $contract = $this->Contract_model->get(array("id"=>$contract_id));
+
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->active_tab = $active_tab;
+            $viewData->payment_settings = $payment_settings;
+            $viewData->contract = $contract;
+
+
+            $item = $this->Payment_model->get(
+                array(
+                    "id" => $payment_id
+                )
+            );
+
+            $viewData->item = $item;
+
+
+            $viewData->form_error = true;
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_report", $viewData, true);
+            echo $render_html;
+
         }
     }
 
@@ -1429,103 +1269,6 @@ class Payment extends CI_Controller
 
 
         }
-
-
         $pdf->Output('example.pdf');
-    }
-
-    public function update_payment($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $contract_id = contract_id_module("payment", "$id");
-
-        $settings_id = get_from_any("payment_settings", "id", "contract_id", "$contract_id");
-
-        $gecici_teminat = ($this->input->post("gecici_teminat") == "on") ? 1 : 0;
-        $gecici_teminat_oran = $this->input->post("gecici_teminat_oran");
-        $fiyat_fark = ($this->input->post("fiyat_fark") == "on") ? 1 : 0;
-        $fiyat_fark_kes = ($this->input->post("fiyat_fark_kes") == "on") ? 1 : 0;
-        $damga_vergisi = ($this->input->post("damga_vergisi") == "on") ? 1 : 0;
-        $damga_oran = $this->input->post("damga_oran");
-        $stopaj = ($this->input->post("stopaj") == "on") ? 1 : 0;
-        $stopaj_oran = $this->input->post("stopaj_oran");
-        $kdv = ($this->input->post("kdv") == "on") ? 1 : 0;
-        $kdv_oran = $this->input->post("kdv_oran");
-        $tevkifat_oran = $this->input->post("tevkifat_oran");
-        $avans = ($this->input->post("avans") == "on") ? 1 : 0;
-        $avans_oran = $this->input->post("avans_oran");
-        $avans_mahsup = ($this->input->post("avans_mahsup") == "on") ? 1 : 0;
-        $avans_stopaj = ($this->input->post("avans_stopaj") == "on") ? 1 : 0;
-
-
-        $this->load->model("Payment_settings_model");
-
-        if (empty($settings_id)) {
-            $insert = $this->Payment_settings_model->add(
-                array(
-                    "contract_id" => $contract_id,
-                    "gecici_teminat" => $gecici_teminat,
-                    "gecici_teminat_oran" => $gecici_teminat_oran,
-                    "fiyat_fark" => $fiyat_fark,
-                    "fiyat_fark_kesintisi" => $fiyat_fark_kes,
-                    "damga_vergisi" => $damga_vergisi,
-                    "damga_vergisi_oran" => $damga_oran,
-                    "stopaj" => $stopaj,
-                    "stopaj_oran" => $stopaj_oran,
-                    "kdv" => $kdv,
-                    "kdv_oran" => $kdv_oran,
-                    "tevkifat_oran" => $tevkifat_oran,
-                    "avans" => $avans,
-                    "avans_oran" => $avans_oran,
-                    "avans_mahsup" => $avans_mahsup,
-                    "avans_stopaj" => $avans_stopaj,
-                )
-            );
-        } else {
-            $update = $this->Payment_settings_model->update(
-                array(
-                    "id" => $settings_id,
-                ),
-                array(
-                    "contract_id" => $contract_id,
-                    "gecici_teminat" => $gecici_teminat,
-                    "gecici_teminat_oran" => $gecici_teminat_oran,
-                    "fiyat_fark" => $fiyat_fark,
-                    "fiyat_fark_kesintisi" => $fiyat_fark_kes,
-                    "damga_vergisi" => $damga_vergisi,
-                    "damga_vergisi_oran" => $damga_oran,
-                    "stopaj" => $stopaj,
-                    "stopaj_oran" => $stopaj_oran,
-                    "kdv" => $kdv,
-                    "kdv_oran" => $kdv_oran,
-                    "tevkifat_oran" => $tevkifat_oran,
-                    "avans" => $avans,
-                    "avans_oran" => $avans_oran,
-                    "avans_mahsup" => $avans_mahsup,
-                    "avans_stopaj" => $avans_stopaj
-                )
-            );
-        }
-
-
-        // TODO Alert sistemi eklenecek...
-        if ($insert) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Hakediş Ayarları Yapıldı, Hakediş Girişi Yapabilirsiniz",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Hakediş Ayarları Güncellendi",
-                "type" => "success"
-            );
-        }
-
-        $this->session->set_flashdata("alert", $alert);
-        redirect(base_url("$this->Module_Name/$this->Display_route/$id/settings"));
     }
 }
