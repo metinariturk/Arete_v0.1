@@ -248,7 +248,6 @@ class Advance extends CI_Controller
                     "contract_id" => $contract_id,
                     "avans_tarih" => $avans_tarihi,
                     "avans_miktar" => $this->input->post("avans_miktar"),
-                    "avans_oran" => $this->input->post("avans_oran"),
                     "aciklama" => $this->input->post("aciklama"),
                 )
             );
@@ -358,7 +357,6 @@ class Advance extends CI_Controller
                 array(
                     "avans_tarih" => $avans_tarihi,
                     "avans_miktar" => $this->input->post("avans_miktar"),
-                    "avans_oran" => $this->input->post("avans_oran"),
                     "aciklama" => $this->input->post("aciklama"),
                 )
             );

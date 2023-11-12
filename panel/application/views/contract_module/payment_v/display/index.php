@@ -131,13 +131,7 @@
         document.getElementById("myForm").submit();
     }
 </script>
-<script>
-    $(document).ready(function(){
-        $("#saveButton").on("click", function(){
-            $("#save_payment").submit();
-        });
-    });
-</script>
+
 <script>
     function save_payment(anchor) {
 

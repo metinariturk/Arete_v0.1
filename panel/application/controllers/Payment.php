@@ -1271,4 +1271,92 @@ class Payment extends CI_Controller
         }
         $pdf->Output('example.pdf');
     }
+
+    public function update_payment($id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+        $contract_id = contract_id_module("payment", "$id");
+        $settings_id = get_from_any("payment_settings", "id", "contract_id", "$contract_id");
+        $gecici_teminat = ($this->input->post("gecici_teminat") == "on") ? 1 : 0;
+        $gecici_teminat_oran = $this->input->post("gecici_teminat_oran");
+        $fiyat_fark = ($this->input->post("fiyat_fark") == "on") ? 1 : 0;
+        $fiyat_fark_kes = ($this->input->post("fiyat_fark_kes") == "on") ? 1 : 0;
+        $damga_vergisi = ($this->input->post("damga_vergisi") == "on") ? 1 : 0;
+        $damga_oran = $this->input->post("damga_oran");
+        $stopaj = ($this->input->post("stopaj") == "on") ? 1 : 0;
+        $stopaj_oran = $this->input->post("stopaj_oran");
+        $kdv = ($this->input->post("kdv") == "on") ? 1 : 0;
+        $kdv_oran = $this->input->post("kdv_oran");
+        $tevkifat_oran = $this->input->post("tevkifat_oran");
+        $avans = ($this->input->post("avans") == "on") ? 1 : 0;
+        $avans_oran = $this->input->post("avans_oran");
+        $avans_mahsup = ($this->input->post("avans_mahsup") == "on") ? 1 : 0;
+        $avans_stopaj = ($this->input->post("avans_stopaj") == "on") ? 1 : 0;
+        $this->load->model("Payment_settings_model");
+        if (empty($settings_id)) {
+            $insert = $this->Payment_settings_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "gecici_teminat" => $gecici_teminat,
+                    "gecici_teminat_oran" => $gecici_teminat_oran,
+                    "fiyat_fark" => $fiyat_fark,
+                    "fiyat_fark_kesintisi" => $fiyat_fark_kes,
+                    "damga_vergisi" => $damga_vergisi,
+                    "damga_vergisi_oran" => $damga_oran,
+                    "stopaj" => $stopaj,
+                    "stopaj_oran" => $stopaj_oran,
+                    "kdv" => $kdv,
+                    "kdv_oran" => $kdv_oran,
+                    "tevkifat_oran" => $tevkifat_oran,
+                    "avans" => $avans,
+                    "avans_oran" => $avans_oran,
+                    "avans_mahsup" => $avans_mahsup,
+                    "avans_stopaj" => $avans_stopaj,
+                )
+            );
+        } else {
+            $update = $this->Payment_settings_model->update(
+                array(
+                    "id" => $settings_id,
+                ),
+                array(
+                    "contract_id" => $contract_id,
+                    "gecici_teminat" => $gecici_teminat,
+                    "gecici_teminat_oran" => $gecici_teminat_oran,
+                    "fiyat_fark" => $fiyat_fark,
+                    "fiyat_fark_kesintisi" => $fiyat_fark_kes,
+                    "damga_vergisi" => $damga_vergisi,
+                    "damga_vergisi_oran" => $damga_oran,
+                    "stopaj" => $stopaj,
+                    "stopaj_oran" => $stopaj_oran,
+                    "kdv" => $kdv,
+                    "kdv_oran" => $kdv_oran,
+                    "tevkifat_oran" => $tevkifat_oran,
+                    "avans" => $avans,
+                    "avans_oran" => $avans_oran,
+                    "avans_mahsup" => $avans_mahsup,
+                    "avans_stopaj" => $avans_stopaj
+                )
+            );
+        }
+        // TODO Alert sistemi eklenecek...
+        if ($insert) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Hakediş Ayarları Yapıldı, Hakediş Girişi Yapabilirsiniz",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Hakediş Ayarları Güncellendi",
+                "type" => "success"
+            );
+        }
+        $this->session->set_flashdata("alert", $alert);
+        redirect(base_url("$this->Module_Name/$this->Display_route/$id/settings"));
+    }
 }
+

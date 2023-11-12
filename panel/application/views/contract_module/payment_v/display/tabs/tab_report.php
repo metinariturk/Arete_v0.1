@@ -7,8 +7,12 @@
         Hakediş ayalarını yapın sonra gelin
     <?php } else { ?>
         <?php $sum_old_payment = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "D"); ?>
-        <?php $sum_this = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no), "total"); ?>
-        <div class="col-sm-8 offset-2 refresh_payment">
+        <?php $sum_old_ff = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "B"); ?>
+        <?php $sum_old_contract_ff = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "C"); ?>
+        <?php $sum_old_advance = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "I"); ?>
+        <?php $sum_old_A = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "A"); ?>
+        <?php $sum_this_A = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no), "total"); ?>
+        <div class="col-sm-8 offset-2">
             <form id="save_payment"
                   action="<?php echo base_url("$this->Module_Name/save/$item->id"); ?>" method="post"
                   enctype="multipart/form-data" autocomplete="off">
@@ -38,7 +42,7 @@
                         <td class="total-group-row-left">Sözleşme Fiyatları İle Yapılan İşin Tutarı</td>
                         <td class="total-group-row-left">
                             <input type="number" step=".01" id="A" name="A"
-                                   value="<?php echo isset($item->A) ? $item->A : $sum_this; ?>" readonly
+                                   value="<?php echo isset($item->A) ? $item->A : $sum_old_A+$sum_this_A; ?>" readonly
                                    onblur="calcular()"
                                    onfocus="calcular()">
                         </td>
@@ -54,18 +58,18 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="w-5 total-group-row-center"></td>
+                        <td class="w-5 total-group-row-center">B1</td>
                         <td class="total-group-row-left">Önceki Fiyat Farkı Toplamı</td>
                         <td class="total-group-row-left">
                             <input type="number" step=".01" id="B1" name="B1"
-                                   readonly value="<?php echo isset($item->B1) ? $item->B1 : null; ?>"
+                                   readonly value="<?php echo isset($item->B1) ? $item->B1 : $sum_old_ff; ?>"
                                    onblur="calcular()"
                                    onfocus="calcular()">
                         </td>
                     </tr>
                     <tr>
                         <td class="w-5 total-group-row-center">C</td>
-                        <td class="total-group-row-left" style="font-weight: bold">Toplam Tutar (A+B)</td>
+                        <td class="total-group-row-left" style="font-weight: bold">Toplam Tutar (A+B+B1)</td>
                         <td class="total-group-row-left">
                             <input type="number" step=".01" id="C" name="C"
                                    readonly value="<?php echo isset($item->C) ? $item->C : null; ?>"
@@ -81,7 +85,7 @@
                         <td class="total-group-row-left">Bir Önceki Hakedişin Toplam Tutarı</td>
                         <td class="total-group-row-left">
                             <input type="number" step=".01" id="D" name="D"
-                                   value="<?php echo isset($item->D) ? $item->D : $sum_old_payment; ?>"
+                                   value="<?php echo isset($item->D) ? $item->D : $sum_old_ff+$sum_old_A; ?>"
                                    readonly
                                    onblur="calcular()"
                                    onfocus="calcular()">
@@ -289,10 +293,10 @@
                         <td class="total-group-row-center">I</td>
                         <td class="total-group-row-left" style="font-weight: bold">Avans Mahsubu<br>
                             <i>Toplam Verilen
-                                Avans <?php echo money_format(sum_from_table("advance", "avans_miktar", $payment_settings->id)) . " " . get_currency($payment_settings->id); ?>
+                                Avans <?php echo money_format(sum_from_table("advance", "avans_miktar", $item->contract_id)) . " " . get_currency($item->contract_id); ?>
                             </i>
                             <br>
-                            <i>Toplam Mahsup Edilen
+                            <i>Toplam Mahsup Edilen <?php echo $sum_old_advance . " " . get_currency($item->contract_id); ?>
                             </i>
                             <br>
                             <input type="number" step=".01" id="I_s" name="I_s"
@@ -329,18 +333,13 @@
             </form>
             <a form-id="save_payment" id="save_button" onclick="save_payment(this)"
                class="btn btn-success">
-                <i class="fa fa-plus fa-lg"></i> Script İle Kaydet
+                <i class="fa fa-floppy-o"></i> Script İle Kaydet
             </a>
-            <a class="btn btn-success" id="saveButton">Kaydet</a>
 
             <a class="btn btn-primary" target="_blank"
-               href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
-            <a class="btn btn-primary" target="_blank"
-               href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır
-                Olanları Gizle</a>
-            <a class="btn btn-primary" target="_blank"
-               href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece
-                Bu Hakediş</a>
+               href="<?php echo base_url("payment/print_green/$item->id/0"); ?>"><i class="fa fa-eye"></i>Önizleme</a>
+            <a class="btn btn-danger" target="_blank"
+               href="<?php echo base_url("payment/print_green/$item->id/0"); ?>"><i class="fa fa-trash-o"></i> Raporu Temizle</a>
         </div>
     <?php } ?>
 </div>
