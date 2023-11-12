@@ -78,11 +78,11 @@
                         </a>
                     </li>
                     <li>
-                        <a id="genel-tab"
+                        <a id="info-tab"
                            data-bs-toggle="pill"
-                           href="#genel"
+                           href="#info"
                            role="tab"
-                           aria-controls="genel"
+                           aria-controls="info"
                            aria-selected="false">
                             <span class "title">Hakediş Kapağı</span>
                         </a>

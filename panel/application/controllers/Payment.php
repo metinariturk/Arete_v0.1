@@ -494,12 +494,14 @@ class Payment extends CI_Controller
 
         $this->form_validation->run();
 
-        $this->form_validation->set_rules("A", "Sözleşme Fiyatları İle Yapılan İşin Tutarı", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("A", "Bu Hakediş Sözleşme Fiyatları İle Yapılan İşin Tutarı", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("A1", "Önceki Hakediş Sözleşme Fiyatları İle Yapılan İşin Tutarı", "required|numeric|trim"); //2
         $this->form_validation->set_rules("B", "Fiyat Farkı Tutarı", "numeric|trim"); //2
         $this->form_validation->set_rules("B1", "Önceki Fiyat Farkı Toplamı", "numeric|trim"); //2
         $this->form_validation->set_rules("C", "Toplam Tutar (A+B)", "required|numeric|trim"); //2
         $this->form_validation->set_rules("D", "Bir Önceki Hakedişin Toplam Tutarı", "numeric|trim"); //2
         $this->form_validation->set_rules("E", "Bu Hakedişin Tutarı (C-D)", "required|numeric|trim"); //2
+        $this->form_validation->set_rules("F_", "KDV Oran", "numeric|trim"); //2
         $this->form_validation->set_rules("F", "KDV", "numeric|trim"); //2
         $this->form_validation->set_rules("G", "Tahakkuk Tutarı", "required|numeric|trim"); //2
         $this->form_validation->set_rules("KES_a_s", "a)Gelir / Kurumlar Vergisi Oranı", "numeric|trim"); //2
@@ -549,11 +551,13 @@ class Payment extends CI_Controller
                 ),
                 array(
                     "A" => $this->input->post('A'),
+                    "A1" => $this->input->post('A1'),
                     "B" => $this->input->post('B'),
                     "B1" => $this->input->post('B1'),
                     "C" => $this->input->post('C'),
                     "D" => $this->input->post('D'),
                     "E" => $this->input->post('E'),
+                    "F_a" => $this->input->post('F_a'),
                     "F" => $this->input->post('F'),
                     "G" => $this->input->post('G'),
                     "KES_a_s" => $this->input->post('KES_a_s'),
