@@ -104,7 +104,7 @@
                            role="tab"
                            aria-controls="sign"
                            aria-selected="false">
-                            <span class="title">İmzalar</span>
+                            <span class="title">Ayarlar</span>
                         </a>
                     </li>
                     <li>

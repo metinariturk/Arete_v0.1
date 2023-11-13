@@ -98,29 +98,23 @@
                                     <td style="width:10%; background-color:#e7e7e7; text-align: center">
                                         <p><strong>Bölüm</strong></p>
                                     </td>
-                                    <td style="width:40%; background-color:#e7e7e7; text-align: center"
-                                    ">
-                                    <p><strong>Açıklama</strong></p>
+                                    <td style="width:40%; background-color:#e7e7e7; text-align: center">
+                                        <p><strong>Açıklama</strong></p>
                                     </td>
-                                    <td style="width:8%; background-color:#e7e7e7; text-align: center"
-                                    ">
-                                    <p><strong>Adet</strong></p>
+                                    <td style="width:8%; background-color:#e7e7e7; text-align: center">
+                                        <p><strong>Adet</strong></p>
                                     </td>
-                                    <td style="width:8%; background-color:#e7e7e7; text-align: center"
-                                    ">
-                                    <p><strong>En</strong></p>
+                                    <td style="width:8%; background-color:#e7e7e7; text-align: center">
+                                        <p><strong>En</strong></p>
                                     </td>
-                                    <td style="width:8%; background-color:#e7e7e7; text-align: center"
-                                    ">
-                                    <p><strong>Boy</strong></p>
+                                    <td style="width:8%; background-color:#e7e7e7; text-align: center">
+                                        <p><strong>Boy</strong></p>
                                     </td>
-                                    <td style="width:8%; background-color:#e7e7e7; text-align: center"
-                                    ">
-                                    <p><strong>Yükseklik</strong></p>
+                                    <td style="width:8%; background-color:#e7e7e7; text-align: center">
+                                        <p><strong>Yükseklik</strong></p>
                                     </td>
-                                    <td style="width:18%; background-color:#e7e7e7; text-align: center"
-                                    ">
-                                    <p><strong>Toplam</strong></p>
+                                    <td style="width:18%; background-color:#e7e7e7; text-align: center">
+                                        <p><strong>Toplam</strong></p>
                                     </td>
                                 </tr>
                                 </thead>
@@ -169,15 +163,11 @@
                 <?php } ?>
             <?php } ?>
         <?php } ?>
-        <div>
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
-        </div>
         <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_calculate/$item->id"); ?>">Tümünü
             Yazdır</a>
         <a class="btn btn-primary" target="_blank"
            href="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>">Grupları Ayır</a>
     </div>
-
 </div>
 
 

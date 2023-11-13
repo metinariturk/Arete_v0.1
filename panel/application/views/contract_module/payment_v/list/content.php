@@ -32,12 +32,12 @@
                             </td>
                             <td>
                                 <a href="<?php echo base_url("payment/file_form/$item->id"); ?>">
-                                    <?php echo money_format($item->bu_imalat_ihzarat) . " " . get_currency($item->id); ?>
+                                    <?php echo money_format($item->A) . " " . get_currency($item->contract_id); ?>
                                 </a>
                             </td>
                             <td>
                                 <a href="<?php echo base_url("payment/file_form/$item->id"); ?>">
-                                    <?php echo money_format($item->net_bedel) . " " . get_currency($item->id); ?>
+                                    <?php echo money_format($item->balance) . " " . get_currency($item->id); ?>
                                 </a>
                             </td>
                         </tr>

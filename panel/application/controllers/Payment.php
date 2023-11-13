@@ -23,6 +23,7 @@ class Payment extends CI_Controller
         $this->viewFolder = "payment_v";
         $this->load->model("Payment_model");
         $this->load->model("Payment_file_model");
+        $this->load->model("Payment_settings_model");
 
         $this->load->model("Contract_model");
         $this->load->model("Contract_price_model");
@@ -291,12 +292,11 @@ class Payment extends CI_Controller
         $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => null, "sub_group" => null,), "rank ASC");
         $prices = get_from_id("contract", "price", "$contract_id");
         $settings = $this->Settings_model->get();
-        $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
+        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
         $viewData = new stdClass();
         $contract = $this->Contract_model->get(array(
             "id" => $contract_id
         ));
-
 
 
         $project_id = project_id_cont($contract_id);
@@ -616,7 +616,7 @@ class Payment extends CI_Controller
 
             $active_tab = "report";
             $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
-            $contract = $this->Contract_model->get(array("id"=>$contract_id));
+            $contract = $this->Contract_model->get(array("id" => $contract_id));
 
 
             $viewData = new stdClass();
@@ -638,7 +638,6 @@ class Payment extends CI_Controller
             $viewData->item = $item;
 
 
-
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_report", $viewData, true);
 
             echo $render_html;
@@ -647,7 +646,7 @@ class Payment extends CI_Controller
 
             $active_tab = "report";
             $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
-            $contract = $this->Contract_model->get(array("id"=>$contract_id));
+            $contract = $this->Contract_model->get(array("id" => $contract_id));
 
 
             $viewData = new stdClass();
@@ -678,7 +677,7 @@ class Payment extends CI_Controller
     }
 
     public
-    function delete($id, $boq = null)
+    function delete($id)
     {
 
         $hakedis_no = get_from_id("payment", "hakedis_no", "$id");
@@ -716,26 +715,92 @@ class Payment extends CI_Controller
                 )
             );
 
-            if ($boq != null) {
-                $delete_boq = $this->Boq_model->delete(
-                    array(
-                        "contract_id" => $contract_id,
-                        "payment_no" => $hakedis_no
-                    )
-                );
-            }
 
             // TODO Alert Sistemi Eklenecek...
             if ($delete1 and $delete2) {
                 $alert = array(
                     "title" => "İşlem Başarılı",
-                    "text" => "$module_unique_name başarılı bir şekilde silindi",
+                    "text" => "Hakediş başarılı bir şekilde silindi",
                     "type" => "success"
                 );
             } else {
                 $alert = array(
                     "title" => "İşlem Başarısız",
-                    "text" => "$module_unique_name silme sırasında bir problem oluştu",
+                    "text" => "Hakeiş silme sırasında bir problem oluştu",
+                    "type" => "danger"
+                );
+            }
+            $this->session->set_flashdata("alert", $alert);
+            redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$contract_id"));
+
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Bu hakedişten sonra yapılan hakedişleri silmeden bu işlemi gerçekleştiremezsiniz",
+                "type" => "alert"
+            );
+            $this->session->set_flashdata("alert", $alert);
+            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
+        }
+    }
+
+    public
+    function delete_calc($id)
+    {
+
+        $hakedis_no = get_from_id("payment", "hakedis_no", "$id");
+        $last_payment = last_payment(get_from_any("payment", "contract_id", "id", $id));
+
+        if ($hakedis_no == $last_payment) {
+
+            $contract_id = get_from_id($this->Module_Table, "contract_id", $id);
+            $project_id = project_id_cont($contract_id);
+            $project_code = project_code($project_id);
+            $contract_code = get_from_id("contract", "dosya_no", get_from_id($this->Module_Table, "contract_id", $id));
+
+            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/";
+
+            $sil = deleteDirectory($path);
+
+            $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
+            $update_file_order = $this->Order_model->update(
+                array(
+                    "id" => $file_order_id
+                ),
+                array(
+                    "deletedAt" => date("Y-m-d H:i:s"),
+                    "deletedBy" => active_user_id(),
+                )
+            );
+            $delete1 = $this->Payment_file_model->delete(
+                array(
+                    "$this->Dependet_id_key" => $id
+                )
+            );
+            $delete2 = $this->Payment_model->delete(
+                array(
+                    "id" => $id
+                )
+            );
+
+            $delete3 = $this->Boq_model->delete(
+                array(
+                    "contract" => $contract_id,
+                    "payment_no" => $hakedis_no
+                )
+            );
+
+            // TODO Alert Sistemi Eklenecek...
+            if ($delete1 and $delete2 and $delete3) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Hakediş ve Metrajları başarılı bir şekilde silindi",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Hakediş ve Metrajları silme sırasında bir problem oluştu",
                     "type" => "danger"
                 );
             }
@@ -1298,7 +1363,6 @@ class Payment extends CI_Controller
         $avans_oran = $this->input->post("avans_oran");
         $avans_mahsup = ($this->input->post("avans_mahsup") == "on") ? 1 : 0;
         $avans_stopaj = ($this->input->post("avans_stopaj") == "on") ? 1 : 0;
-        $this->load->model("Payment_settings_model");
         if (empty($settings_id)) {
             $insert = $this->Payment_settings_model->add(
                 array(
@@ -1362,5 +1426,190 @@ class Payment extends CI_Controller
         $this->session->set_flashdata("alert", $alert);
         redirect(base_url("$this->Module_Name/$this->Display_route/$id/settings"));
     }
+
+    public function sign_options($id, $module)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $contract_id = contract_id_module("payment", $id);
+        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
+
+
+        $old_signs = json_decode($payment_settings->$module, true);
+
+        $position = $this->input->post("position");
+        $name = $this->input->post("name");
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("position", "Ünvan", "min_length[3]|required|alpha|trim"); //2
+        $this->form_validation->set_rules("name", "Ad-Soyad", "min_length[3]|required|alpha|trim"); //2
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> harflerden oluşmalıdır",
+                "min_length" => "<b>{field}</b> en az <b>{param}</b> uzunluğunda olmalıdır.",
+            )
+        );
+
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            $newData = array(
+                'position' => $position,
+                'name' => $name
+            );
+
+            $old_signs[] = $newData;
+
+            $newJsonData = json_encode($old_signs);
+
+            $update = $this->Payment_settings_model->update(
+                array(
+                    "id" => $payment_settings->id
+                ),
+                array(
+                    $module => $newJsonData
+                )
+            );
+            // TODO Alert sistemi eklenecek...
+            if ($update) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "İmza Ayarları Yapıldı",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "İmza Ayarları Güncellendi",
+                    "type" => "success"
+                );
+            }
+            $this->session->set_flashdata("alert", $alert);
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
+
+            $viewData->payment_settings = $payment_settings;
+
+            $viewData->item = $this->Payment_model->get(
+                array(
+                    "id" => $id
+                )
+            );
+
+            $viewData->item_files = $this->Payment_file_model->get_all(
+                array(
+                    "$this->Dependet_id_key" => $id
+                )
+            );
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+            echo $render_html;
+        } else {
+            $alert = array(
+                "title" => "İsim veya Ünvan Bilgilerinde Eksik Var",
+                "text" => "İmza Ayarları Güncellenemedi",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
+
+            $viewData->payment_settings = $payment_settings;
+            $viewData->form_error = true;
+
+
+            $viewData->item = $this->Payment_model->get(
+                array(
+                    "id" => $id
+                )
+            );
+
+            $viewData->item_files = $this->Payment_file_model->get_all(
+                array(
+                    "$this->Dependet_id_key" => $id
+                )
+            );
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+            print_r(validation_errors());
+            echo $render_html;
+        }
+    }
+
+    public function delete_sign($id, $module)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $contract_id = contract_id_module("payment", $id);
+        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
+
+
+        $delete = $this->Payment_settings_model->update(
+            array(
+                "id" => $payment_settings->id
+            ),
+            array(
+                $module => null
+    )
+    );
+        // TODO Alert sistemi eklenecek...
+        if ($delete) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "İmza Ayarları Yapıldı",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "İmza Ayarları Güncellendi",
+                "type" => "success"
+            );
+        }
+        $this->session->set_flashdata("alert", $alert);
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
+
+        $viewData->payment_settings = $payment_settings;
+
+        $viewData->item = $this->Payment_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+        $viewData->item_files = $this->Payment_file_model->get_all(
+            array(
+                "$this->Dependet_id_key" => $id
+            )
+        );
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+        echo $render_html;
+    }
+
+
 }
 

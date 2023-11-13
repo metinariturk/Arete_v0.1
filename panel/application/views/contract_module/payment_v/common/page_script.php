@@ -3,7 +3,6 @@
     function deletePaymentModule(btn) {
         var $data_url = $(btn).data("url");
         var url = btn.getAttribute('data-url');
-        var boq = btn.getAttribute('data-boq');
         var text = btn.getAttribute('data-text');
         var note = btn.getAttribute('data-note');
 
@@ -66,7 +65,7 @@
                                     icon: "success",
                                 });
                                 // Boq'u silmeyi onayladı, boq URL'sine yönlendir.
-                                window.location.href = boq;
+                                window.location.href = url;
                             } else if (willDeleteMetraj === false) {
                                 swal("Dosya Başarılı Bir Şekilde Silindi", {
                                     icon: "success",
@@ -86,33 +85,46 @@
     }
 </script>
 
-
 <script>
-    function calcular(){
-        var valorA = parseFloat(document.getElementById('calA').value, 10); //A Hücresi Veri Giriş
-        var valorB = parseFloat(document.getElementById('calB').value, 10); //B Hücresi Veri Giriş
-        var valorC = valorA/valorB*100; //C Hücresi Hesaplama
-        var valorD = valorA/valorB*100; //C Hücresi Hesaplama
-        if (valorB > 0 ) {
-            document.getElementById('calC').innerHTML= valorC.toFixed(2);
-            document.getElementById('calD').value = valorD.toFixed(2);
-        } else {
-            document.getElementById('calC').innerHTML= 0;
-            document.getElementById('calD').value = 0;
-        }
-    }
+    function add_sign(anchor) {
+        var formId = anchor.getAttribute('form-id');
+        var divId = $("#" + formId).attr("div");
+        var formAction = $("#" + formId).attr("action");
+        var formData = $("#" + formId).serialize();
 
-    function myFunction(e) {
-        e.value=e.value.replace(/,/g, '.')
+        $.post(formAction, formData, function (response) {
+            $("." + divId).html(response); // Doğru div seçiciyi kullan
+        });
     }
-
 </script>
 
 <script>
-    function getValueAndAssign() {
-        // total_payment id'li input elemanının değerini al
-        var totalPaymentValue = document.getElementById('total_payment').value;
-        console.log('Total Payment:', totalPaymentValue);
+    function delete_sign(anchor) {
+        var formId = anchor.getAttribute('form-id');
+        var divId = $("#" + formId).attr("div");
+        var formAction = $("#" + formId).attr("action");
+        var formData = $("#" + formId).serialize();
+        swal({
+            title: "Dosyayı Silmek İstediğine Emin Misin?",
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Sil"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    $.post(formAction, formData, function (response) {
+                        $("." + divId).html(response); // Doğru div seçiciyi kullan
+                    });
+
+                    swal("Dosya Başarılı Bir Şekilde Silindi", {
+                        icon: "success",
+                    });
+
+                } else {
+                    swal("Dosya Güvende");
+                }
+            })
     }
 </script>
-
