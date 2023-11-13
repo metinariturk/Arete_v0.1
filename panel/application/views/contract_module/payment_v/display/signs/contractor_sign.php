@@ -1,15 +1,15 @@
 <form id="add_contract"
-      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/calculate_sign"); ?>"
+      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/contractor_sign"); ?>"
       method="post"
-      div="refresh_calculate_sign"
+      div="refresh_contractor_sign"
       enctype="multipart/form-data" autocomplete="off">
     <div class="div">
-        <?php $calculate_sings = json_decode($payment_settings->calculate_sign, true); ?>
+        <?php $contractor_sings = json_decode($payment_settings->contractor_sign, true); ?>
 
         <table style="width: 100%;">
             <thead>
             <tr>
-                <td colspan="4" class="total-group-header-center">Metraj Cetveli İmzaları</td>
+                <td colspan="4" class="total-group-header-center">İşi Yapan</td>
             </tr>
             <tr>
                 <td class="total-group-header-center">#</td>
@@ -17,8 +17,8 @@
                 <td class="total-group-header-center">Ad - Soyad</td>
                 <td class="total-group-header-center">
                     <a onclick="delete_sign(this)"
-                       div="refresh_calculate_sign"
-                       url="<?php echo base_url("$this->Module_Name/delete_sign/$item->id/calculate_sign"); ?>">
+                       div="refresh_contractor_sign"
+                       url="<?php echo base_url("$this->Module_Name/delete_sign/$item->id/contractor_sign"); ?>">
                         <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
                            aria-hidden="true"></i>
                     </a>
@@ -26,13 +26,13 @@
             </tr>
             </thead>
             <tbody>
-            <?php if (is_array($calculate_sings)) { ?>
+            <?php if (is_array($contractor_sings)) { ?>
                 <?php $i = 1; ?>
-                <?php foreach ($calculate_sings as $calculate_sing) { ?>
+                <?php foreach ($contractor_sings as $contractor_sing) { ?>
                     <tr>
                         <td><?php echo $i++; ?></td>
-                        <td><?php echo $calculate_sing['position']; ?></td>
-                        <td colspan="2"><?php echo $calculate_sing['name']; ?></td>
+                        <td><?php echo $contractor_sing['position']; ?></td>
+                        <td colspan="2"><?php echo $contractor_sing['name']; ?></td>
                     </tr>
                 <?php } ?>
             <?php } ?>
@@ -43,11 +43,11 @@
             <input value="<?php echo isset($form_error) ? set_value("position") : ""; ?>"
                    class="form-control <?php cms_isset(form_error("position"), "is-invalid", ""); ?>"
                    name="position"
-                   placeholder="Ünvan"/>
+                   placeholder="Yüklenici-Taşeron vs."/>
             <input value="<?php echo isset($form_error) ? set_value("name") : ""; ?>"
                    class="form-control <?php cms_isset(form_error("name"), "is-invalid", ""); ?>"
                    name="name"
-                   placeholder="Ad Soyad"/>
+                   placeholder="Firma Adı veya Ad Soyad"/>
         </div>
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("position"); ?></div>

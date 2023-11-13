@@ -6,6 +6,9 @@
 
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-4 refresh_contractor_sign">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/signs/contractor_sign"); ?>
+            </div>
             <div class="col-md-4 refresh_calculate_sign">
                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/signs/calculate_sign"); ?>
             </div>

@@ -9,12 +9,20 @@
         <table style="width: 100%;">
             <thead>
             <tr>
-                <td colspan="3" class="total-group-header-center">Genel İcmali İmzaları</td>
+                <td colspan="4" class="total-group-header-center">Genel İcmali İmzaları</td>
             </tr>
             <tr>
                 <td class="total-group-header-center">#</td>
                 <td class="total-group-header-center">Ünvan</td>
                 <td class="total-group-header-center">Ad - Soyad</td>
+                <td class="total-group-header-center">
+                    <a onclick="delete_sign(this)"
+                       div="refresh_main_sign"
+                       url="<?php echo base_url("$this->Module_Name/delete_sign/$item->id/main_sign"); ?>">
+                        <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                           aria-hidden="true"></i>
+                    </a>
+                </td>
             </tr>
             </thead>
             <tbody>
@@ -24,7 +32,7 @@
                     <tr>
                         <td><?php echo $i++; ?></td>
                         <td><?php echo $main_sing['position']; ?></td>
-                        <td> <?php echo $main_sing['name']; ?></td>
+                        <td colspan="2"> <?php echo $main_sing['name']; ?></td>
                     </tr>
                 <?php } ?>
             <?php } ?>

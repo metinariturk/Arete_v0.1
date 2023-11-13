@@ -1,4 +1,3 @@
-
 <script>
     function deletePaymentModule(btn) {
         var $data_url = $(btn).data("url");
@@ -99,13 +98,12 @@
 </script>
 
 <script>
-    function delete_sign(anchor) {
-        var formId = anchor.getAttribute('form-id');
-        var divId = $("#" + formId).attr("div");
-        var formAction = $("#" + formId).attr("action");
-        var formData = $("#" + formId).serialize();
+    function delete_sign(btn) {
+        var $url = btn.getAttribute('url');
+        var $div = btn.getAttribute('div');
+
         swal({
-            title: "Dosyayı Silmek İstediğine Emin Misin?",
+            title: "Tüm isimler silinecek?",
             text: "Bu işlem geri alınamaz!",
             icon: "warning",
             buttons: ["İptal", "Sil"],
@@ -114,9 +112,9 @@
             .then((willDelete) => {
                 if (willDelete) {
 
-                    $.post(formAction, formData, function (response) {
-                        $("." + divId).html(response); // Doğru div seçiciyi kullan
-                    });
+                    $.post($url, {}, function (response) {
+                        $("." + $div).html(response);
+                    })
 
                     swal("Dosya Başarılı Bir Şekilde Silindi", {
                         icon: "success",
