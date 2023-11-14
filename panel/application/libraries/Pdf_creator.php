@@ -33,6 +33,7 @@ class Pdf_creator extends TCPDF
         }
         $this->Ln();
         $this->SetY($this->GetY() - $this->getFontSize()); // Hücrenin başlangıç yüksekliğini sıfıra ayarla
+
         foreach ($this->custom_footer as $rowLabel => $key) {
             $this->Cell($cellWidth, $cellHeight, $key, 0, 0, 'C');
         }

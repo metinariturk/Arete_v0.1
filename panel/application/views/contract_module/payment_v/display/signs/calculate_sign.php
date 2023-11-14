@@ -1,10 +1,10 @@
-<form id="add_contract"
+<form id="add_calculate"
       action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/calculate_sign"); ?>"
       method="post"
       div="refresh_calculate_sign"
       enctype="multipart/form-data" autocomplete="off">
     <div class="div">
-        <?php $calculate_sings = json_decode($payment_settings->calculate_sign, true); ?>
+        <?php $calculate_sings = $this->Payment_sign_model->get_all(array("contract_id"=>$item->contract_id, "sign_page" => "calculate_sign"), "rank ASC"); ?>
 
         <table style="width: 100%;">
             <thead>
@@ -15,24 +15,24 @@
                 <td class="total-group-header-center">#</td>
                 <td class="total-group-header-center">Ünvan</td>
                 <td class="total-group-header-center">Ad - Soyad</td>
-                <td class="total-group-header-center">
-                    <a onclick="delete_sign(this)"
-                       div="refresh_calculate_sign"
-                       url="<?php echo base_url("$this->Module_Name/delete_sign/$item->id/calculate_sign"); ?>">
-                        <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
-                           aria-hidden="true"></i>
-                    </a>
-                </td>
+                <td class="total-group-header-center">Sil</td>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="sortable" data-url="<?php echo base_url("$this->Module_Name/sign_rankSetter"); ?>">
             <?php if (is_array($calculate_sings)) { ?>
-                <?php $i = 1; ?>
                 <?php foreach ($calculate_sings as $calculate_sing) { ?>
-                    <tr>
-                        <td><?php echo $i++; ?></td>
-                        <td><?php echo $calculate_sing['position']; ?></td>
-                        <td colspan="2"><?php echo $calculate_sing['name']; ?></td>
+                    <tr id="sub-<?php echo $calculate_sing->id; ?>">
+                        <td style="text-align: center"><i class="fa fa-reorder"></i></td>
+                        <td><?php echo $calculate_sing->position; ?></td>
+                        <td><?php echo $calculate_sing->name; ?></td>
+                        <td style="text-align: center">
+                            <a onclick="delete_sign(this)"
+                               div="refresh_calculate_sign"
+                               url="<?php echo base_url("$this->Module_Name/delete_sign/$calculate_sing->id/calculate_sign/$item->id"); ?>">
+                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
+                                </i>
+                            </a>
+                        </td>
                     </tr>
                 <?php } ?>
             <?php } ?>
@@ -56,7 +56,7 @@
             <div class="invalid-feedback"><?php echo form_error("name"); ?></div>
         <?php } ?>
     </div>
-    <a form-id="add_contract" id="save_button" onclick="add_sign(this)"
+    <a form-id="add_calculate" id="save_button" onclick="add_sign(this)"
        class="btn btn-success">
         <i class="fa fa-plus fa-lg"></i> Ekle
     </a>

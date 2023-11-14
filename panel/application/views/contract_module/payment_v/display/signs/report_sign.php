@@ -4,7 +4,7 @@
       div="refresh_report_sign"
       enctype="multipart/form-data" autocomplete="off">
     <div class="div">
-        <?php $report_sings = json_decode($payment_settings->report_sign, true); ?>
+        <?php $report_sings = $this->Payment_sign_model->get_all(array("contract_id"=>$item->contract_id, "sign_page" => "report_sign"), "rank ASC"); ?>
 
         <table style="width: 100%;">
             <thead>
@@ -15,24 +15,24 @@
                 <td class="total-group-header-center">#</td>
                 <td class="total-group-header-center">Ünvan</td>
                 <td class="total-group-header-center">Ad - Soyad</td>
-                <td class="total-group-header-center">
-                    <a onclick="delete_sign(this)"
-                       div="refresh_report_sign"
-                       url="<?php echo base_url("$this->Module_Name/delete_sign/$item->id/report_sign"); ?>">
-                        <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
-                           aria-hidden="true"></i>
-                    </a>
-                </td>
+                <td class="total-group-header-center">Sil</td>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="sortable" data-url="<?php echo base_url("$this->Module_Name/sign_rankSetter"); ?>">
             <?php if (is_array($report_sings)) { ?>
-                <?php $i = 1; ?>
                 <?php foreach ($report_sings as $report_sing) { ?>
-                    <tr>
-                        <td><?php echo $i++; ?></td>
-                        <td><?php echo $report_sing['position']; ?></td>
-                        <td> <?php echo $report_sing['name']; ?></td>
+                   <tr id="sub-<?php echo $report_sing->id; ?>">
+                        <td style="text-align: center"><i class="fa fa-reorder"></i></td>
+                        <td><?php echo $report_sing->position; ?></td>
+                        <td> <?php echo $report_sing->name; ?></td>
+                        <td style="text-align: center">
+                            <a onclick="delete_sign(this)"
+                               div="refresh_report_sign"
+                               url="<?php echo base_url("$this->Module_Name/delete_sign/$report_sing->id/report_sign/$item->id"); ?>">
+                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
+                                </i>
+                            </a>
+                        </td>
                     </tr>
                 <?php } ?>
             <?php } ?>

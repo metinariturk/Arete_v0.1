@@ -92,7 +92,13 @@
         var formData = $("#" + formId).serialize();
 
         $.post(formAction, formData, function (response) {
-            $("." + divId).html(response); // Doğru div seçiciyi kullan
+            $("." + divId).html(response);
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function(event, ui){
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data : $data}, function(response){})
+            })
         });
     }
 </script>
@@ -114,6 +120,12 @@
 
                     $.post($url, {}, function (response) {
                         $("." + $div).html(response);
+                        $(".sortable").sortable();
+                        $(".sortable").on("sortupdate", function(event, ui){
+                            var $data = $(this).sortable("serialize");
+                            var $data_url = $(this).data("url");
+                            $.post($data_url, {data : $data}, function(response){})
+                        })
                     })
 
                     swal("Dosya Başarılı Bir Şekilde Silindi", {

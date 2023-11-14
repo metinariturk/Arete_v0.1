@@ -24,6 +24,7 @@ class Payment extends CI_Controller
         $this->load->model("Payment_model");
         $this->load->model("Payment_file_model");
         $this->load->model("Payment_settings_model");
+        $this->load->model("Payment_sign_model");
 
         $this->load->model("Contract_model");
         $this->load->model("Contract_price_model");
@@ -1088,13 +1089,22 @@ class Payment extends CI_Controller
     function print_green($payment_id, $hide_zero = null)
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
-        $active_boqs_json = get_from_id("contract", "active_boq", "$contract_id");
-        $active_boqs = json_decode($active_boqs_json, true);
+
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
-        $calculates = $this->Boq_model->get_all(array(
-            "contract_id" => $contract_id,
-            "payment_no" => $payment_no,
-        ));
+        $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
+        $green_sings = $this->Payment_sign_model->get_all(array("contract_id" => $contract_id, "sign_page" => "green_sign"), "rank ASC");
+
+        $signs = array_merge([$contractor_sign], $green_sings);
+
+        foreach ($signs as $item) {
+            if (is_object($item)) {
+                // Eğer öğe bir stdClass nesnesi ise, diziye çevir
+                $item = (array)$item;
+            }
+            $footer_sign[$item["position"]] = $item["name"];
+        }
 
         $item = $this->Payment_model->get(
             array(
@@ -1117,14 +1127,8 @@ class Payment extends CI_Controller
         $pdf->headerText = "METRAJ İCMALİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
 
-        $pdf->custom_footer = array(
-            "Firma Adı" => "Biberci İnşaat",
-            "İnşaat Mühendisi" => "Musab ÖZKAĞNICI",
-            "Mimar" => "Buse ÖZÜPAK",
-            "Elk Mühendisi" => "Caner Özüpak",
-            "Mak Mühendisi" => "Abdullah KIRIŞKA",
-            "Haberleşme Müh" => "Abdullah KIRIŞKA"
-        );
+        $pdf->custom_footer = $footer_sign;
+
         $page_width = $pdf->getPageWidth();
         $pdf->AddPage();
         $pdf->SetFontSize(10);
@@ -1133,6 +1137,40 @@ class Payment extends CI_Controller
 
         $i = 0;
         $j = 0;
+        foreach ($main_groups as $main_group) {
+            $i = $i + 2;
+            $j = $j + 1;
+            $k = 0;
+
+            $say = count($boq_ids);
+
+            $last_cell = $i + $say;
+            if ($last_cell > 24) {
+                $pdf->AddPage(); // Yeni bir sayfa ekleyin
+                $i = 1;
+            }
+            $pdf->Ln();
+            $pdf->SetFont('dejavusans', 'B', 9); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+            $pdf->SetFillColor(192, 192, 192);
+            $pdf->Cell(15, 5, intToRoman($j), 1, 0, "C", 1);
+            $pdf->Cell(265, 5, mb_strtoupper($main_group->name), 1, 0, "L", 1);
+            $pdf->Ln();
+
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_group" => 1, "parent" => $main_group->id));
+            foreach ($sub_groups as $sub_group) {
+                $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_id" => $sub_group->id));
+                $i = 1;
+                foreach ($contract_items as $contract_item) {
+                    $calculate = $this->Boq_model->get(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "boq_id" => $contract_item->id));
+                    $old_total = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "boq_id" => $contract_item->id), "total");
+                    $this_total = isset($calculate->total) ? $calculate->total : 0;
+                }
+
+            }
+
+        }
+
         foreach ($active_boqs as $group_key => $boq_ids) {
             $i = $i + 2;
             $j = $j + 1;
@@ -1230,15 +1268,19 @@ class Payment extends CI_Controller
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
         $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
-        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
-        $contract = $this->Contract_model->get(array("id" => $contract_id));
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
-        $signs = json_decode($payment_settings->calculate_sign, true);
-        $contractor_sign = json_decode($payment_settings->contractor_sign, true);
-        $signs = $contractor_sign + $signs;
+        $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
+        $calculate_sings = $this->Payment_sign_model->get_all(array("contract_id" => $contract_id, "sign_page" => "calculate_sign"), "rank ASC");
+
+        $signs = array_merge([$contractor_sign], $calculate_sings);
 
         foreach ($signs as $item) {
+            if (is_object($item)) {
+                // Eğer öğe bir stdClass nesnesi ise, diziye çevir
+                $item = (array)$item;
+            }
+
             $footer_sign[$item["position"]] = $item["name"];
         }
 
@@ -1439,14 +1481,8 @@ class Payment extends CI_Controller
         }
 
         $contract_id = contract_id_module("payment", $id);
-        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
-
-
-        $old_signs = json_decode($payment_settings->$module, true);
-
         $position = $this->input->post("position");
         $name = $this->input->post("name");
-
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("position", "Ünvan", "min_length[3]|required|alpha_tr|trim"); //2
@@ -1463,25 +1499,16 @@ class Payment extends CI_Controller
         $validate = $this->form_validation->run();
 
         if ($validate) {
-            $newData = array(
-                'position' => $position,
-                'name' => $name
-            );
-
-            $old_signs[] = $newData;
-
-            $newJsonData = json_encode($old_signs);
-
-            $update = $this->Payment_settings_model->update(
+            $insert = $this->Payment_sign_model->add(
                 array(
-                    "id" => $payment_settings->id
-                ),
-                array(
-                    $module => $newJsonData
+                    "contract_id" => $contract_id,
+                    "sign_page" => $module,
+                    "position" => $position,
+                    "name" => $name,
                 )
             );
             // TODO Alert sistemi eklenecek...
-            if ($update) {
+            if ($insert) {
                 $alert = array(
                     "title" => "İşlem Başarılı",
                     "text" => "İmza Ayarları Yapıldı",
@@ -1497,13 +1524,9 @@ class Payment extends CI_Controller
             $this->session->set_flashdata("alert", $alert);
 
             $viewData = new stdClass();
-
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
-
-            $viewData->payment_settings = $payment_settings;
 
             $viewData->item = $this->Payment_model->get(
                 array(
@@ -1532,11 +1555,8 @@ class Payment extends CI_Controller
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
 
-            $viewData->payment_settings = $payment_settings;
             $viewData->form_error = true;
-
 
             $viewData->item = $this->Payment_model->get(
                 array(
@@ -1556,36 +1576,29 @@ class Payment extends CI_Controller
         }
     }
 
-    public function delete_sign($id, $module)
+    public function delete_sign($id, $module, $payment_id)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        $contract_id = contract_id_module("payment", $id);
-        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
-
-
-        $delete = $this->Payment_settings_model->update(
+        $delete = $this->Payment_sign_model->delete(
             array(
-                "id" => $payment_settings->id
-            ),
-            array(
-                $module => null
+                "id" => $id
             )
         );
         // TODO Alert sistemi eklenecek...
         if ($delete) {
             $alert = array(
-                "title" => "İşlem Başarılı",
+                "title" => "İmza Sütunu Silindi",
                 "text" => "İmza Ayarları Yapıldı",
                 "type" => "success"
             );
         } else {
             $alert = array(
-                "title" => "İşlem Başarılı",
+                "title" => "İmza Sütunu Silinemedi",
                 "text" => "İmza Ayarları Güncellendi",
-                "type" => "success"
+                "type" => "danger"
             );
         }
         $this->session->set_flashdata("alert", $alert);
@@ -1595,24 +1608,40 @@ class Payment extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
-
-        $viewData->payment_settings = $payment_settings;
 
         $viewData->item = $this->Payment_model->get(
             array(
-                "id" => $id
+                "id" => $payment_id
             )
         );
 
         $viewData->item_files = $this->Payment_file_model->get_all(
             array(
-                "$this->Dependet_id_key" => $id
+                "$this->Dependet_id_key" => $payment_id
             )
         );
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
         echo $render_html;
+    }
+
+    public function sign_rankSetter()
+    {
+        $data = $this->input->post("data");
+
+        parse_str($data, $order);
+        $items = $order['sub'];
+
+        foreach ($items as $rank => $id) {
+            $this->Payment_sign_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "rank" => $rank,
+                )
+            );
+        }
     }
 
 
