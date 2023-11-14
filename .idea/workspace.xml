@@ -32,14 +32,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)"
-  }
-}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\signs" />
@@ -99,6 +91,7 @@
       <workItem from="1699721501717" duration="14745000" />
       <workItem from="1699861044443" duration="12028000" />
       <workItem from="1699888485478" duration="11602000" />
+      <workItem from="1699976834219" duration="21348000" />
     </task>
     <servers />
   </component>

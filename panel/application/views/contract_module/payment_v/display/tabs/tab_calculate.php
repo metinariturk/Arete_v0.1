@@ -163,10 +163,32 @@
                 <?php } ?>
             <?php } ?>
         <?php } ?>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_calculate/$item->id"); ?>">Tümünü
-            Yazdır</a>
-        <a class="btn btn-primary" target="_blank"
-           href="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>">Grupları Ayır</a>
+        <hr>
+        <div class="container mt-5">
+            <div class="form-group">
+                <input data-url="<?php echo base_url("payment/print_calculate/$item->id/0"); ?>" type="radio"
+                       id="option1" name="options" class="form-check-input">
+                <label for="option1">Tümümünü Yazdır(Sayfa Tasarruf)</label>
+            </div>
+            <div class="form-group">
+                <input data-url="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>" type="radio"
+                       id="option2" name="options" class="form-check-input">
+                <label for="option2">Ana Gruplardan Ayır</label>
+            </div>
+            <div class="form-group">
+                <input data-url="<?php echo base_url("payment/print_calculate/$item->id/2"); ?>" type="radio"
+                       id="option2" name="options" class="form-check-input">
+                <label for="option2">Alt Gruplardan Ayır</label>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
+                            class="fa fa-print"></i>PDF Kaydet
+                </button>
+                <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
+                            class="fa fa-print"></i>Ön İzleme
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

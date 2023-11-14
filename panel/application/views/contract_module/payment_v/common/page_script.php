@@ -138,3 +138,17 @@
             })
     }
 </script>
+<script>
+    function handleButtonClick(mode) {
+        var selectedOption = document.querySelector('input[name="options"]:checked');
+
+        // Hiçbir radyo düğmesi seçili değilse işlem yapma
+        if (!selectedOption) {
+            console.log("Lütfen bir seçenek seçin.");
+            return;
+        }
+        var dataUrl = selectedOption.getAttribute("data-url")+"/"+mode;
+        // Yeni sekmede aç
+        window.open(dataUrl, '_blank');
+    }
+</script>

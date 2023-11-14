@@ -75,44 +75,71 @@
             <tbody>
             <?php $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_group" => 1, "parent" => $main_group->id)); ?>
             <?php $i = 1; ?>
-            <?php foreach ($sub_groups as $sub_group) { ?>
-                <?php $sum_group_this = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "sub_id" => $sub_group->id), "total"); ?>
-                <?php $sum_group_old = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "sub_id" => $sub_group->id), "total"); ?>
-                <tr style="height:14.1pt;">
-                    <td class="w-3 total-group-row-center">
-                        <p><strong><?php echo $i++; ?></strong></p>
-                    </td>
-                    <td class="w-9 total-group-row-center">
-                        <p><strong><?php echo $sub_group->code; ?></strong></p>
-                    </td>
-                    <td class="w-25 total-group-row-left">
-                        <p><strong><?php echo $sub_group->name; ?></strong></p>
-                    </td>
-                    <td class="w-4 total-group-row-right">
-                        <p><strong><?php echo money_format($sum_group_old + $sum_group_this); ?></strong></p>
-                    </td>
-                    <td class="w-8 total-group-row-right">
-                        <p><strong><?php echo money_format($sum_group_old); ?></strong></p>
-                    </td>
-                    <td class="w-8 total-group-row-right">
-                        <p><strong><?php echo money_format($sum_group_this); ?></strong></p>
-                    </td>
+
+            <?php $c = 0; ?>
+            <?php $d = 0; ?>
+            <?php foreach ($sub_groups as $sub_group) : ?>
+                <?php
+                $sum_group_items = $this->Boq_model->get_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "sub_id" => $sub_group->id));
+                $a = array_reduce($sum_group_items, function ($carry, $sum_group_item) {
+                    $contract_price = get_from_any("contract_price", "price", "id", "$sum_group_item->boq_id");
+                    return $carry + $sum_group_item->total * $contract_price;
+                }, 0);
+                ?>
+
+                <?php
+                $sum_group_old_items = $this->Boq_model->get_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "sub_id" => $sub_group->id));
+                $b = array_reduce($sum_group_old_items, function ($carry, $sum_group_old_item) {
+                    $contract_price = get_from_any("contract_price", "price", "id", "$sum_group_old_item->boq_id");
+                    return $carry + $sum_group_old_item->total * $contract_price;
+                }, 0);
+                ?>
+
+                <tr>
+                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;"><?php echo $i++; ?></td>
+                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;"><?php echo $main_group->code . "." . $sub_group->code; ?></td>
+                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;"><?php echo $sub_group->name; ?></td>
+                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;"><?php echo money_format($a + $b); ?></td>
+                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;"><?php echo money_format($b); ?></td>
+                    <td style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;"><?php echo money_format($a); ?></td>
                 </tr>
-            <?php } ?>
+
+                <?php $c += $a; ?>
+                <?php $d += $b; ?>
+            <?php endforeach; ?>
+
             <tr>
-                <td colspan="5" class="total-group-header-right">
+                <td colspan="3" class="total-group-header-right">
                     <p><strong>Toplam</strong></p>
                 </td>
                 <td class="total-group-header-right">
-                    <?php $sum_main_this = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "main_id" => $main_group->id), "total"); ?>
-                    <p><strong><?php echo money_format($sum_main_this); ?></strong></p>
+                    <p><strong><?php echo money_format($d+$c); ?></strong></p>
+                </td>
+                <td class="total-group-header-right">
+                    <p><strong><?php echo money_format($d); ?></strong></p>
+                </td>
+                <td class="total-group-header-right">
+                    <p><strong><?php echo money_format($c); ?></strong></p>
                 </td>
             </tr>
             <?php } ?>
             </tbody>
         </table>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır Olanları Gizle</a>
-        <a class="btn btn-primary" target="_blank" href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece Bu Hakediş</a>
+        <hr>
+        <div class="container mt-5">
+            <div class="form-group">
+                <input data-url="<?php echo base_url("payment/print_group_total/$item->id/0"); ?>" type="radio" checked
+                       id="option1" name="options" class="form-check-input">
+                <label for="option1">Yazdır</label>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
+                            class="fa fa-print"></i>PDF Kaydet
+                </button>
+                <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
+                            class="fa fa-print"></i>Ön İzleme
+                </button>
+            </div>
+        </div>
     </div>
 </div>

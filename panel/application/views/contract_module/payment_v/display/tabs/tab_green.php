@@ -39,7 +39,9 @@
                 </tbody>
             </table>
         </div>
-        <?php foreach ($main_groups as $main_group) { ?>
+        <?php foreach ($main_groups
+
+        as $main_group) { ?>
         <table style="width:100%;">
             <thead>
             <tr>
@@ -68,27 +70,34 @@
                 <table style="width:100%;">
                     <tbody>
                     <tr style="height:14.1pt;">
-                        <td class="w5c" style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
+                        <td class="w5c"
+                            style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
                             <p><strong>Sıra No</strong></p>
                         </td>
-                        <td class="w15c" style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
+                        <td class="w15c"
+                            style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
                             <p><strong>Poz No</strong></p>
                         </td>
-                        <td class="w35c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                        <td class="w35c"
+                            style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
                             <p><strong>Yapılan İşin Cinsi</strong></p>
                         </td>
 
-                        <td class="w5c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                        <td class="w5c"
+                            style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
                             <p><strong>Birimi</strong></p>
                         </td>
-                        <td class="w10c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                        <td class="w10c"
+                            style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
                             <p><strong>Toplam Miktarı</strong></p>
                         </td>
-                        <td class="w10c" style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
+                        <td class="w10c"
+                            style="background-color:#e7e7e7; border: 0.75pt solid black; border-width:0.75pt;">
                             <p><strong>Önceki Hakediş Miktarı</strong>
                             </p>
                         </td>
-                        <td class="w10c" style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
+                        <td class="w10c"
+                            style="background-color:#e7e7e7;  border: 0.75pt solid black; border-width:0.75pt;">
                             <p><strong>Bu Hakediş Miktarı</strong>
                             </p>
                         </td>
@@ -103,22 +112,27 @@
                         <tr>
                             <td class="w5c" style="border: 0.75pt solid black; border-width:0.75pt;"><?php echo $i++; ?>
                             </td>
-                            <td  class="w15" style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
+                            <td class="w15"
+                                style="border: 0.75pt solid black; border-width:0.75pt; text-align:center; font-size:9pt;">
                                 <?php echo($contract_item->code); ?>
                             </td>
-                            <td  class="w35" style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
+                            <td class="w35"
+                                style="border: 0.75pt solid black; border-width:0.75pt; text-align:left; font-size:9pt;">
                                 <?php echo($contract_item->name); ?>
                             </td>
-                            <td  class="w5c" style="border: 0.75pt solid black; border-width:0.75pt; font-size:9pt;">
+                            <td class="w5c" style="border: 0.75pt solid black; border-width:0.75pt; font-size:9pt;">
                                 <?php echo($contract_item->unit); ?>
                             </td>
-                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="w10"
+                                style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
                                 <?php echo money_format($old_total + $this_total); ?>
                             </td>
-                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="w10"
+                                style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
                                 <?php echo money_format($old_total); ?>
                             </td>
-                            <td  class="w10" style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
+                            <td class="w10"
+                                style="border: 0.75pt solid black; border-width:0.75pt; text-align:right; font-size:9pt;">
                                 <?php echo money_format($this_total); ?>
                             </td>
                         </tr>
@@ -127,13 +141,32 @@
                 </table>
             <?php } ?>
             <?php } ?>
-            <a class="btn btn-primary" target="_blank"
-               href="<?php echo base_url("payment/print_green/$item->id/0"); ?>">Önizleme</a>
-            <a class="btn btn-primary" target="_blank"
-               href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">Sıfır Olanları Gizle</a>
-            <a class="btn btn-primary" target="_blank"
-               href="<?php echo base_url("payment/print_green/$item->id/2"); ?>">Sadece Bu Hakediş</a>
-
+            <hr>
+            <div class="container mt-5">
+                <div class="form-group">
+                    <input data-url="<?php echo base_url("payment/print_green/$item->id/0"); ?>" type="radio"
+                           id="option1" name="options" class="form-check-input">
+                    <label for="option1">Tüm Pozlar İcmali</label>
+                </div>
+                <div class="form-group">
+                    <input data-url="<?php echo base_url("payment/print_green/$item->id/1"); ?>" type="radio"
+                           id="option2" name="options" class="form-check-input">
+                    <label for="option2">Sadece Bu Hakediş Pozları</label>
+                </div>
+                <div class="form-group">
+                    <input data-url="<?php echo base_url("payment/print_green/$item->id/2"); ?>" type="radio"
+                           id="option3" name="options" class="form-check-input">
+                    <label for="option3">Toplamı Sıfır Olanları Gösterme</label>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
+                                class="fa fa-print"></i>PDF Kaydet
+                    </button>
+                    <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
+                                class="fa fa-print"></i>Ön İzleme
+                    </button>
+                </div>
+            </div>
     </div>
 </div>
 
