@@ -32,6 +32,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\signs" />
@@ -92,6 +102,7 @@
       <workItem from="1699861044443" duration="12028000" />
       <workItem from="1699888485478" duration="11602000" />
       <workItem from="1699976834219" duration="21348000" />
+      <workItem from="1700050620876" duration="10285000" />
     </task>
     <servers />
   </component>
@@ -119,6 +130,15 @@
           </properties>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
+          <line>1796</line>
+          <properties>
+            <option name="className" value="\Payment" />
+            <option name="methodName" value="print_group_total" />
+          </properties>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>
           <line>185</line>
@@ -131,7 +151,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/display/tabs/tab_green.php</url>
-          <line>41</line>
+          <line>29</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
