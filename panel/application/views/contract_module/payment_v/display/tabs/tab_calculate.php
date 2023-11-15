@@ -1,4 +1,4 @@
-<div class="fade tab-pane <?php if ($active_tab == "calculate" or $active_tab==null) {
+<div class="fade tab-pane <?php if ($active_tab == "calculate" or $active_tab == null) {
     echo "active show";
 } ?>"
      id="calculate" role="tabpanel"
@@ -48,7 +48,7 @@
                             <tr>
                                 <td colspan="3">
                                     <p style="font-size:10pt;">
-                                        <strong><?php echo $main_group->code . "." .$sub_group->code . " - " . $sub_group->name; ?></strong>
+                                        <strong><?php echo $main_group->code . "." . $sub_group->code . " - " . $sub_group->name; ?></strong>
                                     </p>
                                 </td>
                             </tr>
@@ -89,36 +89,34 @@
 
                                     <?php foreach (json_decode($calculate->calculation, true) as $calculation_data) { ?>
                                         <tr>
-                                            <td style="border-style:solid; text-align:left; border-width:0.75pt;">
+                                            <td class="total-group-row-left">
                                                 <?php echo $calculation_data["s"]; ?>
                                             </td>
-                                            <td style="border-style:solid; border-width:0.75pt; text-align:left; font-size:9pt;">
+                                            <td class="total-group-row-left">
                                                 <?php echo $calculation_data["n"]; ?>
                                             </td>
-                                            <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                            <td class="total-group-row-right">
                                                 <?php echo money_format($calculation_data["q"]); ?>
                                             </td>
-                                            <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                            <td class="total-group-row-right">
                                                 <?php echo money_format($calculation_data["w"]); ?>
                                             </td>
-                                            <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                            <td class="total-group-row-right">
                                                 <?php echo money_format($calculation_data["h"]); ?>
                                             </td>
-                                            <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                            <td class="total-group-row-right">
                                                 <?php echo money_format($calculation_data["l"]); ?>
                                             </td>
-                                            <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                            <td class="total-group-row-right">
                                                 <?php echo money_format($calculation_data["t"]); ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <td colspan="5">
+                                        <td colspan="6" class="w-3 total-group-row-right">
+                                            <p><strong>TOPLAM</strong></p>
                                         </td>
-                                        <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
-                                            <strong>Toplam</strong>
-                                        </td>
-                                        <td style="border-style:solid; border-width:0.75pt; text-align:right; font-size:9pt;">
+                                        <td class="total-group-row-right">
                                             <strong><?php echo $calculate->total; ?></strong>
                                         </td>
                                     </tr>
@@ -135,7 +133,7 @@
                 <div class="form-group">
                     <input data-url="<?php echo base_url("payment/print_calculate/$item->id/0"); ?>" type="radio"
                            id="option1" name="options" class="form-check-input">
-                    <label for="option1">Tümümünü Yazdır(Sayfa Tasarruf)</label>
+                    <label for="option1">Tümünü Yazdır(Sayfa Tasarruf)</label>
                 </div>
                 <div class="form-group">
                     <input data-url="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>" type="radio"

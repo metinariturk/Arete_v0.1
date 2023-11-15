@@ -6,12 +6,19 @@
     <?php if (empty($payment_settings)) { ?>
         Hakediş ayalarını yapın sonra gelin
     <?php } else { ?>
+        <?php
+        $all_boqs = $this->Boq_model->get_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no));
+        $this_payment_calculation_price = 0;
+        foreach ($all_boqs as $boq) {
+            $boq_price = get_from_any("contract_price", "price", "id", "$boq->boq_id");
+            $calculation_price = $boq->total*$boq_price;
+            $this_payment_calculation_price += $calculation_price;
+        }?>
         <?php $sum_old_B = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "B"); ?>
         <?php $sum_old_contract_ff = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "C"); ?>
         <?php $sum_old_advance = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "I"); ?>
         <?php $sum_old_A = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "A"); ?>
         <?php $sum_old_A1 = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "A1"); ?>
-        <?php $sum_this_A = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no), "total"); ?>
         <?php $advance_given = sum_from_table("advance", "avans_miktar", $item->contract_id); ?>
         <div class="refresh_payment">
             <?php if (empty($item->A)) { ?>
@@ -47,7 +54,7 @@
                                 </td>
                                 <td class="total-group-row-left">
                                     <input type="number" step=".01" id="A" name="A"
-                                           value="<?php echo isset($item->A) ? $item->A : $sum_this_A; ?>" readonly
+                                           value="<?php echo isset($item->A) ? $item->A : $this_payment_calculation_price; ?>" readonly
                                            onblur="calcular()"
                                            onfocus="calcular()">
                                 </td>

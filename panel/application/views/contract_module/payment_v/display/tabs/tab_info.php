@@ -66,7 +66,7 @@
                         </td>
                         <td style="width:2%; text-align: center">:</td>
                         <td style="width:49%; text-align: left;">
-                            <?php echo money_format($contract->sozlesme_bedel); ?>
+                            <?php echo money_format($contract->sozlesme_bedel)." ".$contract->para_birimi; ?>
                         </td>
                     </tr>
                     <tr>
@@ -133,7 +133,7 @@
                         <td style="width:2%; text-align: center">:</td>
                         <td style="width:49%; text-align: left;">
                             <?php $advance_given = sum_from_table("advance", "avans_miktar", $item->contract_id);
-                            echo money_format($advance_given); ?>
+                            echo money_format($advance_given)." ".$contract->para_birimi; ?>
                         </td>
                     </tr>
                     <tr>
@@ -143,7 +143,7 @@
                         <td style="width:2%; text-align: center">:</td>
                         <td style="width:49%; text-align: left;">
                             <?php $sum_advance = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <=" => $item->hakedis_no), "I");
-                            echo money_format($sum_advance); ?>
+                            echo money_format($sum_advance)." ".$contract->para_birimi; ?>
 
                         </td>
                     </tr>
@@ -205,6 +205,23 @@
                     <?php } ?>
                     </tbody>
                 </table>
+            </div>
+            <hr>
+            <div class="container mt-5">
+                <div class="form-group">
+                    <input data-url="<?php echo base_url("payment/print_cover/$item->id"); ?>"
+                           type="radio"
+                           id="option1" name="options" class="form-check-input">
+                    <label for="option1">Yazdır</label>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
+                                class="fa fa-print"></i>PDF Kaydet
+                    </button>
+                    <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
+                                class="fa fa-print"></i>Ön İzleme
+                    </button>
+                </div>
             </div>
         </div>
     </div>

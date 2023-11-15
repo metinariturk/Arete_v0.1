@@ -97,30 +97,24 @@
                             <?php $this_total = isset($calculate->total) ? $calculate->total : 0; ?>
 
                             <tr>
-                                <td class="w5c"
-                                    style=" border-width:0.75pt;"><?php echo $i++; ?>
+                                <td class="w5c total-group-row-center"><?php echo $i++; ?>
                                 </td>
-                                <td class="w15"
-                                    style=" border-width:0.75pt; text-align:center; font-size:9pt;">
+                                <td class="w15 total-group-row-left">
                                     <?php echo($contract_item->code); ?>
                                 </td>
-                                <td class="w35"
-                                    style=" border-width:0.75pt; text-align:left; font-size:9pt;">
+                                <td class="w35 total-group-row-left">
                                     <?php echo($contract_item->name); ?>
                                 </td>
-                                <td class="w5c" style=" border-width:0.75pt; font-size:9pt;">
+                                <td class="w5c total-group-row-center">
                                     <?php echo($contract_item->unit); ?>
                                 </td>
-                                <td class="w10"
-                                    style=" border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="w10 total-group-row-right">
                                     <?php echo money_format($old_total + $this_total); ?>
                                 </td>
-                                <td class="w10"
-                                    style=" border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="w10 total-group-row-right">
                                     <?php echo money_format($old_total); ?>
                                 </td>
-                                <td class="w10"
-                                    style=" border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td class="w10 total-group-row-right">
                                     <?php echo money_format($this_total); ?>
                                 </td>
                             </tr>

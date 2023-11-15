@@ -122,36 +122,36 @@
                             <?php $old_total = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "boq_id" => $contract_item->id), "total"); ?>
                             <?php $this_total = isset($calculate->total) ? $calculate->total : 0; ?>
                             <tr>
-                                <td style="border-width:0.75pt;"><?php echo $i++; ?>
+                                <td  class="total-group-row-center"><?php echo $i++; ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:center; font-size:9pt;">
+                                <td class="total-group-row-center">
                                     <?php echo($contract_item->code); ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:left; font-size:9pt;">
+                                <td  class="total-group-row-left">
                                     <?php echo($contract_item->name); ?>
                                 </td>
-                                <td style="border-width:0.75pt; font-size:9pt;">
+                                <td  class="total-group-row-center">
                                     <?php echo($contract_item->unit); ?>
                                 </td>
-                                <td style="border-width:0.75pt; font-size:9pt;">
+                                <td  class="total-group-row-center">
                                     <?php echo money_format($contract_item->price); ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td  class="total-group-row-right">
                                     <?php echo money_format($old_total + $this_total); ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td  class="total-group-row-right">
                                     <?php echo money_format($old_total); ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td  class="total-group-row-right">
                                     <?php echo money_format($this_total); ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td  class="total-group-row-right">
                                     <?php echo money_format(($old_total + $this_total) * $contract_item->price); ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td  class="total-group-row-right">
                                     <?php echo money_format($old_total * $contract_item->price); ?>
                                 </td>
-                                <td style="border-width:0.75pt; text-align:right; font-size:9pt;">
+                                <td  class="total-group-row-right">
                                     <?php echo money_format($this_total * $contract_item->price); ?>
                                 </td>
                             </tr>
@@ -172,7 +172,7 @@
                     <input data-url="<?php echo base_url("payment/print_works_done_print_all/$item->id"); ?>"
                            type="radio"
                            id="option1" name="options" class="form-check-input">
-                    <label for="option1">Tümümünü Yazdır</label>
+                    <label for="option1">Tümünü Yazdır</label>
                 </div>
                 <div class="col-6">
                     <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i

@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-12">
                     <p style="text-align:center; font-size:14pt;">
-                        <strong>YAPILAN İŞLER GRUP İCMALİ</strong>
+                        <strong>YAPILAN İŞLER GRUP İCMALLERİ</strong>
                     </p>
                 </div>
             </div>
@@ -65,7 +65,7 @@
 
                 <?php $c = 0; ?>
                 <?php $d = 0; ?>
-                <?php foreach ($sub_groups as $sub_group) : ?>
+                <?php foreach ($sub_groups as $sub_group) { ?>
                     <?php
                     $sum_group_items = $this->Boq_model->get_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "sub_id" => $sub_group->id));
                     $a = array_reduce($sum_group_items, function ($carry, $sum_group_item) {
@@ -83,29 +83,30 @@
                     ?>
 
                     <tr>
-                        <td style="border-width:0.75pt; text-align:center; font-size:9pt;"><?php echo $i++; ?></td>
-                        <td style="border-width:0.75pt; text-align:left; font-size:9pt;"><?php echo $main_group->code . "." . $sub_group->code; ?></td>
-                        <td style="border-width:0.75pt; text-align:left; font-size:9pt;"><?php echo $sub_group->name; ?></td>
-                        <td style="border-width:0.75pt; text-align:right; font-size:9pt;"><?php echo money_format($a + $b); ?></td>
-                        <td style="border-width:0.75pt; text-align:right; font-size:9pt;"><?php echo money_format($b); ?></td>
-                        <td style="border-width:0.75pt; text-align:right; font-size:9pt;"><?php echo money_format($a); ?></td>
+                        <td class="total-group-row-center"><?php echo $i++; ?></td>
+                        <td  class="total-group-row-left"><?php echo $main_group->code . "." . $sub_group->code; ?></td>
+                        <td  class="total-group-row-left"><?php echo $sub_group->name; ?></td>
+                        <td  class="total-group-row-right"><?php echo money_format($a + $b); ?></td>
+                        <td  class="total-group-row-right"><?php echo money_format($b); ?></td>
+                        <td  class="total-group-row-right"><?php echo money_format($a); ?></td>
                     </tr>
 
                     <?php $c += $a; ?>
                     <?php $d += $b; ?>
-                <?php endforeach; ?>
+
+                <?php } ?>
 
                 <tr>
-                    <td colspan="3" class="total-group-header-right">
-                        <p><strong>Toplam</strong></p>
+                    <td colspan="3" class="w-3 total-group-row-right">
+                        <p><strong>TOPLAM</strong></p>
                     </td>
-                    <td class="total-group-header-right">
+                    <td class="total-group-row-right">
                         <p><strong><?php echo money_format($d + $c); ?></strong></p>
                     </td>
-                    <td class="total-group-header-right">
+                    <td class="total-group-row-right">
                         <p><strong><?php echo money_format($d); ?></strong></p>
                     </td>
-                    <td class="total-group-header-right">
+                    <td class="total-group-row-right">
                         <p><strong><?php echo money_format($c); ?></strong></p>
                     </td>
                 </tr>
