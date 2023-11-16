@@ -289,7 +289,6 @@ class Payment extends CI_Controller
     {
 
         $contract_id = contract_id_module("payment", $id);
-        $payment_no = get_from_id("payment", "hakedis_no", "$id");
         $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
         $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => null, "sub_group" => null,), "rank ASC");
         $prices = get_from_id("contract", "price", "$contract_id");
@@ -2415,68 +2414,57 @@ class Payment extends CI_Controller
         $pdf->Ln(); // Bir alt satıra geç
         $pdf->SetXY(70, 203);
 
-        $signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "report_sign"), "rank ASC");
+        $signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "report_sign", "approved" => null), "rank ASC");
 
         $sign_number = count($signs);
 
         foreach ($signs as $key => $sign) {
-            if (empty($sign->approved)) {
-                if ($sign_number == 1) {
-                    $pdf->MultiCell(120, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
-                } elseif ($sign_number == 2) {
+            if ($sign_number == 1) {
+                $pdf->MultiCell(120, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 2) {
+                $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 3) {
+                $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 4) {
+                if ($key == 2) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 5) {
+                if ($key == 3) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                if ($key > 2) {
                     $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
-                } elseif ($sign_number == 3) {
-                    $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
-                } elseif ($sign_number == 4) {
-                    if ($key == 2) {
-                        $pdf->Ln(30);
-                        $pdf->SetX(70);
-                    }
-                    $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
-                } elseif ($sign_number == 5) {
-                    if ($key == 3) {
-                        $pdf->Ln(30);
-                        $pdf->SetX(70);
-                    }
-                    if ($key > 2) {
-                        $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
-                    } else {
-                        $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
-                    }
-                } elseif ($sign_number == 6) {
-                    if ($key == 3) {
-                        $pdf->Ln(30);
-                        $pdf->SetX(70);
-                    }
+                } else {
                     $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
                 }
+            } elseif ($sign_number == 6) {
+                if ($key == 3) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
             }
         }
 
-        $approved_signs = $this->Payment_sign_model->get_all(
-            array(
-                "contract_id" => $contract->id,
-                "sign_page" => "report_sign",
-                "approved IS NOT NULL" // "approved" sütunu boş olmayanları getir
-            ),
-            "rank ASC"
-        );
-
-
+        $approved_signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "report_sign", "approved !=" => null), "rank ASC");
 
         $approved_signs_number = count($approved_signs);
 
-        $pdf->SetXY(70, 243);
+        $pdf->SetXY(70, 260);
 
         foreach ($approved_signs as $key => $sign) {
             if ($approved_signs_number == 1) {
-                $pdf->MultiCell(120, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                $pdf->MultiCell(120, 10, ". . / . . / . . . . "."\n".$sign->approved."\n".$sign->name . "\n" . $sign->position, 0, "C", 0, 0);
             } elseif ($approved_signs_number == 2) {
-                $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                $pdf->MultiCell(60, 10, ". . / . . / . . . ."."\n".$sign->approved."\n".$sign->name . "\n" . $sign->position, 0, "C", 0, 0);
             }
         }
 
-        $file_name = "07 - Hakediş Raporu(Kapak)-" . contract_name($contract->id) . "-Hak " . $payment->hakedis_no;
+        $file_name = "06 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Hak " . $payment->hakedis_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -2583,10 +2571,13 @@ class Payment extends CI_Controller
         $approved = $this->input->post("approved");
         $position = $this->input->post("position");
         $name = $this->input->post("name");
+
         $this->load->library("form_validation");
 
         if (!empty($approved)) {
             $this->form_validation->set_rules("approved", "Üst Yazı", "min_length[3]|alpha_tr|trim"); //2
+        } else {
+            $approved = null;
         }
         $this->form_validation->set_rules("position", "Ünvan", "min_length[3]|required|alpha_tr|trim"); //2
         $this->form_validation->set_rules("name", "Ad-Soyad", "min_length[3]|required|alpha_tr|trim"); //2
@@ -2749,6 +2740,8 @@ class Payment extends CI_Controller
             );
         }
     }
+
+
 
 
 }

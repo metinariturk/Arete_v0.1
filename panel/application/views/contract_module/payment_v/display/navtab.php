@@ -3,15 +3,11 @@
         <div class="card-body">
             <div class="email-app-sidebar left-bookmark">
                 <ul class="nav main-menu" role="tablist">
-                    <?php if (isset($boq)){ ?>
-                        <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
-                            <i class="fa fa-plus"></i> Metraj Düzenle
+                    <li>
+                        <a target="_blank" href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
+                            <span class="title">Metraj İşlemleri</span>
                         </a>
-                    <?php } else { ?>
-                        <a class="btn btn-primary" href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
-                            <i class="fa fa-plus"></i> Metraj Yap
-                        </a>
-                    <?php } ?>
+                    </li>
                     <li>
                         <a class="show active"
                            id="calculate-tab"
@@ -105,6 +101,16 @@
                            aria-controls="settings"
                            aria-selected="false">
                             <span class="title">Finansal Ayarlar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="show" id="download-tab"
+                           data-bs-toggle="pill"
+                           href="#download"
+                           role="tab"
+                           aria-controls="download"
+                           aria-selected="false">
+                            <span class="title">Hakedişi İndir</span>
                         </a>
                     </li>
                 </ul>
