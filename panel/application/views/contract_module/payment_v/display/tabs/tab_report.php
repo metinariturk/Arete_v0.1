@@ -265,7 +265,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="total-group-row-left">f)İdare Makinesi Kiraları</td>
+                                <td class="total-group-row-left">f)İş Makinesi Kiraları</td>
                                 <td class="total-group-row-left">
                                     <input id="KES_f" type="number" step=".01" name="KES_f"
                                            onblur="calcular()"
@@ -376,13 +376,6 @@
                        class="btn btn-success">
                         <i class="fa fa-floppy-o"></i> Script İle Kaydet
                     </a>
-
-                    <a class="btn btn-primary" target="_blank"
-                       href="<?php echo base_url("payment/print_green/$item->id/0"); ?>"><i
-                                class="fa fa-eye"></i>Önizleme</a>
-                    <a class="btn btn-danger" target="_blank"
-                       href="<?php echo base_url("payment/print_green/$item->id/0"); ?>"><i class="fa fa-trash-o"></i>
-                        Raporu Temizle</a>
                 </div>
             <?php } else { ?>
                 <div class="col-sm-8 offset-2">
@@ -526,7 +519,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="total-group-row-left">f)İdare Makinesi Kiraları</td>
+                                <td class="total-group-row-left">f)İş Makinesi Kiraları</td>
                                 <td class="total-group-row-right">
                                     <span><?php echo money_format($item->Kes_f); ?> <?php echo  get_currency($item->contract_id); ?></span>
                                 </td>
@@ -583,7 +576,7 @@
                                     </table>
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->H); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->I); ?> <?php echo  get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -603,19 +596,30 @@
                             </tbody>
                         </table>
                     </form>
-                    <a form-id="save_payment" id="save_button" onclick="save_payment(this)"
-                       class="btn btn-success">
-                        <i class="fa fa-floppy-o"></i> Script İle Kaydet
-                    </a>
 
-                    <a class="btn btn-primary" target="_blank"
-                       href="<?php echo base_url("payment/print_green/$item->id/0"); ?>"><i
-                                class="fa fa-eye"></i>Önizleme</a>
-                    <a class="btn btn-danger" target="_blank"
-                       href="<?php echo base_url("payment/print_green/$item->id/0"); ?>"><i class="fa fa-trash-o"></i>
-                        Raporu Temizle</a>
                 </div>
             <?php } ?>
+        </div>
+        <hr>
+        <div class="container mt-5">
+            <div class="form-group">
+                <input data-url="<?php echo base_url("payment/print_report/$item->id/0"); ?>" type="radio"
+                       id="option1" name="options" class="form-check-input">
+                <label for="option1">Tümünü Yazdır(Sayfa Tasarruf)</label>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
+                            class="fa fa-print"></i>PDF Kaydet
+                </button>
+                <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
+                            class="fa fa-print"></i>Ön İzleme
+                </button>
+            </div>
+            <div>
+                <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
+                            class="fa fa-print"></i>Rapor Verileri Temizle Tekrar Hesapla
+                </button>
+            </div>
         </div>
     <?php } ?>
 </div>

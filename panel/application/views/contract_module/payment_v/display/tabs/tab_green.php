@@ -1,5 +1,5 @@
 <div class="fade tab-pane <?php if ($active_tab == "green") {
-    echo "active show";
+    echo "show active";
 } ?>"
      id="green" role="tabpanel"
      aria-labelledby="green-tab">

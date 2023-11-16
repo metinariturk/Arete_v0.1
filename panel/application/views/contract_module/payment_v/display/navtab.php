@@ -13,7 +13,7 @@
                         </a>
                     <?php } ?>
                     <li>
-                        <a class="show"
+                        <a class="show active"
                            id="calculate-tab"
                            data-bs-toggle="pill"
                            href="#calculate"

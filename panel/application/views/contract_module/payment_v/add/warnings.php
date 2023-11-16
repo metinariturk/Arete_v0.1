@@ -4289,7 +4289,7 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="total-group-row-left">f)İdare Makinesi Kiraları</td>
+                                                            <td class="total-group-row-left">f)İş Makinesi Kiraları</td>
                                                             <td class="total-group-row-left">
                                                                 <input id="KES_f" type="number" step=".01" name="stopaj_tutar" onblur="calcular()" onfocus="calcular()" value="" data-bs-original-title="" title="">
                                                             </td>

@@ -40,6 +40,10 @@
         </table>
         <div class="mb-2">
             <div class="col-form-label">Yeni İmza Satırı</div>
+            <input value="<?php echo isset($form_error) ? set_value("approved") : ""; ?>"
+                   class="form-control <?php cms_isset(form_error("approved"), "is-invalid", ""); ?>"
+                   name="approved"
+                   placeholder="Üst Yazı (UYGUNDUR-ONAY vs.)"/>
             <input value="<?php echo isset($form_error) ? set_value("position") : ""; ?>"
                    class="form-control <?php cms_isset(form_error("position"), "is-invalid", ""); ?>"
                    name="position"
@@ -49,6 +53,9 @@
                    name="name"
                    placeholder="Ad Soyad"/>
         </div>
+        <?php if (isset($form_error)) { ?>
+            <div class="invalid-feedback"><?php echo form_error("approved"); ?></div>
+        <?php } ?>
         <?php if (isset($form_error)) { ?>
             <div class="invalid-feedback"><?php echo form_error("position"); ?></div>
         <?php } ?>

@@ -10,6 +10,27 @@ function convertToSEO($text)
 
 }
 
+function upper_tr($text)
+{
+    $convert = array(
+        "ç" => "Ç",
+        "ğ" => "Ğ",
+        "i" => "İ",
+        "ı" => "I",
+        "ö" => "Ö",
+        "ş" => "Ş",
+        "ü" => "Ü",
+    );
+
+    $convertedString = strtr($text, $convert);
+
+// Küçük harfleri büyük harfe çevir
+    $convertedString = mb_strtoupper($convertedString, 'UTF-8');
+
+    return $convertedString;
+
+}
+
 
 function delete_comma_spaces($text)
 {
@@ -878,8 +899,14 @@ function yaziyacevir($sayi)
     return ($yazi);
 }
 
-function yaziyla_para($sayi)
+function yaziyla_para($sayi, $currency = null, $currency_little = null)
 {
+    if (empty($currency)) {
+        $currency = "TL";
+    }
+    if (empty($currency_little)) {
+        $currency_little = "KRŞ";
+    }
 
     $para = str_replace(",", ".", $sayi);
     $para = round($para, 2);
@@ -891,10 +918,10 @@ function yaziyla_para($sayi)
         $kurus = $kurus * 10;
     }
     if ($tampara > 0) {
-        $tam = "" . (yaziyacevir($tampara)) . " TL";
+        $tam = "" . (yaziyacevir($tampara)) . "" . $currency;
     }
     if ($kurus > 0) {
-        $onda = "" . (yaziyacevir($kurus)) . " KRŞ";
+        $onda = "" . (yaziyacevir($kurus)) . "" . $currency_little;
     }
 
     $yazili = "$tam $onda";
@@ -1603,7 +1630,8 @@ if ($formattedPhoneNumber) {
     return "Invalid Phone Number!";
 }
 
-function recursive_count($array) {
+function recursive_count($array)
+{
     $count = 0;
     foreach ($array as $element) {
         if (is_array($element)) {
@@ -1615,7 +1643,8 @@ function recursive_count($array) {
     return $count;
 }
 
-function sortArrayByCriteria($array, $criteria) {
+function sortArrayByCriteria($array, $criteria)
+{
     usort($array, function ($a, $b) use ($criteria) {
         foreach ($criteria as $key => $order) {
             if ($a->$key != $b->$key) {
