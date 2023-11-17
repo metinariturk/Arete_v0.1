@@ -2316,8 +2316,6 @@ class Payment extends CI_Controller
             $damga_oran = 0;
         }
 
-        $damga_oran = $this->input->post("damga_oran");
-        
         $stopaj = ($this->input->post("stopaj") == "on") ? 1 : 0;
         if ($stopaj == 1) {
             $stopaj_oran = $this->input->post("stopaj_oran");
