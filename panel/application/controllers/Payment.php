@@ -1145,10 +1145,10 @@ class Payment extends CI_Controller
                         $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
                         $pdf->setLineWidth(0.1);
                         $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
-                        $pdf->Cell(15, 10, "Sıra No", 1, 0, "C", 1);
-                        $pdf->Cell(35, 10, "Poz No", 1, 0, "C", 1);
-                        $pdf->Cell(130, 10, "Yapılan İşin Cinsi", 1, 0, "L", 1);
-                        $pdf->Cell(16, 10, "Birimi", 1, 0, "C", 1);
+                        $pdf->Cell(13, 10, "Sıra No", 1, 0, "C", 1);
+                        $pdf->Cell(32, 10, "Poz No", 1, 0, "C", 1);
+                        $pdf->Cell(138, 10, "Yapılan İşin Cinsi", 1, 0, "L", 1);
+                        $pdf->Cell(13, 10, "Birimi", 1, 0, "C", 1);
                         $pdf->Cell(84, 5, "Hakediş Miktarları", 1, 0, "C", 1);
                         $pdf->Ln();
                         $pdf->Cell(196, 5, "", 0, 0, "C", 0);
@@ -1165,10 +1165,10 @@ class Payment extends CI_Controller
                             $this_total = isset($calculate->total) ? $calculate->total : 0;
                             $pdf->SetFont('dejavusans', '', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
                             $pdf->setLineWidth(0.1);
-                            $pdf->Cell(15, 5, $k++, 1, 0, "C", 0);
-                            $pdf->Cell(35, 5, $contract_item->code, 1, 0, "L", 0);
-                            $pdf->Cell(130, 5, $contract_item->name, 1, 0, "L", 0);
-                            $pdf->Cell(16, 5, $contract_item->unit, 1, 0, "C", 0);
+                            $pdf->Cell(13, 5, $k++, 1, 0, "C", 0);
+                            $pdf->Cell(32, 5, $contract_item->code, 1, 0, "L", 0);
+                            $pdf->Cell(138, 5, $contract_item->name, 1, 0, "L", 0);
+                            $pdf->Cell(13, 5, $contract_item->unit, 1, 0, "C", 0);
                             $pdf->Cell(28, 5, money_format($old_total + $this_total), 1, 0, "R", 0);
                             $pdf->Cell(28, 5, money_format($old_total), 1, 0, "R", 0);
                             $pdf->Cell(28, 5, money_format($this_total), 1, 0, "R", 0);
