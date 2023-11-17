@@ -10,10 +10,11 @@ class Project extends CI_Controller
     {
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -59,15 +60,7 @@ class Project extends CI_Controller
 
         $viewData = new stdClass();
 
-        $actives = $this->Project_model->get_all(array(
-            "durumu" => 1
-        ));
-
-        $passives = $this->Project_model->get_all(array(
-            "durumu" => !1
-        ));
-
-        $all_projects = $this->Project_model->get_all();
+        $items = $this->Project_model->get_all(array());
 
         $settings = $this->Settings_model->get();
 
@@ -75,9 +68,7 @@ class Project extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";
-        $viewData->actives = $actives;
-        $viewData->passives = $passives;
-        $viewData->all_projects = $all_projects;
+        $viewData->items = $items;
         $viewData->settings = $settings;
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -946,7 +937,7 @@ class Project extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => "(Proje) ".project_name($id),
+                    "title" => "(Proje) " . project_name($id),
                 )
             );
             echo "favoriye eklendi";
