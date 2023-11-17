@@ -10,10 +10,11 @@ class company extends CI_Controller
     {
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -154,12 +155,19 @@ class company extends CI_Controller
 
         $name = mb_convert_case($this->input->post("company_name"), MB_CASE_TITLE, "UTF-8");
 
+        if ($this->input->post("company_role") == "Kullanıcı Firma"){
+            $employer = 1;
+        } else {
+            $employer = null;
+        }
+
+
         $insert = $this->company_model->add(
             array(
                 "company_role" => $this->input->post("company_role"),
                 "profession" => $this->input->post("profession"),
                 "company_name" => $name,
-                "employer" => 1,
+                "employer" => $employer,
                 "tax_city" => $this->input->post("tax_city"),
                 "tax_office" => $this->input->post("tax_office"),
                 "tax_no" => $this->input->post("tax_no"),
@@ -174,7 +182,6 @@ class company extends CI_Controller
                 "createdAt" => date("Y-m-d H:i:s")
             )
         );
-
 
 
         $record_id = $this->db->insert_id();
@@ -485,7 +492,6 @@ class company extends CI_Controller
             return TRUE;
         }
     }
-
 
 
     public

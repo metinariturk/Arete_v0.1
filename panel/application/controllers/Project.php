@@ -85,7 +85,6 @@ class Project extends CI_Controller
             }
         }
 
-
         $viewData = new stdClass();
         $users = $this->User_model->get_all(array(
             "user_role" => 1
