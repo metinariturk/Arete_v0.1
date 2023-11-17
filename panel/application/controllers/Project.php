@@ -105,14 +105,9 @@ class Project extends CI_Controller
         $contracts = $this->Contract_model->get_all(
             array(
                 'proje_id' => $id,
-                'subcont' => null
+                'subcont !=' => 1
             )
         );
-        $subcontracts = $this->Contract_model->get_all(array(
-            'durumu' => 1,
-            'subcont' => 1,
-            'proje_id' => $id
-        ));
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -122,7 +117,6 @@ class Project extends CI_Controller
         $viewData->prep_auctions = $prep_auctions;
         $viewData->sites = $sites;
         $viewData->contracts = $contracts;
-        $viewData->subcontracts = $subcontracts;
         $viewData->fav = $fav;
 
         $viewData->display_route = $this->display_route;
