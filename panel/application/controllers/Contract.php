@@ -228,7 +228,7 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function new_form_project($project_id = null, $is_sub = null)
+    public function new_form_main($project_id = null)
     {
         if (!isAdmin()) {
             $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
@@ -259,10 +259,57 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "add_main";
         $viewData->project = $project;
         $viewData->project_id = $project_id;
-        $viewData->ihaleler = $ihaleler;
         $viewData->settings = $settings;
         $viewData->companys = $companys;
-        $viewData->is_sub = $is_sub;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+        $alert = array(
+            "title" => "Sözleşme",
+            "text" => "Yeni Oluştur Sayfası ",
+            "type" => "success"
+        );
+
+        $this->session->set_flashdata("alert", $alert);
+
+    }
+
+    public function new_form_sub($main_contract_id = null)
+    {
+        if (!isAdmin()) {
+            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
+            if (!in_array(active_user_id(), $yetkili)) {
+                redirect(base_url("error"));
+            }
+        }
+
+        $project_id = project_id_cont($main_contract_id);
+
+        //Proje yetkilisi mi diye sorgulayabiliriz
+
+
+        if (empty($project_id)) {
+            $project_id = $this->input->post('proje_id');
+        }
+
+        $viewData = new stdClass();
+
+        /** Tablodan Verilerin Getirilmesi.. */
+        $project = $this->Project_model->get(array("id" => $project_id));
+        $settings = $this->Settings_model->get();
+        $companys = $this->Company_model->get_all(array());
+        $main_contract = $this->Contract_model->get(array("id" => $main_contract_id));
+
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "add_sub";
+        $viewData->project = $project;
+        $viewData->project_id = $project_id;
+        $viewData->settings = $settings;
+        $viewData->main_contract = $main_contract;
+        $viewData->companys = $companys;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 

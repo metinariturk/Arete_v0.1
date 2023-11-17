@@ -63,6 +63,14 @@
                     </div>
                     <div class="row py-3">
                         <div class="col-6">
+                            <strong>İşveren:</strong>
+                        </div>
+                        <div class="col-6">
+                            <?php echo company_name($item->isveren); ?>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-6">
                             <strong>Yüklenici Adı:</strong>
                         </div>
                         <div class="col-6">

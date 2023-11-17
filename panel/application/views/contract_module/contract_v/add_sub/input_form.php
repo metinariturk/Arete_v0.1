@@ -24,7 +24,17 @@
                 <?php } ?>
             </div>
         </div>
-
+        <div class="mb-2">
+            <div class="col-form-label">Ana Sözleşme Adı</div>
+            <input type="text"
+                   class="form-control <?php cms_isset(form_error("main_contract"), "is-invalid", ""); ?>"
+                   placeholder="Sözleşme Adı" readonly
+                   value="<?php echo isset($form_error) ? set_value("main_contract") : contract_name($main_contract->id); ?>"
+                   name="main_contract">
+            <?php if (isset($form_error)) { ?>
+                <div class="invalid-feedback"><?php echo form_error("main_contract"); ?></div>
+            <?php } ?>
+        </div>
         <div class="mb-2">
             <div class="col-form-label">Sözleşme Adı</div>
             <input type="text"
@@ -40,14 +50,11 @@
             <div class="row">
                 <div class="col-12">
                     <div class="col-form-label">Sözleşme İşveren</div>
-                    <select id="select2-demo-1"
-                            class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
-                            data-plugin="select2" name="isveren">
-                        <option value="<?php echo isset($form_error) ? set_value("isveren") : ""; ?>"><?php echo isset($form_error) ? company_name(set_value("isveren")) : ""; ?></option>
-                        <?php foreach ($companys as $company) { ?>
-                            <option value="<?php echo $company->id; ?>"><?php echo $company->company_name; ?></option>
-                        <?php } ?>
-                    </select>
+                    <input type="text"
+                           class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
+                           readonly
+                           value="<?php echo isset($form_error) ? set_value("isveren") : company_name($main_contract->yuklenici); ?>"
+                           name="isveren">
                     <?php if (isset($form_error)) { ?>
                         <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
                     <?php } ?>

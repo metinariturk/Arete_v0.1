@@ -6,6 +6,7 @@
         <th>Sözleşme Bedel</th>
         <th>Toplam Hakediş</th>
         <th class="w20c">Gerçekleşme Oran</th>
+        <th class="w20c">Alt Sözleşme Ekle</th>
         </thead>
         <tbody>
         <?php $i = 0;
@@ -21,6 +22,9 @@
                     echo money_format($main_payment_total) . " " . get_currency($contract->id); ?></td>
                 <td  style="color: #0b43c6; font-weight: bolder;">
                     % <?php echo money_format(100 * sum_from_table("payment", "E", "$contract->id") / $contract->sozlesme_bedel); ?></td>
+                <td>
+                    <a href="<?php echo base_url("contract/new_form_sub/$contract->id"); ?>">Alt Ekle</a>
+                </td>
             </tr>
         <?php } ?>
 
