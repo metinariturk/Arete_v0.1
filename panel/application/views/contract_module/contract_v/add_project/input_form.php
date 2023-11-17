@@ -145,8 +145,8 @@
                                 class="form-control <?php cms_isset(form_error("yuklenici"), "is-invalid", ""); ?>"
                                 data-plugin="select2" name="yuklenici">
                             <option value="<?php echo isset($form_error) ? set_value("yuklenici") : ""; ?>"><?php echo isset($form_error) ? company_name(set_value("yuklenici")) : ""; ?></option>
-                            <?php foreach ($sistem_isverenler as $sistem_isveren) { ?>
-                                <option value="<?php echo $sistem_isveren->id; ?>"><?php echo $sistem_isveren->company_name; ?></option>
+                            <?php foreach ($companys as $company) { ?>
+                                <option value="<?php echo $company->id; ?>"><?php echo $company->company_name; ?></option>
                             <?php } ?>
                         </select>
                         <?php if (isset($form_error)) { ?>
