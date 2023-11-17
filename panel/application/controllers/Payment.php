@@ -2308,10 +2308,23 @@ class Payment extends CI_Controller
         $gecici_teminat_oran = $this->input->post("gecici_teminat_oran");
         $fiyat_fark = ($this->input->post("fiyat_fark") == "on") ? 1 : 0;
         $fiyat_fark_kes = ($this->input->post("fiyat_fark_kes") == "on") ? 1 : 0;
+
         $damga_vergisi = ($this->input->post("damga_vergisi") == "on") ? 1 : 0;
+        if ($damga_vergisi == 1) {
+            $damga_oran = $this->input->post("damga_oran");
+        } else {
+            $damga_oran = 0;
+        }
+
         $damga_oran = $this->input->post("damga_oran");
+        
         $stopaj = ($this->input->post("stopaj") == "on") ? 1 : 0;
-        $stopaj_oran = $this->input->post("stopaj_oran");
+        if ($stopaj == 1) {
+            $stopaj_oran = $this->input->post("stopaj_oran");
+        } else {
+            $stopaj_oran = 0;
+        }
+
         $kdv = ($this->input->post("kdv") == "on") ? 1 : 0;
         $kdv_oran = $this->input->post("kdv_oran");
         $tevkifat_oran = $this->input->post("tevkifat_oran");
