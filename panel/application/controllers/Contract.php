@@ -669,8 +669,7 @@ class Contract extends CI_Controller
             $project = $this->Project_model->get(array("id" => $project_id));
             $settings = $this->Settings_model->get();
             $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
-            $companys = $this->Company_model->get_all(array("employer !=" => 0));
-            $sistem_isverenler = $this->Company_model->get_all(array("employer" => 0));
+            $companys = $this->Company_model->get_all(array());
 
             $cities = $this->City_model->get_all(array());
 
@@ -680,7 +679,6 @@ class Contract extends CI_Controller
             $viewData->subViewFolder = "add_project";
             $viewData->project = $project;
             $viewData->companys = $companys;
-            $viewData->sistem_isverenler = $sistem_isverenler;
             $viewData->ihaleler = $ihaleler;
             $viewData->settings = $settings;
             $viewData->main_contracts = $main_contracts;
