@@ -54,7 +54,7 @@ class Bond extends CI_Controller
         $items = $this->Bond_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -75,7 +75,7 @@ class Bond extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Bond_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -112,7 +112,7 @@ class Bond extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Bond_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
         $settings = $this->Settings_model->get();
@@ -149,7 +149,7 @@ class Bond extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Bond_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
         $settings = $this->Settings_model->get();
@@ -189,7 +189,7 @@ class Bond extends CI_Controller
         $items = $this->Bond_model->get_all(array());
 
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -226,7 +226,7 @@ class Bond extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Bond_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
         $settings = $this->Settings_model->get();

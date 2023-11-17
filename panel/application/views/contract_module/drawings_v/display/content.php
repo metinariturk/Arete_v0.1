@@ -6,11 +6,11 @@
                     <ul>
                         <li>
                             <a href="<?php echo base_url("project/file_form/$project_id"); ?>">
-<div class="btn btn-light">
-<i data-feather="home"></i>
-<?php echo project_code_name($project_id); ?>
-</div>
- </a>
+                                <div class="btn btn-light">
+                                    <i data-feather="home"></i>
+                                    <?php echo project_code_name($project_id); ?>
+                                </div>
+                            </a>
                         </li>
                         <li>
                             <div class="btn btn-light ">

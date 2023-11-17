@@ -4,16 +4,24 @@
      id="report" role="tabpanel"
      aria-labelledby="report-tab">
     <?php if (empty($payment_settings)) { ?>
-        Hakediş ayalarını yapın sonra gelin
+        <div class="alert alert-light-secondary" role="alert">
+            <h5 class="alert-heading pb-2 txt-secondary">Finanasal kriterler belirlenmemiş</h5>
+            <p>Hakediş girişi yapmadan önce hakediş hesabına esass finasnsal kriterleri belirlemeniz gerekir.</p>
+            <hr>
+            <p class="mb-0">Rapor sayfası otomatik olarak hesaplamaları yapacaktır</p>
+            <a href="<?php echo base_url("payment/file_form/$item->id/settings"); ?>"><p class="mb-0">Ayarları yapmak
+                    için tıklayınız.</p></a>
+        </div>
+
     <?php } else { ?>
         <?php
         $all_boqs = $this->Boq_model->get_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no));
         $this_payment_calculation_price = 0;
         foreach ($all_boqs as $boq) {
             $boq_price = get_from_any("contract_price", "price", "id", "$boq->boq_id");
-            $calculation_price = $boq->total*$boq_price;
+            $calculation_price = $boq->total * $boq_price;
             $this_payment_calculation_price += $calculation_price;
-        }?>
+        } ?>
         <?php $sum_old_B = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "B"); ?>
         <?php $sum_old_contract_ff = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "C"); ?>
         <?php $sum_old_advance = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <" => $item->hakedis_no), "I"); ?>
@@ -31,7 +39,7 @@
                             <tr>
                                 <th colspan="3" class="text-center">
                                     <p style="font-weight: bold; font-size: 14pt; text-align: center">
-                                        HAKEDİŞ RAPORU
+                                        06 - HAKEDİŞ RAPORU (HESAP CETVELİ)
                                     </p>
                                 </th>
                             </tr>
@@ -54,7 +62,8 @@
                                 </td>
                                 <td class="total-group-row-left">
                                     <input type="number" step=".01" id="A" name="A"
-                                           value="<?php echo isset($item->A) ? $item->A : $this_payment_calculation_price; ?>" readonly
+                                           value="<?php echo isset($item->A) ? $item->A : $this_payment_calculation_price; ?>"
+                                           readonly
                                            onblur="calcular()"
                                            onfocus="calcular()">
                                 </td>
@@ -323,7 +332,7 @@
                                     <table>
                                         <tbody>
                                         <tr>
-                                            <td  style="font-weight: bold" colspan="2">Avans Mahsubu A x %
+                                            <td style="font-weight: bold" colspan="2">Avans Mahsubu A x %
                                                 <input type="number" step=".01" id="I_s" name="I_s"
                                                        onblur="calcular()" onfocus="calcular()"
                                                        value="<?php echo isset($item->I_s) ? $item->I_s : $payment_settings->avans_oran; ?>"
@@ -372,10 +381,18 @@
                             </tbody>
                         </table>
                     </form>
-                    <a form-id="save_payment" id="save_button" onclick="save_payment(this)"
-                       class="btn btn-success">
-                        <i class="fa fa-floppy-o"></i> Script İle Kaydet
-                    </a>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a form-id="save_payment" id="save_button" onclick="save_payment(this)"
+                                   class="btn btn-success btn-block" style="text-align: right">
+                                    <i class="fa fa-floppy-o"></i> Hakedişi Kaydet
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             <?php } else { ?>
                 <div class="col-sm-8 offset-2">
@@ -387,7 +404,7 @@
                             <tr>
                                 <th colspan="3" class="text-center">
                                     <p style="font-weight: bold; font-size: 14pt; text-align: center">
-                                        HAKEDİŞ RAPORU
+                                        06 - HAKEDİŞ RAPORU (HESAP CETVELİ)
                                     </p>
                                 </th>
                             </tr>
@@ -409,7 +426,7 @@
                                 <td class="total-group-row-left">Bu Hakediş Sözleşme Fiyatları İle Yapılan İşin Tutarı
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->A); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->A); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -418,14 +435,14 @@
                                     Tutarı
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->A1); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->A1); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="w-5 total-group-row-center">B</td>
                                 <td class="total-group-row-left">Bu Hakediş Fiyat Farkı Tutarı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->B); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->B); ?><?php echo get_currency($item->contract_id); ?></span>
 
                                 </td>
                             </tr>
@@ -433,7 +450,7 @@
                                 <td class="w-5 total-group-row-center">B1</td>
                                 <td class="total-group-row-left">Önceki Hakediş Fiyat Farkı Toplamı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->B1); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->B1); ?><?php echo get_currency($item->contract_id); ?></span>
 
                                 </td>
                             </tr>
@@ -441,7 +458,7 @@
                                 <td class="w-5 total-group-row-center">C</td>
                                 <td class="total-group-row-left" style="font-weight: bold">Toplam Tutar (A+A1+B+B1)</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->C); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->C); ?><?php echo get_currency($item->contract_id); ?></span>
 
                                 </td>
                             </tr>
@@ -452,7 +469,7 @@
                                 <td class="w-5 total-group-row-center">D</td>
                                 <td class="total-group-row-left">Bir Önceki Hakedişin Toplam Tutarı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->D); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->D); ?><?php echo get_currency($item->contract_id); ?></span>
 
                                 </td>
                             </tr>
@@ -460,7 +477,7 @@
                                 <td class="w-5 total-group-row-center">E</td>
                                 <td class="total-group-row-left">Bu Hakedişin Tutarı (C-D)</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->E); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->E); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -469,14 +486,14 @@
 
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->F); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->F); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="w-5 total-group-row-center">G</td>
                                 <td class="total-group-row-left" style="font-weight: bold">Tahakkuk Tutarı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->G); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->G); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -485,61 +502,65 @@
                                     <p style="width: 20px; padding-left: 40px "><strong>KESİNTİLER VE MAHSUPLAR</strong>
                                     </p>
                                 </td>
-                                <td class="total-group-row-left">a)Gelir / Kurumlar Vergisi (E x<span>%<?php echo $item->Kes_a_s; ?></span>)
+                                <td class="total-group-row-left">a)Gelir / Kurumlar Vergisi (E
+                                    x<span>%<?php echo $item->Kes_a_s; ?></span>)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_a); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_a); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="total-group-row-left">b)Damga Vergisi (E x<span>%<?php echo $item->Kes_b_s; ?></span>)
+                                <td class="total-group-row-left">b)Damga Vergisi (E
+                                    x<span>%<?php echo $item->Kes_b_s; ?></span>)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_b); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_b); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="total-group-row-left">c)KDV Tevkifatı (F x<span><?php echo $item->Kes_c_s*10; ?></span>/10)
+                                <td class="total-group-row-left">c)KDV Tevkifatı (F
+                                    x<span><?php echo $item->Kes_c_s * 10; ?></span>/10)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_c); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_c); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">d)Sosyal Sigortalar Kurumu Kesintisi</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_d); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_d); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="total-group-row-left">e)Geçici Kabul Kesintisi % <span><?php echo $item->Kes_e_s; ?></span>
+                                <td class="total-group-row-left">e)Geçici Kabul Kesintisi %
+                                    <span><?php echo $item->Kes_e_s; ?></span>
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_e); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_e); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">f)İş Makinesi Kiraları</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_f); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_f); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">g)Gecikme Cezası</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_g); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_g); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr
                             <tr>
                                 <td class="total-group-row-left">h)İş Sağlığı ve Güvenliği Cezası</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_h); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_h); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">i)Diğer</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_i); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_i); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
 
@@ -548,7 +569,7 @@
                                 <td class="total-group-row-left" style="font-weight: bold">Kesinti ve Mahsuplar Toplamı
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->H); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->H); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -557,7 +578,8 @@
                                     <table>
                                         <tbody>
                                         <tr>
-                                            <td  style="font-weight: bold" colspan="2">Avans Mahsubu A x % <span><?php echo $item->I_s; ?></span>
+                                            <td style="font-weight: bold" colspan="2">Avans Mahsubu A x %
+                                                <span><?php echo $item->I_s; ?></span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -576,7 +598,7 @@
                                     </table>
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->I); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->I); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -585,12 +607,13 @@
                                     (G-H-I)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->balance); ?> <?php echo  get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->balance); ?><?php echo get_currency($item->contract_id); ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-weight: bold; text-align: right" colspan="2">Yazıyla:<?php echo yaziyla_para($item->balance); ?>
+                                <td style="font-weight: bold; text-align: right" colspan="2">
+                                    Yazıyla:<?php echo yaziyla_para($item->balance); ?>
                                 </td>
                             </tr>
                             </tbody>
@@ -600,25 +623,37 @@
                 </div>
             <?php } ?>
         </div>
-        <hr>
-        <div class="container mt-5">
-            <div class="form-group">
-                <input data-url="<?php echo base_url("payment/print_report/$item->id/0"); ?>" type="radio"
-                       id="option1" name="options" class="form-check-input">
-                <label for="option1">Tümünü Yazdır(Sayfa Tasarruf)</label>
-            </div>
-            <div class="col-6">
-                <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
-                            class="fa fa-print"></i>PDF Kaydet
-                </button>
-                <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
-                            class="fa fa-print"></i>Ön İzleme
-                </button>
-            </div>
-            <div>
-                <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
-                            class="fa fa-print"></i>Rapor Verileri Temizle Tekrar Hesapla
-                </button>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
+                    <div class="h-100 checkbox-checked">
+                        <h6 class="sub-title">06 - Hakediş Raporu (Hesap Cetveli)</h6>
+                        <div style="height: 50px;" hidden>
+                            <div class="form-check radio radio-success">
+                                <input class="form-check-input" id="rep1"
+                                       data-url="<?php echo base_url("payment/print_report/$item->id"); ?>"
+                                       type="radio" name="report" value="report" checked="">
+                                <label class="form-check-label" for="rep1">Tümünü Yazdır</label>
+                            </div>
+                        </div>
+                        <div class="form-check radio radio-success">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
+                                        <button class="btn btn-outline-success" name="report"
+                                                onclick="handleButtonClick(1)" type="button"><i class="fa fa-download"></i>
+                                            İndir
+                                        </button>
+                                        <button class="btn btn-outline-success" name="report"
+                                                onclick="handleButtonClick(0)" type="button"><i
+                                                    class="fa fa-file-pdf-o"></i>Önizle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     <?php } ?>

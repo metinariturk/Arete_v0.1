@@ -2395,7 +2395,7 @@ class Contract extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "main_group" => 1,
-                    "name" => mb_strtoupper($group_name),
+                    "name" => upper_tr($group_name),
                     "code" => $group_code,
                 )
             );

@@ -66,7 +66,7 @@
                         </td>
                         <td style="width:2%; text-align: center">:</td>
                         <td style="width:49%; text-align: left;">
-                            <?php echo money_format($contract->sozlesme_bedel)." ".$contract->para_birimi; ?>
+                            <?php echo money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi; ?>
                         </td>
                     </tr>
                     <tr>
@@ -133,7 +133,7 @@
                         <td style="width:2%; text-align: center">:</td>
                         <td style="width:49%; text-align: left;">
                             <?php $advance_given = sum_from_table("advance", "avans_miktar", $item->contract_id);
-                            echo money_format($advance_given)." ".$contract->para_birimi; ?>
+                            echo money_format($advance_given) . " " . $contract->para_birimi; ?>
                         </td>
                     </tr>
                     <tr>
@@ -143,7 +143,7 @@
                         <td style="width:2%; text-align: center">:</td>
                         <td style="width:49%; text-align: left;">
                             <?php $sum_advance = $this->Payment_model->sum_all(array('contract_id' => $item->contract_id, "hakedis_no <=" => $item->hakedis_no), "I");
-                            echo money_format($sum_advance)." ".$contract->para_birimi; ?>
+                            echo money_format($sum_advance) . " " . $contract->para_birimi; ?>
 
                         </td>
                     </tr>
@@ -206,21 +206,35 @@
                     </tbody>
                 </table>
             </div>
-            <hr>
-            <div class="container mt-5">
-                <div class="form-group">
-                    <input data-url="<?php echo base_url("payment/print_cover/$item->id"); ?>"
-                           type="radio"
-                           id="option1" name="options" class="form-check-input">
-                    <label for="option1">Yazdır</label>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
-                                class="fa fa-print"></i>PDF Kaydet
-                    </button>
-                    <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
-                                class="fa fa-print"></i>Ön İzleme
-                    </button>
+            <div class="card-body">
+                <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
+                    <div class="h-100 checkbox-checked">
+                        <h6 class="sub-title">07 - Hakediş Raporu (Kapak)</h6>
+                        <div style="height: 50px;" hidden>
+                            <div class="form-check radio radio-success">
+                                <input class="form-check-input" id="cover1"
+                                       data-url="<?php echo base_url("payment/print_cover/$item->id"); ?>"
+                                       type="radio" name="cover" value="cover" checked="">
+                                <label class="form-check-label" for="cover1">Tümünü Yazdır</label>
+                            </div>
+                        </div>
+                        <div class="form-check radio radio-success">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
+                                        <button class="btn btn-outline-success" name="cover"
+                                                onclick="handleButtonClick(1)"
+                                                type="button"><i class="fa fa-download"></i> İndir
+                                        </button>
+                                        <button class="btn btn-outline-success" name="cover"
+                                                onclick="handleButtonClick(0)"
+                                                type="button"><i class="fa fa-file-pdf-o"></i>Önizle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@
                            role="tab"
                            aria-controls="calculate"
                            aria-selected="true">
-                            <span class="title">Metraj Cetveli</span>
+                            <span class="title">01 - Metraj Cetveli</span>
                         </a>
                     </li>
                     <li>
@@ -27,7 +27,7 @@
                            role="tab"
                            aria-controls="green"
                            aria-selected="false">
-                            <span class="title">Metraj İcmali</span>
+                            <span class="title">02 - Metraj İcmali</span>
                         </a>
                     </li>
                     <li>
@@ -37,7 +37,7 @@
                            role="tab"
                            aria-controls="works_done"
                            aria-selected="false">
-                            <span class="title">Yapılan İşler</span>
+                            <span class="title">03 - Yapılan İşler</span>
                         </a>
                     </li>
                     <li>
@@ -48,7 +48,7 @@
                            role="tab"
                            aria-controls="group_total"
                            aria-selected="false">
-                            <span class="title">Grup İcmali</span>
+                            <span class="title">04 - Grup İcmali</span>
                         </a>
                     </li>
                     <li>
@@ -59,7 +59,7 @@
                            role="tab"
                            aria-controls="main_total"
                            aria-selected="false">
-                            <span class="title">Genel İcmal</span>
+                            <span class="title">05 - Genel İcmal</span>
                         </a>
                     </li>
                     <li>
@@ -70,7 +70,7 @@
                            role="tab"
                            aria-controls="report"
                            aria-selected="false">
-                            <span class="title">Hakediş Raporu</span>
+                            <span class="title">06 - Hakediş Raporu</span>
                         </a>
                     </li>
                     <li>
@@ -80,7 +80,7 @@
                            role="tab"
                            aria-controls="info"
                            aria-selected="false">
-                            <span class "title">Hakediş Kapağı</span>
+                            <span class="title">07 - Hakediş Kapağı</span>
                         </a>
                     </li>
                     <li>
@@ -111,6 +111,16 @@
                            aria-controls="download"
                            aria-selected="false">
                             <span class="title">Hakedişi İndir</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="show" id="uploads-tab"
+                           data-bs-toggle="pill"
+                           href="#uploads"
+                           role="tab"
+                           aria-controls="uploads"
+                           aria-selected="false">
+                            <span class="title">Yüklemeler</span>
                         </a>
                     </li>
                 </ul>

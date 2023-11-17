@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-12">
                     <p style="text-align:center; font-size:14pt;">
-                        <strong>METRAJ İCMALİ</strong>
+                        <strong>02 - METRAJ İCMALİ</strong>
                     </p>
                 </div>
             </div>
@@ -33,11 +33,11 @@
             <table style="width:100%;">
                 <thead>
                 <tr>
-                        <th>
-                            <p style="font-size:10pt;">
-                                <strong><?php echo $main_group->code . " - " . $main_group->name; ?></strong></p>
-                        </th>
-                    </tr>
+                    <th>
+                        <p style="font-size:10pt;">
+                            <strong><?php echo $main_group->code . " - " . $main_group->name; ?></strong></p>
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
 
@@ -45,13 +45,13 @@
                 <?php foreach ($sub_groups as $sub_group) { ?>
                     <table style="width:100%;">
                         <thead>
-                          <tr>
-                                <td colspan="3">
-                                    <p style="font-size:10pt;">
-                                        <strong><?php echo $main_group->code . "." .$sub_group->code . " - " . $sub_group->name; ?></strong>
-                                    </p>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="3">
+                                <p style="font-size:10pt;">
+                                    <strong><?php echo $main_group->code . "." . $sub_group->code . " - " . $sub_group->name; ?></strong>
+                                </p>
+                            </td>
+                        </tr>
                         </thead>
                     </table>
                     <table style="width:100%;">
@@ -123,27 +123,45 @@
                     </table>
                 <?php } ?>
                 <?php } ?>
-                <hr>
-                <div class="container mt-5">
-                    <div class="form-group">
-                        <input data-url="<?php echo base_url("payment/print_green_all/$item->id"); ?>" type="radio"
-                               id="option1" name="options" class="form-check-input">
-                        <label for="option1">Tüm Pozlar İcmali</label>
-                    </div>
-                    <div class="form-group">
-                        <input data-url="<?php echo base_url("payment/print_green_hide_zero/$item->id"); ?>" type="radio"
-                               id="option3" name="options" class="form-check-input">
-                        <label for="option3">Toplamı Sıfır Olanları Gösterme</label>
-                    </div>
-                    <div class="col-6">
-                        <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
-                                    class="fa fa-print"></i>PDF Kaydet
-                        </button>
-                        <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
-                                    class="fa fa-print"></i>Ön İzleme
-                        </button>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
+        <div class="h-100 checkbox-checked">
+            <h6 class="sub-title">02 - Metraj İcmali</h6>
+            <div style="height: 100px;">
+                <div class="form-check radio radio-success">
+                    <input class="form-check-input" id="green1"
+                           data-url="<?php echo base_url("payment/print_green_all/$item->id"); ?>"
+                           type="radio" name="green" value="green" checked="">
+                    <label class="form-check-label" for="green1">Sıralı Yazdır</label>
+                </div>
+                <div class="form-check radio radio-success">
+                    <input class="form-check-input" id="green2"
+                           data-url="<?php echo base_url("payment/print_green_hide_zero/$item->id"); ?>"
+                           type="radio" name="green" value="green">
+                    <label class="form-check-label" for="green2">Toplamı Sıfır Olanları
+                        Gösterme</label>
+                </div>
+            </div>
+            <div class="form-check radio radio-success">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="btn-group btn-group-pill" role="group"
+                             aria-label="Basic example">
+                            <button class="btn btn-outline-success" name="green"
+                                    onclick="handleButtonClick(1)"
+                                    type="button"><i class="fa fa-download"></i> İndir
+                            </button>
+                            <button class="btn btn-outline-success" name="green"
+                                    onclick="handleButtonClick(0)"
+                                    type="button"><i class="fa fa-file-pdf-o"></i>Önizle
+                            </button>
+                        </div>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>

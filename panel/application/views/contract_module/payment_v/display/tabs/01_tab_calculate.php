@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-12">
                     <p style="text-align:center; font-size:14pt;">
-                        <strong>METRAJ CETVELİ</strong>
+                        <strong>01 - METRAJ CETVELİ</strong>
                     </p>
                 </div>
             </div>
@@ -128,30 +128,49 @@
                 </tbody>
                 </table>
             <?php } ?>
-            <hr>
-            <div class="container mt-5">
-                <div class="form-group">
-                    <input data-url="<?php echo base_url("payment/print_calculate/$item->id/0"); ?>" type="radio"
-                           id="option1" name="options" class="form-check-input">
-                    <label for="option1">Tümünü Yazdır(Sayfa Tasarruf)</label>
-                </div>
-                <div class="form-group">
-                    <input data-url="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>" type="radio"
-                           id="option2" name="options" class="form-check-input">
-                    <label for="option2">Ana Gruplardan Ayır</label>
-                </div>
-                <div class="form-group">
-                    <input data-url="<?php echo base_url("payment/print_calculate/$item->id/2"); ?>" type="radio"
-                           id="option2" name="options" class="form-check-input">
-                    <label for="option2">Alt Gruplardan Ayır</label>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
-                                class="fa fa-print"></i>PDF Kaydet
-                    </button>
-                    <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
-                                class="fa fa-print"></i>Ön İzleme
-                    </button>
+            <div class="card">
+                <div class="card-body">
+                    <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
+                        <div class="h-100 checkbox-checked">
+                            <h6 class="sub-title">01 - Metrajlar</h6>
+                            <div style="height: 100px;">
+                                <div class="form-check radio radio-success">
+                                    <input class="form-check-input" id="radio22"
+                                           data-url="<?php echo base_url("payment/print_calculate/$item->id/0"); ?>"
+                                           type="radio" name="calculate" value="option1" checked="">
+                                    <label class="form-check-label" for="radio22">Tüm Metrajlar</label>
+                                </div>
+                                <div class="form-check radio radio-success">
+                                    <input class="form-check-input" id="radio55"
+                                           data-url="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>"
+                                           type="radio" name="calculate" value="option1">
+                                    <label class="form-check-label" for="radio55">Ana Gruplardan Ayır</label>
+                                </div>
+                                <div class="form-check radio radio-success">
+                                    <input class="form-check-input" id="radio33"
+                                           data-url="<?php echo base_url("payment/print_calculate/$item->id/2"); ?>"
+                                           type="radio" name="calculate" value="option2">
+                                    <label class="form-check-label" for="radio33">Alt Gruplardan Ayır</label>
+                                </div>
+                            </div>
+                            <div class="form-check radio radio-success">
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
+                                            <button class="btn btn-outline-success" name="calculate"
+                                                    onclick="handleButtonClick(1)" type="button"><i class="fa fa-download"></i>
+                                                İndir
+                                            </button>
+                                            <button class="btn btn-outline-success" name="calculate"
+                                                    onclick="handleButtonClick(0)" type="button"><i
+                                                        class="fa fa-file-pdf-o"></i>Önizle
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

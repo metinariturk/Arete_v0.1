@@ -19,9 +19,8 @@
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#modal_payment"
                                                 data-whatever="@getbootstrap">
-                                            <i class="menu-icon fa fa-edit fa-lg"></i>
-                                            Yeni Hakediş
-                                            Oluştur
+                                            <i class="menu-icon fa fa-plus fa-lg"></i>
+                                            Yeni Hakediş Oluştur
                                         </button>
 
                                         <div class="modal fade" id="modal_payment" tabindex="-1"
@@ -41,18 +40,15 @@
                                                               method="post"
                                                               enctype="multipart">
                                                             <div class="mb-3">
-                                                                <label class="col-form-label" for="recipient-name">Hakediş
-                                                                    No</label>
                                                                 <div style="color: tomato"><?php print_r($form_errors); ?></div>
                                                                 <div class="row">
                                                                     <div class="col-sm-5">
-                                                                        <div class="col-form-label">Son İmalat
-                                                                            Tarihi<br>
+                                                                        <div class="col-form-label">Hakediş No<br>
                                                                             <label for="customer-checkbox2">&nbsp;</label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-sm-7">
-                                                                        <input class="form-control" type="number" name="hakedis_no"
+                                                                        <input class="form-control" type="number" name="hakedis_no" readonly
                                                                                value="<?php echo last_payment($item->id)+1; ?>" onblur="calcular()" onfocus="calcular()">
                                                                         <?php if (isset($form_error)) { ?>
                                                                             <div class="invalid-feedback"><?php echo form_error("hakedis_no"); ?></div>

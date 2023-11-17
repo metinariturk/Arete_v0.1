@@ -971,7 +971,7 @@ class Payment extends CI_Controller
                 $pdf->setLineWidth(0.1);
                 $pdf->SetFillColor(160, 160, 160);
                 $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                $pdf->Cell($page_width, 5, $main_group->code . " - " . $main_group->name, 0, 0, "L", 0);
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
                 $pdf->Ln();
 
 
@@ -982,7 +982,7 @@ class Payment extends CI_Controller
                     if (!empty($isset_sub)) {
                         $pdf->setLineWidth(0.1);
                         $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                        $pdf->Cell($page_width / 100, 4, $main_group->code . "." . $sub_group->code . " - " . $sub_group->name, 0, 0, "L", 0);
+                        $pdf->Cell($page_width / 100, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
                         $pdf->Ln();
                         $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_id" => $sub_group->id));
                         foreach ($contract_items as $contract_item) {
@@ -1040,7 +1040,7 @@ class Payment extends CI_Controller
                         if ($seperate_group == 2) {
                             $pdf->AddPage();
                             $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                            $pdf->Cell($page_width / 100, 4, $main_group->code . "." . $main_group->name, 0, 0, "L", 0);
+                            $pdf->Cell($page_width / 100, 4, $main_group->code . "." . upper_tr($main_group->name), 0, 0, "L", 0);
                         }
                         $pdf->Ln();
                         $k = $k + 1;
@@ -1129,7 +1129,7 @@ class Payment extends CI_Controller
                 $pdf->setLineWidth(0.1);
                 $pdf->SetFillColor(160, 160, 160);
                 $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                $pdf->Cell($page_width, 5, $main_group->code . " - " . $main_group->name, 0, 0, "L", 0);
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
                 $pdf->Ln();
 
 
@@ -1140,7 +1140,7 @@ class Payment extends CI_Controller
                     if (!empty($isset_sub)) {
                         $pdf->setLineWidth(0.1);
                         $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                        $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . $sub_group->name, 0, 0, "L", 0);
+                        $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
                         $pdf->Ln();
                         $pdf->SetFillColor(210, 210, 210);
                         $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
@@ -1257,7 +1257,7 @@ class Payment extends CI_Controller
             $pdf->setLineWidth(0.1);
             $pdf->SetFillColor(160, 160, 160);
             $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-            $pdf->Cell($page_width, 5, $main_group->code . " - " . $main_group->name, 0, 0, "L", 0);
+            $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
             $pdf->Ln();
 
             $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_group" => 1, "parent" => $main_group->id));
@@ -1265,7 +1265,7 @@ class Payment extends CI_Controller
             foreach ($sub_groups as $sub_group) {
                 $pdf->setLineWidth(0.1);
                 $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . $sub_group->name, 0, 0, "L", 0);
+                $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
                 $pdf->Ln();
                 $pdf->SetFillColor(210, 210, 210);
                 $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
@@ -1386,7 +1386,7 @@ class Payment extends CI_Controller
                 $pdf->setLineWidth(0.1);
                 $pdf->SetFillColor(160, 160, 160);
                 $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                $pdf->Cell($page_width, 5, $main_group->code . " - " . $main_group->name, 0, 0, "L", 0);
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
                 $pdf->Ln();
 
                 $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_group" => 1, "parent" => $main_group->id));
@@ -1396,7 +1396,7 @@ class Payment extends CI_Controller
                     if (!empty($is_item_in_sub)) {
                         $pdf->setLineWidth(0.1);
                         $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                        $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . $sub_group->name, 0, 0, "L", 0);
+                        $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
                         $pdf->Ln();
                         $pdf->SetFillColor(210, 210, 210);
                         $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
@@ -1536,14 +1536,14 @@ class Payment extends CI_Controller
                 $pdf->setLineWidth(0.1);
                 $pdf->SetFillColor(160, 160, 160);
                 $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                $pdf->Cell($page_width, 5, $main_group->code . " - " . $main_group->name, 0, 0, "L", 0);
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
                 $pdf->Ln();
 
                 $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_group" => 1, "parent" => $main_group->id));
                 foreach ($sub_groups as $sub_group) {
                     $pdf->setLineWidth(0.1);
                     $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                    $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . $sub_group->name, 0, 0, "L", 0);
+                    $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
                     $pdf->Ln();
                     $pdf->SetFillColor(210, 210, 210);
                     $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
@@ -1686,7 +1686,7 @@ class Payment extends CI_Controller
                 $pdf->setLineWidth(0.1);
                 $pdf->SetFillColor(160, 160, 160);
                 $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
-                $pdf->Cell($page_width, 5, $main_group->code . " - " . $main_group->name, 0, 0, "L", 0);
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
                 $pdf->Ln();
                 $pdf->SetFillColor(210, 210, 210);
                 $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
@@ -1725,7 +1725,7 @@ class Payment extends CI_Controller
 
                     $pdf->Cell(15, 5, $i++, 1, 0, "C", 0);
                     $pdf->Cell(20, 5, $main_group->code . "." . $sub_group->code, 1, 0, "L", 0);
-                    $pdf->Cell(56, 5, $sub_group->name, 1, 0, "L", 0);
+                    $pdf->Cell(56, 5, upper_tr($sub_group->name), 1, 0, "L", 0);
                     $pdf->Cell(33, 5, money_format($a + $b), 1, 0, "R", 0);
                     $pdf->Cell(33, 5, money_format($b), 1, 0, "R", 0);
                     $pdf->Cell(33, 5, money_format($a), 1, 0, "R", 0);
@@ -1845,7 +1845,7 @@ class Payment extends CI_Controller
 
             $pdf->Cell(15, 5, $i++, 1, 0, "C", 0);
             $pdf->Cell(20, 5, $main_group->code, 1, 0, "L", 0);
-            $pdf->Cell(56, 5, $main_group->name, 1, 0, "L", 0);
+            $pdf->Cell(56, 5, upper_tr($main_group->name), 1, 0, "L", 0);
             $pdf->Cell(33, 5, money_format($c + $d), 1, 0, "R", 0);
             $pdf->Cell(33, 5, money_format($d), 1, 0, "R", 0);
             $pdf->Cell(33, 5, money_format($c), 1, 0, "R", 0);

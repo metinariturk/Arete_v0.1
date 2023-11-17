@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-12">
                     <p style="text-align:center; font-size:14pt;">
-                        <strong>YAPILAN İŞLER LİSTESİ</strong>
+                        <strong>03 - YAPILAN İŞLER LİSTESİ</strong>
                     </p>
                 </div>
             </div>
@@ -122,36 +122,36 @@
                             <?php $old_total = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "boq_id" => $contract_item->id), "total"); ?>
                             <?php $this_total = isset($calculate->total) ? $calculate->total : 0; ?>
                             <tr>
-                                <td  class="total-group-row-center"><?php echo $i++; ?>
+                                <td class="total-group-row-center"><?php echo $i++; ?>
                                 </td>
                                 <td class="total-group-row-center">
                                     <?php echo($contract_item->code); ?>
                                 </td>
-                                <td  class="total-group-row-left">
+                                <td class="total-group-row-left">
                                     <?php echo($contract_item->name); ?>
                                 </td>
-                                <td  class="total-group-row-center">
+                                <td class="total-group-row-center">
                                     <?php echo($contract_item->unit); ?>
                                 </td>
-                                <td  class="total-group-row-center">
+                                <td class="total-group-row-center">
                                     <?php echo money_format($contract_item->price); ?>
                                 </td>
-                                <td  class="total-group-row-right">
+                                <td class="total-group-row-right">
                                     <?php echo money_format($old_total + $this_total); ?>
                                 </td>
-                                <td  class="total-group-row-right">
+                                <td class="total-group-row-right">
                                     <?php echo money_format($old_total); ?>
                                 </td>
-                                <td  class="total-group-row-right">
+                                <td class="total-group-row-right">
                                     <?php echo money_format($this_total); ?>
                                 </td>
-                                <td  class="total-group-row-right">
+                                <td class="total-group-row-right">
                                     <?php echo money_format(($old_total + $this_total) * $contract_item->price); ?>
                                 </td>
-                                <td  class="total-group-row-right">
+                                <td class="total-group-row-right">
                                     <?php echo money_format($old_total * $contract_item->price); ?>
                                 </td>
-                                <td  class="total-group-row-right">
+                                <td class="total-group-row-right">
                                     <?php echo money_format($this_total * $contract_item->price); ?>
                                 </td>
                             </tr>
@@ -160,27 +160,42 @@
                     </tbody>
                 </table>
             <?php } ?>
-            <hr>
-            <div class="container mt-5">
-                <div class="form-group">
-                    <div class="form-group">
-                        <input data-url="<?php echo base_url("payment/print_works_done_hide_zero/$item->id"); ?>"
-                               type="radio"
-                               id="option2" name="options" class="form-check-input">
-                        <label for="option2">Toplamı Sıfır Olanları Yazdırma(Sayfa Tasarrufu)</label>
+            <div class="card-body">
+                <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
+                    <div class="h-100 checkbox-checked">
+                        <h6 class="sub-title">03 - Yapılan İşler Listesi</h6>
+                        <div style="height: 100px;">
+                            <div class="form-check radio radio-success">
+                                <input class="form-check-input" id="wd1"
+                                       data-url="<?php echo base_url("payment/print_works_done_hide_zero/$item->id"); ?>"
+                                       type="radio" name="wd" value="green" checked="">
+                                <label class="form-check-label" for="wd1">Sıfır Olanları Gizle</label>
+                            </div>
+                            <div class="form-check radio radio-success">
+                                <input class="form-check-input" id="wd2"
+                                       data-url="<?php echo base_url("payment/print_works_done_print_all/$item->id"); ?>"
+                                       type="radio" name="wd" value="green">
+                                <label class="form-check-label" for="wd2">Tümünü Yazdır</label>
+                            </div>
+                        </div>
+                        <div class="form-check radio radio-success">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
+                                        <button class="btn btn-outline-success" name="wd"
+                                                onclick="handleButtonClick(1)" type="button"><i
+                                                    class="fa fa-download"></i>
+                                            İndir
+                                        </button>
+                                        <button class="btn btn-outline-success" name="wd"
+                                                onclick="handleButtonClick(0)" type="button"><i
+                                                    class="fa fa-file-pdf-o"></i>Önizle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <input data-url="<?php echo base_url("payment/print_works_done_print_all/$item->id"); ?>"
-                           type="radio"
-                           id="option1" name="options" class="form-check-input">
-                    <label for="option1">Tümünü Yazdır</label>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-success" id="printGreen" onclick="handleButtonClick(1)"><i
-                                class="fa fa-print"></i>PDF Kaydet
-                    </button>
-                    <button class="btn btn-success" id="displayGreen" onclick="handleButtonClick(0)"><i
-                                class="fa fa-print"></i>Ön İzleme
-                    </button>
                 </div>
             </div>
         </div>

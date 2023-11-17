@@ -12,20 +12,25 @@
         </th>
     </tr>
     <tr>
-        <th style="width: 50px;">Poz No</th>
-        <th style="width: 50px;">Poz Adı</th>
-        <th style="width: 50px;">Birimi</th>
+        <th style="width: 10%;">Poz No</th>
+        <th style="width: 50%;">Poz Adı</th>
+        <th style="width: 20%;">Birimi</th>
+        <th style="width: 10%;">Ekle</th>
     </tr>
     </thead>
     <tbody class="sortable">
     <?php if (isset($book_items)) { ?>
         <?php foreach ($book_items as $book_item) { ?>
             <tr>
-                <td><a href="#" ondblclick="add_in_group(this)"
-                       url="<?php echo base_url("$this->Module_Name/add_item_sub/$item->id/$book_item->id"); ?>">
-                        <?php echo $book_item->item_code; ?></a></td>
+                <td style="text-align: center"><?php echo $book_item->item_code; ?></td>
                 <td><?php echo $book_item->item_name; ?></td>
-                <td><?php echo $book_item->item_unit; ?></td>
+                <td style="text-align: center"><?php echo $book_item->item_unit; ?></td>
+                <td style="text-align: center">
+                    <a href="#" onclick="add_in_group(this)"
+                       url="<?php echo base_url("$this->Module_Name/add_item_sub/$item->id/$book_item->id"); ?>">
+                        <i style="color: green" class="fa fa-arrow-circle-right fa-lg"></i>
+                    </a>
+                </td>
             </tr>
         <?php } ?>
     <?php } ?>
