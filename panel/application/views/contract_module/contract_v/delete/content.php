@@ -12,18 +12,6 @@
                                 </div>
                             </a>
                         </li>
-                        <?php if (!empty($item->auction_id)){ ?>
-                        <li>
-                            <div class="btn btn-light ">
-                                <a href="<?php echo base_url("auction/file_form/$item->auction_id"); ?>">
-                                    <span style="padding-left: 20px">
-                                    <i class="icofont icofont-law-document"></i>
-                                    <?php echo auction_code_name($item->auction_id); ?>
-                                    </span>
-                                </a>
-                            </div>
-                        </li>
-                        <?php } ?>
                         <li>
                             <div class="btn btn-light">
                                 <a href="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">

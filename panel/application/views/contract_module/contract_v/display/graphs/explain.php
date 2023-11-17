@@ -1,6 +1,6 @@
 <hr>
 <div class="row">
-    <div class="col-sm-12" id="explain_auction" style="display: none">
+    <div class="col-sm-12" id="explain" style="display: none">
         <div class="card-header">
             <h5 class="text-center">Açıklama</h5>
         </div>
@@ -14,7 +14,7 @@
 <div class="col-12 text-center">
     <button class="btn btn-pill btn-outline-info btn-xl d-print-none"
             onclick="hideGroup(this)"
-            data-id="explain_auction"
+            data-id="explain"
     >Açıklama Ekle
     </button>
 </div>

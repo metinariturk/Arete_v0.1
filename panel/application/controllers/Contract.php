@@ -27,7 +27,6 @@ class Contract extends CI_Controller
 
         // Modelleri yükleme
         $this->load->model("Advance_model");
-        $this->load->model("Auction_model");
         $this->load->model("Bond_model");
         $this->load->model("Books_model");
         $this->load->model("Books_main_model");
@@ -88,26 +87,17 @@ class Contract extends CI_Controller
         $viewData = new stdClass();
 
         /** Tablodan Verilerin Getirilmesi.. */
-        $active_items = $this->Contract_model->get_all(array(
-            "durumu" => 1,
+        $items = $this->Contract_model->get_all(array(
+            "isActive" => 1,
 
         ));
-        $passive_items = $this->Contract_model->get_all(array(
-            "durumu" => !1
-        ));
-        $projects = $this->Project_model->get_all(array());
-        $active_projects = $this->Project_model->get_all(array(
-            "durumu" => default_table()
-        ));
+
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
-        $viewData->active_items = $active_items;
-        $viewData->passive_items = $passive_items;
-        $viewData->projects = $projects;
-        $viewData->active_projects = $active_projects;
+        $viewData->items = $items;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -117,10 +107,10 @@ class Contract extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Contract_model->get_all(array(
-            "durumu" => 1
+            "isActive" => 1
         ));
         $active_projects = $this->Project_model->get_all(array(
-            "durumu" => default_table()
+            "isActive" => default_table()
         ));
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -238,250 +228,6 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-
-    public function new_form_auction($auction_id, $yuklenici_id, $price)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        //teklif yetkilisi mi diye sorgulayabiliriz
-        $isveren = get_from_any("auction", "isveren", "id", "$auction_id");
-        /** Tablodan Verilerin Getirilmesi.. */
-        $proje_id = get_from_id("auction", "proje_id", "$auction_id");
-        $project = $this->Project_model->get(array("id" => $proje_id));
-        $settings = $this->Settings_model->get();
-        $isverenler = $this->Company_model->get_all(array());
-        $yukleniciler = $this->Company_model->get_all(array());
-        $auction = $this->Auction_model->get(array("id" => $auction_id));
-        $idari_sart = $this->Condition_model->get(array(
-            'auction_id' => $auction_id
-        ));
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add_auction";
-        $viewData->project = $project;
-        $viewData->settings = $settings;
-        $viewData->isverenler = $isverenler;
-        $viewData->yukleniciler = $yukleniciler;
-        $viewData->yuklenici_id = $yuklenici_id;
-        $viewData->auction = $auction;
-        $viewData->price = $price;
-        if (isset($idari_sart)) {
-            $viewData->idari_sart = $idari_sart;
-        }
-
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
-        $alert = array(
-            "title" => "Sözleşme",
-            "text" => "Yeni Oluştur Sayfası ",
-            "type" => "success"
-        );
-
-        $this->session->set_flashdata("alert", $alert);
-
-    }
-
-    public function save_auction($auction_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $file_name_len = file_name_digits();
-        $file_name = "SOZ-" . $this->input->post('dosya_no');
-        $this->load->library("form_validation");
-
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[contract.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
-        $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
-        $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarihi", "required|trim");
-        $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
-
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
-                "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
-                "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük olmalıdır",
-                "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
-                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "less_than_equal_to" => "<b>{field}</b> uygulaması seçilmelidir",
-                "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
-            )
-        );
-
-        // Form Validation Calistirilir..
-        $validate = $this->form_validation->run();
-
-        $project_id = get_from_id("auction", "proje_id", "$auction_id");
-
-        $yuklenici_id = $this->input->post("yuklenici");
-        $price = $this->input->post("sozlesme_bedel");
-
-        $payments = $this->Condition_model->get(array('auction_id' => $auction_id));
-
-        if (isset($payments)) {
-            if ($validate) {
-
-                $project_code = project_code($project_id);
-                $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name";
-
-                if (!is_dir($path)) {
-                    mkdir($path, 0777, TRUE);
-                }
-                if ($this->input->post("sozlesme_tarih")) {
-                    $sozlesme_tarih = dateFormat('Y-m-d', $this->input->post("sozlesme_tarih"));
-                } else {
-                    $sozlesme_tarih = null;
-                }
-                $sozlesme_ad = mb_convert_case($this->input->post("sozlesme_ad"), MB_CASE_TITLE, "UTF-8");
-
-                $viewData = new stdClass();
-
-
-                $viewData->payments = $payments;
-
-                $insert = $this->Contract_model->add(
-                    array(
-                        "proje_id" => $project_id,
-                        "dosya_no" => $file_name,
-                        "sozlesme_ad" => $sozlesme_ad,
-                        "isveren" => $this->input->post("isveren"),
-                        "yuklenici" => $this->input->post("yuklenici"),
-
-                        "sozlesme_tarih" => $sozlesme_tarih,
-                        "sozlesme_turu" => $payments->teklif_turu,
-                        "isin_turu" => $payments->isin_turu,
-                        "isin_suresi" => $payments->isin_suresi,
-                        "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
-                        "para_birimi" => $payments->para_birimi,
-
-                        "durumu" => "1",
-
-                        "auction_id" => $auction_id,
-                    )
-
-                );
-
-                $record_id = $this->db->insert_id();
-                $insert2 = $this->Order_model->add(
-                    array(
-                        "module" => $this->Module_Name,
-                        "connected_module_id" => $record_id,
-                        "connected_project_id" => $record_id,
-                        "file_order" => $file_name,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "createdBy" => active_user_id(),
-                    )
-                );
-                // TODO Alert sistemi eklenecek...
-                if ($insert) {
-                    $alert = array(
-                        "title" => "İşlem Başarılı",
-                        "text" => "Kayıt başarılı bir şekilde eklendi",
-                        "type" => "success"
-                    );
-                } else {
-                    $alert = array(
-                        "title" => "İşlem Başarısız",
-                        "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                        "type" => "danger"
-                    );
-                }
-                $this->session->set_flashdata("alert", $alert);
-                redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
-            } else {
-
-                $viewData = new stdClass();
-
-                $isveren = get_from_any("auction", "isveren", "id", "$auction_id");
-
-
-                $project = $this->Project_model->get(array("id" => $project_id));
-                $settings = $this->Settings_model->get();
-                $isverenler = $this->Company_model->get_all(array());
-                $yukleniciler = $this->Company_model->get_all(array());
-
-                $cities = $this->City_model->get_all(array());
-                $auction = $this->Auction_model->get(array("id" => $auction_id));
-                $idari_sart = $this->Condition_model->get(array(
-                    'auction_id' => $auction_id
-                ));
-
-                $yuklenici_users = $this->User_model->get_all(array("user_role" => 2, "company" => $yuklenici_id));
-                $isveren_users = $this->User_model->get_all(array("user_role" => 1, "company" => $isveren));
-
-                /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-                $viewData->viewModule = $this->moduleFolder;
-                $viewData->viewFolder = $this->viewFolder;
-                $viewData->subViewFolder = "add_auction";
-                $viewData->project = $project;
-                $viewData->settings = $settings;
-                $viewData->isverenler = $isverenler;
-                $viewData->yukleniciler = $yukleniciler;
-                $viewData->yuklenici_id = $yuklenici_id;
-                $viewData->auction = $auction;
-                $viewData->price = $price;
-                $viewData->yuklenici_users = $yuklenici_users;
-                $viewData->isveren_users = $isveren_users;
-                $viewData->isveren = $isveren;
-                $viewData->cities = $cities;
-                $viewData->idari_sart = $idari_sart;
-
-                $viewData->form_error = true;
-                $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-            }
-        } else {
-            $viewData = new stdClass();
-
-            $isveren = get_from_any("auction", "isveren", "id", "$auction_id");
-
-            $project = $this->Project_model->get(array("id" => $project_id));
-            $settings = $this->Settings_model->get();
-            $isverenler = $this->Company_model->get_all(array());
-            $yukleniciler = $this->Company_model->get_all(array());
-
-            $cities = $this->City_model->get_all(array());
-            $auction = $this->Auction_model->get(array("id" => $auction_id));
-            $idari_sart = $this->Condition_model->get(array(
-                'auction_id' => $auction_id
-            ));
-
-            $yuklenici_users = $this->User_model->get_all(array("user_role" => 2, "company" => $yuklenici_id));
-            $isveren_users = $this->User_model->get_all(array("user_role" => 1, "company" => $isveren));
-
-            $error = "Şartname Hükümlerini Belirtmeden Sözleşme Ekleyemezsiniz";
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "add_auction";
-            $viewData->project = $project;
-            $viewData->isveren = $isveren;
-            $viewData->settings = $settings;
-            $viewData->isverenler = $isverenler;
-            $viewData->yukleniciler = $yukleniciler;
-            $viewData->yuklenici_id = $yuklenici_id;
-            $viewData->auction = $auction;
-            $viewData->price = $price;
-            $viewData->yuklenici_users = $yuklenici_users;
-            $viewData->isveren_users = $isveren_users;
-            $viewData->cities = $cities;
-            $viewData->idari_sart = $idari_sart;
-            $viewData->error = $error;
-
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-        }
-
-    }
-
-
     public function new_form_project($project_id = null, $is_sub = null)
     {
         if (!isAdmin()) {
@@ -503,8 +249,6 @@ class Contract extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $project = $this->Project_model->get(array("id" => $project_id));
-        $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
-        $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id));
         $settings = $this->Settings_model->get();
         $companys = $this->Company_model->get_all(array());
 
@@ -512,12 +256,11 @@ class Contract extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add_project";
+        $viewData->subViewFolder = "add_main";
         $viewData->project = $project;
         $viewData->project_id = $project_id;
         $viewData->ihaleler = $ihaleler;
         $viewData->settings = $settings;
-        $viewData->main_contracts = $main_contracts;
         $viewData->companys = $companys;
         $viewData->is_sub = $is_sub;
 
@@ -556,15 +299,8 @@ class Contract extends CI_Controller
         $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[contract.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
         $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
 
-        if ($is_sub == 0) {
-            $this->form_validation->set_rules("auction_id", "Teklif Adı", "required|trim");
-        }
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
         $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
-
-        if ($is_sub == 1) {
-            $yer_teslim = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
-        }
 
         $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarih", "required|trim");
         $this->form_validation->set_rules("sozlesme_turu", "Sözleşme Türü", "required|trim");
@@ -601,11 +337,7 @@ class Contract extends CI_Controller
             $sozlesme_ad = mb_convert_case($this->input->post("sozlesme_ad"), MB_CASE_TITLE, "UTF-8");
 
 
-            if (empty($this->input->post("main_contract"))) {
-                $main_contract = null;
-            } else {
-                $main_contract = $this->input->post("main_contract");
-            }
+
             // Veritabanına Ekleme İşlemi
             $insert = $this->Contract_model->add(
                 array(
@@ -622,9 +354,7 @@ class Contract extends CI_Controller
                     "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
                     "para_birimi" => $this->input->post("para_birimi"),
                     "subcont" => $is_sub,
-                    "durumu" => "1",
-                    "main_contract" => $is_main,
-
+                    "isActive" => "1",
                 )
             );
 
@@ -665,10 +395,8 @@ class Contract extends CI_Controller
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
             $viewData = new stdClass();
             $viewData->is_sub = ($is_sub == 1);
-            $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id));
             $project = $this->Project_model->get(array("id" => $project_id));
             $settings = $this->Settings_model->get();
-            $ihaleler = $this->Auction_model->get_all(array("proje_id" => $project_id));
             $companys = $this->Company_model->get_all(array());
 
             $cities = $this->City_model->get_all(array());
@@ -676,12 +404,11 @@ class Contract extends CI_Controller
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "add_project";
+            $viewData->subViewFolder = "add_main";
             $viewData->project = $project;
             $viewData->companys = $companys;
             $viewData->ihaleler = $ihaleler;
             $viewData->settings = $settings;
-            $viewData->main_contracts = $main_contracts;
             $viewData->project_id = $project_id;
             $viewData->cities = $cities;
             $viewData->form_error = true;
@@ -709,10 +436,7 @@ class Contract extends CI_Controller
         $contract = $this->Contract_model->get(array(
             "id" => $id
         ));
-        $ihaleler = $this->Auction_model->get_all(
-            array(
-                "proje_id" => $contract->proje_id
-            ));
+
         $cities = $this->City_model->get_all(array());
         $distircts = $this->District_model->get_all(array());
         $active_tab = $from;
@@ -726,7 +450,6 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
         $viewData->settings = $settings;
-        $viewData->ihaleler = $ihaleler;
         $viewData->yukleniciler = $yukleniciler;
         $viewData->yuklenici_users = $yuklenici_users;
         $viewData->distircts = $distircts;
@@ -797,7 +520,7 @@ class Contract extends CI_Controller
                 $sozlesme_bitis = dateFormat('Y-m-d', (date_plus_days($this->input->post("sozlesme_tarih"), ($this->input->post("isin_suresi") - 1))));
             } else {
                 $sozlesme_tarih = null;
-                $sozlesme_tarih = null;
+                $sozlesme_bitis = null;
             }
 
             if ($this->input->post("sitedel_date")) {
@@ -828,9 +551,7 @@ class Contract extends CI_Controller
                     "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
                     "para_birimi" => $this->input->post("para_birimi"),
 
-                    "auction_id" => $this->input->post("auction_id"),
-
-                    "durumu" => "1",
+                    "isActive" => "1",
                 )
             );
 
@@ -886,10 +607,7 @@ class Contract extends CI_Controller
             $contract = $this->Contract_model->get(array(
                 "id" => $id
             ));
-            $ihaleler = $this->Auction_model->get_all(
-                array(
-                    "proje_id" => $contract->proje_id
-                ));
+
             $cities = $this->City_model->get_all(array());
             $distircts = $this->District_model->get_all(array());
             $users = $this->User_model->get_all(array(
@@ -1362,11 +1080,6 @@ class Contract extends CI_Controller
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         foreach ($advances as $advance) {
             $file_ids[] = "Advance*" . $advance->id;
-        }
-
-        $auction = $this->Contract_model->get(array('id' => $id));
-        if ($auction->auction_id != null) {
-            $file_ids[] = "Auction*" . $auction->auction_id;
         }
 
         $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
@@ -2493,7 +2206,6 @@ class Contract extends CI_Controller
         }
     }
 
-
     public function get_district($id)
     {
         $result = $this->db->where("city_id", $id)->get("district")->result();
@@ -2608,7 +2320,6 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
-
 
     public function add_main_group($contract_id)
     {
@@ -2823,52 +2534,6 @@ class Contract extends CI_Controller
 
         }
         $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
-        echo $render_boq;
-
-    }
-
-    public function add_boq($contract_id, $boq_id)
-    {
-
-        $get_main_group = get_from_any("book", "parent", "id", $boq_id);
-
-
-        $update = $this->Contract_model->update(
-            array(
-                "id" => $contract_id
-            ),
-            array(
-                "groups" => json_encode($modified_group),
-            )
-        );
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-
-        $main_categories = $this->Books_model->get_all(array('main_category' => 1));
-
-
-        $item = $this->Contract_model->get(
-            array(
-                "id" => $contract_id
-            )
-        );
-        $viewData->item = $item;
-
-        $viewData->main_categories = $main_categories;
-
-        $viewData->item_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $contract_id
-            ),
-        );
-
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
-
         echo $render_boq;
 
     }

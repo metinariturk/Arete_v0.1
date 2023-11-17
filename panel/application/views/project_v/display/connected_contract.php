@@ -26,7 +26,7 @@
 
         <?php $j = "a";
         $subcontracts = $this->Contract_model->get_all(array(
-            "main_contract" => $contract->id,
+            "parent" => $contract->id,
         )); ?>
         <?php $i = 0;
         $sub_total_payment = 0;

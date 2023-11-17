@@ -19,21 +19,6 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <?php if (!empty($item->auction_id)) { ?>
-                                        <?php $auction_control = get_from_any("auction", "dosya_no", "id", "$item->auction_id"); ?>
-                                        <?php if (!empty($auction_control)) { ?>
-                                            <li>
-                                                <div class="btn btn-light ">
-                                                    <a href="<?php echo base_url("auction/file_form/$item->auction_id"); ?>">
-                                    <span style="padding-left: 20px">
-                                    <i class="icofont icofont-law-document"></i>
-                                      <?php echo auction_code($item->auction_id); ?> / <?php echo auction_name($item->auction_id); ?>
-                                    </span>s
-                                                    </a>
-                                                </div>
-                                            </li>
-                                        <?php } ?>
-                                    <?php } ?>
                                     <?php if (($item->subcont == 1)) { ?>
                                         <li>
                                             <a href="<?php echo base_url("contract/file_form/$item->main_contract"); ?>">
@@ -74,15 +59,6 @@
                             <?php if (!empty($item->final_date)) { ?>
                                 <h3>Kesin Kabulü Yapılmış</h3>
                             <?php } ?>
-                        </div>
-                    </div>
-                    <div class="row py-3">
-                        <div class="col-12">
-                            <div id="list1" onclick="openList1()" class="d-block">
-                                <i class="fa fa-warning"></i>
-                                <span class="px-2">Önemli Uyarılar</span>
-                                <span class="badge rounded-pill badge-dark ms-2"><span id="result"></span></span>
-                            </div>
                         </div>
                     </div>
                     <div class="row py-3">
@@ -156,14 +132,7 @@
                             <?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?>
                         </div>
                     </div>
-                    <div class="row py-3">
-                        <div class="col-6">
-                            <strong>Yaklaşık Maliyet:</strong>
-                        </div>
-                        <div class="col-6">
-                            <?php echo money_format(sum_anything("cost", "cost", "auction_id", "$item->auction_id")) . " " . $item->para_birimi; ?>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div class="col-xl-7 col-lg-12 col-md-12 box-col-10">

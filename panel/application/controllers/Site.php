@@ -150,7 +150,7 @@ class Site extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add_project";
+        $viewData->subViewFolder = "add_main";
         $viewData->items = $items;
         $viewData->contracts = $contracts;
         $viewData->subcontracts = $subcontracts;
@@ -307,7 +307,7 @@ class Site extends CI_Controller
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "add_project";
+            $viewData->subViewFolder = "add_main";
             $viewData->items = $items;
             $viewData->contracts = $contracts;
             $viewData->subcontracts = $subcontracts;

@@ -41,13 +41,7 @@
                     <td>
                         <?php echo two_digits_percantage(1 - min($collect) / max($collect)); ?>
                     </td>
-                    <td><a class="btn btn-success active"
-                           href="<?php echo base_url("contract/new_form_auction/$item->id/$istekli/$min_offer"); ?>"
-                           type="button" title=""
-                           data-bs-original-title="<?php echo min($collect); ?> İle Sözleşmeye Çevir">
-                            <i class="menu-icon fa fa-check-circle-o"
-                               aria-hidden="true"></i>
-                        </a>
+                    <td>
                     </td>
                 </tr>
             <?php } ?>

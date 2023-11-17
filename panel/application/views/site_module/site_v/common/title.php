@@ -112,7 +112,7 @@ if ($subViewFolder == "list") { ?>
             </div>
         </div>
     </div>
-<?php } elseif ($subViewFolder == "add_project") { ?>
+<?php } elseif ($subViewFolder == "add_main") { ?>
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">

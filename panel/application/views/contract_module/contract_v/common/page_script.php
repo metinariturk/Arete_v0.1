@@ -524,15 +524,6 @@ $payments_array = json_encode((array_column($payments, 'E')));
     }
 </script>
 
-<script>
-    function add_boq(anchor) {
-        var $url = anchor.getAttribute('url');
-
-        $.post($url, {}, function (response) {
-            $(".refresh_list").html(response);
-        })
-    }
-</script>
 
 <script>
     function add_main(anchor) {

@@ -351,94 +351,6 @@ class Book extends CI_Controller
         $validate = $this->form_validation->run();
 
         if ($validate) {
-            $this->load->dbforge();
-
-            $fields = array(
-                'id' => array(
-                    'type' => 'INT',
-                    'constraint' => 11,
-                    'unsigned' => TRUE,
-                    'auto_increment' => TRUE
-                ),
-                'name' => array(
-                    'type' => 'VARCHAR',
-                    'constraint' => 255,
-                    'null' => FALSE,
-                    'collation' => 'utf8_turkish_ci'
-                ),
-                'parent' => array(
-                    'type' => 'INT',
-                    'constraint' => 11,
-                    'null' => TRUE,
-                    'default' => NULL
-                ),
-                'sub_category' => array(
-                    'type' => 'INT',
-                    'constraint' => 11,
-                    'null' => TRUE,
-                    'default' => NULL
-                ),
-                'main_category' => array(
-                    'type' => 'INT',
-                    'constraint' => 11,
-                    'null' => TRUE,
-                    'default' => NULL
-                ),
-                'deleted' => array(
-                    'type' => 'INT',
-                    'constraint' => 11,
-                    'null' => TRUE,
-                    'default' => NULL
-                ),
-                'unit' => array(
-                    'type' => 'VARCHAR',
-                    'constraint' => 255,
-                    'null' => TRUE,
-                    'default' => NULL,
-                    'collation' => 'utf8_turkish_ci'
-                ),
-                'book' => array(
-                    'type' => 'INT',
-                    'constraint' => 11,
-                    'null' => TRUE,
-                    'default' => NULL
-                ),
-                'tarif' => array(
-                    'type' => 'LONGTEXT',
-                    'null' => TRUE,
-                    'collation' => 'utf8_general_ci'
-                ),
-                'poz_no' => array(
-                    'type' => 'VARCHAR',
-                    'constraint' => 40,
-                    'null' => TRUE,
-                    'default' => NULL,
-                    'collation' => 'utf8_general_ci'
-                ),
-                'sort' => array(
-                    'type' => 'INT',
-                    'constraint' => 11,
-                    'null' => TRUE,
-                    'default' => NULL
-                ),
-            );
-
-            $this->dbforge->add_field($fields);
-            $this->dbforge->add_key('id', TRUE);
-            $this->dbforge->add_key('name', TRUE);
-
-// Tabloyu InnoDB ile oluşturur ve karakter setini ayarlar
-            $this->dbforge->create_table("$table_name", TRUE, array(
-                'ENGINE' => 'InnoDB',
-                'AUTO_INCREMENT' => 298,
-                'CHARACTER SET' => 'utf8',
-                'COLLATE' => 'utf8_general_ci',
-                'ROW_FORMAT' => 'DYNAMIC'
-            ));
-
-// Yabancı anahtar kontrollerini etkinleştir
-            $this->db->query('SET FOREIGN_KEY_CHECKS = 1;');
-
             $insert = $this->Books_model->add(
                 array(
                     "book_name" => $book_name,
@@ -446,6 +358,7 @@ class Book extends CI_Controller
                     "isActive" => 1,
                     "db_name" => $table_name,
                     "owner" => $owner,
+                    "code" => $code,
                 )
             );
 
