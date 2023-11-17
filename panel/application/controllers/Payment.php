@@ -458,7 +458,7 @@ class Payment extends CI_Controller
             $viewData->item = $item;
 
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_report", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/01_tab_report", $viewData, true);
 
             echo $render_html;
 
@@ -490,7 +490,7 @@ class Payment extends CI_Controller
 
             $viewData->form_error = true;
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_report", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/01_tab_report", $viewData, true);
             echo $render_html;
 
         }
