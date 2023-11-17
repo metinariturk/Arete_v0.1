@@ -32,9 +32,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/contract_module/payment_v/display/tabs" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
@@ -97,6 +102,7 @@
       <workItem from="1699976834219" duration="21348000" />
       <workItem from="1700050620876" duration="10285000" />
       <workItem from="1700121137197" duration="16661000" />
+      <workItem from="1700206951438" duration="7433000" />
     </task>
     <servers />
   </component>
@@ -117,7 +123,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>486</line>
+          <line>305</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="save" />
@@ -126,7 +132,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>2724</line>
+          <line>2547</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="sign_rankSetter" />

@@ -104,186 +104,6 @@ class Payment extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function new_form($contract_id = null, $boq_id = null)
-    {
-        if ($contract_id == null) {
-            $contract_id = $this->input->post("contract_id");
-        }
-
-        if (count_payments($contract_id) == 0) {
-            $payment_no = 1;
-        } else {
-            $payment_no = last_payment($contract_id) + 1;
-        }
-        //Önceki Metraj Kontrolü
-        $boq_control = get_from_any_and("boq", "contract_id", "$contract_id", "payment_no", "$payment_no");
-
-        $error = array();
-        $fiyat_fark = get_from_id("contract", "fiyat_fark", "$contract_id");
-        $fiyat_fark_teminat = get_from_id("contract", "fiyat_fark_teminat", "$contract_id");
-        $final_date = get_from_id("contract", "final_date", "$contract_id");
-        $sitedel_date = get_from_id("contract", "sitedel_date", "$contract_id");
-        $workplan = get_from_id("contract", "workplan_payment", "$contract_id");
-        $teminat_oran = get_from_id("contract", "teminat_oran", "$contract_id");
-        $advances = get_from_any_array("advance", "contract_id", "$contract_id");
-        $costincs = get_from_any_array("costinc", "contract_id", "$contract_id");
-
-        $fiyat_fark_error = null;
-
-        if ($fiyat_fark == 1) {
-            if ($fiyat_fark_teminat != 1) {
-                $payment_fiyat_fark = sum_anything("payment", "bu_fiyat_fark", "contract_id", "$contract_id");
-                $bond_fiyat_fark = sum_anything_and("bond", "teminat_miktar", "contract_id", "$contract_id", "teminat_gerekce", "price_diff");
-                $min_bond = $payment_fiyat_fark * $teminat_oran / 100;
-                if ($bond_fiyat_fark < $min_bond) {
-                    $fiyat_fark_error = "Fiyat Farkı Teminat Mektubu Giriniz veya Hakediş Ayarlarından Teminat Bedeli Hakedişten Düşülmesini Ayarlayınız.*" . base_url("bond/new_form_contract/$contract_id");
-                } else {
-                    $fiyat_fark_error = null;
-                }
-            } else {
-                $fiyat_fark_error = null;
-            }
-        } else {
-            $fiyat_fark_error = null;
-        }
-
-
-        if (!empty($final_date)) {
-            $error_final = "Kesin Kabul Yapılmış Olan İşe Hakediş Girilemez*" . base_url("contract/file_form/$contract_id/final");
-        } else {
-            $error_final = null;
-        }
-
-        $error_advance = null;
-
-        if (isset($advances)) {
-            foreach ($advances as $advance) {
-                $teminat = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_avans_id", "$advance->id");
-                if (empty($teminat)) {
-                    $error_advance = "Verilen avansa ait teminat mektubu bulunamadı. Avans teminatı girilmeden hakediş yapılamaz.*" . base_url("bond/new_form_advance/$advance->id");
-                } else {
-                    $error_advance = null;
-                }
-            }
-        } else {
-            $error_advance = null;
-        }
-
-
-        $error_costinc = null;
-
-        if (isset($costincs)) {
-            foreach ($costincs as $costinc) {
-                $constinc_bond = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_kesif_id", "$costinc->id");
-                if (empty($constinc_bond)) {
-                    $error_costinc = $costinc->dosya_no . "Verilen keşif artışına ait teminat mektubu bulunamadı. Keşif artışı teminatı girilmeden hakediş yapılamaz.*" . base_url("bond/new_form_costinc/$costinc->id");
-                } else {
-                    $error_costinc = null;
-                }
-            }
-        } else {
-            $error_costinc = null;
-        }
-
-        if (empty($sitedel_date)) {
-            $error_sitedel = "Yer Teslimi Yapılmamış Olan İşe Hakediş Girilemez*" . base_url("contract/file_form/$contract_id/sitedel");
-        } else {
-            $error_sitedel = null;
-        }
-
-        if (empty($workplan)) {
-            $error_workplan = "Ödeme Planı Oluşturulmadan Hakediş Girilemez*" . base_url("contract/file_form/$contract_id/workplan");
-        } else {
-            $error_workplan = null;
-        }
-
-        $teminat = get_from_any_and("bond", "contract_id", "$contract_id", "teminat_gerekce", "contract");
-
-        if (empty($teminat)) {
-            $error_bond = "Sözleşme Teminatı Olmadan Hakediş Girilemez?*" . base_url("Bond/new_form_contract/$contract_id");
-        } else {
-            $error_bond = null;
-        }
-
-        $error_array = array(
-            $fiyat_fark_error,
-            $error_final,
-            $error_advance,
-            $error_costinc,
-            $error_sitedel,
-            $error_workplan,
-            $error_bond
-        );
-
-        $error_empty = !array_filter($error_array, function ($value) {
-            return !empty($value);
-        });
-
-        $contract_type = get_from_id("contract", "official", "$contract_id");
-
-        if ($contract_type == 1) {
-            if ($error_empty) {
-                $error_isset = true;
-            } else {
-                $error_isset = false;
-            }
-        } else {
-            echo $error_isset = true;
-        }
-
-        $viewData = new stdClass();
-        /** Tablodan Verilerin Getirilmesi.. */
-        $items = $this->Payment_model->get_all(array());
-        $projects = $this->Project_model->get_all(array());
-        $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
-            )
-        );
-
-        $settings = $this->Settings_model->get();
-        $contract = $this->Contract_model->get(array(
-                "id" => $contract_id
-            )
-        );
-        $payments = $this->Payment_model->get_all(array(
-                "contract_id" => $contract_id
-            )
-        );
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Add_Folder";
-        $viewData->items = $items;
-        $viewData->projects = $projects;
-        $viewData->payment_no = $payment_no;
-
-        if ($boq_control) {
-            $boq = $this->Boq_model->get(array(
-                    "id" => $boq_control
-                )
-            );
-        } else {
-            $boq = null;
-        }
-
-        $viewData->boq = $boq;
-
-        $viewData->payment_no = $payment_no;
-        $viewData->error_array = $error_array;
-        $viewData->error_isset = $error_isset;
-        $viewData->active_contracts = $active_contracts;
-        $viewData->contract_id = $contract_id;
-        if ((!empty($this->input->post("contract_id"))) or !empty($contract_id)) {
-            $viewData->project_id = project_id_cont($contract_id);
-        }
-        $viewData->contract = $contract;
-        $viewData->settings = $settings;
-        $viewData->payments = $payments;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
-    }
-
     public
     function file_form($id, $active_tab = null)
     {
@@ -337,7 +157,6 @@ class Payment extends CI_Controller
     public
     function create($contract_id)
     {
-
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);
         $contract_code = contract_code($contract_id);
@@ -735,11 +554,13 @@ class Payment extends CI_Controller
             redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$contract_id"));
 
         } else {
+            
             $alert = array(
                 "title" => "İşlem Başarısız",
                 "text" => "Bu hakedişten sonra yapılan hakedişleri silmeden bu işlemi gerçekleştiremezsiniz",
                 "type" => "alert"
             );
+
             $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
         }
@@ -773,6 +594,13 @@ class Payment extends CI_Controller
                     "deletedBy" => active_user_id(),
                 )
             );
+            $delete3 = $this->Boq_model->delete(
+                array(
+                    "contract_id" => $contract_id,
+                    "payment_no" => $hakedis_no
+                )
+            );
+
             $delete1 = $this->Payment_file_model->delete(
                 array(
                     "$this->Dependet_id_key" => $id
@@ -784,12 +612,7 @@ class Payment extends CI_Controller
                 )
             );
 
-            $delete3 = $this->Boq_model->delete(
-                array(
-                    "contract" => $contract_id,
-                    "payment_no" => $hakedis_no
-                )
-            );
+
 
             // TODO Alert Sistemi Eklenecek...
             if ($delete1 and $delete2 and $delete3) {

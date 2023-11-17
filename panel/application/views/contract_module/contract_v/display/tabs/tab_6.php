@@ -42,8 +42,8 @@
                                                               enctype="multipart">
                                                             <div class="mb-3">
                                                                 <label class="col-form-label" for="recipient-name">Hakediş
-                                                                    Bilgileri</label>
-                                                                <?php print_r($form_errors); ?>
+                                                                    No</label>
+                                                                <div style="color: tomato"><?php print_r($form_errors); ?></div>
                                                                 <div class="row">
                                                                     <div class="col-sm-5">
                                                                         <div class="col-form-label">Son İmalat
@@ -53,8 +53,21 @@
                                                                     </div>
                                                                     <div class="col-sm-7">
                                                                         <input class="form-control" type="number" name="hakedis_no"
-                                                                               value="<?php echo last_payment($item->id); ?>" onblur="calcular()"
-                                                                               onfocus="calcular()">
+                                                                               value="<?php echo last_payment($item->id)+1; ?>" onblur="calcular()" onfocus="calcular()">
+                                                                        <?php if (isset($form_error)) { ?>
+                                                                            <div class="invalid-feedback"><?php echo form_error("hakedis_no"); ?></div>
+                                                                        <?php } ?>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-5">
+                                                                        <div class="col-form-label">Son İmalat
+                                                                            Tarihi<br>
+                                                                            <label for="customer-checkbox2">&nbsp;</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-7">
                                                                         <input class="datepicker-here form-control digits <?php cms_isset(form_error("imalat_tarihi"), "is-invalid", ""); ?>"
                                                                                type="text" style="width: 100%"
                                                                                name="imalat_tarihi"

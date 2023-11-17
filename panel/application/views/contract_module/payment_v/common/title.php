@@ -30,7 +30,7 @@ if ($subViewFolder == "list") { ?>
                                         </div>
                                         <div class="modal-body">
                                             <form id="contract_id"
-                                                  action="<?php echo base_url("$this->Module_Name/new_form"); ?>"
+                                                  action="<?php echo base_url("contract/file_form"); ?>"
                                                   method="post"
                                                   enctype="multipart">
                                                 <div class="mb-3">

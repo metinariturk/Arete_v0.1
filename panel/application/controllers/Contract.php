@@ -132,10 +132,15 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function file_form($id, $active_tab = null, $error = null)
+    public function file_form($id=null, $active_tab = null, $error = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
+        }
+
+        if (empty($id)){
+            $id = $this->input->post("contract_id");
+            $active_tab = "payment";
         }
 
         if (count_payments($id) == 0) {
