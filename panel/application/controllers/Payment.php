@@ -554,7 +554,7 @@ class Payment extends CI_Controller
             redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$contract_id"));
 
         } else {
-            
+
             $alert = array(
                 "title" => "İşlem Başarısız",
                 "text" => "Bu hakedişten sonra yapılan hakedişleri silmeden bu işlemi gerçekleştiremezsiniz",
@@ -611,7 +611,6 @@ class Payment extends CI_Controller
                     "id" => $id
                 )
             );
-
 
 
             // TODO Alert Sistemi Eklenecek...
@@ -2281,9 +2280,9 @@ class Payment extends CI_Controller
 
         foreach ($approved_signs as $key => $sign) {
             if ($approved_signs_number == 1) {
-                $pdf->MultiCell(120, 10, ". . / . . / . . . . "."\n".$sign->approved."\n".$sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                $pdf->MultiCell(120, 10, ". . / . . / . . . . " . "\n" . $sign->approved . "\n" . $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
             } elseif ($approved_signs_number == 2) {
-                $pdf->MultiCell(60, 10, ". . / . . / . . . ."."\n".$sign->approved."\n".$sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                $pdf->MultiCell(60, 10, ". . / . . / . . . ." . "\n" . $sign->approved . "\n" . $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
             }
         }
 
@@ -2302,10 +2301,22 @@ class Payment extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
-        $contract_id = contract_id_module("payment", "$id");
+        $payment = $this->Payment_model->get(
+            array(
+                "id" => "$id",
+            )
+        );
+
+        $contract_id = $payment->contract_id;
         $settings_id = get_from_any("payment_settings", "id", "contract_id", "$contract_id");
+
         $gecici_teminat = ($this->input->post("gecici_teminat") == "on") ? 1 : 0;
-        $gecici_teminat_oran = $this->input->post("gecici_teminat_oran");
+        if ($gecici_teminat == 1) {
+            $gecici_teminat_oran = $this->input->post("gecici_teminat_oran");
+        } else {
+            $gecici_teminat_oran = 0;
+        }
+
         $fiyat_fark = ($this->input->post("fiyat_fark") == "on") ? 1 : 0;
         $fiyat_fark_kes = ($this->input->post("fiyat_fark_kes") == "on") ? 1 : 0;
 
@@ -2324,12 +2335,24 @@ class Payment extends CI_Controller
         }
 
         $kdv = ($this->input->post("kdv") == "on") ? 1 : 0;
-        $kdv_oran = $this->input->post("kdv_oran");
-        $tevkifat_oran = $this->input->post("tevkifat_oran");
+        if ($kdv == 1) {
+            $kdv_oran = $this->input->post("kdv_oran");
+            $tevkifat_oran = $this->input->post("tevkifat_oran");
+        } else {
+            $kdv_oran = 0;
+            $tevkifat_oran = 0;
+        }
+
         $avans = ($this->input->post("avans") == "on") ? 1 : 0;
-        $avans_oran = $this->input->post("avans_oran");
+        if ($avans == 1) {
+            $avans_oran = $this->input->post("avans_oran");
+        } else {
+            $avans_oran = 0;
+        }
+
         $avans_mahsup = ($this->input->post("avans_mahsup") == "on") ? 1 : 0;
         $avans_stopaj = ($this->input->post("avans_stopaj") == "on") ? 1 : 0;
+
         if (empty($settings_id)) {
             $insert = $this->Payment_settings_model->add(
                 array(
@@ -2574,8 +2597,6 @@ class Payment extends CI_Controller
             );
         }
     }
-
-
 
 
 }
