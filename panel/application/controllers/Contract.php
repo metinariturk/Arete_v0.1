@@ -454,7 +454,6 @@ class Contract extends CI_Controller
             $viewData->subViewFolder = "add_main";
             $viewData->project = $project;
             $viewData->companys = $companys;
-            $viewData->ihaleler = $ihaleler;
             $viewData->settings = $settings;
             $viewData->project_id = $project_id;
             $viewData->cities = $cities;
