@@ -86,6 +86,7 @@ class Project extends CI_Controller
         }
 
         $viewData = new stdClass();
+
         $users = $this->User_model->get_all(array(
             "user_role" => 1
         ));
@@ -104,9 +105,8 @@ class Project extends CI_Controller
         $sites = $this->Site_model->get_all(array('proje_id' => $id));
         $contracts = $this->Contract_model->get_all(
             array(
-                'proje_id' => $id,
-                'parent' => null
-            )
+                "proje_id" => $id,
+                )
         );
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
