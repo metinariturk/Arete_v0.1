@@ -83,11 +83,6 @@
                                                         <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
                                                         Sözleşme Ekle
                                                     </a>
-                                                    <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>">
-                                                        <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
-                                                        Alt Sözleşme Ekle
-                                                    </a>
                                                 </li>
                                             </ul>
                                         </div>
