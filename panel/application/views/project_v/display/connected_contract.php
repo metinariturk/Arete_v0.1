@@ -57,12 +57,12 @@
                         <td><a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
                                 <?php echo $sub_contract->sozlesme_ad; ?>
                             </a></td>
-                        <td style="text-align: right">+ <?php echo money_format($contract->sozlesme_bedel); ?></td>
-                        <td style="text-align: right">+ <?php echo money_format($payment_A); ?></td>
-                        <td style="text-align: right">+ <?php echo money_format($payment_B); ?></td>
+                        <td style="text-align: right">+ <?php echo money_format($sub_contract->sozlesme_bedel); ?></td>
+                        <td style="text-align: right">+ <?php echo money_format($payment_sub_A); ?></td>
+                        <td style="text-align: right">+ <?php echo money_format($payment_sub_B); ?></td>
                         <td style="text-align: right">%
                             <?php if ($contract_price != 0 or $contract_price != null) { ?>
-                                <?php echo $payment_A / $contract->sozlesme_bedel * 100; ?>
+                                <?php echo $payment_sub_A / $sub_contract->sozlesme_bedel * 100; ?>
                             <?php } ?>
                         </td>
                         <td>
