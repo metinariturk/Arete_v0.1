@@ -68,9 +68,7 @@ class Payment extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Payment_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
-        $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
-            )
+        $active_contracts = $this->Contract_model->get_all(array()
         );
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -90,9 +88,7 @@ class Payment extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Payment_model->get_all(array());
-        $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
-            )
+        $active_contracts = $this->Contract_model->get_all(array()
         );
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
