@@ -77,10 +77,25 @@
                 <?php $total_main_payment_A += $payment_A; ?>
                 <?php $total_main_payment_B += $payment_B; ?>
             <?php } ?>
-            <?php echo $total_main_payment_A-$total_sub_payment_A; ?>
-            <?php echo $total_main_payment_B-$total_sub_payment_B; ?>
-        <?php } ?>
 
+        <?php } ?>
+        <tr>
+            <td style="text-align: center">
+                <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
+                    <i style="color: darkred" class="fa fa-arrow-circle-right fa-lg"></i>
+                </a>
+            </td>
+            <td>
+                <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
+                    <?php echo $sub_contract->sozlesme_ad; ?>
+                </a>
+            </td>
+            <td style="text-align: right">- <?php echo money_format($sub_contract->sozlesme_bedel); ?></td>
+            <td style="text-align: right"><?php echo $total_main_payment_A-$total_sub_payment_A; ?>v</td>
+            <td style="text-align: right"><?php echo $total_main_payment_B-$total_sub_payment_B; ?></td>
+            <td style="text-align: right">%</td>
+            <td></td>
+        </tr>
         </tbody>
     </table>
 </div>
