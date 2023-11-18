@@ -912,21 +912,20 @@ function yaziyla_para($sayi, $currency = null, $currency_little = null)
     $para = round($para, 2);
     $parca = explode(".", $para);
     $tampara = $parca[0];
-    $kurus = $parca[1];
+
+    // Kuruş kısmını kontrol et
+    $kurus = isset($parca[1]) ? $parca[1] : "00";
+
     $kurusuzunluk = strlen($kurus);
     if ($kurusuzunluk == 1) {
         $kurus = $kurus * 10;
     }
-    if ($tampara > 0) {
-        $tam = "" . (yaziyacevir($tampara)) . "" . $currency;
-    }
-    if ($kurus > 0) {
-        $onda = "" . (yaziyacevir($kurus)) . "" . $currency_little;
-    }
 
-    $yazili = "$tam $onda";
+    $tam = (int)$tampara > 0 ? yaziyacevir($tampara) . " " . $currency : "";
+    $onda = (int)$kurus > 0 ? yaziyacevir($kurus) . " " . $currency_little : "";
+
+    $yazili = trim("$tam $onda");
     return $yazili;
-
 }
 
 function searcharray($value, $key, $array)
