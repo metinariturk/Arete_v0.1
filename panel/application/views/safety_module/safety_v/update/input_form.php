@@ -92,10 +92,10 @@
                     <?php } ?>
                 <?php } ?>
                 <?php foreach ($vehicles as $vehicle) { ?>
-                    <option value="<?php echo $vehicle->id; ?>"><?php echo vehicle_detail($vehicle->id); ?>></option>
+                    <option value="<?php echo $vehicle->id; ?>"><?php echo vehicle_detail($vehicle->id); ?></option>
                 <?php } ?>
                 <?php if (isset($form_error)) { ?>
-                    <small class="pull-left input-form-error"> <?php echo form_error("araclar"); ?></div>
+                    <small class="pull-left input-form-error"> <?php echo form_error("araclar"); ?></small></div>
                 <?php } ?>
             </select>
         </td>
@@ -125,7 +125,7 @@
                     <option value="<?php echo $active_subcontract->id; ?>"><?php echo $active_subcontract->sozlesme_ad; ?></option>
                 <?php } ?>
                 <?php if (isset($form_error)) { ?>
-                    <small class="pull-left input-form-error"> <?php echo form_error("sub_contract"); ?></div>
+                    <small class="pull-left input-form-error"> <?php echo form_error("sub_contract"); ?></small></div>
                 <?php } ?>
             </select>
         </td>
@@ -139,7 +139,7 @@
                    value="<?php echo isset($form_error) ? set_value("sozlesme_tarih") : dateFormat_dmy($item->teslim_tarihi); ?>"
                    data-plugin="datetimepicker" data-options="{ format: 'DD-MM-YYYY' }">
             <?php if (isset($form_error)) { ?>
-                <small class="pull-left input-form-error"> <?php echo form_error("teslim_tarihi"); ?></div>
+                <small class="pull-left input-form-error"> <?php echo form_error("teslim_tarihi"); ?></small></div>
             <?php } ?>
         </td>
     </tr>

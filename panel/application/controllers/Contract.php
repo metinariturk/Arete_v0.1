@@ -146,12 +146,10 @@ class Contract extends CI_Controller
             "module_id" => $id,
         ));
 
-        $book_id = get_from_any("contract", "book", "id", "$id");
 
         $viewData = new stdClass();
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
-        $book = $this->Books_model->get(array('id' => $book_id));
         $books = $this->Books_model->get_all(array('isActive' => 1));
         $catalogs = $this->Catalog_model->get_all(array('contract_id' => $id));
         $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
