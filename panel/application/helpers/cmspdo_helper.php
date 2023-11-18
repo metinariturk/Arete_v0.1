@@ -265,9 +265,7 @@ function all_contracts()
 {
     $t = get_instance();
     $t->load->model("Contract_model");
-    $contracts = $t->Contract_model->get_all(array(
-        "subcont" => null
-    ));
+    $contracts = $t->Contract_model->get_all(array());
 
     return $contracts;
 }
@@ -277,7 +275,7 @@ function all_subcontracts()
     $t = get_instance();
     $t->load->model("Contract_model");
     $subcontracts = $t->Contract_model->get_all(array(
-        "subcont" => 1
+        "parent >" => 0
     ));
 
     return $subcontracts;

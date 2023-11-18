@@ -122,13 +122,13 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function file_form($id=null, $active_tab = null, $error = null)
+    public function file_form($id = null, $active_tab = null, $error = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        if (empty($id)){
+        if (empty($id)) {
             $id = $this->input->post("contract_id");
             $active_tab = "payment";
         }
@@ -146,7 +146,6 @@ class Contract extends CI_Controller
             "module_id" => $id,
         ));
 
-        $type = get_from_any("contract", "subcont", "id", "$id");
         $book_id = get_from_any("contract", "book", "id", "$id");
 
         $viewData = new stdClass();
@@ -323,7 +322,7 @@ class Contract extends CI_Controller
 
     }
 
-    public function save_project($project_id = null)
+    public function save_main($project_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
         if (!isAdmin()) {
@@ -384,7 +383,6 @@ class Contract extends CI_Controller
             $sozlesme_ad = mb_convert_case($this->input->post("sozlesme_ad"), MB_CASE_TITLE, "UTF-8");
 
 
-
             // Veritabanına Ekleme İşlemi
             $insert = $this->Contract_model->add(
                 array(
@@ -400,7 +398,6 @@ class Contract extends CI_Controller
                     "sozlesme_bitis" => $sozlesme_bitis,
                     "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
                     "para_birimi" => $this->input->post("para_birimi"),
-                    "subcont" => $is_sub,
                     "isActive" => "1",
                 )
             );
@@ -441,12 +438,10 @@ class Contract extends CI_Controller
         } else {
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
             $viewData = new stdClass();
-            $viewData->is_sub = ($is_sub == 1);
             $project = $this->Project_model->get(array("id" => $project_id));
             $settings = $this->Settings_model->get();
             $companys = $this->Company_model->get_all(array());
 
-            $cities = $this->City_model->get_all(array());
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
@@ -456,7 +451,143 @@ class Contract extends CI_Controller
             $viewData->companys = $companys;
             $viewData->settings = $settings;
             $viewData->project_id = $project_id;
-            $viewData->cities = $cities;
+            $viewData->form_error = true;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        }
+    }
+
+    public function save_sub($main_contract_id = null)
+    {
+        // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
+        if (!isAdmin()) {
+            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
+            if (!in_array(active_user_id(), $yetkili)) {
+                redirect(base_url("error"));
+            }
+        }
+
+        $main_contract = $this->Contract_model->get(array('id' => $main_contract_id));
+
+        $project_id = project_id_cont($main_contract_id);
+        $project_code = project_code($project_id);
+
+        $file_name_len = file_name_digits();
+        $file_name = "SOZ-" . $this->input->post('dosya_no');
+
+        $this->load->library("form_validation");
+
+        // Form Validation Kuralları
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[contract.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+        $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
+
+        $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
+        $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
+
+        $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarih", "required|trim");
+        $this->form_validation->set_rules("sozlesme_turu", "Sözleşme Türü", "required|trim");
+        $this->form_validation->set_rules("isin_turu", "İşin Türü", "required|trim");
+        $this->form_validation->set_rules("isin_suresi", "İşin Süresi", "greater_than[0]|required|trim|integer");
+        $this->form_validation->set_rules("sozlesme_bedel", "Sözleşme Bedel", "greater_than[0]|required|trim|numeric");
+        $this->form_validation->set_rules("para_birimi", "Para Birimi", "required|trim");
+
+
+        // Form Validation Hatalarını Tanımla
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
+                "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
+                "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük olmalıdır",
+                "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış. Sistem sıradaki dosya numarasını otomatik atamaktadır. Özel bir gerekçe yoksa değiştirmeyiniz.",
+                "less_than_equal_to" => "<b>{field}</b> uygulaması seçilmelidir",
+                "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
+            )
+        );
+
+        // Form Validation'u Çalıştır
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            // Dizin oluşturma işlemi
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name";
+            !is_dir($path) && mkdir($path, 0777, TRUE);
+
+            // Tarih ve adı biçimlendirme işlemleri
+            $sozlesme_tarih = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
+            $sozlesme_bitis = dateFormat('Y-m-d', date_plus_days($this->input->post("sozlesme_tarih"), $this->input->post("isin_suresi") - 1));
+            $sozlesme_ad = mb_convert_case($this->input->post("sozlesme_ad"), MB_CASE_TITLE, "UTF-8");
+
+            // Veritabanına Ekleme İşlemi
+            $insert = $this->Contract_model->add(
+                array(
+                    "proje_id" => $project_id,
+                    "dosya_no" => $file_name,
+                    "sozlesme_ad" => $sozlesme_ad,
+                    "isveren" => $main_contract->yuklenici,
+                    "yuklenici" => $this->input->post("yuklenici"),
+                    "sozlesme_tarih" => $sozlesme_tarih,
+                    "sozlesme_turu" => $this->input->post("sozlesme_turu"),
+                    "isin_turu" => $this->input->post("isin_turu"),
+                    "isin_suresi" => $this->input->post("isin_suresi"),
+                    "sozlesme_bitis" => $sozlesme_bitis,
+                    "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
+                    "para_birimi" => $this->input->post("para_birimi"),
+                    "parent" => $main_contract_id,
+                    "isActive" => "1",
+                )
+            );
+
+            // Kayıt ID'sini Al
+            $record_id = $this->db->insert_id();
+
+            // İlgili Modül İçin Sipariş Ekle
+            $insert2 = $this->Order_model->add(
+                array(
+                    "module" => $this->Module_Name,
+                    "connected_module_id" => $record_id,
+                    "connected_project_id" => $record_id,
+                    "file_order" => $file_name,
+                    "createdAt" => date("Y-m-d H:i:s"),
+                    "createdBy" => active_user_id(),
+                )
+            );
+
+            // TODO: Alert sistemi eklenecek...
+
+            if ($insert) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Kayıt başarılı bir şekilde eklendi",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                    "type" => "danger"
+                );
+            }
+
+            $this->session->set_flashdata("alert", $alert);
+            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
+        } else {
+            // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
+            $viewData = new stdClass();
+            $main_contract = $this->Contract_model->get(array("id" => $main_contract_id));
+
+            $project = $this->Project_model->get(array("id" => $project_id));
+            $settings = $this->Settings_model->get();
+            $companys = $this->Company_model->get_all(array());
+
+            $viewData->main_contract = $main_contract;
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "add_sub";
+            $viewData->project = $project;
+            $viewData->companys = $companys;
+            $viewData->settings = $settings;
+            $viewData->project_id = $project_id;
             $viewData->form_error = true;
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -528,8 +659,6 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $is_sub = get_from_id("contract", "subcont", "$id");
-
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
@@ -589,7 +718,6 @@ class Contract extends CI_Controller
                     "yuklenici" => $this->input->post("yuklenici"),
 
                     "sozlesme_tarih" => $sozlesme_tarih,
-                    "sitedel_date" => $yerteslim_tarih,
                     "sozlesme_turu" => $this->input->post("sozlesme_turu"),
                     "isin_turu" => $this->input->post("isin_turu"),
                     "isin_suresi" => $this->input->post("isin_suresi"),
@@ -2629,7 +2757,7 @@ class Contract extends CI_Controller
 
         $boqs = $this->input->post("boq[]");
 
-        foreach ($boqs as $boq=>$values) {
+        foreach ($boqs as $boq => $values) {
             $update = $this->Contract_price_model->update(
                 array(
                     "id" => $boq

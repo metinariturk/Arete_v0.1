@@ -21,6 +21,7 @@
                     <div class="invalid-feedback">* Önerilen Proje Kodu
                         : <?php echo increase_code_suffix("contract"); ?>
                     </div>
+                    </div>
                 <?php } ?>
             </div>
         </div>
@@ -53,7 +54,7 @@
                     <input type="text"
                            class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
                            readonly
-                           value="<?php echo isset($form_error) ? set_value("isveren") : company_name($main_contract->yuklenici); ?>"
+                           value="<?php echo isset($form_error) ? set_value("isveren") : $main_contract->yuklenici; ?>"
                            name="isveren">
                     <?php if (isset($form_error)) { ?>
                         <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>

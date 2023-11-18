@@ -105,7 +105,7 @@ class Project extends CI_Controller
         $contracts = $this->Contract_model->get_all(
             array(
                 'proje_id' => $id,
-                'subcont !=' => 1
+                'parent' => null
             )
         );
 

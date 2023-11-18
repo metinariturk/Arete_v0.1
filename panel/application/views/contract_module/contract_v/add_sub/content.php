@@ -37,7 +37,7 @@ if (empty($project_id)) { ?>
         </div>
         <div class="col-sm-12 col-md-8">
             <form id="save_sub"
-                  action="<?php echo base_url("$this->Module_Name/save_project/$project_id"); ?>"
+                  action="<?php echo base_url("$this->Module_Name/save_sub/$main_contract->id"); ?>"
                   method="post"
                   enctype="multipart/form-data" autocomplete="off">
                 <div class="row">

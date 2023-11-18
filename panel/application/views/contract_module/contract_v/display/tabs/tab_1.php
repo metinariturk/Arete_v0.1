@@ -19,14 +19,14 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <?php if (($item->subcont == 1)) { ?>
+                                    <?php if (!empty($item->parent)) { ?>
                                         <li>
-                                            <a href="<?php echo base_url("contract/file_form/$item->main_contract"); ?>">
+                                            <a href="<?php echo base_url("contract/file_form/$item->parent"); ?>">
                                                 <div class="btn btn-light ">
 
                                     <span style="padding-left: 20px">
                                     <i class="icofont icofont-law-document"></i>
-                                    <?php echo contract_code_name($item->main_contract); ?>
+                                    <?php echo contract_code_name($item->parent); ?>
                                     </span>
                                                 </div>
                                             </a>
@@ -61,6 +61,13 @@
                             <?php } ?>
                         </div>
                     </div>
+                    <?php if (!empty($item->parent)) { ?>
+                    <div class="row py-3">
+                        <div class="col-12" style="text-align: center">
+                            <h4><strong>Taşeron Sözleşmesi</strong></h4>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <div class="row py-3">
                         <div class="col-6">
                             <strong>İşveren:</strong>

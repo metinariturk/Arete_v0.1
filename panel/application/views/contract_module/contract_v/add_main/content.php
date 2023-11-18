@@ -36,8 +36,8 @@ if (empty($project_id)) { ?>
             </div>
         </div>
         <div class="col-sm-12 col-md-8">
-            <form id="save_<?php echo $this->Module_Name; ?>_project"
-                  action="<?php echo base_url("$this->Module_Name/save_project/$project_id"); ?>"
+            <form id="save_main"
+                  action="<?php echo base_url("$this->Module_Name/save_main/$project_id"); ?>"
                   method="post"
                   enctype="multipart/form-data" autocomplete="off">
                 <div class="row">

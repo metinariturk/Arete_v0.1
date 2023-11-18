@@ -4,7 +4,7 @@
      id="workplan" role="tabpanel"
      aria-labelledby="workplan-tab">
     <div class="row">
-        <?php if ($item->subcont != 1) { ?>
+        <?php if (!empty($item->parent)) { ?>
             <div class="col-xxl-6 col-xl-6 box-col-10">
                 <div class="card-body">
                     <div class="row">

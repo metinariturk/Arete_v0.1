@@ -59,7 +59,7 @@
         </div>
         <div class="mb-2">
             <div class="row">
-                <div class="col-4">
+                <div class="col-6">
                     <div class="col-form-label">Sözleşme İmza Tarihi</div>
                     <input class="datepicker-here form-control digits <?php cms_isset(form_error("sozlesme_tarih"), "is-invalid", ""); ?>"
                            type="text"
@@ -71,19 +71,7 @@
                         <div class="invalid-feedback"><?php echo form_error("sozlesme_tarih"); ?></div>
                     <?php } ?>
                 </div>
-                <div class="col-4">
-                    <div class="col-form-label">Yer Teslimi Tarihi</div>
-                    <input class="datepicker-here form-control digits <?php cms_isset(form_error("sitedel_date"), "is-invalid", ""); ?>"
-                           type="text"
-                           name="sitedel_date"
-                           value="<?php echo isset($form_error) ? set_value("sitedel_date") : dateFormat_dmy($item->sitedel_date); ?>"
-                           data-options="{ format: 'DD-MM-YYYY' }"
-                           data-language="tr">
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("sitedel_date"); ?></div>
-                    <?php } ?>
-                </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class="col-form-label">İşin Süresi (Gün)</div>
                     <input class="form-control <?php cms_isset(form_error("isin_suresi"), "is-invalid", ""); ?>"
                            name="isin_suresi" type="number"
@@ -96,7 +84,7 @@
         </div>
         <div class="mb-2">
             <div class="row">
-                <div class="col-5">
+                <div class="col-6">
                     <div class="col-form-label">Sözleşme Bedel</div>
                     <input type="number" min="1" step="any" onblur=""
                            class="form-control <?php cms_isset(form_error("sozlesme_bedel"), "is-invalid", ""); ?>"
@@ -107,7 +95,7 @@
                         <div class="invalid-feedback"><?php echo form_error("sozlesme_bedel"); ?></div>
                     <?php } ?>
                 </div>
-                <div class="col-3">
+                <div class="col-6">
                     <div class="col-form-label">Para Birimi</div>
                     <select id="select2-demo-1" style="width: 100%;"
                             class="form-control  <?php cms_isset(form_error("para_birimi"), "is-invalid", ""); ?>" data-plugin="select2"
@@ -129,11 +117,11 @@
                 </div>
             </div>
         </div>
-        <?php if ($item->subcont != 1) { ?>
+        <?php if (empty($item->parent)) { ?>
         <div class="mb-2">
             <div class="row">
-                <div class="col-8">
-                    <div class="col-form-label">Teklif Verilecek Kuruluş</div>
+                <div class="col-6">
+                    <div class="col-form-label">İşveren</div>
                     <select id="select2-demo-1"
                             class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
                             data-plugin="select2" name="isveren">
@@ -146,12 +134,8 @@
                         <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
                     <?php } ?>
                 </div>
-            </div>
-        </div>
-        <div class="mb-2">
-            <div class="row">
-                <div class="col-8">
-                    <div class="col-form-label">Yüklenici</div>
+                <div class="col-6">
+                    <div class="col-form-label">Yüklenici/Taşeron</div>
                     <select id="select2-demo-1"
                             class="form-control <?php cms_isset(form_error("yuklenici"), "is-invalid", ""); ?>"
                             data-plugin="select2" name="yuklenici">
