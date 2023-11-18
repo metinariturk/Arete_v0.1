@@ -90,10 +90,10 @@
                     <?php echo $sub_contract->sozlesme_ad; ?>
                 </a>
             </td>
-            <td style="text-align: right">- <?php echo money_format($sub_contract->sozlesme_bedel); ?></td>
-            <td style="text-align: right"><?php echo $total_main_payment_A-$total_sub_payment_A; ?>v</td>
+            <td style="text-align: right"></td>
+            <td style="text-align: right"><?php echo $total_main_payment_A-$total_sub_payment_A; ?></td>
             <td style="text-align: right"><?php echo $total_main_payment_B-$total_sub_payment_B; ?></td>
-            <td style="text-align: right">%</td>
+            <td style="text-align: right"></td>
             <td></td>
         </tr>
         </tbody>
