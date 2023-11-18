@@ -10,13 +10,14 @@
         <th class="w20c">Alt Sözleşme Ekle</th>
         </thead>
         <tbody>
+        <?php $total_main_payment_A = 0; ?>
+        <?php $total_main_payment_B = 0; ?>
         <?php foreach ($contracts as $contract) { ?>
             <?php if ($contract->parent == 0 or $contract->parent = null) { ?>
 
                 <?php $payment_A = $this->Payment_model->sum_all(array("contract_id" => $contract->id), "A"); ?>
                 <?php $payment_B = $this->Payment_model->sum_all(array("contract_id" => $contract->id), "B"); ?>
                 <?php $contract_price = $contract->sozlesme_bedel; ?>
-                $this->Payment_model->sum_all(array("contract_id" => $contract->id), "A"); ?>
                 <tr>
                     <td style="text-align: center">
                         <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>">
@@ -73,9 +74,11 @@
                         </td>
                     </tr>
                 <?php } ?>
+                <?php $total_main_payment_A += $payment_A; ?>
+                <?php $total_main_payment_B += $payment_B; ?>
             <?php } ?>
-            <?php echo $payment_A-$total_sub_payment_A; ?>
-            <?php echo $payment_B-$total_sub_payment_B; ?>
+            <?php echo $total_main_payment_A-$total_sub_payment_A; ?>
+            <?php echo $total_main_payment_B-$total_sub_payment_B; ?>
         <?php } ?>
 
         </tbody>
