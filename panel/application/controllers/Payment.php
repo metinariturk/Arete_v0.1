@@ -111,7 +111,6 @@ class Payment extends CI_Controller
         $contract_id = contract_id_module("payment", $id);
         $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
         $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => null, "sub_group" => null,), "rank ASC");
-        $prices = get_from_id("contract", "price", "$contract_id");
         $settings = $this->Settings_model->get();
         $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
         $viewData = new stdClass();
@@ -133,7 +132,6 @@ class Payment extends CI_Controller
         $viewData->active_tab = $active_tab;
         $viewData->settings = $settings;
         $viewData->payment_settings = $payment_settings;
-        $viewData->prices = json_decode($prices, true);
 
 
         $item = $this->Payment_model->get(
