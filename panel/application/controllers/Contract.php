@@ -660,10 +660,8 @@ class Contract extends CI_Controller
 
         $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
 
-        if ($is_sub != 1) {
             $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
             $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
-        }
         $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarih", "required|trim");
         $this->form_validation->set_rules("sozlesme_turu", "Sözleşme Türü", "required|trim");
         $this->form_validation->set_rules("isin_turu", "İşin Türü", "required|trim");
@@ -794,7 +792,6 @@ class Contract extends CI_Controller
             $viewData->subViewFolder = "$this->Update_Folder";
             $viewData->form_error = true;
             $viewData->settings = $settings;
-            $viewData->ihaleler = $ihaleler;
             $viewData->yukleniciler = $yukleniciler;
             $viewData->yuklenici_users = $yuklenici_users;
             $viewData->distircts = $distircts;

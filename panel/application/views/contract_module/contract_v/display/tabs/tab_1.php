@@ -68,11 +68,11 @@
                         </div>
                     </div>
                     <?php if (!empty($item->parent)) { ?>
-                    <div class="row py-3">
-                        <div class="col-12" style="text-align: center">
-                            <h4><strong>Taşeron Sözleşmesi</strong></h4>
+                        <div class="row py-3">
+                            <div class="col-12" style="text-align: center">
+                                <h4><strong>Taşeron Sözleşmesi</strong></h4>
+                            </div>
                         </div>
-                    </div>
                     <?php } ?>
                     <div class="row py-3">
                         <div class="col-6">

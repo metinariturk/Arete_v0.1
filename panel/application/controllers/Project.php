@@ -20,6 +20,7 @@ class Project extends CI_Controller
 
         $this->load->model("Settings_model");
         $this->load->model("Project_model");
+        $this->load->model("Payment_model");
         $this->load->model("Project_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Extime_model");
