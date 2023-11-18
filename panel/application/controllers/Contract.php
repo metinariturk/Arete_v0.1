@@ -177,7 +177,6 @@ class Contract extends CI_Controller
         $viewData->active_tab = $active_tab;
         $viewData->advances = $advances;
         $viewData->bonds = $bonds;
-        $viewData->book = $book;
         $viewData->books = $books;
         $viewData->catalogs = $catalogs;
         $viewData->costincs = $costincs;
