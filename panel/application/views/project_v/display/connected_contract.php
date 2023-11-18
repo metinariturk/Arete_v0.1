@@ -82,13 +82,11 @@
         <tr>
             <td style="text-align: center">
                 <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
-                    <i style="color: darkred" class="fa fa-arrow-circle-right fa-lg"></i>
+
                 </a>
             </td>
             <td>
-                <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
-                    <?php echo $sub_contract->sozlesme_ad; ?>
-                </a>
+               Toplam
             </td>
             <td style="text-align: right"></td>
             <td style="text-align: right"><?php echo $total_main_payment_A-$total_sub_payment_A; ?></td>
