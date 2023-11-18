@@ -399,13 +399,13 @@ class Safety extends CI_Controller
 
         $active_conn_contracts = $this->Contract_model->get_all(array(
             'durumu' => '1',
-            'subcont' => null,
+            'parent' => null,
             'proje_id' => $pid
 
         ));
         $active_subcontracts = $this->Contract_model->get_all(array(
             'durumu' => 1,
-            'subcont' => 1,
+            'parent <' => 0,
             'proje_id' => $pid
         ));
         $users = $this->User_model->get_all(array());

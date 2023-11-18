@@ -129,13 +129,11 @@ class Site extends CI_Controller
 
         $contracts = $this->Contract_model->get_all(array(
             'durumu' => '1',
-            'subcont' => null,
             'proje_id' => $project_id
         ));
 
         $subcontracts = $this->Contract_model->get_all(array(
             'durumu' => 1,
-            'subcont' => 1,
             'proje_id' => $project_id
         ));
 
@@ -285,14 +283,12 @@ class Site extends CI_Controller
 
             $contracts = $this->Contract_model->get_all(array(
                 'durumu' => '1',
-                'subcont' => null,
                 'proje_id' => $project_id
 
             ));
 
             $subcontracts = $this->Contract_model->get_all(array(
                 'durumu' => 1,
-                'subcont' => 1,
                 'proje_id' => $project_id
             ));
 
@@ -486,14 +482,12 @@ class Site extends CI_Controller
 
         $active_conn_contracts = $this->Contract_model->get_all(array(
             'durumu' => '1',
-            'subcont' => null,
             'proje_id' => $project_id
 
         ));
 
         $active_subcontracts = $this->Contract_model->get_all(array(
             'durumu' => 1,
-            'subcont' => 1,
             'proje_id' => $project_id
         ));
 
