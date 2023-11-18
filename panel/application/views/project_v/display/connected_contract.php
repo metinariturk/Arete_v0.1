@@ -9,10 +9,9 @@
         <th class="w20c">Alt Sözleşme Ekle</th>
         </thead>
         <tbody>
-        <?php $main_contracts = $this->Contract_model->get_all(array("project_id" => $item->id,"parent" => 0, "parent" => null)); ?>
 
         <?php $i = 0;
-        foreach ($main_contracts as $contract) { ?>
+        foreach ($contracts as $contract) { ?>
             <tr>
                 <td  style="color: #0b43c6; font-weight: bolder;"><?php echo $contract->id; ?></td>
                 <td  style="color: #0b43c6; font-weight: bolder;">
