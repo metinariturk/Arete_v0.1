@@ -74,7 +74,7 @@ if ($subViewFolder == "list") { ?>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li>
-                            <button type="submit" form="save_<?php echo $this->Module_Name; ?>_project" class="btn btn-success">
+                            <button type="submit" form="save_main" class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>
                             <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">
