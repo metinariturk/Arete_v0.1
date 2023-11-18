@@ -12,12 +12,12 @@
                                     <li><a id="pills-created-tab" data-bs-toggle="pill" href="#pills-created" role="tab"
                                            aria-controls="pills-created" aria-selected="true"><span class="title">Proje Genel Bilgileri</span></a>
                                     </li>
+                                    <li><a class="show" id="pills-shared-tab" data-bs-toggle="pill" href="#pills-shared"
+                                           role="tab" aria-controls="pills-shared" aria-selected="false"><span
+                                                    class="title">Sözleşmeler</span></a></li>
                                     <li><a class="show" id="pills-favourites-tab" data-bs-toggle="pill"
                                            href="#pills-favourites" role="tab" aria-controls="pills-favourites"
                                            aria-selected="false"><span class="title"> Teklifler</span></a></li>
-                                    <li><a class="show" id="pills-shared-tab" data-bs-toggle="pill" href="#pills-shared"
-                                           role="tab" aria-controls="pills-shared" aria-selected="false"><span
-                                                    class="title">Ana Sözleşmeler</span></a></li>
                                     <li><a class="show" id="pills-notification-tab" data-bs-toggle="pill"
                                            href="#pills-notification" role="tab" aria-controls="pills-notification"
                                            aria-selected="false"><span class="title"> Şantiyeler</span></a></li>
@@ -49,28 +49,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="fade tab-pane" id="pills-favourites" role="tabpanel"
-                                     aria-labelledby="pills-favourites-tab">
-                                    <div class="card mb-0">
-                                        <div class="card-header d-flex">
-                                            <h6 class="mb-0">Teklifler</h6>
-                                            <ul>
-                                                <li>
-                                                    <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("auction/new_form/$item->id"); ?>">
-                                                        <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
-                                                        Teklif Ekle
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php if (!empty($prep_auctions)) { ?>
-                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_auction"); ?>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="fade tab-pane" id="pills-shared" role="tabpanel"
                                      aria-labelledby="pills-shared-tab">
                                     <div class="card mb-0">
@@ -89,6 +67,28 @@
                                         <div class="card-body">
                                             <?php if (!empty($contracts)) { ?>
                                                 <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_contract"); ?>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fade tab-pane" id="pills-favourites" role="tabpanel"
+                                     aria-labelledby="pills-favourites-tab">
+                                    <div class="card mb-0">
+                                        <div class="card-header d-flex">
+                                            <h6 class="mb-0">Teklifler</h6>
+                                            <ul>
+                                                <li>
+                                                    <a class="pager-btn btn btn-info btn-outline"
+                                                       href="<?php echo base_url("auction/new_form/$item->id"); ?>">
+                                                        <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
+                                                        Teklif Ekle
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-body">
+                                            <?php if (!empty($prep_auctions)) { ?>
+                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_auction"); ?>
                                             <?php } ?>
                                         </div>
                                     </div>

@@ -452,7 +452,7 @@ class Payment extends CI_Controller
             $viewData->item = $item;
 
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/01_tab_report", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/06_tab_report", $viewData, true);
 
             echo $render_html;
 
@@ -484,7 +484,7 @@ class Payment extends CI_Controller
 
             $viewData->form_error = true;
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/01_tab_report", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/06_tab_report", $viewData, true);
             echo $render_html;
 
         }
@@ -558,6 +558,79 @@ class Payment extends CI_Controller
             $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
         }
+    }
+
+    public
+    function empty_report($payment_id)
+    {
+
+        $payment = $this->Payment_model->get(array("id" => $payment_id));
+        $contract_id = contract_id_module("payment", $payment_id);
+
+        $update = $this->Payment_model->update(
+            array(
+                "id" => $payment_id
+            ),
+            array(
+                "A" => null,
+                "A1" => null,
+                "B" => null,
+                "B1" => null,
+                "C" => null,
+                "D" => null,
+                "E" => null,
+                "F_a" => null,
+                "F" => null,
+                "G" => null,
+                "KES_a_s" => null,
+                "KES_a" => null,
+                "KES_b_s" => null,
+                "KES_b" => null,
+                "KES_c_s" => null,
+                "KES_c" => null,
+                "KES_d" => null,
+                "KES_e_s" => null,
+                "KES_e" => null,
+                "KES_f" => null,
+                "KES_g" => null,
+                "KES_h" => null,
+                "KES_i" => null,
+                "H" => null,
+                "I_s" => null,
+                "I" => null,
+                "balance" => null,
+            )
+        );
+
+        $active_tab = "report";
+        $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
+        $contract = $this->Contract_model->get(array("id" => $contract_id));
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->active_tab = $active_tab;
+        $viewData->payment_settings = $payment_settings;
+        $viewData->contract = $contract;
+
+
+        $item = $this->Payment_model->get(
+            array(
+                "id" => $payment_id
+            )
+        );
+
+        $viewData->item = $item;
+
+
+        $viewData->form_error = true;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/06_tab_report", $viewData, true);
+        echo $render_html;
+
     }
 
     public
@@ -1461,7 +1534,8 @@ class Payment extends CI_Controller
         }
     }
 
-    public function print_works_done_print_all($payment_id, $P_or_D = null)
+    public
+    function print_works_done_print_all($payment_id, $P_or_D = null)
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 

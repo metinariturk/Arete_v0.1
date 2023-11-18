@@ -13,14 +13,16 @@ $sidebarList = array(
     ),
 
     array(
+        "title" => "Sözleşmeler",
+        "icon" => "edit",
+        "url" => base_url("contract")
+    ),
+
+    array(
         "title" => "Sözleşme Süreçleri",
         "url" => "#",
         "icon" => "edit-3",
         "submodules" => array(
-            array(
-                "title" => "Sözleşmeler",
-                "url" => base_url("Contract")
-            ),
             array(
                 "title" => "Hakedişler",
                 "url" => base_url("payment")

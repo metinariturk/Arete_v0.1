@@ -11,7 +11,7 @@
                     <li><a id="report-tab" data-bs-toggle="pill" href="#report" role="tab"
                            aria-controls="report" aria-selected="true"><span class="title">Raporlar</span></a>
                     </li>
-                    <?php if (!empty($item->parent)) { ?>
+                    <?php if (empty($item->parent)) { ?>
                         <li><a class="show" id="sitedel-tab" data-bs-toggle="pill"
                                href="#sitedel" role="tab" aria-controls="sitedel"
                                aria-selected="false">
@@ -54,7 +54,7 @@
                             </span>
                         </a>
                     </li>
-                    <?php if (!empty($item->parent)) { ?>
+                    <?php if (empty($item->parent)) { ?>
                         <li><a class="show" id="teminat-tab" data-bs-toggle="pill"
                                href="#teminat" role="tab" aria-controls="teminat"
                                aria-selected="false">
@@ -99,7 +99,7 @@
                         </a>
                     </li>
 
-                    <?php if (!empty($item->parent)) { ?>
+                    <?php if (empty($item->parent)) { ?>
                         <li><a class="show" id="newprice-tab" data-bs-toggle="pill"
                                href="#newprice" role="tab" aria-controls="newprice"
                                aria-selected="false">

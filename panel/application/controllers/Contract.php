@@ -660,8 +660,6 @@ class Contract extends CI_Controller
 
         $this->form_validation->set_rules("sozlesme_ad", "Sözleşme Ad", "required|trim");
 
-            $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
-            $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
         $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarih", "required|trim");
         $this->form_validation->set_rules("sozlesme_turu", "Sözleşme Türü", "required|trim");
         $this->form_validation->set_rules("isin_turu", "İşin Türü", "required|trim");

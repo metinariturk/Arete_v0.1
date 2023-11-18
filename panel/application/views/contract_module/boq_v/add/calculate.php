@@ -4,7 +4,7 @@
         <fieldset>
             <h4 class="m-t-10 text-center"><?php echo contract_name($contract_id); ?></h4>
             <h4 class="m-t-10 text-center"> <?php echo $payment->hakedis_no; ?> Nolu Hakediş</h4>
-            <h5 class="text-center"><?php echo boq_name($income); ?> </h5>
+            <h5 class="text-center"><?php echo get_from_any("contract_price","name","id","$income"); ?> </h5>
             <h6 class="text-center">Metraj Formu</h6>
             <hr>
             <div class="mb-3 row">
@@ -47,6 +47,7 @@
     <div class="card-body">
         <div class="container-fluid">
             <div class="card text-end">
+                <p><?php echo $income; ?></p>
                 <button
                         class="btn btn-outline-primary"
                         type="button"

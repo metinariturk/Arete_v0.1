@@ -47,16 +47,10 @@
                             <a onclick="changeIcon(this)"
                                url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
                                id="myBtn">
-                                <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?> fa-2x">
-                                </i>
+                                <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?> fa-2x"> </i>
                             </a>
-
                         </div>
-                        <div class="col-1">
-                            <a href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>"><i
-                                        style="color: darkgreen" class="fa fa-plus-circle fa-2x"></i></a>
 
-                        </div>
                     </div>
                 </div>
                 <div class="container">
@@ -145,7 +139,7 @@
                             <?php echo $item->sozlesme_turu; ?>
                         </div>
                     </div>
-                    <div class="row py-3 ">
+                    <div class="row py-3">
                         <div class="col-6">
                             <strong>Sözleşme Bedeli:</strong>
                         </div>
@@ -153,7 +147,26 @@
                             <?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?>
                         </div>
                     </div>
+                    <div class="row py-3">
+                        <div class="col-6">
+                            <strong>Alt Sözleşmeler</strong>
+                            <a href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>"><i class="fa fa-plus-circle fa-lg"></i></a>
+                        </div>
+                        <div class="col-6">
+                            <?php if ($item->parent == 0 or $item->parent = null) { ?>
 
+                                <?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
+                                <ol>
+                                    <?php foreach ($sub_contracts as $sub_contract) { ?>
+                                        <li><a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
+                                                <?php echo $sub_contract->sozlesme_ad; ?>
+                                            </a>
+                                        </li>
+                                    <?php } ?>
+                                </ol>
+                            <?php } ?>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-xl-7 col-lg-12 col-md-12 box-col-10">

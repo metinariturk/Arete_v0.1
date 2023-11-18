@@ -391,13 +391,11 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             <?php } else { ?>
                 <div class="col-sm-8 offset-2">
                     <form id="save_payment"
-                          action="<?php echo base_url("$this->Module_Name/save/$item->id"); ?>" method="post"
+                          action="<?php echo base_url("$this->Module_Name/empty_report/$item->id"); ?>" method="post"
                           enctype="multipart/form-data" autocomplete="off">
                         <table style="width: 18cm">
                             <thead>
@@ -619,7 +617,10 @@
                             </tbody>
                         </table>
                     </form>
-
+                    <a form-id="save_payment" id="save_button" onclick="save_payment(this)"
+                       class="btn btn-success btn-block" style="text-align: right">
+                        <i class="fas fa-broom"></i> Hakedişi Temizle
+                    </a>
                 </div>
             <?php } ?>
         </div>

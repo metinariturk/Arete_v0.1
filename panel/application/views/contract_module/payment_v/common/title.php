@@ -130,6 +130,11 @@ if ($subViewFolder == "list") { ?>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li>
+                            <a class="btn btn-success" href="<?php echo base_url("contract/file_form/$item->contract_id/payment"); ?>">
+                                <i class="fa fa-arrow-left"></i> Sözleşmeye Dön
+                            </a>
+                        </li>
+                        <li>
                             <?php if (isset($active_boqs)){ ?>
                             <button class="btn btn-danger" type="button" onclick="deletePaymentModule(this)"
                                     data-text="<?php echo $this->Module_Title; ?>"
