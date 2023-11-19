@@ -11,6 +11,7 @@ class Pdf_creator extends TCPDF
     public $signature = "";
     public $custom_footer = "";
     public $module = "";
+    private $progress = 0; // İlerleme yüzdesi
 
     public function __construct()
     {
@@ -57,4 +58,30 @@ class Pdf_creator extends TCPDF
         $this->Cell(25, 15, $this->headerPaymentNo, 0, 1, 'R', 0); // headerPa
 
     }
+
+
+    public function progress_bar($percentage,$bar_height,$start_y,$start_x,$last_x){
+        if ($percentage > 100){
+            $percentage = 100;
+        }
+        $complete_width = round($percentage) * 80 / 100;
+        $remain_width = 80*(100 - $percentage)/100;
+        $remain_start_x = $start_x + (($last_x - $start_x)/100 * $percentage);
+
+        $this->SetFillColor(0, 128, 0); // Yeşil renk
+        $this->Rect($start_x, $start_y, $complete_width, $bar_height, 'F');
+
+        $this->Ln(); // Yeni satıra geç
+
+        // İlerleme çubuğunu doldur
+        $this->SetFillColor(150, 150, 150); // Gri renk
+        $this->Rect($remain_start_x, $start_y, $remain_width, $bar_height, 'F');
+        $this->SetXY($remain_start_x-12,$start_y);
+        $this->Cell(1, $bar_height, "% ".round($percentage) , 0, 0, "L", 0);
+        $this->SetX($last_x);
+
+    }
+
+    // PDF sayfa içeriğini oluşturmak için metod
+
 }

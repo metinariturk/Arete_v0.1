@@ -60,17 +60,9 @@
         </div>
         <div class="mb-2">
             <div class="col-form-label">Süre Uzatımı Gerekçesi</div>
-            <select id="select2-demo-1" style="width: 100%;"
+            <input type="text"
                     class="form-control <?php cms_isset(form_error("uzatim_turu"), "is-invalid", ""); ?>"
-                    data-plugin="select2" name="uzatim_turu">
-                <option selected="selected"
-                        value="<?php echo isset($form_error) ? set_value("uzatim_turu") : ""; ?>"><?php echo isset($form_error) ? set_value("uzatim_turu") : "Seçiniz"; ?>
-                </option>
-                <?php $sure_uzatimlari = str_getcsv($settings->sure_uzatim);
-                foreach ($sure_uzatimlari as $sure_uzatim) {
-                    echo "<option value='$sure_uzatim'>$sure_uzatim</option>";
-                } ?>
-            </select>
+                    data-plugin="select2" name="uzatim_turu"/>
             <?php if (isset($form_error)) { ?>
                 <div class="invalid-feedback"><?php echo form_error("uzatim_turu"); ?></div>
             <?php } ?>

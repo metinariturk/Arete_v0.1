@@ -59,7 +59,7 @@ class Extime extends CI_Controller
         $items = $this->Extime_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -104,7 +104,7 @@ class Extime extends CI_Controller
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
         $settings = $this->Settings_model->get();
@@ -130,7 +130,7 @@ class Extime extends CI_Controller
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -167,7 +167,7 @@ class Extime extends CI_Controller
         $project_id = project_id_cont($contract_id);
 
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 

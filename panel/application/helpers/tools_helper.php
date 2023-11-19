@@ -238,17 +238,19 @@ function yayin_kalan_sure($date)
     echo $interval->format('%d Gün %h Saat');
 }
 
-function fark_gun($date)
+function fark_gun($givenDate)
 {
 // Creates DateTime objects
-    $today = date("Y/m/d");
-    $datetime1 = date_create($today);
-    $datetime2 = date_create($date);
+    $bugun = new DateTime();
 
-    // Calculates the difference between DateTime objects
-    $interval = date_diff($datetime2, $datetime1);
+    // Verilen tarihi DateTime nesnesine çevir
+    $verilenTarih = new DateTime($givenDate);
 
-    return $interval->format('%h');
+    // Tarihler arasındaki farkı hesapla
+    $fark = $bugun->diff($verilenTarih);
+
+    // Farkı gün olarak al ve döndür
+    return $fark->format('%a');
 
 }
 
@@ -908,23 +910,34 @@ function yaziyla_para($sayi, $currency = null, $currency_little = null)
         $currency_little = "KRŞ";
     }
 
+    // Sayısal bir değeri temsil eden bir dizge kontrolü yapılır.
+    if (!is_numeric($sayi)) {
+        return "-";
+    }
+
+    // Sayı formatı düzenlenir.
     $para = str_replace(",", ".", $sayi);
     $para = round($para, 2);
     $parca = explode(".", $para);
     $tampara = $parca[0];
 
-    // Kuruş kısmını kontrol et
+    // Kuruş kısmı kontrol edilir.
     $kurus = isset($parca[1]) ? $parca[1] : "00";
 
+    // Kuruşun uzunluğu kontrol edilir ve gerekirse düzenlenir.
     $kurusuzunluk = strlen($kurus);
     if ($kurusuzunluk == 1) {
         $kurus = $kurus * 10;
     }
 
+    // Tam ve ondalık kısmın yazıyla ifade edilmesi.
     $tam = (int)$tampara > 0 ? yaziyacevir($tampara) . " " . $currency : "";
     $onda = (int)$kurus > 0 ? yaziyacevir($kurus) . " " . $currency_little : "";
 
+    // İki kısım birleştirilir ve boşluklar temizlenir.
     $yazili = trim("$tam $onda");
+
+    // Sonuç döndürülür.
     return $yazili;
 }
 

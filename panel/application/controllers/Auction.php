@@ -11,10 +11,11 @@ class Auction extends CI_Controller
 
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -2105,7 +2106,7 @@ class Auction extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => "(Teklif) " . project_name(project_id_auc($id)) . " / " . auction_name($id)
+                    "title" => project_name(project_id_auc($id)) . " / " . auction_name($id)
                 )
             );
             echo "favoriye eklendi";

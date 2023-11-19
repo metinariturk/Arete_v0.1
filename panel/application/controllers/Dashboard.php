@@ -73,7 +73,15 @@ class Dashboard extends CI_Controller
             )
         );
 
-        redirect(base_url());
+        $notes = $this->Notes_model->get_all(array());
+
+        $viewData = new stdClass();
+
+        $viewData->notes = $notes;
+
+        $render_html = $this->load->view("dashboard_v/list/todo", $viewData, true);
+
+        echo $render_html;
 
     }
 
@@ -106,38 +114,6 @@ class Dashboard extends CI_Controller
 
     }
 
-    public function isActiveSetter($id)
-    {
-
-        $note = $this->Notes_model->get(array("id" => $id));
-
-        $note->isActive == 1 ? $isActive = 0 : $isActive = 1;
-
-        $this->Notes_model->update(
-            array(
-                "id" => $id
-            ),
-            array(
-                "isActive" => $isActive
-            )
-        );
-
-        echo $isActive;
-    }
-
-    public function checkall($paramater)
-    {
-
-        $note = $this->Notes_model->get_all(array());
-
-        $this->Notes_model->update(
-            array(),
-            array(
-                "isActive" => "$paramater"
-            )
-        );
-    }
-
     public function delete($id)
     {
         $delete = $this->Notes_model->delete(
@@ -157,4 +133,18 @@ class Dashboard extends CI_Controller
         echo $render_html;
     }
 
+    public function delete_all()
+    {
+        $this->db->empty_table("notes");
+
+        $viewData = new stdClass();
+
+        $notes = $this->Notes_model->get_all(array());
+
+        $viewData->notes = $notes;
+
+        $render_html = $this->load->view("dashboard_v/list/todo", $viewData, true);
+
+        echo $render_html;
+    }
 }

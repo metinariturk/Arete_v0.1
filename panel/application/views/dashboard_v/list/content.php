@@ -1,22 +1,66 @@
 <div class="row">
-    <div class="col-xl-6 xl-100 box-col-12">
+    <div class="col-xl-3 xl-100 box-col-12">
         <div class="card">
-            <div class="card-header">
-                <h5>Hızlı Erişim</h5>
-            </div>
-            <div class="card-body">
-                <ol>
+            <p style="text-align: center; font-size: 15pt; font-weight: bold">Favoriler</p>
+            <div class="categories pt-1">
+                <div class="learning-header"><span class="f-w-600">Projeler</span></div>
+                <ul>
                     <?php foreach ($favorites as $favorite) { ?>
-                        <li>
-                            <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
-                                <?php echo $favorite->title; ?>
-                            </a>
-                        </li>
+                        <?php if ($favorite->module == "project") { ?>
+                            <li>
+                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
+                                    <?php echo $favorite->title; ?>
+                                </a>
+                            </li>
+                        <?php } ?>
                     <?php } ?>
-                </ol>
+                </ul>
+            </div>
+            <div class="categories pt-0">
+                <div class="learning-header"><span class="f-w-600">Sözleşmeler</span></div>
+                <ul>
+                    <?php foreach ($favorites as $favorite) { ?>
+                        <?php if ($favorite->module == "contract") { ?>
+                            <li>
+                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
+                                    <?php echo $favorite->title; ?>
+                                </a>
+                            </li>
+                        <?php } ?>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div class="categories pt-0">
+                <div class="learning-header"><span class="f-w-600">Teklifler</span></div>
+                <ul>
+                    <?php foreach ($favorites as $favorite) { ?>
+                        <?php if ($favorite->module == "auction") { ?>
+                            <li>
+                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
+                                    <?php echo $favorite->title; ?>
+                                </a>
+                            </li>
+                        <?php } ?>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div class="categories pt-0">
+                <div class="learning-header"><span class="f-w-600">Şantiyeler</span></div>
+                <ul>
+                    <?php foreach ($favorites as $favorite) { ?>
+                        <?php if ($favorite->module == "site") { ?>
+                            <li>
+                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
+                                    <?php echo $favorite->title; ?>
+                                </a>
+                            </li>
+                        <?php } ?>
+                    <?php } ?>
+                </ul>
             </div>
         </div>
     </div>
+
     <div class="col-xl-6 xl-100 box-col-12">
         <div class="card">
             <div class="cal-date-widget card-body">
@@ -45,89 +89,15 @@
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xl-6 xl-100 box-col-12">
+    <div class="col-xl-3 xl-100 box-col-12">
         <div class="card">
             <div class="card-header">
                 <h5>Not Defteri</h5>
             </div>
             <div class="card-body">
                 <div class="todo">
-                    <div class="todo-list-wrapper">
-                        <div class="todo-list-container">
-                            <div class="mark-all-tasks">
-                                <div>
-                                    <a>
-                                    <span class="mark-all-btn"
-                                          id="mark-all-finished"
-                                          url="<?php echo base_url("dashboard/checkall/0"); ?>"
-                                          role="button"
-                                          onclick="todoCheck(this)">
-                                        <span class="btn-label">
-                                           Tümü Tamamlandı İşaretle
-                                        </span>
-                                        <span class="action-box">
-                                            <i class="fa fa-times fa-lg"></i>
-                                        </span>
-                                    </span>
-                                    </a>
-                                </div>
-                                <span class="mark-all-btn"
-                                      url="<?php echo base_url("dashboard/checkall/1"); ?>"
-                                      onclick="todoCheck(this)"
-                                      id="mark-all-incomplete"
-                                      role="button">
-                                        <span class="btn-label">
-                                           Tümü Tamamlanmadı İşaretle
-                                        </span>
-                                        <span class="action-box">
-                                            <i class="icon"><i class="icon-check"></i></i>
-                                        </span>
-                                    </span>
-                            </div>
-                            <div class="todo-list-body">
-                                <?php $this->load->view("{$viewFolder}/list/todo"); ?>
-                            </div>
-                            <div class="todo-list-footer">
-                                <div class="add-task-btn-wrapper"><span class="add-task-btn">
-                                <button class="btn btn-primary"><i class="icon-plus"></i>Yeni Not Ekle</button></span>
-                                </div>
-                                <div class="new-task-wrapper">
-                                    <form id="task_form" name="task_form"
-                                          action="<?php echo base_url("$this->Module_Name/save_note"); ?>"
-                                          method="post">
-                                        <textarea id="new_task" name="note"
-                                                  placeholder="Buraya yeni not yazınız"></textarea>
-                                    </form>
-                                    <span
-                                            class="btn btn-danger cancel-btn" id="close-task-panel">Vazgeç</span>
-
-                                    <button class="btn btn-primary" onclick="asd()">Notu Ekle</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="notification-popup hide">
-                        <p><span class="task"></span><span class="notification-text"></span></p>
-                    </div>
+                    <?php $this->load->view("{$viewFolder}/list/todo"); ?>
                 </div>
-                <!-- HTML Template for tasks-->
-                <script id="task-template" type="tect/template">
-                    <li class="task">
-                        <div class="task-container">
-                            <h4 class="task-label"></h4>
-                            <span class="task-action-btn">
-                      <span class="action-box large delete-btn" title="Delete Task">
-                      <i class="icon"><i class="icon-trash"></i></i>
-                      </span>
-                      <span class="action-box large complete-btn" title="Mark Complete">
-                      <i class="icon"><i class="icon-check"></i></i>
-                      </span>
-                      </span>
-                        </div>
-                    </li>
-                </script>
             </div>
         </div>
     </div>

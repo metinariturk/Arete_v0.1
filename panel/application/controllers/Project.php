@@ -931,7 +931,7 @@ class Project extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => "(Proje) " . project_name($id),
+                    "title" => project_name($id),
                 )
             );
             echo "favoriye eklendi";

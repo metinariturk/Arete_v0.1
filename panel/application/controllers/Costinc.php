@@ -57,7 +57,7 @@ class Costinc extends CI_Controller
         $items = $this->Costinc_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -79,7 +79,7 @@ class Costinc extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Costinc_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -102,7 +102,7 @@ class Costinc extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Costinc_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -141,7 +141,7 @@ class Costinc extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Costinc_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
