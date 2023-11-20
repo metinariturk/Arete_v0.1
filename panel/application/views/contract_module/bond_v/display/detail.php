@@ -31,8 +31,7 @@
     </tr>
 
     <tr>
-        <td><strong>Teminat Oran (min %<?php echo get_from_id("contract", "teminat_oran", "$item->contract_id"); ?>
-                )</strong></td>
+        <td><strong>Teminat Oran)</strong></td>
         <td><strong>:</strong></td>
         <td><?php echo two_digits_percantage($item->teminat_miktar / get_from_id("costinc", "artis_miktar", $item->teminat_kesif_id)); ?></td>
     </tr>
@@ -43,7 +42,7 @@
         <td>Sözleşme Gereği</td>
     </tr>
     <tr>
-        <td><strong>Teminat Oran (min %<?php echo get_from_id("contract","teminat_oran","$item->contract_id"); ?>)</strong></td>
+        <td><strong>Teminat Oran </strong></td>
         <td><strong>:</strong></td>
         <td><?php echo two_digits_percantage($item->teminat_miktar / get_from_id("contract","sozlesme_bedel",$item->contract_id)); ?></td>
     </tr>

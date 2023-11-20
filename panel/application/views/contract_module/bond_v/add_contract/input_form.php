@@ -110,7 +110,7 @@
                         </div>
                         <div class="col-sm-4 col-md-3">
                             <div class="col-form-label">Sözleşmeye Göre Teminat Oran</div>
-                            <span>% <?php echo money_format(get_from_id("contract", "teminat_oran", $contract_id)); ?></span>
+                            <span>%</span>
                         </div>
                         <div class="col-sm-4 col-md-3">
                             <div class="col-form-label">Teminatın Sözleşmeye Oranı</div>

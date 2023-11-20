@@ -3,7 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
 </head>
-<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
+<body onload="startTime()" class="<?php echo $this->Theme_mode; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
@@ -18,8 +18,8 @@
             <?php $this->load->view("{$viewModule}/{$viewFolder}/common/title"); ?>
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/content"); ?>
         </div>
+        <?php $this->load->view("includes/footer"); ?>
     </div>
-    <?php $this->load->view("includes/footer"); ?>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
 </body>

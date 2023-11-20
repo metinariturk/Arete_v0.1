@@ -60,12 +60,12 @@ class Pdf_creator extends TCPDF
     }
 
 
-    public function progress_bar($percentage,$bar_height,$start_y,$start_x,$last_x){
+    public function progress_bar($percentage,$bar_height,$bar_width,$start_y,$start_x,$last_x){
         if ($percentage > 100){
             $percentage = 100;
         }
-        $complete_width = round($percentage) * 80 / 100;
-        $remain_width = 80*(100 - $percentage)/100;
+        $complete_width = round($percentage) * $bar_width / 100;
+        $remain_width = $bar_width*(100 - $percentage)/100;
         $remain_start_x = $start_x + (($last_x - $start_x)/100 * $percentage);
 
         $this->SetFillColor(0, 128, 0); // Yeşil renk

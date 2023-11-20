@@ -80,6 +80,18 @@
                         </a>
                     </li>
 
+                    <li><a class="show" id="collection-tab" data-bs-toggle="pill"
+                           href="#collection" role="tab" aria-controls="collection"
+                           aria-selected="false">
+                            <span class="title">
+                                Tahsilatlar
+                            </span>
+                            <span class="badge pull-right">
+                                (<?php echo count($collections) ?>)
+                            </span>
+                        </a>
+                    </li>
+
                     <li><a class="show" id="boq-tab" data-bs-toggle="pill"
                            href="#boq" role="tab" aria-controls="boq"
                            aria-selected="false">

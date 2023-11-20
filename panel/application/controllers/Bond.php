@@ -487,7 +487,6 @@ class Bond extends CI_Controller
     {
         $limit_control = $this->input->post("sure_kontrol");
 
-        $bond_limit = get_from_id("contract", "teminat_oran", "$contract_id");
 
         $contract_id = $contract_id;
         $project_id = project_id_cont($contract_id);
@@ -499,12 +498,6 @@ class Bond extends CI_Controller
         } elseif ($limit_control == null) {
             $gecerlilik_tarihi = dateFormat('Y-m-d', date_plus_days($this->input->post("teslim_tarihi"), $this->input->post("teminat_sure")));
             $teminat_sure = $this->input->post("teminat_sure");
-        }
-
-        if (is_numeric($this->input->post("teminat_miktar"))) {
-            $contract_bond_min = $this->input->post("sozlesme_bedel") * $bond_limit / 100;
-        } else {
-            $contract_bond_min = 0;
         }
 
         $file_name_len = file_name_digits();
@@ -527,7 +520,7 @@ class Bond extends CI_Controller
         $this->form_validation->set_rules("teslim_tarihi", "Teminat Başlangıç Tarihi", "callback_bond_contractday[$contract_day]|required|trim");
 
         if ($this->input->post("fiyat_fark") != "on") {
-            $this->form_validation->set_rules("teminat_miktar", "Teminat Miktarı", "greater_than_equal_to[$contract_bond_min]|numeric|required|trim"); //7
+            $this->form_validation->set_rules("teminat_miktar", "Teminat Miktarı", "numeric|required|trim"); //7
         } else {
             $this->form_validation->set_rules("teminat_miktar", "Teminat Miktarı", "numeric|required|trim"); //7
         }
@@ -1011,7 +1004,6 @@ class Bond extends CI_Controller
         $contract_id = contract_id_module("bond", $id);
         $project_id = project_id_cont($contract_id);
         $contract_day = dateFormat_dmy(get_from_id("contract", "sozlesme_tarih", "$contract_id"));
-        $bond_limit = get_from_id("contract", "teminat_oran", "$contract_id");
 
 
         if ($limit_control == "on") {
@@ -1022,11 +1014,7 @@ class Bond extends CI_Controller
             $teminat_sure = $this->input->post("teminat_sure");
         }
 
-        if (is_numeric($this->input->post("teminat_miktar"))) {
-            $contract_bond_min = $this->input->post("sozlesme_bedel") * $bond_limit / 100;
-        } else {
-            $contract_bond_min = 0;
-        }
+
 
         $this->load->library("form_validation");
 
@@ -1053,7 +1041,7 @@ class Bond extends CI_Controller
 
         $this->form_validation->set_rules("teminat_turu", "Teminat Türü", "required|trim"); //5
         $this->form_validation->set_rules("teslim_tarihi", "Teminat Başlangıç Tarihi", "callback_bond_contractday[$contract_day]|required|trim");
-        $this->form_validation->set_rules("teminat_miktar", "Teminat Miktarı", "greater_than_equal_to[$contract_bond_min]|numeric|required|trim"); //7
+        $this->form_validation->set_rules("teminat_miktar", "Teminat Miktarı", "numeric|required|trim"); //7
 
         $this->form_validation->set_message(
             array(

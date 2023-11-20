@@ -32,6 +32,10 @@ $sidebarList = array(
                 "url" => base_url("boq")
             ),
             array(
+                "title" => "Tahsilat İşlemleri",
+                "url" => base_url("collection")
+            ),
+            array(
                 "title" => "Avans İşlemleri",
                 "url" => base_url("advance")
             ),
