@@ -6,8 +6,10 @@
     <tr>
         <th class="d-none d-sm-table-cell"><i class="fa fa-reorder"></i></th>
         <th class="d-none d-sm-table-cell">Dosya No</th>
-        <th class="d-none d-sm-table-cell">Tarihi</th>
+        <th>Tarihi</th>
+        <th>Ödeme Türü</th>
         <th>Tutarı</th>
+        <th  class="d-none d-sm-table-cell">Açıklama</th>
         <th>Dosyalar</th>
     </tr>
     </thead>
@@ -23,12 +25,22 @@
                         <?php echo $collection->dosya_no; ?>
                     </a>
                 </td>
-                <td class="d-none d-sm-table-cell">
+                <td>
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
                         <?php echo dateFormat_dmy($collection->tahsilat_tarih); ?>
                     </a>
                 </td>
                 <td>
+                    <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
+                        <?php echo dateFormat_dmy($collection->tahsilat_turu); ?>
+                    </a>
+                </td>
+                <td>
+                    <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
+                        <?php echo dateFormat_dmy($collection->aciklama); ?>
+                    </a>
+                </td>
+                <td  class="d-none d-sm-table-cell">
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
                         <?php echo money_format($collection->tahsilat_miktar) . " " . get_currency($item->id); ?>
                     </a>
