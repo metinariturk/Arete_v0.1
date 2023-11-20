@@ -7,25 +7,25 @@
         <div class="row">
             <div class="col-xl-4 col-md-6 mb-5" style="height: 200px;">
                 <div class="h-100 checkbox-checked">
-                    <h6 class="sub-title">01 - Metrajlar</h6>
+                    <h6 class="sub-title">07 - Metrajlar</h6>
                     <div style="height: 100px;">
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="radio22"
+                            <input class="form-check-input" id="radio1"
                                    data-url="<?php echo base_url("payment/print_calculate/$item->id/0"); ?>"
                                    type="radio" name="calculate" value="option1" checked="">
-                            <label class="form-check-label" for="radio22">Tüm Metrajlar</label>
+                            <label class="form-check-label" for="radio1">Tüm Metrajlar</label>
                         </div>
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="radio55"
+                            <input class="form-check-input" id="radio2"
                                    data-url="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>"
                                    type="radio" name="calculate" value="option1">
-                            <label class="form-check-label" for="radio55">Ana Gruplardan Ayır</label>
+                            <label class="form-check-label" for="radio2">Ana Gruplardan Ayır</label>
                         </div>
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="radio33"
+                            <input class="form-check-input" id="radio3"
                                    data-url="<?php echo base_url("payment/print_calculate/$item->id/2"); ?>"
-                                   type="radio" name="calculate" value="option2">
-                            <label class="form-check-label" for="radio33">Alt Gruplardan Ayır</label>
+                                   type="radio" name="calculate" value="option1">
+                            <label class="form-check-label" for="radio3">Alt Gruplardan Ayır</label>
                         </div>
                     </div>
                     <div class="form-check radio radio-success">
@@ -48,19 +48,19 @@
             </div>
             <div class="col-xl-4 col-md-6" style="height: 200px;">
                 <div class="h-100 checkbox-checked">
-                    <h6 class="sub-title">02 - Metraj İcmali</h6>
+                    <h6 class="sub-title">06 - Metraj İcmali</h6>
                     <div style="height: 100px;">
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="green1"
+                            <input class="form-check-input" id="green4"
                                    data-url="<?php echo base_url("payment/print_green_all/$item->id"); ?>"
                                    type="radio" name="green" value="green" checked="">
-                            <label class="form-check-label" for="green1">Sıralı Yazdır</label>
+                            <label class="form-check-label" for="green4">Sıralı Yazdır</label>
                         </div>
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="green2"
+                            <input class="form-check-input" id="green5"
                                    data-url="<?php echo base_url("payment/print_green_hide_zero/$item->id"); ?>"
                                    type="radio" name="green" value="green">
-                            <label class="form-check-label" for="green2">Toplamı Sıfır Olanları Gösterme</label>
+                            <label class="form-check-label" for="green5">Toplamı Sıfır Olanları Gösterme</label>
                         </div>
                     </div>
                     <div class="form-check radio radio-success">
@@ -81,19 +81,19 @@
             </div>
             <div class="col-xl-4 col-md-6" style="height: 200px;">
                 <div class="h-100 checkbox-checked">
-                    <h6 class="sub-title">03 - Yapılan İşler Listesi</h6>
+                    <h6 class="sub-title">05 - Yapılan İşler Listesi</h6>
                     <div style="height: 100px;">
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="wd1"
+                            <input class="form-check-input" id="wd6"
                                    data-url="<?php echo base_url("payment/print_works_done_hide_zero/$item->id"); ?>"
-                                   type="radio" name="wd" value="green" checked="">
-                            <label class="form-check-label" for="wd1">Sıfır Olanları Gizle</label>
+                                   type="radio" name="wd" value="wd" checked="">
+                            <label class="form-check-label" for="wd6">Sıfır Olanları Gizle</label>
                         </div>
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="wd2"
+                            <input class="form-check-input" id="wd7"
                                    data-url="<?php echo base_url("payment/print_works_done_print_all/$item->id"); ?>"
-                                   type="radio" name="wd" value="green">
-                            <label class="form-check-label" for="wd2">Tümünü Yazdır</label>
+                                   type="radio" name="wd" value="wd">
+                            <label class="form-check-label" for="wd7">Tümünü Yazdır</label>
                         </div>
                     </div>
                     <div class="form-check radio radio-success">
@@ -119,10 +119,10 @@
                     <h6 class="sub-title">04 - Yapılan İşler Grup İcmalleri</h6>
                     <div style="height: 50px;">
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="gt1"
+                            <input class="form-check-input" id="gt8"
                                    data-url="<?php echo base_url("payment/print_group_total/$item->id"); ?>"
-                                   type="radio" name="gt" value="green" checked="">
-                            <label class="form-check-label" for="gt1">Tümünü Yazdır</label>
+                                   type="radio" name="gt" value="gt" checked="">
+                            <label class="form-check-label" for="gt8">Tümünü Yazdır</label>
                         </div>
                     </div>
                     <div class="form-check radio radio-success">
@@ -145,13 +145,13 @@
             </div>
             <div class="col-xl-4 col-md-6" style="height: 200px;">
                 <div class="h-100 checkbox-checked">
-                    <h6 class="sub-title">05 - Yapılan İşler Grup İcmalleri</h6>
+                    <h6 class="sub-title">03 - Yapılan İşler Grup İcmalleri</h6>
                     <div style="height: 50px;">
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="mt1"
+                            <input class="form-check-input" id="mt9"
                                    data-url="<?php echo base_url("payment/print_main_total/$item->id"); ?>"
-                                   type="radio" name="mt" value="main" checked="">
-                            <label class="form-check-label" for="mt1">Tümünü Yazdır</label>
+                                   type="radio" name="mt" value="mt" checked="">
+                            <label class="form-check-label" for="mt9">Tümünü Yazdır</label>
                         </div>
                     </div>
                     <div class="form-check radio radio-success">
@@ -174,13 +174,13 @@
             </div>
             <div class="col-xl-4 col-md-6" style="height: 200px;">
                 <div class="h-100 checkbox-checked">
-                    <h6 class="sub-title">06 - Hakediş Raporu (Hesap Cetveli)</h6>
+                    <h6 class="sub-title">02 - Hakediş Raporu (Hesap Cetveli)</h6>
                     <div style="height: 50px;">
                         <div class="form-check radio radio-success">
-                            <input class="form-check-input" id="rep1"
+                            <input class="form-check-input" id="rep10"
                                    data-url="<?php echo base_url("payment/print_report/$item->id"); ?>"
                                    type="radio" name="report" value="report" checked="">
-                            <label class="form-check-label" for="rep1">Tümünü Yazdır</label>
+                            <label class="form-check-label" for="rep10">Tümünü Yazdır</label>
                         </div>
                     </div>
                     <div class="form-check radio radio-success">
@@ -203,7 +203,7 @@
             </div>
             <div class="col-xl-4 col-md-6">
                 <div class="h-100 checkbox-checked">
-                    <h6 class="sub-title">07 - Hakediş Raporu (Kapak)</h6>
+                    <h6 class="sub-title">01 - Hakediş Raporu (Kapak)</h6>
                     <div style="height: 50px;">
                         <div class="form-check radio radio-success">
                             <input class="form-check-input" id="cover1"
@@ -220,6 +220,33 @@
                                             type="button"><i class="fa fa-download"></i> İndir
                                     </button>
                                     <button class="btn btn-outline-success" name="cover" onclick="handleButtonClick(0)"
+                                            type="button"><i class="fa fa-file-pdf-o"></i>Önizle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6">
+                <div class="h-100 checkbox-checked">
+                    <h6 class="sub-title">Sözleşme Özeti</h6>
+                    <div style="height: 50px;">
+                        <div class="form-check radio radio-success">
+                            <input class="form-check-input" id="cont1"
+                                   data-url="<?php echo base_url("contract/print_report/$item->contract_id"); ?>"
+                                   type="radio" name="cont" value="cont" checked="">
+                            <label class="form-check-label" for="cont1">Tümünü Yazdır</label>
+                        </div>
+                    </div>
+                    <div class="form-check radio radio-success">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
+                                    <button class="btn btn-outline-success" name="cont" onclick="handleButtonClick(1)"
+                                            type="button"><i class="fa fa-download"></i> İndir
+                                    </button>
+                                    <button class="btn btn-outline-success" name="cont" onclick="handleButtonClick(0)"
                                             type="button"><i class="fa fa-file-pdf-o"></i>Önizle
                                     </button>
                                 </div>

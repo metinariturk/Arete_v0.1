@@ -1116,7 +1116,7 @@ class Payment extends CI_Controller
             }
         }
 
-        $file_name = "01 - Metraj Cetveli-" . contract_name($contract_id) . "-Hak " . $payment_no;
+        $file_name = "07 - Metraj Cetveli-" . contract_name($contract_id) . "-Hak " . $payment_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -1374,7 +1374,7 @@ class Payment extends CI_Controller
 
         }
 
-        $file_name = "02 - Metraj İcmali-" . contract_name($contract_id) . "-Hak " . $payment_no;
+        $file_name = "06 - Metraj İcmali-" . contract_name($contract_id) . "-Hak " . $payment_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -1525,7 +1525,7 @@ class Payment extends CI_Controller
             }
         }
 
-        $file_name = "03 - Yapılan İşler Listesi-" . contract_name($contract_id) . "-Hak " . $payment_no;
+        $file_name = "05 - Yapılan İşler Listesi-" . contract_name($contract_id) . "-Hak " . $payment_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -1928,7 +1928,7 @@ class Payment extends CI_Controller
         $pdf->Cell(33, 5, money_format($x), 1, 0, "R", 0);
         $pdf->Cell(33, 5, money_format($y), 1, 0, "R", 0);
 
-        $file_name = "05 - Yapılan İşler İcmali-" . contract_name($contract_id) . "-Hak " . $payment_no;
+        $file_name = "03 - Yapılan İşler İcmali-" . contract_name($contract_id) . "-Hak " . $payment_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -2084,7 +2084,7 @@ class Payment extends CI_Controller
             $pdf->Ln(); // Yeni satıra geç
         }
 
-        $file_name = "07 - Hakediş Raporu(Kapak)-" . contract_name($contract->id) . "-Hak " . $payment->hakedis_no;
+        $file_name = "01 - Hakediş Raporu(Kapak)-" . contract_name($contract->id) . "-Hak " . $payment->hakedis_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -2354,7 +2354,7 @@ class Payment extends CI_Controller
             }
         }
 
-        $file_name = "06 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Hak " . $payment->hakedis_no;
+        $file_name = "02 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Hak " . $payment->hakedis_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
