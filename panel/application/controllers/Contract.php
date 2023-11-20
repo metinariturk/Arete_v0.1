@@ -149,7 +149,7 @@ class Contract extends CI_Controller
 
 
         $viewData = new stdClass();
-        $collections = $this->Collection_model->get_all(array('contract_id' => $id));
+        $collections = $this->Collection_model->get_all(array('contract_id' => $id),"tahsilat_tarih ASC");
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
         $books = $this->Books_model->get_all(array('isActive' => 1));
@@ -3075,7 +3075,7 @@ class Contract extends CI_Controller
         $payments = $this->Payment_model->get_all(array("contract_id" => $contract_id));
         $advances = $this->Advance_model->get_all(array("contract_id" => $contract_id));
         $bonds = $this->Bond_model->get_all(array("contract_id" => $contract_id));
-        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id));
+        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id),"tahsilat_tarih ASC");
 
         $viewData = new stdClass();
 
