@@ -121,6 +121,8 @@ class Collection extends CI_Controller
         $project_id = project_id_cont("$contract_id");
 
         $viewData = new stdClass();
+        $settings = $this->Settings_model->get();
+
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -128,6 +130,7 @@ class Collection extends CI_Controller
         $viewData->subViewFolder = "$this->Update_Folder";
         $viewData->contract_id = $contract_id;
         $viewData->project_id = $project_id;
+        $viewData->settings = $settings;
 
         $viewData->item = $this->Collection_model->get(
             array(
@@ -198,7 +201,9 @@ class Collection extends CI_Controller
 
         $this->form_validation->set_rules("dosya_no", "Dosya No", "is_unique[collection.dosya_no]|exact_length[$file_name_len]|trim|callback_duplicate_code_check"); //2
         $this->form_validation->set_rules("tahsilat_tarih", "Tahsilat Tarihi", "callback_contract_collection[$sozlesme_tarih]|required|trim");
-        $this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_collection[$sozlesme_tarih]|trim");
+        if (!empty($this->input->post('vade_tarih'))) {
+            $this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_collection[$sozlesme_tarih]|trim");
+        }
         if ($this->input->post('onay') != "on") {
             $this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "less_than_equal_to[$contract_price]|numeric|required|trim");
         } else {
@@ -230,7 +235,7 @@ class Collection extends CI_Controller
             $project_code = project_code("$project_id");
             $contract_code = contract_code($contract_id);
 
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/$this->Module_Name/$file_name";
+            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Collection/$file_name";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -297,10 +302,8 @@ class Collection extends CI_Controller
             $project_id = project_id_cont("$contract_id");
 
             $viewData->contract_id = $contract_id;
-
             $viewData->project_id = $project_id;
-
-            $project_id = project_id_cont("$contract_id");
+            $settings = $this->Settings_model->get();
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
@@ -309,6 +312,8 @@ class Collection extends CI_Controller
             $viewData->form_error = true;
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;
+            $viewData->settings = $settings;
+
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
@@ -330,8 +335,11 @@ class Collection extends CI_Controller
         $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$contract_id"));
 
 
-        $this->form_validation->set_rules("tahsilat_tarih", "Tahsilat Tarihi", "required|trim");
-        $this->form_validation->set_rules("tahsilat_tarih", "Tahsilat Tarihi", "callback_contract_collection[$sozlesme_tarihi]|required|trim");
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "is_unique[collection.dosya_no]|exact_length[$file_name_len]|trim|callback_duplicate_code_check"); //2
+        $this->form_validation->set_rules("tahsilat_tarih", "Tahsilat Tarihi", "callback_contract_collection[$sozlesme_tarih]|required|trim");
+        if (!empty($this->input->post('vade_tarih'))) {
+            $this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_collection[$sozlesme_tarih]|trim");
+        }
         if ($this->input->post('onay') != "on") {
             $this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "less_than_equal_to[$contract_price]|numeric|required|trim");
         } else {
@@ -428,11 +436,17 @@ class Collection extends CI_Controller
                 )
             );
 
+
+            $settings = $this->Settings_model->get();
+
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Update_Folder";
             $viewData->form_error = true;
+
+            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;
@@ -569,7 +583,6 @@ class Collection extends CI_Controller
         }
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
         $contract_code = contract_code($contract_id);
         $collection_code = get_from_id("collection", "dosya_no", $collection_id);
 

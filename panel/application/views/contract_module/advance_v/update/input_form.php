@@ -1,20 +1,4 @@
 <div class="card">
-    <div class="card-header">
-        <div class="col-9">
-            <h6 class="mb-0">
-                <a href="<?php echo base_url("project/file_form/$project_id"); ?>">
-                    <?php echo project_code($project_id); ?>
-                    / <?php echo project_name($project_id); ?>
-                </a>
-                <a href="<?php echo base_url("contract/file_form/$contract_id"); ?>">
-                    <p class="mb-0">
-                        <?php echo contract_code($contract_id); ?>
-                        / <?php echo contract_name($contract_id); ?>
-                    </p>
-                </a>
-            </h6>
-        </div>
-    </div>
     <div class="card-body">
         <div class="mb-2">
             <div class="col-form-label">Dosya No</div>

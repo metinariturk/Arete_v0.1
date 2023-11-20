@@ -68,7 +68,7 @@ if (!empty($extimes)) {
     ?>
 
     <?php $sub_limit = 0; ?>
-    <?php $amount_payed = sum_anything("payment", "E", "contract_id", "$item->id"); ?>
+    <?php $amount_payed = sum_anything("payment", "A", "contract_id", "$item->id"); ?>
     <?php if ($amount_payed >= $top_limit) {
         $finance_perc = $amount_payed / $top_limit * 100;
     } elseif ($amount_payed < $top_limit and $amount_payed > $sub_limit) {
@@ -77,6 +77,7 @@ if (!empty($extimes)) {
         $finance_perc = 0;
     } ?>
 
+        <?php echo "nerede"; ?>
     <script>
         var options11 = {
             chart: {

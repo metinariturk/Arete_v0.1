@@ -7,9 +7,7 @@
         <th class="d-none d-sm-table-cell"><i class="fa fa-reorder"></i></th>
         <th class="d-none d-sm-table-cell">Dosya No</th>
         <th class="d-none d-sm-table-cell">Tarihi</th>
-        <th>Türü</th>
         <th>Tutarı</th>
-        <th>Vade Tarihi</th>
         <th>Dosyalar</th>
     </tr>
     </thead>
@@ -27,12 +25,12 @@
                 </td>
                 <td class="d-none d-sm-table-cell">
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
-                        <?php echo dateFormat_dmy($collection->avans_tarih); ?>
+                        <?php echo dateFormat_dmy($collection->tahsilat_tarih); ?>
                     </a>
                 </td>
                 <td>
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
-                        <?php echo money_format($collection->avans_miktar) . " " . get_currency($item->id); ?>
+                        <?php echo money_format($collection->tahsilat_miktar) . " " . get_currency($item->id); ?>
                     </a>
                 </td>
                 <td>
@@ -68,7 +66,7 @@
     </tbody>
     <tfoot>
     <tr>
-        <td>
+        <td colspan="3">
             TOPLAM
         </td>
         <td>

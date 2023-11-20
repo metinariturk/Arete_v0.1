@@ -121,6 +121,7 @@ class Advance extends CI_Controller
         }
 
         $project_id = project_id_cont("$contract_id");
+        $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();
 
@@ -130,6 +131,7 @@ class Advance extends CI_Controller
         $viewData->subViewFolder = "$this->Update_Folder";
         $viewData->contract_id = $contract_id;
         $viewData->project_id = $project_id;
+        $viewData->settings = $settings;
 
         $viewData->item = $this->Advance_model->get(
             array(
@@ -284,13 +286,8 @@ class Advance extends CI_Controller
         } else {
 
             $viewData = new stdClass();
-
-            $project_id = project_id_cont("$contract_id");
-
             $viewData->contract_id = $contract_id;
-
-            $viewData->project_id = $project_id;
-
+            $settings = $this->Settings_model->get();
             $project_id = project_id_cont("$contract_id");
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -300,6 +297,7 @@ class Advance extends CI_Controller
             $viewData->form_error = true;
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;
+            $viewData->settings = $settings;
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
@@ -402,7 +400,7 @@ class Advance extends CI_Controller
             $viewData = new stdClass();
             $contract_id = contract_id_module("advance", $id);
             $project_id = project_id_cont("$contract_id");
-
+            $settings = $this->Settings_model->get();
 
             /** Tablodan Verilerin Getirilmesi.. */
             $item = $this->Advance_model->get(
@@ -419,6 +417,7 @@ class Advance extends CI_Controller
             $viewData->item = $item;
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;
+            $viewData->settings = $settings;
 
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -586,7 +585,6 @@ class Advance extends CI_Controller
         }
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
         $contract_code = contract_code($contract_id);
         $advance_code = get_from_id("advance", "dosya_no", $advance_id);
 

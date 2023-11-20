@@ -7,7 +7,7 @@
                     <tr>
                         <th>#</th>
                         <th>Sözleşme Adı</th>
-                        <th>Dosya No</th>
+                        <th>Tahsilat Türü</th>
                         <th>Tahsilat Tarihi</th>
                         <th>Tahsilat Miktarı</th>
                     </tr>
@@ -28,17 +28,17 @@
                             </td>
                             <td>
                                 <a href="<?php echo base_url("collection/file_form/$item->id"); ?>">
-                                    <?php echo $item->dosya_no; ?>
+                                    <?php echo $item->tahsilat_turu; ?>
                                 </a>
                             </td>
                             <td>
                                 <a href="<?php echo base_url("collection/file_form/$item->id"); ?>">
-                                    <?php echo dateFormat('d-m-Y', $item->avans_tarih); ?>
+                                    <?php echo dateFormat('d-m-Y', $item->tahsilat_tarih); ?>
                                 </a>
                             </td>
                             <td>
                                 <a href="<?php echo base_url("collection/file_form/$item->id"); ?>">
-                                    <?php echo money_format($item->avans_miktar) . " " . get_currency($item->id); ?>
+                                    <?php echo money_format($item->tahsilat_miktar) . " " . get_currency($item->id); ?>
                                 </a>
                             </td>
                         </tr>

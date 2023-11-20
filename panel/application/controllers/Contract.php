@@ -3075,6 +3075,7 @@ class Contract extends CI_Controller
         $payments = $this->Payment_model->get_all(array("contract_id" => $contract_id));
         $advances = $this->Advance_model->get_all(array("contract_id" => $contract_id));
         $bonds = $this->Bond_model->get_all(array("contract_id" => $contract_id));
+        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id));
 
         $viewData = new stdClass();
 
@@ -3090,6 +3091,7 @@ class Contract extends CI_Controller
         $total_payment_I = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "I");
         $total_payment_Kes_e = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "Kes_e");
         $total_payment_balance = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "balance");
+        $total_collections = $this->Collection_model->sum_all(array('contract_id' => $contract->id), "tahsilat_miktar");
 
         $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
         $owner = $this->Company_model->get(array("id" => $contract->isveren));
@@ -3343,28 +3345,28 @@ class Contract extends CI_Controller
         $pdf->SetX(25);
         $pdf->SetFont('dejavusans', 'B', 5);
 
-        $pdf->Cell(60, 4, "*Teminat Kesintisi : ".money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 0, 0, "L", 0);
+        $pdf->Cell(60, 4, "*Teminat Kesintisi : " . money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 0, 0, "L", 0);
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetX(25);
-        $pdf->Cell(60, 4, "*Toplam KDV : ".money_format($total_payment_F) . " " . $contract->para_birimi, 0, 0, "L", 0);
+        $pdf->Cell(60, 4, "*Toplam KDV : " . money_format($total_payment_F) . " " . $contract->para_birimi, 0, 0, "L", 0);
         $pdf->Ln(); // Yeni satıra geç
         $pdf->Cell(60, 4, "", 0, 0, "L", 0);
         $pdf->Ln(); // Yeni satıra geç
 
         $pdf->SetX(25); // Yeni satıra geç
         $pdf->SetFont('dejavusans', 'B', 7);
-        if (!empty($advances)){
+        if (!empty($advances)) {
             $pdf->Cell(40, 6, 'AVANS DURUMU', 0, 0, "C", 0);
         }
         $pdf->Cell(9, 6, "", 0, 0, "C", 0);
 
-        if (!empty($bonds)){
+        if (!empty($bonds)) {
             $pdf->Cell(111, 6, 'TEMİNAT DURUMU', 0, 0, "C", 0);
         }
         $pdf->SetFont('dejavusans', 'B', 6);
         $pdf->Ln(); // Yeni satıra geç
         $bonds_start_y = $pdf->GetY();
-        if (!empty($advances)){
+        if (!empty($advances)) {
             $pdf->SetX(25);
             $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
             $pdf->Cell(15, 6, 'Avans Tarih', 1, 0, "C", 0);
@@ -3373,36 +3375,40 @@ class Contract extends CI_Controller
 
             $pdf->SetFont('dejavusans', 'N', 6);
 
-            $i=1;
+            $i = 1;
             foreach ($advances as $advance) {
                 $pdf->SetX(25);
                 $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
                 $pdf->Cell(15, 6, dateFormat_dmy($advance->avans_tarih), 1, 0, "C", 0);
-                $pdf->Cell(20, 6,  money_format($advance->avans_miktar). " " . $contract->para_birimi , 1, 0, "R", 0);
+                $pdf->Cell(20, 6, money_format($advance->avans_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
                 $pdf->Ln(); // Yeni satıra geç
             }
-        }
-        $pdf->SetX(25);
-        $pdf->SetFont('dejavusans', 'B', 6);
-
-        $pdf->Cell(20, 4, "TOPLAM" , 1, 0, "L", 0);
-        $pdf->Cell(20, 4,  money_format($advance_given). " " . $contract->para_birimi , 1, 0, "R", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(25);
-
-        $pdf->Cell(20, 4, "Mahsup Edilen" , 1, 0, "L", 0);
-        $pdf->Cell(20, 4,  money_format($total_payment_I). " " . $contract->para_birimi , 1, 0, "R", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(25);
-
-        $pdf->Cell(20, 4, "Kalan Avans" , 1, 0, "L", 0);
-        $pdf->Cell(20, 4,  money_format($advance_given-$total_payment_I). " " . $contract->para_birimi , 1, 0, "R", 0);
-        $last_advance_y = $pdf->GetY();
-
-        if (!empty($bonds)){
+            $pdf->SetX(25);
             $pdf->SetFont('dejavusans', 'B', 6);
 
-            $pdf->SetXY(74,$bonds_start_y);
+            $pdf->Cell(20, 4, "TOPLAM", 1, 0, "L", 0);
+            $pdf->Cell(20, 4, money_format($advance_given) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(25);
+
+            $pdf->Cell(20, 4, "Mahsup Edilen", 1, 0, "L", 0);
+            $pdf->Cell(20, 4, money_format($total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(25);
+
+            $pdf->Cell(20, 4, "Kalan Avans", 1, 0, "L", 0);
+            $pdf->Cell(20, 4, money_format($advance_given - $total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        }
+        $last_advance_y = $pdf->GetY();
+
+
+        if (!empty($bonds)) {
+            $pdf->SetFont('dejavusans', 'B', 6);
+            if (empty($advancesi)) {
+                $pdf->SetXY(25, $bonds_start_y);
+            } else {
+                $pdf->SetXY(74, $bonds_start_y);
+            }
             $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
             $pdf->Cell(18, 6, 'Tür', 1, 0, "C", 0);
             $pdf->Cell(12, 6, 'Gerekçe', 1, 0, "C", 0);
@@ -3413,16 +3419,20 @@ class Contract extends CI_Controller
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetFont('dejavusans', 'N', 6);
 
-            $i=1;
+            $i = 1;
             foreach ($bonds as $bond) {
-                $pdf->SetX(74);
+                if (empty($advancesi)) {
+                    $pdf->SetX(25);
+                } else {
+                    $pdf->SetX(74);
+                }
                 $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
                 $pdf->Cell(18, 6, $bond->teminat_turu, 1, 0, "C", 0);
                 $pdf->Cell(12, 6, module_name($bond->teminat_gerekce), 1, 0, "C", 0);
-                $pdf->Cell(19, 6, money_format($bond->teminat_miktar). " " . $contract->para_birimi , 1, 0, "C", 0);
-                $pdf->Cell(19, 6,  dateFormat_dmy($bond->teslim_tarihi) , 1, 0, "C", 0);
-                $pdf->Cell(19, 6,  dateFormat_dmy($bond->gecerlilik_tarihi), 1, 0, "C", 0);
-                if ($bond->teminat_durumu == 1){
+                $pdf->Cell(19, 6, money_format($bond->teminat_miktar) . " " . $contract->para_birimi, 1, 0, "C", 0);
+                $pdf->Cell(19, 6, dateFormat_dmy($bond->teslim_tarihi), 1, 0, "C", 0);
+                $pdf->Cell(19, 6, dateFormat_dmy($bond->gecerlilik_tarihi), 1, 0, "C", 0);
+                if ($bond->teminat_durumu == 1) {
                     $durum = "İade Edildi";
                 } else {
                     $durum = "İşveren";
@@ -3431,13 +3441,55 @@ class Contract extends CI_Controller
                 $pdf->Ln(); // Yeni satıra geç
             }
         }
-        $pdf->SetY($last_advance_y); // Yeni satıra geç
+
+        $last_bond_y = $pdf->GetY();
+        if ($last_bond_y > $last_advance_y) {
+            $pdf->SetY($last_bond_y); // Yeni satıra geç
+        } else {
+            $pdf->SetY($last_advance_y); // Yeni satıra geç
+        }
+
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetFont('dejavusans', 'B', 7);
         $pdf->SetX(25);
-        $pdf->Cell(160, 6, 'ÖDEME DURUMU', 0, 0, "C", 0);
+        if (!empty($collections)) {
+            $pdf->Cell(160, 6, 'ÖDEME DURUMU', 0, 0, "C", 0);
+        }
+        $pdf->SetFont('dejavusans', 'B', 6);
         $pdf->Ln(); // Yeni satıra geç
+        $pdf->Cell(160, 4, '', 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $bonds_start_y = $pdf->GetY();
+        if (!empty($collections)) {
+            $pdf->SetX(25);
+            $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
+            $pdf->Cell(15, 6, 'Tarih', 1, 0, "C", 0);
+            $pdf->Cell(25, 6, 'Miktar', 1, 0, "C", 0);
+            $pdf->Cell(15, 6, 'Türü', 1, 0, "C", 0);
+            $pdf->Cell(15, 6, 'Vadesi', 1, 0, "C", 0);
+            $pdf->Cell(16, 6, "", 0, 0, "C", 0);
+            $pdf->Cell(23, 6, "TOPLAM TAHSİLAT", 1, 0, "C", 0);
+            $pdf->Cell(23, 6, "TOPLAM ALACAK", 1, 0, "C", 0);
+            $pdf->Cell(23, 6, "KALAN", 1, 0, "C", 0);
+            $pdf->Ln(); // Yeni satıra geç
 
+            $pdf->SetFont('dejavusans', 'N', 6);
+
+            $i = 1;
+            foreach ($collections as $collection) {
+                $pdf->SetX(25);
+                $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
+                $pdf->Cell(15, 6, dateFormat_dmy($collection->tahsilat_tarih), 1, 0, "C", 0);
+                $pdf->Cell(25, 6, money_format($collection->tahsilat_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Cell(15, 6, $collection->tahsilat_turu, 1, 0, "C", 0);
+                $pdf->Cell(15, 6, dateFormat_dmy($collection->vade_tarih), 1, 0, "C", 0);
+                $pdf->Cell(16, 6, "", 0, 0, "C", 0);
+                $pdf->Cell(23, 6, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Cell(23, 6, money_format($total_payment_balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Cell(23, 6, money_format($total_payment_balance - $total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Ln(); // Yeni satıra geç
+            }
+        }
 
 
         $file_name = contract_name($contract->id) . "-İlerlerme Raporu";

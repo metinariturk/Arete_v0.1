@@ -545,7 +545,6 @@ class Drawings extends CI_Controller
         $project_id = project_id_cont("$contract_id");
         $project_code = project_code("$project_id");
         $contract_code = contract_code($contract_id);
-        $contract_code = contract_code($contract_id);
         $drawings_code = get_from_id("drawings", "dosya_no", $drawings_id);
 
         $file_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Drawings/$drawings_code/$fileName->img_url";

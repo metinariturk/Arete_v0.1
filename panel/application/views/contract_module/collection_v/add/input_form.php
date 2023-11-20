@@ -39,7 +39,6 @@
 
         <div class="mb-2">
             <div class="col-form-label">Tahsilat Türü</div>
-
             <select id="select2-demo-1" style="width: 100%;"
                     class="form-control <?php cms_isset(form_error("tahsilat_turu"), "is-invalid", ""); ?>"
                     data-plugin="select2" name="tahsilat_turu">
