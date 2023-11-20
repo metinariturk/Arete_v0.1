@@ -32,12 +32,12 @@
                 </td>
                 <td>
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
-                        <?php echo dateFormat_dmy($collection->tahsilat_turu); ?>
+                        <?php echo $collection->tahsilat_turu; ?>
                     </a>
                 </td>
                 <td>
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
-                        <?php echo dateFormat_dmy($collection->aciklama); ?>
+                        <?php echo $collection->aciklama; ?>
                     </a>
                 </td>
                 <td  class="d-none d-sm-table-cell">
