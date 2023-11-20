@@ -369,9 +369,9 @@ class Collection extends CI_Controller
             }
 
             if ($this->input->post("vade_tarih")) {
-                $tahsilat_tarihi = dateFormat('Y-m-d', $this->input->post("vade_tarih"));
+                $vade_tarihi = dateFormat('Y-m-d', $this->input->post("vade_tarih"));
             } else {
-                $tahsilat_tarihi = null;
+                $vade_tarihi = null;
             }
 
             $update = $this->Collection_model->update(
@@ -430,11 +430,7 @@ class Collection extends CI_Controller
 
 
             /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Collection_model->get(
-                array(
-                    "id" => $id,
-                )
-            );
+
 
 
             $settings = $this->Settings_model->get();
@@ -447,7 +443,18 @@ class Collection extends CI_Controller
 
             $viewData->settings = $settings;
 
-            $viewData->item = $item;
+            $viewData->item = $this->Collection_model->get(
+                array(
+                    "id" => $id
+                )
+            );
+
+            $viewData->item_files = $this->Collection_file_model->get_all(
+                array(
+                    "$this->Dependet_id_key" => $id
+                ),
+            );
+
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;
 
