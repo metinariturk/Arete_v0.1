@@ -3465,12 +3465,13 @@ class Contract extends CI_Controller
             $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
             $pdf->Cell(15, 6, 'Tarih', 1, 0, "C", 0);
             $pdf->Cell(25, 6, 'Miktar', 1, 0, "C", 0);
-            $pdf->Cell(15, 6, 'Türü', 1, 0, "C", 0);
+            $pdf->Cell(20, 6, 'Türü', 1, 0, "C", 0);
             $pdf->Cell(15, 6, 'Vadesi', 1, 0, "C", 0);
-            $pdf->Cell(16, 6, "", 0, 0, "C", 0);
+            $pdf->Cell(10, 6, "", 0, 0, "C", 0);
             $pdf->Cell(23, 6, "TOPLAM TAHSİLAT", 1, 0, "C", 0);
             $pdf->Cell(23, 6, "TOPLAM ALACAK", 1, 0, "C", 0);
             $pdf->Cell(23, 6, "KALAN", 1, 0, "C", 0);
+            $collection_y = $pdf->GetY();
             $pdf->Ln(); // Yeni satıra geç
 
             $pdf->SetFont('dejavusans', 'N', 6);
@@ -3481,14 +3482,21 @@ class Contract extends CI_Controller
                 $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
                 $pdf->Cell(15, 6, dateFormat_dmy($collection->tahsilat_tarih), 1, 0, "C", 0);
                 $pdf->Cell(25, 6, money_format($collection->tahsilat_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
-                $pdf->Cell(15, 6, $collection->tahsilat_turu, 1, 0, "C", 0);
+                $pdf->Cell(20, 6, $collection->tahsilat_turu, 1, 0, "C", 0);
                 $pdf->Cell(15, 6, dateFormat_dmy($collection->vade_tarih), 1, 0, "C", 0);
-                $pdf->Cell(16, 6, "", 0, 0, "C", 0);
-                $pdf->Cell(23, 6, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
-                $pdf->Cell(23, 6, money_format($total_payment_balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
-                $pdf->Cell(23, 6, money_format($total_payment_balance - $total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Cell(10, 6, "", 0, 0, "C", 0);
                 $pdf->Ln(); // Yeni satıra geç
             }
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetY($collection_y);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(115);
+
+            $pdf->Cell(23, 6, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(23, 6, money_format($total_payment_balance+$total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(23, 6, money_format($total_payment_Kes_e + $total_payment_balance - $total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Ln(); // Yeni satıra geç
+
         }
 
 

@@ -131,7 +131,7 @@ function dateFormat_dmy($givenDate = null)
     if (!empty($givenDate)){
         return date('d-m-Y', strtotime($givenDate));
     } else {
-        return null;
+        return "";
     }
     //gelen tarih verisini YY-mm-dd -> dd-mm-YYYY şekline çeviriyor
 }
