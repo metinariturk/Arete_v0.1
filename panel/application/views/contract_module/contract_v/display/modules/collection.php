@@ -8,8 +8,8 @@
         <th class="d-none d-sm-table-cell">Dosya No</th>
         <th>Tarihi</th>
         <th>Ödeme Türü</th>
-        <th>Tutarı</th>
-        <th  class="d-none d-sm-table-cell">Açıklama</th>
+        <th>Açıklama</th>
+        <th class="d-none d-sm-table-cell">Tutarı</th>
         <th>Dosyalar</th>
     </tr>
     </thead>
@@ -35,12 +35,12 @@
                         <?php echo $collection->tahsilat_turu; ?>
                     </a>
                 </td>
-                <td>
+                <td  class="d-none d-sm-table-cell">
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
                         <?php echo $collection->aciklama; ?>
                     </a>
                 </td>
-                <td  class="d-none d-sm-table-cell">
+                <td>
                     <a href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
                         <?php echo money_format($collection->tahsilat_miktar) . " " . get_currency($item->id); ?>
                     </a>
