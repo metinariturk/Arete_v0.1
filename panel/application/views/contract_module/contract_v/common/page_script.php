@@ -752,4 +752,32 @@ $payments_array = json_encode((array_column($payments, 'E')));
             hesaplaT(inputId);
         });
     });
+
+
+</script>
+<script>
+    function update_price(anchor) {
+        var $form = anchor.getAttribute('form-id');
+
+        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
+        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
+
+        $.post(formAction, formData, function (response) {
+            $(".price_update").html(response);
+        });
+    }
+</script>
+<script>
+    function delete_price_item(element) {
+        var itemId = element.id;
+        var formAction = '<?php echo base_url("contract/delete_contract_price/"); ?>' + itemId;
+
+        $.post(formAction, function(response) {
+            $(".price_update").html(response);
+        })
+            .fail(function(error) {
+                // Hata durumunda bu fonksiyon çalışır
+                console.error('Error:', error.responseText);
+            });
+    }
 </script>

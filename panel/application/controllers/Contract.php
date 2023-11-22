@@ -149,7 +149,7 @@ class Contract extends CI_Controller
 
 
         $viewData = new stdClass();
-        $collections = $this->Collection_model->get_all(array('contract_id' => $id),"tahsilat_tarih ASC");
+        $collections = $this->Collection_model->get_all(array('contract_id' => $id), "tahsilat_tarih ASC");
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
         $books = $this->Books_model->get_all(array('isActive' => 1));
@@ -2753,15 +2753,34 @@ class Contract extends CI_Controller
         $boqs = $this->input->post("boq[]");
 
         foreach ($boqs as $boq => $values) {
-            $update = $this->Contract_price_model->update(
-                array(
-                    "id" => $boq
-                ),
-                array(
-                    "qty" => $values['qty'],
-                    "price" => $values['price'],
-                    "total" => $values['total']
-                ));
+            if (!empty($values['name']) && !empty($values['code']) && !empty($values['unit'])) {
+                $sub = $this->Contract_price_model->get(array("id" => $boq));
+                $insert = $this->Contract_price_model->add(
+                    array(
+                        "contract_id" => $contract_id,
+                        "book_id" => 0,
+                        "main_id" => $sub->parent,
+                        "sub_id" => $sub->id,
+                        "item_id" => null,
+                        "name" => $values['name'],
+                        "unit" => $values['unit'],
+                        "code" => $values['code'],
+                        "qty" => $values['qty'],
+                        "price" => $values['price'],
+                        "total" => $values['total']
+                    )
+                );
+            } else {
+                $update = $this->Contract_price_model->update(
+                    array(
+                        "id" => $boq
+                    ),
+                    array(
+                        "qty" => $values['qty'],
+                        "price" => $values['price'],
+                        "total" => $values['total']
+                    ));
+            }
         }
 
 
@@ -2780,8 +2799,69 @@ class Contract extends CI_Controller
             );
         }
 
-        $this->session->set_flashdata("alert", $alert);
-        redirect(base_url("$this->Module_Name/file_form/$contract_id/price"));
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/price_update", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public function delete_contract_price($item_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $contract_price = $this->Contract_price_model->get(array("id" => $item_id));
+        $contract_id = $contract_price->contract_id;
+        $delete = $this->Contract_price_model->delete(
+            array(
+                "id" => $item_id,
+            ));
+
+        // TODO Alert sistemi eklenecek...
+        if ($delete) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde güncellendi",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Güncelleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+        }
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/price_update", $viewData, true);
+
+        echo $render_html;
 
     }
 
@@ -3075,7 +3155,7 @@ class Contract extends CI_Controller
         $payments = $this->Payment_model->get_all(array("contract_id" => $contract_id));
         $advances = $this->Advance_model->get_all(array("contract_id" => $contract_id));
         $bonds = $this->Bond_model->get_all(array("contract_id" => $contract_id));
-        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id),"tahsilat_tarih ASC");
+        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id), "tahsilat_tarih ASC");
 
         $viewData = new stdClass();
 
@@ -3493,7 +3573,7 @@ class Contract extends CI_Controller
             $pdf->SetX(115);
 
             $pdf->Cell(23, 6, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(23, 6, money_format($total_payment_balance+$total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(23, 6, money_format($total_payment_balance + $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(23, 6, money_format($total_payment_Kes_e + $total_payment_balance - $total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Ln(); // Yeni satıra geç
 

@@ -6,17 +6,17 @@
             <tr>
                 <td><strong>Sözleşme Bedeli</strong></td>
                 <td>:</td>
-                <td style="text-align: right"><?php echo money_format($item->sozlesme_bedel); ?> <?php echo $item->para_birimi; ?></td>
+                <td style="text-align: right"><?php echo money_format($item->sozlesme_bedel); ?><?php echo $item->para_birimi; ?></td>
             </tr>
             <tr>
                 <td><strong>Pozlar Toplam Bedeli</strong></td>
                 <td>:</td>
-                <td style="text-align: right"><?php echo money_format($total_boqs = sum_anything("contract_price", "total", "contract_id", "$item->id")); ?> <?php echo $item->para_birimi; ?></td>
+                <td style="text-align: right"><?php echo money_format($total_boqs = sum_anything("contract_price", "total", "contract_id", "$item->id")); ?><?php echo $item->para_birimi; ?></td>
             </tr>
             <tr>
                 <td><strong>Fark</strong></td>
                 <td>:</td>
-                <td style="text-align: right"><?php echo money_format($total_boqs - $item->sozlesme_bedel); ?> <?php echo $item->para_birimi; ?></td>
+                <td style="text-align: right"><?php echo money_format($total_boqs - $item->sozlesme_bedel); ?><?php echo $item->para_birimi; ?></td>
             </tr>
         </table>
         <hr>
@@ -51,6 +51,9 @@
                         <td class="table-header-cell">
                             <p><strong>Toplam</strong></p>
                         </td>
+                        <td class="table-header-cell">
+                            <p><strong>İşlem</strong></p>
+                        </td>
                     </tr>
                     <?php $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $item->id, "sub_id" => $sub_group->id), "rank ASC"); ?>
                     <?php foreach ($boq_items as $boq_item) { ?>
@@ -79,8 +82,47 @@
                                        id="t-<?php echo $boq_item->id; ?>" style="width: 100%" type="number"
                                        value="<?php echo $boq_item->total; ?>">
                             </td>
+                            <td class="table-cell w10">
+                                <a onclick="delete_price_item(this)" id="<?php echo $boq_item->id; ?>">
+                                    <i style="color: tomato" class="fa fa-minus-circle fa-2x" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
                     <?php } ?>
+                    <tr>
+                        <td class="table-cell">
+                            <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][code]"
+                                   placeholder="Poz No">
+                        </td>
+                        <td class="table-cell">
+                            <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][name]"
+                                   placeholder="Tanımı">
+                        </td>
+                        <td class="table-cell">
+                            <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][unit]"
+                                   placeholder="Birim">
+                        </td>
+                        <td class="table-cell w10">
+                            <input name="boq[<?php echo $sub_group->id; ?>][qty]" onclick="hesaplaT"
+                                   id="q-<?php echo $sub_group->id; ?>" style="width: 100%" type="number"
+                                   placeholder="Miktar">
+                        </td>
+                        <td class="table-cell w10">
+                            <input name="boq[<?php echo $sub_group->id; ?>][price]" onclick="hesaplaT"
+                                   placeholder="Birim Fiyat" id="p-<?php echo $sub_group->id; ?>" style="width: 100%"
+                                   type="number"">
+                        </td>
+                        <td class="table-cell w10">
+                            <input name="boq[<?php echo $sub_group->id; ?>][total]" onclick="hesaplaT"
+                                   placeholder="Toplam" id="t-<?php echo $sub_group->id; ?>" style="width: 100%"
+                                   type="number">
+                        </td>
+                        <td class="table-cell w10">
+                            <a onclick="update_price(this)" form-id="save_boq">
+                                <i style="color: green" class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             <?php } ?>
@@ -88,10 +130,9 @@
     </div>
     <div class="content">
         <div class="text-end">
-            <button class="btn btn-success" type="submit" form="save_boq"><i class="menu-icon fa fa-floppy-o fa-lg"
-                                                                             aria-hidden="true"></i> Birim Fiyatları
-                Kaydet
-            </button>
+            <a class="btn btn-success" onclick="update_price(this)" form-id="save_boq">
+                <i class="menu-icon fa fa-floppy-o fa-lg" aria-hidden="true"></i> Birim Fiyatları Kaydet
+            </a>
         </div>
     </div>
 </form>
