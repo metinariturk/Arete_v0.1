@@ -6,6 +6,7 @@
                     <?php
                     $report_date = dateFormat_dmy($item->report_date);
                     $path = "uploads/project_v/$project->proje_kodu/$site->dosya_no/Reports/$report_date/thumb";
+                    echo $path;
                     ?>
                     <?php if (!empty($path)) { ?>
                         <?php

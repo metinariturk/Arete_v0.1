@@ -168,22 +168,16 @@ class Report extends CI_Controller
     {
         $this->load->library("form_validation");
         $site_id = get_from_any("report", "site_id", "id", "$id");
-        $contract_id = get_from_any("site", "contract_id", "id", $site_id);
         $proje_id = get_from_any("site", "proje_id", "id", $site_id);
 
         $site = $this->Site_model->get(array(
             "id" => $site_id
         ));
 
-        $contract = $this->Contract_model->get(array(
-            "id" => $contract_id
-        ));
-
         $project = $this->Project_model->get(array(
             "id" => $proje_id
         ));
 
-        $site_code = get_from_any("site", "dosya_no", "id", "$site_id");
         $viewData = new stdClass();
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -191,9 +185,7 @@ class Report extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->proje_id = $proje_id;
-        $viewData->contract_id = $contract_id;
         $viewData->site = $site;
-        $viewData->contract = $contract;
         $viewData->project = $project;
 
         $viewData->viewModule = $this->moduleFolder;
@@ -536,104 +528,67 @@ function delete($report_id)
     redirect(base_url("site/$this->Display_route/$site_id"));
 }
 
-public
-function file_upload($id)
-{
-    $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-    $size = $_FILES["file"]["size"];
+    public function file_upload($id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
 
-    $extention = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+        $report = $this->Report_model->get(array("id" => $id));
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+        $old_file = $this->Report_file_model->get_last(array("report_id" => $id));
+        $extention = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
 
-    $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $id));
-    $site_id = get_from_any("report", "site_id", "id", $id);
+        $file_name = $report->report_date . '-' . ($old_file->rank + 1) . "." . $extention;
 
-    $project_id = get_from_id("site", "proje_id", $site_id);
-    $project_code = project_code($project_id);
-    $site_code = site_code($site_id);
-    $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
-    $thumb_path = "$path/thumb";
+        $size = $_FILES["file"]["size"];
 
-    if (!is_dir($path)) {
-        mkdir("$path", 0777, TRUE);
-    }
-    if (!is_dir($thumb_path)) {
-        mkdir("$thumb_path", 0777, TRUE);
-    }
+        $site_code = $site->dosya_no;
+        $project_id = project_id_site($site->id);
+        $project_code = project_code($project_id);
+        $date = dateFormat_dmy($report->report_date);
 
-    $extention = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-
-    $allowed_types = array("jpg", "jpeg", "png", "gif");
-    if (in_array($extention, $allowed_types)) {
-        $config["allowed_types"] = "*";
-        $config["upload_path"] = "$path";
         $config["file_name"] = $file_name;
+        $config["upload_path"] = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site_code/Reports/$date";
+        if (!is_dir($config["upload_path"])) {
+            mkdir($config["upload_path"], 0777, TRUE);
+        }
+        $folder = $config["upload_path"];
+        $config['allowed_types'] = 'gif|jpg|jpeg|png';
+        $config['overwrite'] = TRUE; // Eğer dosya zaten varsa üzerine yaz
 
         $this->load->library("upload", $config);
 
         $upload = $this->upload->do_upload("file");
 
-
         if ($upload) {
+            if ($size > 3000000) {
+                $file_path = $folder."/".$file_name;
 
-            $uploaded_file = $this->upload->data("file_name");
+                chmod($folder, 0777);
 
-            $this->Report_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id
-                )
-            );
 
-            $source_path = "$path/$file_name";
+                $config['image_library'] = 'gd2';
+                echo $config['source_image'] = "/$file_path";
+                echo $config['new_image'] = "/$folder"."/image".".".$extention;
+                $config['create_thumb'] = FALSE;
+                $config['maintain_ratio'] = TRUE;
+                $config['width']         = 75;
+                $config['height']       = 50;
 
-            $config['image_library'] = 'gd2';
-            $config['source_image'] = $source_path;
-            $config['create_thumb'] = TRUE;
-            $config['maintain_ratio'] = TRUE;
-            $config['width'] = "";
-            $config['height'] = 600;
-            echo $config['new_image'] = $path . "/thumb/" . $file_name;
-            $this->load->library('image_lib', $config);
-            $this->image_lib->resize();
-            echo $this->image_lib->display_errors();
+                $this->load->library('image_lib', $config);
+
+                $this->image_lib->resize();
+
+            } else {
+                echo "Dosya yükleme başarılı, ancak boyut küçültmeye gerek yok.";
+            }
         } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
+            echo "Dosya yükleme hatası: " . $this->upload->display_errors()."sadasd";
         }
-    } else {
-        $config["allowed_types"] = "*";
-        $config["upload_path"] = "$path";
-        $config["file_name"] = $file_name;
 
-        $this->load->library("upload", $config);
-
-
-        $this->load->library("upload", $config);
-
-        $upload = $this->upload->do_upload("file");
-
-
-        if ($upload) {
-
-            $uploaded_file = $this->upload->data("file_name");
-
-            $this->Report_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-        } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
-        }
     }
-}
+
 
 public
 function file_download($id)
