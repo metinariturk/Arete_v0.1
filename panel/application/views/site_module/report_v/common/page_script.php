@@ -1,5 +1,3 @@
-<script src="<?php echo base_url("assets");?>/js/owlcarousel/owl.carousel.js"></script>
-<script src="<?php echo base_url("assets");?>/js/ecommerce.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/jquery.repeater.js"></script><!--Form Inputs-->
 
 <script>
@@ -20,25 +18,6 @@
                     $(this).slideUp(deleteElement);
                 }
             },
-        });
-    });
-</script>
-
-
-<script>
-    $(document).ready(function(){
-        var owl = $('#sync1');
-        owl.owlCarousel({
-            // Owl Carousel ayarlarını buraya ekleyin
-        });
-
-        // Klavye olayları
-        $(document).on('keydown', function(e) {
-            if (e.keyCode == 37) {
-                owl.trigger('prev.owl.carousel'); // Sol ok (geri git)
-            } else if (e.keyCode == 39) {
-                owl.trigger('next.owl.carousel'); // Sağ ok (ileri git)
-            }
         });
     });
 </script>

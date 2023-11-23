@@ -3,6 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
+
 </head>
 <body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
 <?php $this->load->view("includes/wrapper"); ?>
@@ -24,6 +25,9 @@
 </div>
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 
 </body>
 </html>

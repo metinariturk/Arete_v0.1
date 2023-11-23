@@ -11,10 +11,12 @@ class Report extends CI_Controller
 
         parent::__construct();
 
-               if (!get_active_user()) {
+        if (!get_active_user()) {
             redirect(base_url("login"));
         }
- $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
+        $this->Theme_mode = get_active_user()->mode;
+
+        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
 
@@ -466,67 +468,66 @@ class Report extends CI_Controller
         $this->session->set_flashdata("alert", $alert);
         redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
 
-}
-
-public
-function delete($report_id)
-{
-    $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
-    $site_id = get_from_any("report", "site_id", "id", $report_id);
-
-    $project_id = get_from_id("site", "proje_id", $site_id);
-    $project_code = project_code($project_id);
-    $site_code = get_from_id("site", "dosya_no", $site_id);
-    $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
-
-    $sil = deleteDirectory($path);
-
-    if ($sil) {
-        echo '<br>deleted successfully';
-    } else {
-        echo '<br>errors occured';
     }
 
-    $delete1 = $this->Report_file_model->delete(
-        array(
-            "$this->Dependet_id_key" => $report_id
-        )
-    );
+    public function delete($report_id)
+    {
+        $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
+        $site_id = get_from_any("report", "site_id", "id", $report_id);
 
-    $delete2 = $this->Report_model->delete(
-        array(
-            "id" => $report_id
-        )
-    );
+        $project_id = get_from_id("site", "proje_id", $site_id);
+        $project_code = project_code($project_id);
+        $site_code = get_from_id("site", "dosya_no", $site_id);
+        $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
 
-    $file_order_id = get_from_any_and("file_order", "connected_module_id", $report_id, "module", $this->Module_Name);
-    $update_file_order = $this->Order_model->update(
-        array(
-            "id" => $file_order_id
-        ),
-        array(
-            "deletedAt" => date("Y-m-d H:i:s"),
-            "deletedBy" => active_user_id(),
-        )
-    );
+        $sil = deleteDirectory($path);
 
-    // TODO Alert Sistemi Eklenecek...
-    if ($delete1 and $delete2) {
-        $alert = array(
-            "title" => "İşlem Başarılı",
-            "text" => "Kayıt başarılı bir şekilde silindi",
-            "type" => "success"
+        if ($sil) {
+            echo '<br>deleted successfully';
+        } else {
+            echo '<br>errors occured';
+        }
+
+        $delete1 = $this->Report_file_model->delete(
+            array(
+                "$this->Dependet_id_key" => $report_id
+            )
         );
-    } else {
-        $alert = array(
-            "title" => "İşlem Başarısız",
-            "text" => "Kayıt silme sırasında bir problem oluştu",
-            "type" => "danger"
+
+        $delete2 = $this->Report_model->delete(
+            array(
+                "id" => $report_id
+            )
         );
+
+        $file_order_id = get_from_any_and("file_order", "connected_module_id", $report_id, "module", $this->Module_Name);
+        $update_file_order = $this->Order_model->update(
+            array(
+                "id" => $file_order_id
+            ),
+            array(
+                "deletedAt" => date("Y-m-d H:i:s"),
+                "deletedBy" => active_user_id(),
+            )
+        );
+
+        // TODO Alert Sistemi Eklenecek...
+        if ($delete1 and $delete2) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde silindi",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Kayıt silme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+        }
+        $this->session->set_flashdata("alert", $alert);
+        redirect(base_url("site/$this->Display_route/$site_id"));
     }
-    $this->session->set_flashdata("alert", $alert);
-    redirect(base_url("site/$this->Display_route/$site_id"));
-}
 
     public function file_upload($id)
     {
@@ -560,161 +561,151 @@ function delete($report_id)
         $this->load->library("upload", $config);
 
         $upload = $this->upload->do_upload("file");
+        $file_path = $folder . "/" . $file_name;
+
+        $thumbnail_folder = $folder . "/thumbnails";
+
+        if (!is_dir($thumbnail_folder)) {
+            // "thumbnails" klasörü yoksa oluştur
+            if (!mkdir($thumbnail_folder, 0777, true)) {
+                echo "Failed to create thumbnails folder...";
+            }
+        }
+
+        chmod($folder, 0777);
 
         if ($upload) {
             if ($size > 3000000) {
-                $file_path = $folder."/".$file_name;
-
-                chmod($folder, 0777);
-
 
                 $config['image_library'] = 'gd2';
-                echo $config['source_image'] = "/$file_path";
-                echo $config['new_image'] = "/$folder"."/image".".".$extention;
+                $config['source_image'] = $file_path;
+                $config['new_image'] = $file_path;
                 $config['create_thumb'] = FALSE;
                 $config['maintain_ratio'] = TRUE;
-                $config['width']         = 75;
-                $config['height']       = 50;
+                $config['width'] = 1920;
+                $config['height'] = 1080;
 
                 $this->load->library('image_lib', $config);
 
-                $this->image_lib->resize();
+                if (!$this->image_lib->resize()) {
+                    // Display any errors that occurred during the resize process
+                    echo "Image resize error: " . $this->image_lib->display_errors();
+                } else {
+                    echo "Image resized successfully.";
+                }
 
             } else {
                 echo "Dosya yükleme başarılı, ancak boyut küçültmeye gerek yok.";
             }
+
+            $thumbnail_config['image_library'] = 'gd2';
+            $thumbnail_config['source_image'] = $file_path;
+            $thumbnail_config['new_image'] = $thumbnail_folder . "/" . $file_name; // Thumbnail'ı belirtilen yere kaydet
+            $thumbnail_config['create_thumb'] = TRUE;
+            $thumbnail_config['maintain_ratio'] = TRUE;
+            $thumbnail_config['thumb_marker'] = NULL; // Thumbnail dosyasının adına eklenecek özel işaret, NULL kullanılarak devre dışı bırakılır
+            $thumbnail_config['width'] = 800; // Thumbnail için özel genişlik
+            $thumbnail_config['height'] = 600; // Thumbnail için özel yükseklik
+
+            $this->load->library('image_lib', $config);
+
+            $this->image_lib->initialize($thumbnail_config);
+
+            if (!$this->image_lib->resize()) {
+                // İşlem sırasında oluşan hataları görüntüleyin
+                echo "Thumbnail resize error: " . $this->image_lib->display_errors();
+            } else {
+                echo "Thumbnail resized successfully.";
+            }
+
+            $this->Report_file_model->add(
+                array(
+                    "img_url" => $file_name,
+                    "report_id" => $id,
+                    "createdAt" => date("Y-m-d H:i:s"),
+                    "createdBy" => active_user_id(),
+                    "$this->Dependet_id_key" => $id,
+                    "size" => $size,
+                    "rank" => ($old_file->rank + 1)
+                )
+            );
+
         } else {
-            echo "Dosya yükleme hatası: " . $this->upload->display_errors()."sadasd";
+            echo "Dosya yükleme hatası: " . $this->upload->display_errors();
         }
 
-    }
+        if ($upload) {
+
+            $uploaded_file = $this->upload->data("file_name");
 
 
-public
-function file_download($id)
-{
-    $fileName = $this->Report_file_model->get(
-        array(
-            "id" => $id
-        )
-    );
-
-    $report_id = get_from_any("report_files", "report_id", "id", $id);
-    $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
-    $site_id = get_from_any("report", "site_id", "id", $report_id);
-    $project_id = get_from_id("site", "proje_id", $site_id);
-    $project_code = project_code($project_id);
-    $site_code = get_from_id("site", "dosya_no", $site_id);
-    $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
-
-    $file_path = "$path/$fileName->img_url";
-
-    if ($file_path) {
-
-        if (file_exists($file_path)) {
-            $data = file_get_contents($file_path);
-            force_download($fileName->img_url, $data);
         } else {
-            echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
+            echo "islem basarisiz";
+            echo $config["upload_path"];
         }
-    } else {
-        echo "Dosya Yok";
+
     }
 
-}
+    public function file_download($id)
+    {
+        $fileName = $this->Report_file_model->get(
+            array(
+                "id" => $id
+            )
+        );
 
-public
-function download_all($report_id)
-{
-    $this->load->library('zip');
-    $this->zip->compression_level = 0;
+        $report_file = $this->Report_file_model->get(array("id" => $id));
+        $report = $this->Report_model->get(array("id" => $report_file->report_id));
+        $date = dateFormat_dmy($report->report_date);
+        $site = $this->Site_model->get(array("id" => $report->site_id));
 
-    $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
-    $site_id = get_from_any("report", "site_id", "id", $report_id);
-    $project_id = get_from_id("site", "proje_id", $site_id);
-    $project_code = project_code($project_id);
-    $site_code = get_from_id("site", "dosya_no", $site_id);
-    $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
+        $project_code = project_code("$site->proje_id");
 
-    $files = glob($path . '/*');
 
-    foreach ($files as $file) {
-        $this->zip->read_file($file, FALSE);
+        $file_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/$fileName->img_url";
+
+        if ($file_path) {
+            if (file_exists($file_path)) {
+                $data = file_get_contents($file_path);
+                force_download($fileName->img_url, $data);
+            } else {
+                echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
+            }
+        } else {
+            echo "Dosya Yok";
+        }
+
     }
 
-    $zip_name = $report_date . "- Rapor";
-    $this->zip->download("$zip_name");
-
-}
-
-public
-function refresh_file_list($id)
-{
-
-    $viewData = new stdClass();
-
-    /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-    $viewData->viewFolder = $this->viewFolder;
-    $viewData->viewModule = $this->moduleFolder;
-
-    $viewData->item = $this->Report_model->get(
-        array(
-            "id" => $id
-        )
-    );
-
-    $viewData->item_files = $this->Report_file_model->get_all(
-        array(
-            "$this->Dependet_id_key" => $id
-        )
-    );
-
-    $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-    echo $render_html;
-
-}
-
-public
-function fileDelete($id)
-{
-    $viewData = new stdClass();
-
-    /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-    $viewData->viewModule = $this->moduleFolder;
-    $viewData->viewFolder = $this->viewFolder;
-
-    $fileName = $this->Report_file_model->get(
-        array(
-            "id" => $id
-        )
-    );
-
-    $report_id = get_from_id("report_files", "report_id", $id);
-    $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
-    $site_id = get_from_any("report", "site_id", "id", $report_id);
-    $project_id = get_from_id("site", "proje_id", $site_id);
-    $project_code = project_code($project_id);
-    $site_code = get_from_id("site", "dosya_no", $site_id);
-
-    $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
-    $thumb_path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date/thumb";
-
-    $delete = $this->Report_file_model->delete(
-        array(
-            "id" => $id
-        )
-    );
-
-    if ($delete) {
-
-        $path = "$path/$fileName->img_url";
-        $thumb_path = "$thumb_path/" . get_thumb_name($fileName->img_url);
-
-        unlink($path);
-        if (!empty($thumb_path)) {
-            unlink($thumb_path);
+    public function download_all($report_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
         }
+
+        $this->load->library('zip');
+        $this->zip->compression_level = 0;
+
+        $report = $this->Report_model->get(array("id" => $report_id));
+        $date = dateFormat_dmy($report->report_date);
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+
+        $project_code = project_code("$site->proje_id");
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
+
+        $files = glob($path . '/*');
+
+        foreach ($files as $file) {
+            $this->zip->read_file($file, FALSE);
+        }
+
+        $zip_name = "Foto-".$date;
+        $this->zip->download("$zip_name");
+
+    }
+
+    public function refresh_file_list($id)
+    {
 
         $viewData = new stdClass();
 
@@ -724,13 +715,13 @@ function fileDelete($id)
 
         $viewData->item = $this->Report_model->get(
             array(
-                "id" => $report_id
+                "id" => $id
             )
         );
 
         $viewData->item_files = $this->Report_file_model->get_all(
             array(
-                "$this->Dependet_id_key" => $report_id
+                "$this->Dependet_id_key" => $id
             )
         );
 
@@ -739,73 +730,138 @@ function fileDelete($id)
         echo $render_html;
 
     }
-}
 
-public
-function fileDelete_all($report_id)
-{
-
-    $viewData = new stdClass();
-
-    /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-    $viewData->viewModule = $this->moduleFolder;
-    $viewData->viewFolder = $this->viewFolder;
-
-    $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
-    $site_id = get_from_any("report", "site_id", "id", $report_id);
-    $project_id = get_from_id("site", "proje_id", $site_id);
-    $project_code = project_code($project_id);
-    $site_code = get_from_id("site", "dosya_no", $site_id);
-
-    $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
-
-    $delete = $this->Report_file_model->delete(
-        array(
-            "$this->Dependet_id_key" => $report_id
-        )
-    );
-
-    if ($delete) {
-
-        delete_files($path, true);
-
-        if (is_dir($path)) {
-            if (count(scandir($path)) === 2) { // Klasör boşsa
-                rmdir($path);
-            }
+    public function fileDelete($id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
         }
 
-        $viewData->item = $this->Report_model->get(
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+
+        $fileName = $this->Report_file_model->get(
             array(
-                "id" => $report_id
+                "id" => $id
             )
         );
 
-        $viewData->item_files = $this->Report_file_model->get_all(
+        $report_file = $this->Report_file_model->get(array("id" => $id));
+        $report = $this->Report_model->get(array("id" => $report_file->report_id));
+        $date = dateFormat_dmy($report->report_date);
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+
+        $project_code = project_code("$site->proje_id");
+
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
+
+
+        $delete = $this->Report_file_model->delete(
             array(
-                "$this->Dependet_id_key" => $report_id
+                "id" => $id
             )
         );
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
 
-        echo $render_html;
+        if ($delete) {
 
+            $file_path = "$path/$fileName->img_url";
+            $file_path_thumb = "$path/thumbnails/$fileName->img_url";
 
+            unlink($file_path);
+            unlink($file_path_thumb);
+
+            $viewData->item = $this->Report_model->get(
+                array(
+                    "id" => $report->id
+                )
+            );
+
+            $viewData->item_files = $this->Report_file_model->get_all(
+                array(
+                    "report_id" => $report->id
+                )
+            );
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
+            echo $render_html;
+
+        }
     }
-}
 
-public
-function duplicate_code_check($file_name)
-{
-    $file_name = "GR-" . $file_name;
+    public function fileDelete_all($id)
+    {
 
-    $var = count_data("file_order", "file_order", $file_name);
-    if (($var > 0)) {
-        return FALSE;
-    } else {
-        return TRUE;
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+
+        $fileName = $this->Report_file_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+
+        $report = $this->Report_model->get(array("id" => $id));
+        $date = dateFormat_dmy($report->report_date);
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+
+        $project_code = project_code("$site->proje_id");
+
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
+
+        $delete = $this->Report_file_model->delete(
+            array(
+                "$this->Dependet_id_key" => $id
+            )
+        );
+
+        if ($delete) {
+
+            $this->load->helper('file');
+            delete_files($path, true);
+
+            $viewData->item = $this->Report_model->get(
+                array(
+                    "id" => $id
+                )
+            );
+
+            $viewData->item_files = $this->Report_file_model->get_all(
+                array(
+                    "$this->Dependet_id_key" => $id
+                )
+            );
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
+
+            echo $render_html;
+
+
+        }
     }
-}
+
+    public
+    function duplicate_code_check($file_name)
+    {
+        $file_name = "GR-" . $file_name;
+
+        $var = count_data("file_order", "file_order", $file_name);
+        if (($var > 0)) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
 
 }

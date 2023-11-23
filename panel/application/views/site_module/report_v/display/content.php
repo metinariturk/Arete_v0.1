@@ -15,7 +15,12 @@
                 <div class="card-body">
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/foot"); ?>
                 </div>
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/image_list_v"); ?>
+                <div class="card-body">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/foot"); ?>
+                </div>
+                <div class="card-body gallery">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/gallery"); ?>
+                </div>
             </div>
         </div>
     </div>
@@ -41,18 +46,6 @@
                                 </a>
                             </div>
                         </li>
-                        <?php if (isset($contract_id)) { ?>
-                            <li>
-                                <div class="btn btn-light ">
-                                    <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>">
-                                    <span style="padding-left: 40px">
-                                    <i class="icofont icofont-law-document"></i>
-                                    <?php echo contract_code_name($contract->id); ?>
-                                    </span>
-                                    </a>
-                                </div>
-                            </li>
-                        <?php } ?>
                         <li>
                             <div class="btn btn-light">
                                     <span style="padding-left: 40px">

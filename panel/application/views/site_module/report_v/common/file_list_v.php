@@ -64,7 +64,7 @@
                 </div>
                 <div class="col-1">
                     <a onclick="deleteConfirmationFile(this)"
-                       url="<?php echo base_url("$this->Module_Name/fileDelete_image/$file->id"); ?>"
+                       url="<?php echo base_url("$this->Module_Name/fileDelete/$file->id"); ?>"
                     <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
                        aria-hidden="true"></i>
                     </a>
