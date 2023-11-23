@@ -36,7 +36,7 @@
                 <div class="mb-2">
                     <div class="col-form-label">En Düşük °C</div>
                     <input type="number" min="-40" max="50" step="1" onblur=""
-                           class="form-control" required
+                           class="form-control"
                            name="min_temp">
                 </div>
             </div>
@@ -44,14 +44,14 @@
                 <div class="mb-2">
                     <div class="col-form-label">En Yüksek °C</div>
                     <input type="number" min="-40" max="50" step="1" onblur=""
-                           class="form-control" required
+                           class="form-control"
                            name="max_temp">
                 </div>
             </div>
             <div class="col-sm-4 col-md-2">
                 <div class="mb-2">
                     <div class="col-form-label">Olay</div>
-                    <select id="select2-demo-1" class="form-control" required data-plugin="select2"
+                    <select id="select2-demo-1" class="form-control"  data-plugin="select2"
                             name="event">
                         <option selected="selected">Seçiniz</option>
                         <option>Açık</option>

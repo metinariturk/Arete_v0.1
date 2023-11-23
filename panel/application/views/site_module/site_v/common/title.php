@@ -112,7 +112,7 @@ if ($subViewFolder == "list") { ?>
             </div>
         </div>
     </div>
-<?php } elseif ($subViewFolder == "add_main") { ?>
+<?php } elseif ($subViewFolder == "add_project") { ?>
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
@@ -127,36 +127,6 @@ if ($subViewFolder == "list") { ?>
                             <button type="submit" form="save_project" class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>
-                            <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">
-                                <i class="fa fa-times"></i> İptal
-                            </a>
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php } elseif ($subViewFolder == "add_contract") { ?>
-    <div class="container-fluid">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-6">
-                    <h3>
-                        <?php echo "Yeni $this->Module_Title Oluştur"; ?>
-                    </h3>
-                </div>
-                <div class="col-6">
-                    <ol class="breadcrumb">
-                        <li>
-                            <?php if (!empty($contract_id)) { ?>
-                                <button type="submit" form="save_contract" class="btn btn-success">
-                                    <i class="fa fa-floppy-o fa-lg"></i> Kaydet
-                                </button>
-                            <?php } elseif (empty($contract_id)) { ?>
-                                <button type="submit" form="contract_id" class="btn btn-success">
-                                    <i class="fa fa-floppy-o fa-lg"></i> Sözleşme Seç
-                                </button>
-                            <?php } ?>
                             <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">
                                 <i class="fa fa-times"></i> İptal
                             </a>
@@ -183,32 +153,6 @@ if ($subViewFolder == "list") { ?>
                                 <i class="menu-icon fa fa-close fa-lg" aria-hidden="true"></i> İptal
                             </button>
                             <button type="submit" form="update_site"
-                                    class="btn btn-success">
-                                <i class="fa fa-floppy-o fa-lg"></i> Kaydet
-                            </button>
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php } elseif ($subViewFolder == "update_contract") { ?>
-    <div class="container-fluid">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-6">
-                    <h3>
-                        <?php echo "$this->Module_Title Güncelle"; ?>
-                    </h3>
-                </div>
-                <div class="col-6">
-                    <ol class="breadcrumb">
-                        <li>
-                            <button class="btn btn-danger" type="button" onclick="cancelConfirmationModule(this)"
-                                    url="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
-                                <i class="menu-icon fa fa-close fa-lg" aria-hidden="true"></i> İptal
-                            </button>
-                            <button type="submit" form="update_bond_contract"
                                     class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>

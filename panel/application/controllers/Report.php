@@ -263,8 +263,6 @@ class Report extends CI_Controller
 
         $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[report.dosya_no]|required|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
         $this->form_validation->set_rules("report_date", "Rapor Tarihi", "required|trim");
-        $this->form_validation->set_rules("min_temp", "En Düşük Sıcaklık", "required|trim");
-        $this->form_validation->set_rules("max_temp", "Yüksek Sıcaklık", "required|trim");
 
         $this->form_validation->set_message(
             array(
@@ -408,16 +406,6 @@ class Report extends CI_Controller
                 $supplies_filter[] = $supply;
             }
         }
-
-        echo "<pre>";
-        print_r($workgroups_filter);
-        echo "</pre>";
-        echo "<pre>";
-        print_r($workmachine_filter);
-        echo "</pre>";
-        echo "<pre>";
-        print_r($supplies_filter);
-        echo "</pre>";
 
         $min_temp = $this->input->post("min_temp[]");
         $max_temp = $this->input->post("max_temp[]");

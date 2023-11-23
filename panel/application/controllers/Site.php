@@ -82,7 +82,7 @@ class Site extends CI_Controller
         $items = $this->Site_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -105,7 +105,7 @@ class Site extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Site_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
+                "isActive" => 1
             )
         );
 
@@ -129,12 +129,12 @@ class Site extends CI_Controller
         $items = $this->Site_model->get_all(array());
 
         $contracts = $this->Contract_model->get_all(array(
-            'durumu' => '1',
+            "isActive" => 1,
             'proje_id' => $project_id
         ));
 
         $subcontracts = $this->Contract_model->get_all(array(
-            'durumu' => 1,
+            'isActive' => 1,
             'proje_id' => $project_id
         ));
 
@@ -149,7 +149,7 @@ class Site extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add_main";
+        $viewData->subViewFolder = "add_project";
         $viewData->items = $items;
         $viewData->contracts = $contracts;
         $viewData->subcontracts = $subcontracts;
@@ -283,13 +283,13 @@ class Site extends CI_Controller
             $items = $this->Site_model->get_all(array());
 
             $contracts = $this->Contract_model->get_all(array(
-                'durumu' => '1',
+                "isActive" => 1,
                 'proje_id' => $project_id
 
             ));
 
             $subcontracts = $this->Contract_model->get_all(array(
-                'durumu' => 1,
+                'isActive' => 1,
                 'proje_id' => $project_id
             ));
 
@@ -482,13 +482,13 @@ class Site extends CI_Controller
         $contract_id = get_from_id("site", "contract_id", "$id");
 
         $active_conn_contracts = $this->Contract_model->get_all(array(
-            'durumu' => '1',
+            "isActive" => 1,
             'proje_id' => $project_id
 
         ));
 
         $active_subcontracts = $this->Contract_model->get_all(array(
-            'durumu' => 1,
+            'isActive' => 1,
             'proje_id' => $project_id
         ));
 
