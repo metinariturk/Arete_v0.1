@@ -29,13 +29,11 @@
                     class="form-control <?php cms_isset(form_error("sozlesme_turu"), "is-invalid", ""); ?>"
                     data-plugin="select2"
                     name="contract_id">
-                <option selected="selected"
-                        value="0">Sözleşmesiz
-                </option>
-                <?php
-                foreach ($contracts as $contract) { ?>
+                <?php foreach ($contracts as $contract) { ?>
                     <option value="<?php echo $contract->id; ?>"><?php echo contract_name($contract->id); ?></option>
                 <?php } ?>
+                <option value="0">Sözleşmesiz
+                </option>
             </select>
             <?php if (isset($form_error)) { ?>
                 <div class="invalid-feedback"><?php echo form_error("contract_id"); ?></div>
@@ -56,7 +54,7 @@
     </div>
     <div class="col-md-6">
         <div class="mb-2">
-            <div class="col-form-label">Şantiye Şefi</div>
+            <div class="col-form-label">Şantiye Sorumlusu</div>
             <select id="select2-demo-1" style="width: 100%;"
                     class="form-control <?php cms_isset(form_error("santiye_sefi"), "is-invalid", ""); ?>"
                     data-plugin="select2"

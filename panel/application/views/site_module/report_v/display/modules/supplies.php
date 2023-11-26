@@ -1,55 +1,56 @@
-<table class="table tablecenter">
-    <tbody class="bg-color-op-purple">
-    <?php $supplies = json_decode($item->supplies); ?>
-    <?php if ($supplies != null) { ?>
-    <tr class="bg-color-op-green">
-        <th style="width: 150px"><strong>#</strong></th>
-        <th>
-            <div class="row">
-                <div class="col-sm-3">
-                    <b>Malzeme Adı</b>
-                </div>
-                <div class="col-sm-2">
-                    <b>Miktar</b>
-                </div>
-                <div class="col-sm-2">
-                    <b>Birim</b>
-                </div>
-                <div class="col-sm-5">
-                    <b>Açıklama</b>
-                </div>
-            </div>
-        </th>
-    </tr>
-    <tr class="bg-color-op-green">
-        <td style="width: 150px"><strong>Gelen Malzemeler</strong></td>
-        <td>
-            <?php foreach ($supplies as $supply) { ?>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <?php echo yazim_duzen($supply->supply); ?>
-                    </div>
-                    <div class="col-sm-2">
-                        <?php echo $supply->qty; ?>
-                    </div>
-                    <div class="col-sm-2">
-                        <?php echo $supply->unit; ?>
-                    </div>
-                    <div class="col-sm-5">
-                        <?php echo yazim_duzen($supply->supply_notes); ?>
-                    </div>
-                </div>
-            <?php } ?>
+<?php if (!empty($supplies)) { ?>
+    <div class="content">
+        <div class="card-body">
+            <table style="width:100%;">
+                <thead>
+                <tr>
+                    <th colspan="4">
+                        <p style="font-size:15pt;">
+                            <strong>Gelen Malzemeler</strong></p>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td style="width:30%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Malzeme Adı</strong></p>
+                    </td>
+                    <td style="width:10%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Miktar</strong></p>
+                    </td>
+                    <td style="width:10%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Birim</strong></p>
+                    </td>
+                    <td style="width:50%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Açıklama</strong></p>
+                    </td>
+                </tr>
+                <?php foreach ($supplies as $supply) { ?>
+                    <tr>
+                        <td class="total-group-row-left">
+                            <?php echo $supply->supply; ?>
+                        </td>
+                        <td class="total-group-row-center">
+                            <?php echo $supply->qty; ?>
+                        </td>
+                        <td class="total-group-row-center">
+                            <?php echo yazim_duzen($supply->unit); ?>
+                        </td>
+                        <td class="total-group-row-left">
+                            <?php echo yazim_duzen($supply->notes); ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php } else { ?>
+    <tr>
+        <td class="total-group-row-center">
+            Gelen Malzeme Yok
         </td>
     </tr>
-    </tbody>
-    <?php } else { ?>
-        <tr>
-            <td style="width: 150px"><strong>Gelen Malzemeler</strong></td>
-            <td>Gelen Malzeme Yok</td>
-        </tr>
-        </tbody>
-    <?php } ?>
-</table>
+<?php } ?>
 
 

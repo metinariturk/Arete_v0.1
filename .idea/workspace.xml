@@ -34,11 +34,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
     "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/modules",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -105,6 +107,7 @@
       <workItem from="1700121137197" duration="16661000" />
       <workItem from="1700206951438" duration="7433000" />
       <workItem from="1700464874476" duration="17422000" />
+      <workItem from="1700998732059" duration="14377000" />
     </task>
     <servers />
   </component>

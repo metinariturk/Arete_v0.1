@@ -96,8 +96,8 @@ if (empty($project_id)) { ?>
         </div>
         <div class="col-sm-12 col-md-8">
             <div class="card">
-                <form id="save_project"
-                      action="<?php echo base_url("$this->Module_Name/save_project/$project_id"); ?>" method="post"
+                <form id="save"
+                      action="<?php echo base_url("$this->Module_Name/save/$project_id"); ?>" method="post"
                       enctype="multipart/form-data" autocomplete="off">
                     <div class="card">
                         <div class="card-body">

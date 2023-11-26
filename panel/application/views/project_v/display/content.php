@@ -102,7 +102,7 @@
                                             <ul>
                                                 <li>
                                                     <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("site/new_form_project/$item->id"); ?>">
+                                                       href="<?php echo base_url("site/new_form/$item->id"); ?>">
                                                         <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
                                                         Şantiye Ekle
                                                     </a>

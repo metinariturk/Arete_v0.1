@@ -1,72 +1,73 @@
+<?php if (!empty($workgroups)) { ?>
+    <div class="content">
+        <div class="card-body">
+            <table style="width:100%;">
+                <thead>
+                <tr>
+                    <th colspan="4">
+                        <p style="font-size:15pt;">
+                            <strong>Çalışan Ekipler</strong></p>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td style="width:10%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Ekip Adı</strong></p>
+                    </td>
+                    <td style="width:10%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Sayısı</strong></p>
+                    </td>
+                    <td style="width:20%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Çalıştığı Mahal</strong></p>
+                    </td>
+                    <td style="width:70%; background-color:#e7e7e7; text-align: center">
+                        <p><strong>Açıklama</strong></p>
+                    </td>
+                </tr>
+                <?php foreach ($workgroups as $workgroup) { ?>
+                    <tr>
+                        <td class="total-group-row-left">
+                            <?php echo group_name($workgroup->workgroup); ?>
+                        </td>
+                        <td class="total-group-row-center">
+                            <?php echo $workgroup->number; ?>
+                        </td>
+                        <td class="total-group-row-left">
+                            <?php echo yazim_duzen($workgroup->place); ?>
+                        </td>
+                        <td class="total-group-row-left">
+                            <?php echo yazim_duzen($workgroup->notes); ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <tr>
+                    <td class="w-3 total-group-row-center">
+                        <p><strong>TOPLAM</strong></p>
+                    </td>
+                    <td class="total-group-row-center">
+                        <strong><?php echo $this->Report_workgroup_model->sum_all(array("report_id" => $item->id), "number"); ?></strong>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php } else { ?>
+    <div class="content">
+        <div class="card-body">
+            <table style="width:100%;">
+                <thead>
+                <tr>
+                    <th colspan="4">
+                        <p style="font-size:15pt;">
+                            <strong>Ekip Çalışması Yok</strong></p>
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+<?php } ?>
 
-<table class="table">
-    <tbody class="bg-color-op-blue">
-    <?php $workgroups = json_decode($item->workgroup); ?>
-    <?php if ($workgroups != null) { ?>
-    <tr>
-        <th><strong>#</strong></th>
-        <th>
-            <div class="row">
-                <div class="col-sm-3">
-                    <b>Ekip/Makine</b>
-                </div>
-                <div class="col-sm-2">
-                    <b>Çalışan Sayısı</b>
-                </div>
-                <div class="col-sm-2">
-                    <b>Çalışılan Mahal</b>
-                </div>
-                <div class="col-sm-5">
-                    <b>Yaptığı İş</b>
-                </div>
-            </div>
-        </th>
-    </tr>
-    <tr>
-        <td style="width: 150px"><strong>Çalışan Ekipler</strong></td>
-        <td><?php foreach ($workgroups as $workgroup) { ?>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <?php echo group_name($workgroup->workgroup); ?>
-                    </div>
-                    <div class="col-sm-2">
-                        <?php echo $workgroup->worker_count; ?>
-                    </div>
-                    <div class="col-sm-2">
-                        <?php echo yazim_duzen($workgroup->place); ?>
-                    </div>
-                    <div class="col-sm-5">
-                        <?php echo yazim_duzen($workgroup->notes); ?>
-                    </div>
-                </div>
-            <?php } ?>
-        </td>
-    </tr>
-    <tr>
-        <td style="width: 150px"><strong>Toplam Çalışan</strong></td>
-        <td><?php $workgroups = json_decode($item->workgroup); ?>
-            <div class="row">
-                <div class="col-sm-3">
-                </div>
-                <div class="col-sm-2">
-                    <b><?php echo $sum = array_sum(array_column($workgroups, "worker_count")); ?></b>
-                </div>
-                <div class="col-sm-2">
-                </div>
-                <div class="col-sm-5">
-                </div>
-            </div>
 
-        </td>
-    </tr>
-    </tbody>
-    <?php } else { ?>
-        <tr>
-            <td style="width: 150px"><strong>Ekip Çalışması</strong></td>
-            <td>
-                Ekip Çalışması Yok
-            </td>
-        </tr>
-        </tbody>
-    <?php } ?>
-</table>

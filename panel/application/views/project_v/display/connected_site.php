@@ -1,26 +1,40 @@
 <div class="row content-container">
-    <table class="table table-bordered table-striped table-hover pictures_list">
-        <thead>
-        <th>#id</th>
-        <th>Şantiye Adı</th>
-        <th>Başlangıç Tarihi</th>
-        <th>Bağlı Sözleşme</th>
-        </thead>
-        <tbody>
-        <?php
-        foreach ($sites as $site) { ?>
+    <div class="table-responsive">
+        <table class="display" id="basic-2">
+            <thead>
             <tr>
-                <td><?php echo $site->id; ?></td>
-                <td>
-                    <?php if (isAdmin()) { ?>
-                        <a href="<?php echo base_url("site/file_form/$site->id"); ?>"><?php echo $site->santiye_ad; ?></a>
-                    <?php } ?>
-
-                </td>
-                <td><?php echo dateFormat_dmy($site->teslim_tarihi); ?></td>
-                <td><?php echo cms_if_echo("$site->contract_id", "0", "Sözleşmesiz", contract_name($site->contract_id)); ?></td>
+                <th>#</th>
+                <th>Şantiye Adı</th>
+                <th>Rapor Sayısı</th>
+                <th>Puantaj Toplamı</th>
+                <th>İş Makinesi Toplamı</th>
+            </thead>
             </tr>
-        <?php } ?>
-        </tbody>
-    </table>
+            <tbody>
+            <?php foreach ($sites as $site) { ?>
+                    <tr>
+                        <td>#</td>
+                        <td><?php echo $site->santiye_ad; ?></td>
+                        <?php $this->load->model("Report_model"); ?>
+                        <?php $reports = $this->Report_model->get_all(array("site_id"=>$site->id)); ?>
+                        <td><?php echo count($reports); ?></td>
+                        <?php $this->load->model("Report_workgroup_model"); ?>
+                        <?php $workgroup_count = $this->Report_workgroup_model->sum_all(array("site_id"=>$site->id),"number"); ?>
+                        <td><?php echo $workgroup_count; ?></td>
+                        <?php $this->load->model("Report_workmachine_model"); ?>
+                        <?php $workmachine_count = $this->Report_workmachine_model->sum_all(array("site_id"=>$site->id),"number"); ?>
+                        <td><?php echo $workmachine_count; ?></td>
+                    </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>TOPLAM</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
+

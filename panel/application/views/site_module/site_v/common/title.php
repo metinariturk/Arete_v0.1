@@ -112,7 +112,7 @@ if ($subViewFolder == "list") { ?>
             </div>
         </div>
     </div>
-<?php } elseif ($subViewFolder == "add_project") { ?>
+<?php } elseif ($subViewFolder == "add") { ?>
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
@@ -124,7 +124,7 @@ if ($subViewFolder == "list") { ?>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li>
-                            <button type="submit" form="save_project" class="btn btn-success">
+                            <button type="submit" form="save" class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>
                             <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">

@@ -4,7 +4,7 @@
             <thead>
             <tr>
                 <th class="d-none d-sm-table-cell"><i class="fa fa-reorder"></i></th>
-                <th >Rapor Gün</th>
+                <th>Rapor Gün</th>
                 <th>Çalışan Sayı</th>
                 <th class="d-none d-sm-table-cell">Mekine Sayı</th>
                 <th class="d-none d-sm-table-cell">Oluşturan</th>
@@ -19,16 +19,16 @@
                         <td class="d-none d-sm-table-cell">
                             <?php echo $report->id; ?>
                         </td>
-                        <td >
-                            <a  href="<?php echo base_url("report/file_form/$report->id"); ?>">
+                        <td>
+                            <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
                                 <?php
-                                get_readable_date($report->report_date);
+                                echo dateFormat_dmy($report->report_date);
                                 ?>
                             </a>
                         </td>
                         <td>
-                            <a  href="<?php echo base_url("report/file_form/$report->id"); ?>">
-                                <?php $workgroups_today =  json_decode($report->workgroup, true);
+                            <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
+                                <?php $workgroups_today = json_decode($report->workgroup, true);
                                 $totalWorkerCount = 0;
                                 foreach ($workgroups_today as $item) {
                                     $totalWorkerCount += $item['worker_count'];
@@ -38,8 +38,8 @@
                             </a>
                         </td>
                         <td class="d-none d-sm-table-cell">
-                            <a  href="<?php echo base_url("report/file_form/$report->id"); ?>">
-                                <?php $workmachine_today =  json_decode($report->workmachine, true);
+                            <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
+                                <?php $workmachine_today = json_decode($report->workmachine, true);
                                 $totamachineCount = 0;
                                 foreach ($workmachine_today as $item) {
                                     $totamachineCount += $item['machine_count'];
@@ -63,7 +63,7 @@
                             <?php } ?>
                             <?php echo full_name($report->createdBy); ?>
                         </td>
-                        <td  class="d-none d-sm-table-cell">
+                        <td class="d-none d-sm-table-cell">
                             <div>
                                 <?php if (!empty($report->id)) {
                                     $report_files = get_module_files("report_files", "report_id", "$report->id");
@@ -74,7 +74,8 @@
                                             <?php echo filenamedisplay($report_file->img_url); ?> |
                                             <?php } ?>"
                                            data-original-title="btn btn-pill btn-info btn-air-info ">
-                                            <i class="fa fa-download" aria-hidden="true"></i> Dosya (<?php echo count($report_files); ?>)
+                                            <i class="fa fa-download" aria-hidden="true"></i> Dosya
+                                            (<?php echo count($report_files); ?>)
                                         </a>
                                     <?php } ?>
                                 <?php } else { ?>
@@ -90,7 +91,7 @@
                             </div>
                         </td>
                         <td>
-                            <a  href="<?php echo base_url("report/file_form/$report->id"); ?>">
+                            <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
                                 <button class="btn btn-success m-r-10" type="button" title="" data-bs-original-title="">
                                     <i class="fa fa-arrow-right me-1"></i></button>
                             </a>

@@ -118,7 +118,7 @@ class Site extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function new_form_project($project_id = null)
+    public function new_form($project_id = null)
     {
         if (empty($project_id)) {
             $project_id = $this->input->post('project_id');
@@ -149,7 +149,7 @@ class Site extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add_project";
+        $viewData->subViewFolder = "add";
         $viewData->items = $items;
         $viewData->contracts = $contracts;
         $viewData->subcontracts = $subcontracts;
@@ -162,7 +162,7 @@ class Site extends CI_Controller
 
     }
 
-    public function save_project($project_id)
+    public function save($project_id)
     {
 
         $file_name_len = file_name_digits();
@@ -235,12 +235,12 @@ class Site extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "proje_id" => $project_id,
+                    "contract_id" => $this->input->post('contract_id'),
                     "dosya_no" => $file_name,
                     "santiye_ad" => $this->input->post("santiye_ad"),
                     "santiye_sefi" => $this->input->post("santiye_sefi"),
                     "teknik_personel" => $data_personel,
                     "araclar" => $data_araclar,
-                    "aciklama" => $this->input->post("aciklama"),
                     "is_Active" => "1",
                 )
             );
@@ -304,7 +304,7 @@ class Site extends CI_Controller
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "add_main";
+            $viewData->subViewFolder = "add";
             $viewData->items = $items;
             $viewData->contracts = $contracts;
             $viewData->subcontracts = $subcontracts;

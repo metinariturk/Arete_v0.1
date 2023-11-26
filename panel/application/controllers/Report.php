@@ -168,9 +168,22 @@ class Report extends CI_Controller
 
     public function file_form($id)
     {
-        $this->load->library("form_validation");
+
+        $this->load->model("Report_workgroup_model");
+        $this->load->model("Report_workmachine_model");
+        $this->load->model("Report_supply_model");
+        $this->load->model("Report_weather_model");
+
+        $item = $this->Report_model->get(array("id" => $id));
+
+
         $site_id = get_from_any("report", "site_id", "id", "$id");
         $proje_id = get_from_any("site", "proje_id", "id", $site_id);
+
+        $workgroups = $this->Report_workgroup_model->get_all(array("report_id" => $id));
+        $weather = $this->Report_weather_model->get(array("date" => $item->report_date));
+        $workmachines = $this->Report_workmachine_model->get_all(array("report_id" => $id));
+        $supplies = $this->Report_supply_model->get_all(array("report_id" => $id));
 
         $site = $this->Site_model->get(array(
             "id" => $site_id
@@ -186,11 +199,14 @@ class Report extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->item = $item;
         $viewData->proje_id = $proje_id;
+        $viewData->weather = $weather;
+        $viewData->workgroups = $workgroups;
+        $viewData->workmachines = $workmachines;
+        $viewData->supplies = $supplies;
         $viewData->site = $site;
         $viewData->project = $project;
-
-        $viewData->viewModule = $this->moduleFolder;
 
         $viewData->item = $this->Report_model->get(
             array(
@@ -206,8 +222,13 @@ class Report extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function save($id)
+    public function save($site_id)
     {
+        $site = $this->Site_model->get(array("id"=>$site_id));
+
+        $this->load->model("Report_workgroup_model");
+        $this->load->model("Report_workmachine_model");
+        $this->load->model("Report_supply_model");
 
         $workgroups = $this->input->post("workgroups[]");
         $workmachine = $this->input->post("workmachine[]");
@@ -233,16 +254,6 @@ class Report extends CI_Controller
                 $supplies_filter[] = $supply;
             }
         }
-
-        $min_temp = $this->input->post("min_temp[]");
-        $max_temp = $this->input->post("max_temp[]");
-        $event = $this->input->post("event[]");
-
-        $weather_data = array("min_temp" => "$min_temp",
-            "max_temp" => "$max_temp",
-            "event" => "$event");
-
-        $weather = json_encode($weather_data);
 
         $file_name_len = file_name_digits();
         $file_name = "GR-" . $this->input->post('dosya_no');
@@ -274,17 +285,14 @@ class Report extends CI_Controller
         $validate = $this->form_validation->run();
 
         if ($validate) {
-            $site_code = get_from_id("site", "dosya_no", $id);
-            $proje_id = get_from_id("site", "proje_id", $id);
-            $project_code = get_from_id("projects", "proje_kodu", $proje_id);
 
             $rep_date = $this->input->post("report_date");
 
-            $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$rep_date";
+            $project_code = project_code($site->project_id);
+            $path = "$this->File_Dir_Prefix/$project_code/$site->dosya_no/Reports/$rep_date";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
-                mkdir("$path/thumb", 0777, TRUE);
                 echo "oluştu";
             } else {
                 echo "Dosya Oluşturulamadı";
@@ -293,29 +301,76 @@ class Report extends CI_Controller
 
             $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
 
-            $insert = $this->Report_model->add(
+            $insert_report = $this->Report_model->add(
                 array(
-                    "dosya_no" => $file_name,
-                    "site_id" => $id,
+                    "site_id" => $site_id,
+                    "project_id" => $site->proje_id,
+                    "contract_id" => $site->contract_id,
                     "report_date" => $report_date,
-                    "weather" => $weather,
-                    "workgroup" => json_encode($workgroups_filter),
-                    "workmachine" => json_encode($workmachine_filter),
-                    "supplies" => json_encode($supplies_filter),
-                    "aciklama" => $this->input->post("note"),
                     "createdAt" => date("Y-m-d"),
                     "createdBy" => active_user_id(),
                     "off_days" => $off_days,
                 )
             );
 
+            $report_id = $this->db->insert_id();
+
+            foreach ($workgroups_filter as $workgroup) {
+                $insert_workgroup = $this->Report_workgroup_model->add(
+                    array(
+                        "site_id" => $site_id,
+                        "report_id" => $report_id,
+                        "project_id" => $site->proje_id,
+                        "contract_id" => $site->contract_id,
+                        "workgroup" => $workgroup['workgroup'],
+                        "number" => $workgroup['worker_count'],
+                        "notes" => $workgroup['notes'],
+                        "place" => $workgroup['place'],
+                        "createdBy" => active_user_id(),
+                    )
+                );
+            }
+
+            foreach ($workmachine_filter as $workmachine) {
+                $insert_workmachine = $this->Report_workmachine_model->add(
+                    array(
+                        "site_id" => $site_id,
+                        "report_id" => $report_id,
+                        "project_id" => $site->proje_id,
+                        "contract_id" => $site->contract_id,
+                        "workmachine" => $workmachine['workmachine'],
+                        "number" => $workmachine['machine_count'],
+                        "notes" => $workmachine['machine_notes'],
+                        "place" => $workmachine['machine_place'],
+                        "createdBy" => active_user_id(),
+                    )
+                );
+            }
+
+            foreach ($supplies_filter as $supplies) {
+                $insert_workmachine = $this->Report_supply_model->add(
+                    array(
+                        "site_id" => $site_id,
+                        "report_id" => $report_id,
+                        "project_id" => $site->proje_id,
+                        "contract_id" => $site->contract_id,
+                        "supply" => $supplies['supply'],
+                        "qty" => $supplies['qty'],
+                        "unit" => $supplies['unit'],
+                        "place" => null,
+                        "notes" => $supplies['supply_notes'],
+                        "createdBy" => active_user_id(),
+                    )
+                );
+            }
+
             $record_id = $this->db->insert_id();
 
             $insert2 = $this->Order_model->add(
                 array(
                     "module" => $this->Module_Name,
-                    "connected_module_id" => $this->db->insert_id(),
-                    "connected_project_id" => $id,
+                    "connected_module_id" => $report_id,
+                    "connected_project_id" => $site->proje_id,
                     "file_order" => $file_name,
                     "createdAt" => date("Y-m-d H:i:s"),
                     "createdBy" => active_user_id(),
@@ -323,7 +378,7 @@ class Report extends CI_Controller
             );
 
             // TODO Alert sistemi eklenecek...
-            if ($insert) {
+            if ($insert_report) {
 
                 $alert = array(
                     "title" => "İşlem Başarılı",
@@ -343,7 +398,7 @@ class Report extends CI_Controller
 
             // İşlemin Sonucunu Session'a yazma işlemi...
             $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
+            redirect(base_url("$this->Module_Name/$this->Display_route/$report_id"));
 
         } else {
 
@@ -357,7 +412,7 @@ class Report extends CI_Controller
 
             $viewData = new stdClass();
             $settings = $this->Settings_model->get();
-            $site = $this->Site_model->get(array("id" => $id));
+            $site = $this->Site_model->get(array("id" => $site_id));
 
             $viewData->settings = $settings;
 
@@ -366,7 +421,6 @@ class Report extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Add_Folder";
             $viewData->form_error = true;
-            $viewData->pid = $id;
             $viewData->site = $site;
 
 
@@ -713,17 +767,19 @@ class Report extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
 
-        $viewData->item = $this->Report_model->get(
-            array(
-                "id" => $id
-            )
-        );
+        $item = $this->Report_model->get(array("id" => $id));
 
         $viewData->item_files = $this->Report_file_model->get_all(
             array(
                 "$this->Dependet_id_key" => $id
             )
         );
+
+        $site = $this->Site_model->get(array("id" => $item->site_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
+        $viewData->project = $project;
+        $viewData->site = $site;
+        $viewData->item = $item;
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
 
@@ -751,8 +807,12 @@ class Report extends CI_Controller
 
         $report_file = $this->Report_file_model->get(array("id" => $id));
         $report = $this->Report_model->get(array("id" => $report_file->report_id));
-        $date = dateFormat_dmy($report->report_date);
         $site = $this->Site_model->get(array("id" => $report->site_id));
+        $project = $this->Project_model->get(array("id" => $report->site_id));
+        $viewData->project = $project;
+        $viewData->site = $site;
+
+        $date = dateFormat_dmy($report->report_date);
 
         $project_code = project_code("$site->proje_id");
 
@@ -811,12 +871,17 @@ class Report extends CI_Controller
             )
         );
 
-
         $report = $this->Report_model->get(array("id" => $id));
-        $date = dateFormat_dmy($report->report_date);
         $site = $this->Site_model->get(array("id" => $report->site_id));
+        $project = $this->Project_model->get(array("id" => $report->site_id));
+        $viewData->project = $project;
+        $viewData->site = $site;
+
 
         $project_code = project_code("$site->proje_id");
+
+        $date = dateFormat_dmy($report->report_date);
+
 
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
 
@@ -861,6 +926,271 @@ class Report extends CI_Controller
             return FALSE;
         } else {
             return TRUE;
+        }
+    }
+
+    public
+    function print_report($report_id, $P_or_D = null)
+    {
+        $report = $this->Report_model->get(array("id" => $report_id));
+
+        $viewData = new stdClass();
+        $contract = $this->Contract_model->get(array("id" => $report->contract_id));
+        $project = $this->Project_model->get(array("id" => $report->project_id));
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+
+        $viewData->contract = $contract;
+
+        $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
+        $owner = $this->Company_model->get(array("id" => $contract->isveren));
+        $viewData->contractor = $contractor;
+        $viewData->owner = $owner;
+
+
+        $yuklenici = company_name($contract->yuklenici);
+        $this->load->library('pdf_creator');
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->SetPageOrientation('P');
+
+        $page_width = $pdf->getPageWidth();
+
+
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+
+
+// Çerçeve için boşlukları belirleme
+        $topMargin = 20;  // 4 cm yukarıdan
+        $bottomMargin = 20;  // 4 cm aşağıdan
+        $rightMargin = 20;  // 2 cm sağdan
+        $leftMargin = 20;  // 2 cm soldan
+
+// Çerçeve renk ve kalınlığını ayarla
+        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
+        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
+
+// Çerçeve çizme
+        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
+
+        $pdf->SetFont('dejavusans', 'B', 12);
+
+// Metin eklemek (örnek olarak ilk satır)
+        $yPosition = $topMargin; // 5 cm yukarıdan başla
+        $xPosition = $leftMargin; // 2 cm soldan başla
+        $pdf->SetXY($xPosition, $yPosition);
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı
+
+        $pdf->Cell(170, 10, 'HAKEDİŞ RAPORU', 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetX(20);
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(120, 7, mb_strtoupper($contract->sozlesme_ad), 1, 0, "L", 0);
+        $pdf->Cell(50, 7, "Hakediş No : " . $payment->hakedis_no, 1, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(20);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(170, 7, dateFormat_dmy($payment->imalat_tarihi) . " TARİHİNE KADR YAPILAN İŞİN", 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $cells = array(
+            array(
+                array("text" => "A", "width" => "10", "font_size" => "N", "justify" => "C", "border" => 1),
+                array("text" => "Sözleşme Fiyatları ile Yapılan İşin Tutarı", "width" => "110", "font_size" => "N", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->A) . " " . $contract->para_birimi, "width" => "50", "font_size" => "N", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "B", "width" => "10", "font_size" => "N", "justify" => "C", "border" => 1),
+                array("text" => "Fiyat Farkı Tutarı", "width" => "110", "font_size" => "N", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->B) . " " . $contract->para_birimi, "width" => "50", "font_size" => "N", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "C", "width" => "10", "font_size" => "B", "justify" => "C", "border" => 1),
+                array("text" => "Toplam Tutar (A+B)", "width" => "110", "font_size" => "B", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->C) . " " . $contract->para_birimi, "width" => "50", "font_size" => "B", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "170", "font_size" => "B", "justify" => "C", "border" => 1)
+            ),
+            array(
+                array("text" => "D", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Bir Önceki Hakedişin Toplam Tutarı", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->D) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "E", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Bu Hakedişin Tutarı (C-D)", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->E) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "F", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "KDV (E x %" . $payment->F_a . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->E) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "G", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Taahhuk Tutarı", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->G) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "a) Gelir / Kurumlar Vergisi (E X %" . $payment->Kes_a_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_a) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "b) Damga Vergisi (E X %" . $payment->Kes_b_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_b) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "c) KDV Tevkifatı (F X (" . ($payment->Kes_c_s * 10) . "/10))", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_c) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "d) Sosyal Sigortalar Kurumu Kesintisi", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_d) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "e) Geçici Kabul Kesintisi (G x %" . $payment->Kes_e_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_e) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "f) İş Makinesi Kiraları", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_f) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "g) Gecikme Cezası", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_g) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "h) İş Sağlığı ve Güvenliği Cezası", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_h) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "i) Diğer", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_i) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "j) Bu Hakedişte Ödenen Fiyat Farkı Teminatı Kesintisi (B X %" . $payment->Kes_j_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_j) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "H", "width" => "10", "font_size" => "b", "justify" => "C", "border" => 1),
+                array("text" => "Kesinti ve Mahsuplar Toplamı", "width" => "110", "font_size" => "b", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->H) . " " . $contract->para_birimi, "width" => "50", "font_size" => "b", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "I", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Avans Mahsubu (A X %" . "$payment->I_s" . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->I) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "B", "justify" => "C", "border" => 1),
+                array("text" => "Yükleniciye Ödenecek Tutar (G-H-I)", "width" => "110", "font_size" => "B", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->balance) . " " . $contract->para_birimi, "width" => "50", "font_size" => "B", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "Yazıyla : " . yaziyla_para($payment->balance) . " " . $contract->para_birimi, "width" => "170", "font_size" => "B", "justify" => "R", "border" => 1),
+            ),
+        );
+
+
+        foreach ($cells as $row) {
+            $pdf->SetX(20);
+
+            foreach ($row as $cell) {
+                $text = $cell["text"];
+                $width = $cell["width"];
+                $justify = $cell["justify"];
+                $font_size = $cell["font_size"];
+                $border = $cell["border"];
+                $pdf->SetFont('dejavusans', $font_size, 9);
+                $pdf->Cell($width, 6, $text, $border, 0, $justify, 0);
+            }
+            $pdf->Ln(); // Bir alt satıra geç
+        }
+
+        $pdf->SetXY(20, 176);
+        $pdf->SetFont('dejavusans', "B", 9);
+        $pdf->Cell(50, 10, "YÜKLENİCİ", 0, 0, "C", 0);
+        $pdf->Cell(120, 10, "KONTROL", 0, 0, "C", 0);
+        $pdf->Rect(20, 176, 50, 101);
+        $pdf->Rect(70, 176, 120, 101);
+        $pdf->SetFont('dejavusans', "N", 8);
+
+        $pdf->Ln(); // Bir alt satıra geç
+        $pdf->SetXY(20, 200);
+        $pdf->SetFont('dejavusans', "N", 8);
+        $pdf->MultiCell(50, 20, "\n" . upper_tr($contractor->company_name), 0, "C", "0", 0);
+        $pdf->Ln(); // Bir alt satıra geç
+        $pdf->SetXY(70, 203);
+
+        $signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "report_sign", "approved" => null), "rank ASC");
+
+        $sign_number = count($signs);
+
+        foreach ($signs as $key => $sign) {
+            if ($sign_number == 1) {
+                $pdf->MultiCell(120, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 2) {
+                $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 3) {
+                $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 4) {
+                if ($key == 2) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 5) {
+                if ($key == 3) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                if ($key > 2) {
+                    $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                } else {
+                    $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                }
+            } elseif ($sign_number == 6) {
+                if ($key == 3) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            }
+        }
+
+        $approved_signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "report_sign", "approved !=" => null), "rank ASC");
+
+        $approved_signs_number = count($approved_signs);
+
+        $pdf->SetXY(70, 260);
+
+        foreach ($approved_signs as $key => $sign) {
+            if ($approved_signs_number == 1) {
+                $pdf->MultiCell(120, 10, ". . / . . / . . . . " . "\n" . $sign->approved . "\n" . $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($approved_signs_number == 2) {
+                $pdf->MultiCell(60, 10, ". . / . . / . . . ." . "\n" . $sign->approved . "\n" . $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            }
+        }
+
+        $file_name = "02 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Hak " . $payment->hakedis_no;
+
+        if ($P_or_D == 0) {
+            $pdf->Output("$file_name.pdf");
+        } else {
+            $pdf->Output("$file_name.pdf", "D");
         }
     }
 
