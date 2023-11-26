@@ -14,7 +14,6 @@
                 </div>
             </div>
         </div>
-        <?php $workmachines = json_decode($item->workmachine, true); ?>
         <?php $wm = 99; ?>
         <?php foreach ($workmachines as $workmachine) { ?>
             <?php $wm -= 1;
@@ -24,7 +23,7 @@
                     <div class="mb-2">
                         <select id="select2-demo-1" class="form-control"
                                 data-plugin="select2" name="workmachine[<?php echo $wm; ?>][workmachine]">
-                            <option selected="selected[]" value="<?php echo $workmachine['workmachine']; ?>"><?php echo machine_name($workmachine['workmachine']); ?>
+                            <option selected="selected[]" value="<?php echo $workmachine->workmachine; ?>"><?php echo machine_name($workmachine->workmachine); ?>
                                 <?php foreach ($active_machines
 
                                 as $active_machine => $workmachine_codes) {
@@ -40,19 +39,19 @@
                 <div class="col-sm-4 col-md-2">
                     <div class="mb-2">
                         <input type="number" min="1" step="any" class="form-control"
-                               value="<?php echo $workmachine['machine_count']; ?>"
+                               value="<?php echo $workmachine->number; ?>"
                                 name="workmachine[<?php echo $wm; ?>][machine_count]">
                     </div>
                 </div>
                 <div class="col-sm-4 col-md-3">
                     <div class="mb-2">
-                        <input type="text" class="form-control" value="<?php echo $workmachine['machine_place']; ?>"
+                        <input type="text" class="form-control" value="<?php echo $workmachine->place; ?>"
                                 name="workmachine[<?php echo $wm; ?>][machine_place]">
                     </div>
                 </div>
                 <div class="col-sm-10 col-md-3">
                     <div class="mb-2">
-                        <input type="text" class="form-control" value="<?php echo $workmachine['machine_notes']; ?>"
+                        <input type="text" class="form-control" value="<?php echo $workmachine->notes; ?>"
                                 name="workmachine[<?php echo $wm; ?>][machine_notes]">
                     </div>
                 </div>

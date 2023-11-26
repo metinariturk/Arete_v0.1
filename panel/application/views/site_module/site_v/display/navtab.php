@@ -29,6 +29,9 @@
                     <li><a class="show" id="workgroup-tab" data-bs-toggle="pill"
                            href="#workgroup" role="tab" aria-controls="workgroup"
                            aria-selected="false"><span class="title">İş Grupları</span></a></li>
+                    <li><a class="show" id="workgroup-tab" data-bs-toggle="pill"
+                           href="#sign" role="tab" aria-controls="sign"
+                           aria-selected="false"><span class="title">Rapor Ayarları</span></a></li>
                 </ul>
             </div>
         </div>

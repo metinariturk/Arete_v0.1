@@ -9,6 +9,7 @@
             <li class="file-box">
                 <div class="file-top">
                     <?php echo ext_img($file->img_url); ?>
+
                     <a href="<?php echo base_url("$this->Module_Name/file_download/$file->id"); ?>">
                         <i class="fa fa-download f-14 ellips"></i>
                     </a>

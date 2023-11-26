@@ -21,3 +21,24 @@
         });
     });
 </script>
+
+<script>
+    function handleButtonClick(action) {
+        // Get the button element
+        var clickedButton = document.activeElement;
+
+        // Get the name attribute of the clicked button
+        var buttonName = clickedButton.name;
+
+        // Get the selected radio button based on the button's name attribute
+        var selectedRadio = document.querySelector('input[name="' + buttonName + '"]:checked');
+
+        // Get the URL from the selected radio button
+        var url = selectedRadio ? selectedRadio.getAttribute('data-url') : '';
+
+        // Append the action value to the URL
+        url = url + '/' + action;
+
+        window.open(url, '_blank');
+    }
+</script>

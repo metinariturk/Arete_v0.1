@@ -52,6 +52,25 @@
 <?php $this->load->view("includes/include_datatable"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 
+<script>
+    function add_sign(anchor) {
+        var formId = anchor.getAttribute('form-id');
+        var divId = $("#" + formId).attr("div");
+        var formAction = $("#" + formId).attr("action");
+        var formData = $("#" + formId).serialize();
+
+        $.post(formAction, formData, function (response) {
+            $("." + divId).html(response);
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function(event, ui){
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data : $data}, function(response){})
+            })
+        });
+    }
+</script>
+
 
 </body>
 </html>

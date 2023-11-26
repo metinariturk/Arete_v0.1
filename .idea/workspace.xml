@@ -32,31 +32,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/modules",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/site_module/site_v/display" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modules" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\db" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\book_module" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\js" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

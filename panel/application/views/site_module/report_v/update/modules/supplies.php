@@ -14,7 +14,6 @@
                 </div>
             </div>
         </div>
-        <?php $supplies = json_decode($item->supplies, true); ?>
         <?php $s = 99; ?>
         <?php foreach ($supplies as $supply) { ?>
             <?php $s -= 1;
@@ -22,20 +21,20 @@
             <div class="row">
                 <div class="col-sm-4 col-md-3">
                     <div class="mb-2">
-                        <input type="text" class="form-control" name="supplies[<?php echo $p; ?>][supply]" value="<?php echo $supply['supply']; ?>"
+                        <input type="text" class="form-control" name="supplies[<?php echo $p; ?>][supply]" value="<?php echo $supply->supply; ?>"
                                placeholder="Malzeme Adı">
                     </div>
                 </div>
                 <div class="col-sm-4 col-md-2">
                     <div class="mb-2">
-                        <input type="number" min="1" step="any" class="form-control"  value="<?php echo $supply['qty']; ?>"
+                        <input type="number" min="1" step="any" class="form-control"  value="<?php echo $supply->qty; ?>"
                                name="supplies[<?php echo $p; ?>][qty]" placeholder="Miktar">
                     </div>
                 </div>
                 <div class="col-sm-2 col-md-2">
                     <div class="mb-2">
                         <select name="supplies[<?php echo $p; ?>][unit]" class="form-control">
-                            <option selected="selected[]" value="<?php echo $supply['unit']; ?>"><?php echo $supply['unit']; ?></option>
+                            <option selected="selected[]" value="<?php echo $supply->unit; ?>"><?php echo $supply->unit; ?></option>
                             <option>m²</option>
                             <option>m³</option>
                             <option>kg</option>
@@ -46,7 +45,7 @@
                 </div>
                 <div class="col-sm-10 col-md-4">
                     <div class="mb-2">
-                        <input type="text" class="form-control" value="<?php echo $supply['supply_notes']; ?>"
+                        <input type="text" class="form-control" value="<?php echo $supply->notes; ?>"
                                name="supplies[<?php echo $p; ?>][supply_notes]" placeholder="Açıklama"">
                     </div>
                 </div>

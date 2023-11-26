@@ -400,6 +400,12 @@ class Site extends CI_Controller
             redirect(base_url("error"));
         }
 
+        $this->load->model("Report_workgroup_model");
+        $this->load->model("Report_workmachine_model");
+        $this->load->model("Report_supply_model");
+
+
+
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
             "module" => "site",

@@ -11,7 +11,6 @@
                 </div>
             </div>
         </div>
-        <?php $workgroups = json_decode($item->workgroup, true); ?>
         <?php $i = 99; ?>
         <?php foreach ($workgroups as $workgroup) { ?>
             <?php $i -= 1; $j = $i; ?>
@@ -20,7 +19,7 @@
                     <div class="mb-2">
                         <select id="select2-demo-1" class="form-control"
                                 data-plugin="select2" name="workgroups[<?php echo $j; ?>][workgroup]">
-                            <option selected="selected[]" value="<?php echo $workgroup['workgroup']; ?>"><?php echo group_name($workgroup['workgroup']); ?>
+                            <option selected="selected[]" value="<?php echo $workgroup->workgroup; ?>"><?php echo group_name($workgroup->workgroup); ?>
                             </option>
                             <?php foreach ($active_workgroups as $active_workgroup => $group_codes) {
                                 foreach ($group_codes as $group_code) { ?>
@@ -32,19 +31,19 @@
                 </div>
                 <div class="col-sm-4 col-md-2">
                     <div class="mb-2">
-                        <input type="number" min="1" step="any" class="form-control" value="<?php echo $workgroup['worker_count']; ?>"
+                        <input type="number" min="1" step="any" class="form-control" value="<?php echo $workgroup->number; ?>"
                                name="workgroups[<?php echo $j; ?>][worker_count]" placeholder="Sayısı">
                     </div>
                 </div>
                 <div class="col-sm-4 col-md-3">
                     <div class="mb-2">
-                        <input type="text" class="form-control" value="<?php echo $workgroup['place']; ?>"
+                        <input type="text" class="form-control" value="<?php echo $workgroup->place; ?>"
                                name="workgroups[<?php echo $j; ?>][place]" placeholder="Mahal">
                     </div>
                 </div>
                 <div class="col-sm-10 col-md-3">
                     <div class="mb-2">
-                        <input type="text" class="form-control" value="<?php echo $workgroup['notes']; ?>"
+                        <input type="text" class="form-control" value="<?php echo $workgroup->notes; ?>"
                                name="workgroups[<?php echo $j; ?>][notes]" placeholder="Açıklama">
                     </div>
                 </div>

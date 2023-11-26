@@ -77,13 +77,6 @@ function file_size($file_size)
 
 }
 
-function get_readable_date($date)
-{
-    setlocale(LC_TIME, "Turkish");
-    echo strftime("%d %B %Y %A", strtotime($date)) . "\n";
-}
-
-
 function date_minus($date1, $date2)
 {
     $format_date1 = dateFormat('Y-m-d', "$date1");

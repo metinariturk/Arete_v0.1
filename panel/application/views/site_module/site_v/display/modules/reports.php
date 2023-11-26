@@ -28,24 +28,12 @@
                         </td>
                         <td>
                             <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
-                                <?php $workgroups_today = json_decode($report->workgroup, true);
-                                $totalWorkerCount = 0;
-                                foreach ($workgroups_today as $item) {
-                                    $totalWorkerCount += $item['worker_count'];
-                                }
-                                echo $totalWorkerCount;
-                                ?>
+                                <?php echo $this->Report_workgroup_model->sum_all(array("report_id" => $report->id), "number"); ?>
                             </a>
                         </td>
                         <td class="d-none d-sm-table-cell">
                             <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
-                                <?php $workmachine_today = json_decode($report->workmachine, true);
-                                $totamachineCount = 0;
-                                foreach ($workmachine_today as $item) {
-                                    $totamachineCount += $item['machine_count'];
-                                }
-                                echo $totamachineCount;
-                                ?>
+                                <?php echo $this->Report_workmachine_model->sum_all(array("report_id" => $report->id), "number"); ?>
                             </a>
                         </td>
                         <td class="d-none d-sm-table-cell">

@@ -35,38 +35,6 @@
             </div>
             <div class="col-sm-4 col-md-2">
                 <div class="mb-2">
-                    <div class="col-form-label">En Düşük °C</div>
-                    <input type="number" min="-40" max="50" step="1" onblur=""
-                           class="form-control"  value="<?php echo json_decode($item->weather)->min_temp; ?>"
-                           name="min_temp">
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-2">
-                <div class="mb-2">
-                    <div class="col-form-label">En Yüksek °C</div>
-                    <input type="number" min="-40" max="50" step="1" onblur="" value="<?php echo json_decode($item->weather)->max_temp; ?>"
-                           class="form-control"
-                           name="max_temp">
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-2">
-                <div class="mb-2">
-                    <div class="col-form-label">Olay</div>
-                    <select id="select2-demo-1" class="form-control"  data-plugin="select2"
-                            name="event">
-                        <option selected="selected"><?php echo json_decode($item->weather)->event; ?></option>
-                        <option>Açık</option>
-                        <option>Kapalı</option>
-                        <option>Sağanak Yağışlı</option>
-                        <option>Yağmurlu</option>
-                        <option>Kar Yağışlı</option>
-                        <option>Sisli</option>
-                        <option>Rüzgarlı</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-2">
-                <div class="mb-2">
                     <div class="col-form-label">Çalışamayan Gün</div>
                     <input name="off_days" type="checkbox" <?php if  ($item->off_days == 0){echo "checked";} ?> value="0" >
                 </div>

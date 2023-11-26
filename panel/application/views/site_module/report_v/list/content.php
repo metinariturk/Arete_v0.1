@@ -32,7 +32,7 @@
                             </td>
                             <td>
                                 <a href="<?php echo base_url("report/file_form/$item->id"); ?>">
-                                    <?php echo get_readable_date($item->report_date); ?>
+                                    <?php echo dateFormat_dmy($item->report_date); ?>
                                 </a>
                             </td>
                             <td>
