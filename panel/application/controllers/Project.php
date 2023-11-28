@@ -33,6 +33,9 @@ class Project extends CI_Controller
         $this->load->model("Auction_model");
         $this->load->model("Site_model");
         $this->load->model("Favorite_model");
+        $this->load->model("Report_model");
+        $this->load->model("Report_workgroup_model");
+        $this->load->model("Report_workmachine_model");
 
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "project_v";
@@ -107,7 +110,7 @@ class Project extends CI_Controller
         $contracts = $this->Contract_model->get_all(
             array(
                 "proje_id" => $id,
-                )
+            )
         );
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
