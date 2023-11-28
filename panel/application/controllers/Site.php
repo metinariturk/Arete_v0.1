@@ -32,6 +32,7 @@ class Site extends CI_Controller
         $this->load->model("Auction_model");
         $this->load->model("Condition_model");
         $this->load->model("Report_model");
+        $this->load->model("Report_sign_model");
         $this->load->model("Sitestock_model");
         $this->load->model("Sitewallet_model");
         $this->load->model("Extime_model");
@@ -403,7 +404,7 @@ class Site extends CI_Controller
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
         $this->load->model("Report_supply_model");
-
+        $this->load->model("Report_sign_model");
 
 
         $fav = $this->Favorite_model->get(array(
@@ -415,9 +416,11 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        $reports = $this->Report_model->get_all(array(
-            "site_id" => $id
-        ));
+        $reports = $this->Report_model->get_all(array("site_id" => $id));
+        $contractor_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "contractor_sign"));
+        $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "contractor_staff"));
+        $owner_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "owner_sign"));
+        $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "owner_staff"));
 
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $id, "stock_id" => null));
 
@@ -463,6 +466,10 @@ class Site extends CI_Controller
         $viewData->main_categories = $main_categories;
         $viewData->main_categories_workmachine = $main_categories_workmachine;
         $viewData->item = $item;
+        $viewData->contractor_sign = $contractor_sign;
+        $viewData->contractor_staff = $contractor_staff;
+        $viewData->owner_sign = $owner_sign;
+        $viewData->owner_staff = $owner_staff;
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->workmachines = json_decode($item->active_machine, true);
         $viewData->fav = $fav;
@@ -1286,6 +1293,237 @@ class Site extends CI_Controller
                 )
             );
             echo "favoriye eklendi";
+        }
+    }
+
+    public function sign_options($site_id, $module)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $this->load->model("Report_sign_model");
+
+
+        $position = $this->input->post("position");
+        $name = $this->input->post("name");
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("position", "Ünvan", "min_length[3]|required|alpha_tr|trim"); //2
+        $this->form_validation->set_rules("name", "Ad-Soyad", "min_length[3]|required|alpha_tr|trim"); //2
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha_tr" => "<b>{field}</b> harflerden oluşmalıdır",
+                "min_length" => "<b>{field}</b> en az <b>{param}</b> uzunluğunda olmalıdır.",
+            )
+        );
+
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            $contractor_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "contractor_sign"));
+            $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
+
+            if ($module == "contractor_sign") {
+                if (empty($contractor_sign)) {
+                    $insert = $this->Report_sign_model->add(
+                        array(
+                            "site_id" => $site_id,
+                            "module" => $module,
+                            "position" => $position,
+                            "name" => $name,
+                        )
+                    );
+                }
+            } elseif ($module == "owner_sign") {
+                if (empty($owner_sign)) {
+                    $insert = $this->Report_sign_model->add(
+                        array(
+                            "site_id" => $site_id,
+                            "module" => $module,
+                            "position" => $position,
+                            "name" => $name,
+                        )
+                    );
+                }
+            } else {
+                $insert = $this->Report_sign_model->add(
+                    array(
+                        "site_id" => $site_id,
+                        "module" => $module,
+                        "position" => $position,
+                        "name" => $name,
+                    )
+                );
+            }
+            // TODO Alert sistemi eklenecek...
+            if (isset($insert)) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "İmza Ayarları Yapıldı",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "İmza Ayarları Güncellendi",
+                    "type" => "success"
+                );
+            }
+            $this->session->set_flashdata("alert", $alert);
+
+            $contractor_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "contractor_sign"));
+            $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "contractor_staff"));
+            $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
+            $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
+
+            $viewData = new stdClass();
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+
+            $viewData->item = $this->Site_model->get(
+                array(
+                    "id" => $site_id
+                )
+            );
+
+            $viewData->item_files = $this->Site_file_model->get_all(
+                array(
+                    "$this->Dependet_id_key" => $site_id
+                )
+            );
+
+
+            $viewData->contractor_sign = $contractor_sign;
+            $viewData->contractor_staff = $contractor_staff;
+            $viewData->owner_sign = $owner_sign;
+            $viewData->owner_staff = $owner_staff;
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+            echo $render_html;
+        } else {
+            $alert = array(
+                "title" => "İsim veya Ünvan Bilgilerinde Eksik Var",
+                "text" => "İmza Ayarları Güncellenemedi",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+            $contractor_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "contractor_sign"));
+            $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "contractor_staff"));
+            $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
+            $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
+
+            $viewData = new stdClass();
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+
+            $viewData->form_error = true;
+
+            $viewData->item = $this->Site_model->get(
+                array(
+                    "id" => $site_id
+                )
+            );
+
+            $viewData->contractor_sign = $contractor_sign;
+            $viewData->contractor_staff = $contractor_staff;
+            $viewData->owner_sign = $owner_sign;
+            $viewData->owner_staff = $owner_staff;
+
+            $viewData->item_files = $this->Site_file_model->get_all(
+                array(
+                    "$this->Dependet_id_key" => $site_id
+                )
+            );
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+            echo $render_html;
+        }
+    }
+
+    public function delete_sign($id, $module, $site_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $contractor_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "contractor_sign"));
+        $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "contractor_staff"));
+        $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
+        $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
+
+        $delete = $this->Report_sign_model->delete(
+            array(
+                "id" => $id
+            )
+        );
+
+        // TODO Alert sistemi eklenecek...
+        if ($delete) {
+            $alert = array(
+                "title" => "İmza Sütunu Silindi",
+                "text" => "İmza Ayarları Yapıldı",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İmza Sütunu Silinemedi",
+                "text" => "İmza Ayarları Güncellendi",
+                "type" => "danger"
+            );
+        }
+        $this->session->set_flashdata("alert", $alert);
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+
+        $viewData->contractor_sign = $contractor_sign;
+        $viewData->contractor_staff = $contractor_staff;
+        $viewData->owner_sign = $owner_sign;
+        $viewData->owner_staff = $owner_staff;
+
+        $viewData->item = $this->Site_model->get(
+            array(
+                "id" => $site_id
+            )
+        );
+
+        $viewData->item_files = $this->Site_file_model->get_all(
+            array(
+                "$this->Dependet_id_key" => $site_id
+            )
+        );
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+        echo $render_html;
+    }
+
+    public function sign_rankSetter()
+    {
+        $data = $this->input->post("data");
+
+        parse_str($data, $order);
+        $items = $order['sub'];
+
+        foreach ($items as $rank => $id) {
+            $this->Report_sign_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "rank" => $rank,
+                )
+            );
         }
     }
 

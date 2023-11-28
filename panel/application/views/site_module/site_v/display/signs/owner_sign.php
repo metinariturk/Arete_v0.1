@@ -1,15 +1,13 @@
-<form id="add_green"
-      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/green_sign"); ?>"
+<form id="owner_sign"
+      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/owner_sign"); ?>"
       method="post"
-      div="refresh_green_sign"
+      div="refresh_owner_sign"
       enctype="multipart/form-data" autocomplete="off">
     <div class="div">
-        <?php $green_signs = $this->Payment_sign_model->get_all(array("contract_id"=>$item->contract_id, "sign_page" => "green_sign"), "rank ASC"); ?>
-
         <table style="width: 100%;">
             <thead>
             <tr>
-                <td colspan="4" class="total-group-header-center">Metraj İcmali İmzaları</td>
+                <td colspan="4" class="total-group-header-center">İşveren İmza (1 Kişi)</td>
             </tr>
             <tr>
                 <td class="total-group-header-center">#</td>
@@ -19,22 +17,20 @@
             </tr>
             </thead>
             <tbody class="sortable" data-url="<?php echo base_url("$this->Module_Name/sign_rankSetter"); ?>">
-            <?php if (is_array($green_signs)) { ?>
-                <?php foreach ($green_signs as $green_sign) { ?>
-                    <tr id="sub-<?php echo $green_sign->id; ?>">
-                        <td style="text-align: center"><i class="fa fa-reorder"></i></td>
-                        <td><?php echo $green_sign->position; ?></td>
-                        <td><?php echo $green_sign->name; ?></td>
-                        <td style="text-align: center">
-                            <a onclick="delete_sign(this)"
-                               div="refresh_green_sign"
-                               url="<?php echo base_url("$this->Module_Name/delete_sign/$green_sign->id/green_sign/$item->id"); ?>">
-                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
-                                </i>
-                            </a>
-                        </td>
-                    </tr>
-                <?php } ?>
+            <?php if (isset($owner_sign)) { ?>
+                <tr id="sub-<?php echo $owner_sign->id; ?>">
+                    <td style="text-align: center"><i class="fa fa-reorder"></i></td>
+                    <td><?php echo $owner_sign->position; ?></td>
+                    <td><?php echo $owner_sign->name; ?></td>
+                    <td style="text-align: center">
+                        <a onclick="delete_sign(this)"
+                           div="refresh_owner_sign"
+                           url="<?php echo base_url("$this->Module_Name/delete_sign/$owner_sign->id/owner_sign/$item->id"); ?>">
+                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
+                            </i>
+                        </a>
+                    </td>
+                </tr>
             <?php } ?>
             </tbody>
         </table>
@@ -56,8 +52,10 @@
             <div class="invalid-feedback"><?php echo form_error("name"); ?></div>
         <?php } ?>
     </div>
-    <a form-id="add_green" id="save_button" onclick="add_sign(this)"
-       class="btn btn-success">
-        <i class="fa fa-plus fa-lg"></i> Ekle
-    </a>
+    <?php if (empty($owner_sign)) { ?>
+        <a form-id="owner_sign" id="save_button" onclick="add_sign(this)"
+           class="btn btn-success">
+            <i class="fa fa-plus fa-lg"></i> Ekle
+        </a>
+    <?php } ?>
 </form>

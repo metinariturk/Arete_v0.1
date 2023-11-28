@@ -1,6 +1,3 @@
-<script src="<?php echo base_url("assets"); ?>/js/xlsx.full.min.js"></script> <!--Excel Olaraa Tablo İndirtme-->
-
-
 <script>
     function add_group(anchor) {
         var $url = anchor.getAttribute('url');

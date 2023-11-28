@@ -1,14 +1,13 @@
-<form id="add_calculate"
-      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id"); ?>"
+<form id="contractor_sign"
+      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/contractor_sign"); ?>"
       method="post"
-      div="refresh_calculate_sign"
+      div="refresh_contractor_sign"
       enctype="multipart/form-data" autocomplete="off">
     <div class="div">
-
         <table style="width: 100%;">
             <thead>
             <tr>
-                <td colspan="4" class="total-group-header-center">Rapor İmzaları</td>
+                <td colspan="4" class="total-group-header-center">Yüklenici İmza(1 Kişi)</td>
             </tr>
             <tr>
                 <td class="total-group-header-center">#</td>
@@ -18,6 +17,21 @@
             </tr>
             </thead>
             <tbody class="sortable" data-url="<?php echo base_url("$this->Module_Name/sign_rankSetter"); ?>">
+            <?php if (isset($contractor_sign)) { ?>
+                <tr id="sub-<?php echo $contractor_sign->id; ?>">
+                    <td style="text-align: center"><i class="fa fa-reorder"></i></td>
+                    <td><?php echo $contractor_sign->position; ?></td>
+                    <td><?php echo $contractor_sign->name; ?></td>
+                    <td style="text-align: center">
+                        <a onclick="delete_sign(this)"
+                           div="refresh_contractor_sign"
+                           url="<?php echo base_url("$this->Module_Name/delete_sign/$contractor_sign->id/contractor_sign/$item->id"); ?>">
+                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
+                            </i>
+                        </a>
+                    </td>
+                </tr>
+            <?php } ?>
             </tbody>
         </table>
         <div class="mb-2">
@@ -38,8 +52,10 @@
             <div class="invalid-feedback"><?php echo form_error("name"); ?></div>
         <?php } ?>
     </div>
-    <a form-id="add_calculate" id="save_button" onclick="add_sign(this)"
-       class="btn btn-success">
-        <i class="fa fa-plus fa-lg"></i> Ekle
-    </a>
+    <?php if (empty($contractor_sign)) { ?>
+        <a form-id="contractor_sign" id="save_button" onclick="add_sign(this)"
+           class="btn btn-success">
+            <i class="fa fa-plus fa-lg"></i> Ekle
+        </a>
+    <?php } ?>
 </form>

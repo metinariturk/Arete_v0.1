@@ -34,16 +34,16 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/views/site_module/site_v/display" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/models" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\signs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modules" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
@@ -102,6 +102,7 @@
       <workItem from="1700206951438" duration="7433000" />
       <workItem from="1700464874476" duration="17422000" />
       <workItem from="1700998732059" duration="14377000" />
+      <workItem from="1701199638091" duration="11429000" />
     </task>
     <servers />
   </component>

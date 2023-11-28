@@ -1134,9 +1134,9 @@ class Payment extends CI_Controller
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
-        $green_sings = $this->Payment_sign_model->get_all(array("contract_id" => $contract_id, "sign_page" => "green_sign"), "rank ASC");
+        $green_signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract_id, "sign_page" => "green_sign"), "rank ASC");
 
-        $signs = array_merge([$contractor_sign], $green_sings);
+        $signs = array_merge([$contractor_sign], $green_signs);
 
         foreach ($signs as $item) {
             if (is_object($item)) {
@@ -1265,9 +1265,9 @@ class Payment extends CI_Controller
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
-        $green_sings = $this->Payment_sign_model->get_all(array("contract_id" => $contract_id, "sign_page" => "green_sign"), "rank ASC");
+        $green_signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract_id, "sign_page" => "green_sign"), "rank ASC");
 
-        $signs = array_merge([$contractor_sign], $green_sings);
+        $signs = array_merge([$contractor_sign], $green_signs);
 
         foreach ($signs as $item) {
             if (is_object($item)) {

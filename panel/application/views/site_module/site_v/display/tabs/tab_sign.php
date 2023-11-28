@@ -6,20 +6,19 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4 refresh_contractor_sign">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/signs/report_sign"); ?>
-            </div>
-            <div class="col-md-4 refresh_calculate_sign">
-            </div>
-            <div class="col-md-4 refresh_green_sign">
-            </div>
-            <div class="col-md-4 refresh_works_done_sign">
-            </div>
-            <div class="col-md-4 refresh_group_sign">
-            </div>
-            <div class="col-md-4 refresh_main_sign">
-            </div>
-            <div class="col-md-4 refresh_report_sign">
+            <div class="row">
+                <div class="col-md-6 refresh_owner_sign">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/signs/owner_sign"); ?>
+                </div>
+                <div class="col-md-6 refresh_owner_staff">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/signs/owner_staff"); ?>
+                </div>
+                <div class="col-md-6 refresh_contractor_sign">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/signs/contractor_sign"); ?>
+                </div>
+                <div class="col-md-6 refresh_contractor_staff">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/signs/contractor_staff"); ?>
+                </div>
             </div>
         </div>
     </div>
