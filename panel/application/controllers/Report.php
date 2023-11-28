@@ -725,7 +725,7 @@ class Report extends CI_Controller
                     "createdAt" => date("Y-m-d H:i:s"),
                     "createdBy" => active_user_id(),
                     "$this->Dependet_id_key" => $id,
-                    "size" => $size,
+                    "size" => filesize($file_path),
                     "rank" => ($old_file->rank + 1)
                 )
             );

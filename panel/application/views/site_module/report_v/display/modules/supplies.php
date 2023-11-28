@@ -46,11 +46,20 @@
         </div>
     </div>
 <?php } else { ?>
-    <tr>
-        <td class="total-group-row-center">
-            Gelen Malzeme Yok
-        </td>
-    </tr>
+    <div class="content">
+        <div class="card-body">
+            <table style="width:100%;">
+                <thead>
+                <tr>
+                    <th colspan="4">
+                        <p style="font-size:15pt;">
+                            <strong>Gelen Malzeme Yok</strong></p>
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 <?php } ?>
 
 
