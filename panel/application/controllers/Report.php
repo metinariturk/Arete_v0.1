@@ -986,7 +986,6 @@ class Report extends CI_Controller
         $this->load->model("Report_supply_model");
         $this->load->model("Report_sign_model");
 
-
         $report = $this->Report_model->get(array("id" => $report_id));
         $site = $this->Site_model->get(array("id" => $report->site_id));
 
@@ -998,7 +997,6 @@ class Report extends CI_Controller
         $workgroups = $this->Report_workgroup_model->get_all(array("report_id" => $report_id));
         $workmachines = $this->Report_workmachine_model->get_all(array("report_id" => $report_id));
         $supplies = $this->Report_supply_model->get_all(array("report_id" => $report_id));
-
 
         $viewData = new stdClass();
         $weather = $this->Report_weather_model->get(array("date" => $report->report_date));
@@ -1012,7 +1010,6 @@ class Report extends CI_Controller
         $viewData->contractor = $contractor;
         $viewData->owner = $owner;
 
-
         $yuklenici = company_name($contract->yuklenici);
         $this->load->library('pdf_creator');
 
@@ -1021,15 +1018,20 @@ class Report extends CI_Controller
 
         $page_width = $pdf->getPageWidth();
 
-
         $pdf->SetPrintHeader(false);
         $pdf->SetPrintFooter(false);
         $pdf->AddPage();
+
+        $logoPath = K_PATH_IMAGES . 'logo_example.jpg';
+        $logoWidth = 50; // Logo genişliği
+
+        $pdf->Image($logoPath, 20, 10, $logoWidth);
+
         $pdf->SetFont('dejavusans', 'B', 8);
-        $pdf->SetXY(150, 13);
+        $pdf->SetXY(150, 30);
         $pdf->Cell(50, 6, "Rapor Tarihi : " . dateFormat_dmy($report->report_date), 0, 0, "R", 0);
 // Çerçeve için boşlukları belirleme
-        $topMargin = 10;  // 4 cm yukarıdan
+        $topMargin = 30;  // 4 cm yukarıdan
         $bottomMargin = 10;  // 4 cm aşağıdan
         $rightMargin = 10;  // 2 cm sağdan
         $leftMargin = 10;  // 2 cm soldan
@@ -1582,8 +1584,8 @@ class Report extends CI_Controller
 
         $pdf->SetXY(10, 265);
         $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(95, 5, "İşveren", 1, 0, "C", 1);
-        $pdf->Cell(95, 5, "Taşeron/Yüklenici", 1, 0, "C", 1);
+        $pdf->Cell(95, 5, "İşveren Temsilcisi", 1, 0, "C", 1);
+        $pdf->Cell(95, 5, "Taşeron-Yüklenici Temsilcisi", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
         $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
         $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
