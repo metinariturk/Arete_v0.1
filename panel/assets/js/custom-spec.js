@@ -248,7 +248,7 @@ function deleteConfirmationModule(btn) {
     var note = btn.getAttribute('data-note');
 
     swal({
-        title: "Bu " + text + "'Kalıcı Olarak Silmek İstediğine Emin Misin?",
+        title: "Bu " + text + " Kalıcı Olarak Silmek İstediğine Emin Misin?",
         text: "Bu işlem geri alınamaz!",
         icon: "warning",
         buttons: ["İptal", "Sil"],

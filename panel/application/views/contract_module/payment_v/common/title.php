@@ -50,7 +50,8 @@ if ($subViewFolder == "list") { ?>
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
                                                 Kapat
                                             </button>
-                                            <button class="btn btn-primary" form="contract_id" type="submit">Yeni <?php echo $this->Module_Title; ?>
+                                            <button class="btn btn-primary" form="contract_id" type="submit">
+                                                Yeni <?php echo $this->Module_Title; ?>
                                             </button>
                                         </div>
                                     </div>
@@ -74,11 +75,12 @@ if ($subViewFolder == "list") { ?>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li>
-                            <?php if (!empty($contract_id)){ ?>
-                                <button type="submit" form="save_<?php echo $this->Module_Name; ?>" class="btn btn-success">
+                            <?php if (!empty($contract_id)) { ?>
+                                <button type="submit" form="save_<?php echo $this->Module_Name; ?>"
+                                        class="btn btn-success">
                                     <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                                 </button>
-                            <?php } elseif (empty($contract_id)) {?>
+                            <?php } elseif (empty($contract_id)) { ?>
                                 <button type="submit" form="contract_id" class="btn btn-success">
                                     <i class="fa fa-floppy-o fa-lg"></i> Sözleşme Seç
                                 </button>
@@ -130,24 +132,55 @@ if ($subViewFolder == "list") { ?>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li>
-                            <a class="btn btn-success" href="<?php echo base_url("contract/file_form/$item->contract_id/payment"); ?>">
+                            <a class="btn btn-success"
+                               href="<?php echo base_url("contract/file_form/$item->contract_id/payment"); ?>">
                                 <i class="fa fa-arrow-left"></i> Sözleşmeye Dön
                             </a>
                         </li>
                         <li>
-                            <?php if (isset($active_boqs)){ ?>
-                            <button class="btn btn-danger" type="button" onclick="deletePaymentModule(this)"
-                                    data-text="<?php echo $this->Module_Title; ?>"
-                                    data-url="<?php echo base_url("payment/delete_calc/$item->id"); ?>">
-                                <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Hakedişi Sil
-                            </button> <?php } else { ?>
-                                <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
-                                        data-text="<?php echo $this->Module_Title; ?>"
-                                        data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
-                                    <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Hakedişi Sil
-                                </button>
-                            <?php } ?>
+                            <button class="btn btn-primary"
+                                    type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModalgetbootstrap"
+                                    data-whatever="@getbootstrap">
+                                <i class="menu-icon fa fa-trash-o fa-lg"></i> Hakedişi Sil
+                            </button>
+                            <div class="modal fade" id="exampleModalgetbootstrap" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Dikkat!</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Hakedişi silmek üzeresiniz. Metraj verilerinizin korunmasını istiyosanız
+                                            sadece hakedişi silebilirsiniz.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <?php if (isset($active_boqs)) { ?>
+                                                <button class="btn btn-danger" type="button"
+                                                        onclick="deleteConfirmationModule(this)"
+                                                        data-text="<?php echo $this->Module_Title; ?> ve Hesapları"
+                                                        data-url="<?php echo base_url("payment/delete_calc/$item->id"); ?>">
+                                                    <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i>
+                                                    Hesaplar ile Birlikte Sil
+                                                </button> <?php } ?>
+                                            <button class="btn btn-danger" type="button"
+                                                    onclick="deleteConfirmationModule(this)"
+                                                    data-text="<?php echo $this->Module_Title; ?>"
+                                                    data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
+                                                <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i>
+                                                Sadece Hakedişi Sil
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
+
+
                     </ol>
                 </div>
             </div>
