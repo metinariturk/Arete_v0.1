@@ -1000,7 +1000,6 @@ class Report extends CI_Controller
         $supplies = $this->Report_supply_model->get_all(array("report_id" => $report_id));
 
 
-
         $viewData = new stdClass();
         $weather = $this->Report_weather_model->get(array("date" => $report->report_date));
         $contract = $this->Contract_model->get(array("id" => $report->contract_id));
@@ -1109,12 +1108,12 @@ class Report extends CI_Controller
 
         foreach ($owner_staff as $staff) {
             $pdf->Cell(55, 5, $staff->position, 1, 0, "C", 0);
-            $pdf->Cell(40, 5,$staff->name , 1, 0, "C", 0);
+            $pdf->Cell(40, 5, $staff->name, 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
-            $table_end_owner = $pdf->getY();
         }
+        $table_end_owner = $pdf->getY();
 
-        $pdf->SetXY(105,$table_y);
+        $pdf->SetXY(105, $table_y);
         $pdf->SetFont('dejavusans', 'B', 7);
         $pdf->Cell(95, 5, "Yüklenici/Taşeron Teknik Personeller", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
@@ -1127,11 +1126,12 @@ class Report extends CI_Controller
         foreach ($contractor_staff as $staff) {
             $pdf->SetX(105);
             $pdf->Cell(55, 5, $staff->position, 1, 0, "C", 0);
-            $pdf->Cell(40, 5,$staff->name , 1, 0, "C", 0);
+            $pdf->Cell(40, 5, $staff->name, 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
-            $table_end_contract = $pdf->getY();
 
         }
+        $table_end_contract = $pdf->getY();
+
 
         $pdf->SetFont('dejavusans', 'N', 7);
 
@@ -1268,13 +1268,15 @@ class Report extends CI_Controller
         $pdf->SetFont('dejavusans', 'N', 7);
 
 
-        $pdf->SetXY(10,265);
+        $pdf->SetXY(10, 265);
         $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(95, 5,  "İşveren", 1, 0, "C", 1);
-        $pdf->Cell(95, 5, "Taşeron/Yüklenici" , 1, 0, "C", 1);
+        $pdf->Cell(95, 5, "İşveren", 1, 0, "C", 1);
+        $pdf->Cell(95, 5, "Taşeron/Yüklenici", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(95, 5, $owner_sign->name , 1, 0, "C", 0);
-        $pdf->Cell(95, 5,  $contractor_sign->name, 1, 0, "C", 0);
+        $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
+        if (isset($contractor_sign)) {
+            $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
+        }
         $pdf->Ln(); // Yeni satıra geç
 
         $file_name = "02 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Günlük Rapor ";
@@ -1311,7 +1313,6 @@ class Report extends CI_Controller
         $supplies = $this->Report_supply_model->get_all(array("report_id" => $report_id));
 
 
-
         $viewData = new stdClass();
         $weather = $this->Report_weather_model->get(array("date" => $report->report_date));
         $contract = $this->Contract_model->get(array("id" => $report->contract_id));
@@ -1420,12 +1421,12 @@ class Report extends CI_Controller
 
         foreach ($owner_staff as $staff) {
             $pdf->Cell(55, 5, $staff->position, 1, 0, "C", 0);
-            $pdf->Cell(40, 5,$staff->name , 1, 0, "C", 0);
+            $pdf->Cell(40, 5, $staff->name, 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
             $table_end_owner = $pdf->getY();
         }
 
-        $pdf->SetXY(105,$table_y);
+        $pdf->SetXY(105, $table_y);
         $pdf->SetFont('dejavusans', 'B', 7);
         $pdf->Cell(95, 5, "Yüklenici/Taşeron Teknik Personeller", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
@@ -1438,7 +1439,7 @@ class Report extends CI_Controller
         foreach ($contractor_staff as $staff) {
             $pdf->SetX(105);
             $pdf->Cell(55, 5, $staff->position, 1, 0, "C", 0);
-            $pdf->Cell(40, 5,$staff->name , 1, 0, "C", 0);
+            $pdf->Cell(40, 5, $staff->name, 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
             $table_end_contract = $pdf->getY();
 
@@ -1579,13 +1580,13 @@ class Report extends CI_Controller
         $pdf->SetFont('dejavusans', 'N', 7);
 
 
-        $pdf->SetXY(10,265);
+        $pdf->SetXY(10, 265);
         $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(95, 5,  "İşveren", 1, 0, "C", 1);
-        $pdf->Cell(95, 5, "Taşeron/Yüklenici" , 1, 0, "C", 1);
+        $pdf->Cell(95, 5, "İşveren", 1, 0, "C", 1);
+        $pdf->Cell(95, 5, "Taşeron/Yüklenici", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(95, 5, $owner_sign->name , 1, 0, "C", 0);
-        $pdf->Cell(95, 5,  $contractor_sign->name, 1, 0, "C", 0);
+        $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
+        $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
         $pdf->Ln(); // Yeni satıra geç
 
         $file_name = "02 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Günlük Rapor ";
@@ -1596,8 +1597,6 @@ class Report extends CI_Controller
             $pdf->Output("$file_name.pdf", "D");
         }
     }
-
-
 
 
 }
