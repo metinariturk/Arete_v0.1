@@ -407,6 +407,17 @@ class Report extends CI_Controller
 
             // İşlemin Sonucunu Session'a yazma işlemi...
             $this->session->set_flashdata("alert", $alert);
+
+            $this->load->model("Weather_model");
+
+            $weather = $this->Weather_model->get(array('date' => $report_date));
+
+            if (isset($weather)) {
+                redirect(base_url("$this->Module_Name/$this->Display_route/$report_id"));
+            } else {
+                redirect(base_url("weather"));
+            }
+
             redirect(base_url("$this->Module_Name/$this->Display_route/$report_id"));
 
         } else {

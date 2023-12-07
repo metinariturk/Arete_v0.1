@@ -333,22 +333,6 @@ function demir_fiyat()
 
 }
 
-function doviz_kur($currency, $criter)
-{
-    $kur = simplexml_load_file("https://www.tcmb.gov.tr/kurlar/today.xml");
-
-    foreach ($kur->Currency as $cur) {
-        if ($cur["Kod"] == $currency) {
-            if ($criter == "buy") {
-                return round($cur->ForexBuying, 2);
-            } elseif ($criter == "sell") {
-                return round($cur->ForexSelling, 2);
-            }
-        }
-    }
-
-}
-
 function ext_img($file_name)
 {
 
