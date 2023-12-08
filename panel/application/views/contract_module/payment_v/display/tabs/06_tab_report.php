@@ -211,7 +211,6 @@
                                 </td>
                                 <td class="total-group-row-left">
                                     <input id="KES_b" type="number" step=".01" name="KES_b"
-                                           onblur="calcular()"
                                            value="<?php echo isset($item->Kes_b) ? $item->Kes_b : null; ?>"
                                            readonly
                                            onfocus="calcular()" onblur="calcular()"
@@ -380,17 +379,16 @@
                             </tr>
                             </tbody>
                         </table>
-                    </form>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a form-id="save_payment" id="save_button" onclick="save_payment(this)"
-                                   class="btn btn-success btn-block" style="text-align: right">
-                                    <i class="fa fa-floppy-o"></i> Hakedişi Kaydet
-                                </a>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="submit" id="submit_button"  onclick="calcular()">Kaydet</button>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
+
                 </div>
             <?php } else { ?>
                 <div class="col-sm-8 offset-2">
@@ -616,11 +614,11 @@
                             </tr>
                             </tbody>
                         </table>
+                        <button type="submit"
+                                class="btn btn-success btn-block" style="text-align: right">
+                            <i class="fas fa-broom"></i> Hakedişi Temizle
+                        </button>
                     </form>
-                    <a form-id="save_payment" id="save_button" onclick="save_payment(this)"
-                       class="btn btn-success btn-block" style="text-align: right">
-                        <i class="fas fa-broom"></i> Hakedişi Temizle
-                    </a>
                 </div>
             <?php } ?>
         </div>

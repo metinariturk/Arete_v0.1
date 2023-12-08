@@ -55,6 +55,8 @@
         $.post(formAction, formData, function (response) {
             $(".refresh_payment").html(response);
         });
+
+
     }
 
 </script>

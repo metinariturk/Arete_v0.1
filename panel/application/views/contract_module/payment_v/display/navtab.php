@@ -1,13 +1,18 @@
 <div class="email-left-aside">
     <div class="card">
         <div class="card-body">
-            <div class="email-app-sidebar left-bookmark">
+            <div class="email-app-sidebar left-bookmark refresh_navtab">
                 <ul class="nav main-menu" role="tablist">
-                    <li>
-                        <a target="_blank" href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
-                            <span class="title">Metraj İşlemleri</span>
-                        </a>
-                    </li>
+                    <?php if (empty($item->A)) { ?>
+
+                        <li>
+                            <a target="_blank"
+                               href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
+                                <span class="title">Metraj İşlemleri<?php echo $item->A; ?></span>
+                            </a>
+                        </li>
+                    <?php } ?>
+
                     <li>
                         <a class="show active"
                            id="calculate-tab"

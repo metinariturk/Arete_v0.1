@@ -130,8 +130,11 @@ $sidebarList = array(
             array(
                 "title" => "Şantiye Depo",
                 "url" => base_url("Sitestock")
-            )
-        )
+            ),
+            array(
+                "title" => "Hava Durumu",
+                "url" => base_url("Weather")
+            )        )
     ),
 
     array(
