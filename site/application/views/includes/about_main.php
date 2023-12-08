@@ -20,35 +20,35 @@
                         <!-- COLUMNS 1 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
-                                <a href="about-1.html"><img
+                                <a href="#"><img
                                             src="<?php echo base_url("assets"); ?>/images/gallery/pic1.jpg" alt=""></a>
                             </div>
                         </div>
                         <!-- COLUMNS 2 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
-                                <a href="about-1.html"><img
+                                <a href="#"><img
                                             src="<?php echo base_url("assets"); ?>/images/gallery/pic2.jpg" alt=""></a>
                             </div>
                         </div>
                         <!-- COLUMNS 3 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
-                                <a href="about-1.html"><img
+                                <a href="#"><img
                                             src="<?php echo base_url("assets"); ?>/images/gallery/pic3.jpg" alt=""></a>
                             </div>
                         </div>
                         <!-- COLUMNS 4 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
-                                <a href="about-1.html"><img
+                                <a href="#"><img
                                             src="<?php echo base_url("assets"); ?>/images/gallery/pic4.jpg" alt=""></a>
                             </div>
                         </div>
                         <!-- COLUMNS 5 -->
                         <div class="item ">
                             <div class="mt-img-effect zoom-slow">
-                                <a href="about-1.html"><img
+                                <a href="#"><img
                                             src="<?php echo base_url("assets"); ?>/images/gallery/pic5.jpg" alt=""></a>
                             </div>
                         </div>
@@ -62,7 +62,7 @@
                         <p><strong>"Arete" Kendisine uygun olan işi yapana, kendisine özgü işlevi yerine getirene, kendi uygun ve gerçek amacına erişen demektir.</strong></p>
                         <p>Bir bıçağın "arete" si kesmek ise bizim ARETE miz İnşa Etmektir. </p>
                         <div class="text-right">
-                            <a href="about-1.html" class="site-button-link" data-hover="Read More">Daha Fazla<i
+                            <a href="#" class="site-button-link" data-hover="Read More">Daha Fazla<i
                                         class="fa fa-angle-right arrow-animation"></i></a>
                         </div>
                     </div>

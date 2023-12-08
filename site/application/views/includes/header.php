@@ -21,7 +21,7 @@
             <div class="container">
                 <div class="logo-header">
                     <div class="logo-header-inner logo-header-one">
-                        <a href="index.html">
+                        <a href="<?php echo base_url(); ?>">
                             <img src="<?php echo base_url("assets"); ?>/images/logo-light.png" alt="" />
                         </a>
                     </div>
@@ -61,14 +61,17 @@
                         <li>
                             <a href="javascript:;">Hizmetler</a>
                             <ul class="sub-menu">
-                                <li><a href="post-image.html">Üst Yapı</a></li>
-                                <li><a href="post-gallery.html">Atık Su ve Yağmur Suyu</a></li>
-                                <li><a href="post-video.html">Akaryakıt İstasyonu</a></li>
-                                <li><a href="post-right-sidebar.html">Yol İnşaatı</a></li>
+                                <li><a>Üst Yapı</a></li>
+                                <li><a>Atık Su ve Yağmur Suyu</a></li>
+                                <li><a>Akaryakıt İstasyonu</a></li>
+                                <li><a>Yol İnşaatı</a></li>
                             </ul>
                         </li>
                         <li class="submenu-direction">
                             <a href="<?php echo base_url("panel");?>">KULLANICI PANELİ</a>
+                        </li>
+                        <li class="submenu-direction">
+                            <a href="<?php echo base_url("bilgi");?>">Firma Bilgileri</a>
                         </li>
                     </ul>
                 </div>

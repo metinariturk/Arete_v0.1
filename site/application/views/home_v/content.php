@@ -151,7 +151,7 @@
                      data-paddingleft="[0,0,0,0]"
                      style="z-index:100;
                             text-transform:uppercase;">
-                    <a href="about-1.html" class="site-button-secondry btn-effect">Buradayız</a>
+                    <a href="#" class="site-button-secondry btn-effect">Buradayız</a>
                 </div>
 
             </li>
@@ -295,7 +295,7 @@
                                     ]' data-textAlign="['left','left','left','left']" data-paddingtop="[0,0,0,0]"
                      data-paddingright="[0,0,0,0]" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]"
                      style="z-index:100; text-transform:uppercase;">
-                    <a href="about-1.html" class="site-button-secondry btn-effect">BURADAYIZ</a>
+                    <a href="#" class="site-button-secondry btn-effect">BURADAYIZ</a>
                 </div>
 
             </li>
@@ -442,7 +442,7 @@
                      data-paddingbottom="[0,0,0,0]"
                      data-paddingleft="[0,0,0,0]"
                      style="z-index:100; text-transform:uppercase;">
-                    <a href="about-1.html" class="site-button-secondry btn-effect">BURADAYIZ</a>
+                    <a href="#" class="site-button-secondry btn-effect">BURADAYIZ</a>
                 </div>
 
             </li>
@@ -492,7 +492,7 @@
                         <img src="<?php echo base_url("assets"); ?>/images/pic1.jpg" alt=""/>
                         <div class="figcaption">
                             <p>Güvenli ve Kaliteli </p>
-                            <a href="project-detail.html"><i class="link-plus site-bg-primary"></i></a>
+                            <a href="#"><i class="link-plus site-bg-primary"></i></a>
                         </div>
                     </div>
                 </div>
@@ -502,7 +502,7 @@
                         <img src="<?php echo base_url("assets"); ?>/images/pic2.jpg" alt=""/>
                         <div class="figcaption">
                             <p>Optimum fayda sağlayacak detaylar </p>
-                            <a href="project-detail.html"><i class="link-plus site-bg-primary"></i></a>
+                            <a href="#"><i class="link-plus site-bg-primary"></i></a>
                         </div>
                     </div>
                 </div>
@@ -512,7 +512,7 @@
                         <img src="<?php echo base_url("assets"); ?>/images/pic3.jpg" alt=""/>
                         <div class="figcaption">
                             <p>Müşavirlik ve İş Takibi </p>
-                            <a href="project-detail.html"><i class="link-plus site-bg-primary"></i></a>
+                            <a href="#"><i class="link-plus site-bg-primary"></i></a>
                         </div>
                     </div>
                 </div>
@@ -524,7 +524,7 @@
                         <h3 class="m-t0"><span class="font-weight-100">Tecrübe</span> <br>Betondan sağlamdır.</h3>
                         <p>Uzun yıllardır sektörde edindiğimiz tüm bilgi birikimimizi paylaşıyoruz. En iyisi için
                             gelişmeye ve öğrenmeye devam ediyoruz.</p>
-                        <a href="about-1.html" class="site-button btn-effect">BURADAYIZ</a>
+                        <a href="#" class="site-button btn-effect">BURADAYIZ</a>
                     </div>
 
                 </div>

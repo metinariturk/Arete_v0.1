@@ -16,7 +16,6 @@
                             </div>
                         </div>
                         <!-- TITLE END -->
-
                         <!-- TABS DEFAULT NAV LEFT -->
                         <div class="mt-tabs vertical bg-tabs">
                             <ul class="nav nav-tabs">
@@ -28,6 +27,11 @@
                                 <li class="nav-item">
                                     <button class="nav-link" data-bs-toggle="tab"
                                             data-bs-target="#graphic-design-15" type="button">Banka Bilgileri
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab"
+                                            data-bs-target="#official-design-15" type="button">Resmi Evraklar
                                     </button>
                                 </li>
                             </ul>
@@ -125,6 +129,32 @@
                                     </table>
 
                                 </div>
+                                <div class="tab-pane fade show" id="official-design-15">
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td style="width: 10%">
+                                                <a href="<?php echo base_url("Home/download_paper/Vergi_Levha"); ?>"><i class="fa fa-download"></i></a>
+                                            </td>
+                                            <td style="width: 30%; text-align: left">Vergi Levhası</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 10%">
+                                                <a href="#"><i class="fa fa-download"></i></a>
+                                            </td>
+                                            <td style="width: 30%; text-align: left">İmza Sirküsü</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 10%">
+                                                <a href="#"><i class="fa fa-download"></i></a>
+                                            </td>
+                                            <td style="width: 30%; text-align: left">Resmi Gazete</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
                             </div>
                         </div>
                     </div>

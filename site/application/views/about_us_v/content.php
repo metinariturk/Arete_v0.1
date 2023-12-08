@@ -84,10 +84,7 @@
                                     <h4 class="m-t0">Metin ARITÜRK</h4>
                                     <p>İnşaat Müh. &amp; Kurucu</p>
                                 </div>
-                                <div class="appint-btn"><a href="#" class=""><div class="site-button">İletişim</div></a></div>
-
-                                <a href="#" class="site-button btn-effect m-b15"><span>İletişim</span></a>
-
+                                <div class="appint-btn"><a href="#" class="contact-slide-show"><div class="site-button">İletişim</div></a></div>
                             </div>
 
 
@@ -387,6 +384,23 @@
                         }
                         ?>
 
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="our-story-pic-block">
+                        <div class="mt-media our-story-pic">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2023.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="mt-box our-story-detail bg-moving bg-cover"
+                         style="background-image:url(images/background/line.png)">
+                        <h4 class="text-uppercase m-b20">2023</h4>
+                        <h4 class="m-b20">Konya Büyükşehir Belediyesi - Sedirler Köprülü Kavşağı Kalıp ve Beton İşleri Yapılması</h4>
+                        <p>Köprülü Kavşak Yapım İşi kapsamındaki tüm betonarme kalıp ve betonlama işlerinin yapılması.</p>
                     </div>
                 </div>
             </div>
