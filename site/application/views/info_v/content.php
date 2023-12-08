@@ -119,16 +119,7 @@
                                                      onclick="kopyala('bank1')">
                                             </td>
                                             <td style="width: 30%">Halk Bankası<br>Konya OSB Şube</td>
-                                            <td style="width: 60%" id="bank1">TR0000000000000000000000000000</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <img width="20px" src="<?php echo base_url("assets"); ?>/fonts/copy.svg"
-                                                     onclick="kopyala('bank2')">
-                                            </td>
-                                            <td style="width: 30%">Odea Bank<br>Konya Şube</td>
-                                            <td style="width: 60%" id="bank2">TR0000000000000000000000000000</td>
-
+                                            <td style="width: 60%" id="bank1">TR27 0001 2001 4460 0010 1022 08</td>
                                         </tr>
                                         </tbody>
                                     </table>
