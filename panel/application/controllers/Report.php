@@ -1314,6 +1314,8 @@ class Report extends CI_Controller
         foreach ($files as $file) {
             if (is_file($file)) {
                 $pdf->Image($file, $x, "", "", 100, 'JPG');
+                $pdf->Cell(95, 5, $file, 1, 0, "C", 0);
+
                 $pdf->Ln(120); // Yeni satıra geç
 
                 // Yeni bir fotoğrafın başka bir konumda görüntülenmesi için y koordinatını artır
