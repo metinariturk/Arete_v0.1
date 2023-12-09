@@ -1314,6 +1314,9 @@ class Report extends CI_Controller
         foreach ($files as $file) {
             if (is_file($file)) {
                 $pdf->Image($file, $x, "", "", 100, 'JPG');
+                $pdf->Ln(10); // Yeni satıra geç
+
+                $pdf->Cell(190, 5, $file, 1, 0, "C", 0);
 
                 $pdf->Ln(120); // Yeni satıra geç
 
