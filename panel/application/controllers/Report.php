@@ -1294,6 +1294,14 @@ class Report extends CI_Controller
 
         $pdf->AddPage();
 
+        $offset = 10; // 1 cm = 10 mm
+        $pageWidth = $pdf->getPageWidth() - $offset;
+        $pageHeight = $pdf->getPageHeight() -  $offset;
+
+// Kutucuk özellikleri
+        $boxWidth = ($pageWidth - $offset) / 2;
+        $boxHeight = ($pageHeight - $offset) / 2;
+
         $date = dateFormat_dmy($report->report_date);
         $project_code = project_code($site->proje_id);
 
@@ -1301,10 +1309,10 @@ class Report extends CI_Controller
         $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
 
         $originalPath = K_PATH_MAIN;
-        if (DIRECTORY_SEPARATOR == "\\"){
-            $removePart = 'application'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'tcpdf/';
+        if (DIRECTORY_SEPARATOR == "\\") {
+            $removePart = 'application' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tcpdf/';
         } else {
-            $removePart = 'application'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'tcpdf'.DIRECTORY_SEPARATOR;
+            $removePart = 'application' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR;
         }
         $newPath = str_replace($removePart, '', $originalPath);
         $path = $newPath . $imageDirectory;
@@ -1313,18 +1321,48 @@ class Report extends CI_Controller
         $files = glob($baseDirectory . '/*');
 
         $x = 10;
-        $y = 10;
+
+        // Kenarlardan 1 cm offset
+        $offset = 10; // 1 cm = 10 mm
+        $pageWidth = $pdf->getPageWidth() - 2 * $offset;
+        $pageHeight = $pdf->getPageHeight() - 2 * $offset;
+
+// Kutucuk özellikleri
+        $boxWidth = ($pageWidth - 2 * $offset) / 2;
+        $boxHeight = ($pageHeight - 2 * $offset) / 2;
+
+// Başlangıç X ve Y koordinatları
+        $x = $offset;
+        $y = $offset;
+
+// İşlenen dosya sayısı
+        $fileCount = 0;
 
         foreach ($files as $file) {
-            if (is_file($file)) {
-                $pdf->Image($file, $x, "", "", 100, 'JPG');
-                $pdf->Ln(10); // Yeni satıra geç
+            if (is_file($file) && $fileCount < 4) {
+                // Dosyanın boyutlarını al
+                list($imgWidth, $imgHeight) = getimagesize($file);
 
-                $pdf->Cell(190, 5, $file, 1, 0, "C", 0);
+                // En-boy oranını koruyarak resmi yerleştir
+                if ($imgWidth > $imgHeight) {
+                    // Yüksekliği oranı ile ayarla
+                    $pdf->Image($file, $x, $y+30, $boxWidth+10, 0, 'JPG');
+                } else {
+                    // Genişliği oranı ile ayarla
+                    $pdf->Image($file, $x+20, $y, 0, $boxHeight, 'JPG');
+                }
 
-                $pdf->Ln(120); // Yeni satıra geç
+                // X koordinatını güncelle
+                $x += $boxWidth + $offset;
 
-                // Yeni bir fotoğrafın başka bir konumda görüntülenmesi için y koordinatını artır
+                // Dosya sayısını artır
+                $fileCount++;
+
+                // İlk iki resim tamamlandıysa, ikinci satıra geç
+                if ($fileCount % 2 == 0) {
+                    $x = $offset;
+                    $y += $boxHeight-1 + $offset;
+                }
             }
         }
 
