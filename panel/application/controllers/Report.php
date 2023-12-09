@@ -1376,6 +1376,34 @@ class Report extends CI_Controller
                         }
                     }
                 }
+            } else {
+                foreach ($files as $file) {
+                    if (is_file($file) && $fileCount < 4) {
+                        // Dosyanın boyutlarını al
+                        list($imgWidth, $imgHeight) = getimagesize($file);
+
+                        // En-boy oranını koruyarak resmi yerleştir
+                        if ($imgWidth > $imgHeight) {
+                            // Yüksekliği oranı ile ayarla
+                            $pdf->Image($file, $x, $y + 30, $boxWidth + 10, 0, 'JPG');
+                        } else {
+                            // Genişliği oranı ile ayarla
+                            $pdf->Image($file, $x + 20, $y, 0, $boxHeight, 'JPG');
+                        }
+
+                        // X koordinatını güncelle
+                        $x += $boxWidth + $offset;
+
+                        // Dosya sayısını artır
+                        $fileCount++;
+
+                        // İlk iki resim tamamlandıysa, ikinci satıra geç
+                        if ($fileCount % 2 == 0) {
+                            $x = $offset;
+                            $y += $boxHeight - 1 + $offset;
+                        }
+                    }
+                }
             }
         }
 
