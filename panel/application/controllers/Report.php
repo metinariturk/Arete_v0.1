@@ -1292,6 +1292,34 @@ class Report extends CI_Controller
         }
         $pdf->Ln(); // Yeni satıra geç
 
+        $pdf->AddPage();
+
+        $date = dateFormat_dmy($report->report_date);
+        $project_code = project_code($site->proje_id);
+
+
+        $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
+
+        $originalPath = K_PATH_MAIN;
+        $removePart = 'application\helpers\tcpdf/';
+        $newPath = str_replace($removePart, '', $originalPath);
+        $asd = $newPath . $imageDirectory;
+        $baseDirectory = str_replace('\\', '/', $asd);
+
+        $files = glob($baseDirectory . '/*');
+
+        $x = 10;
+        $y = 10;
+
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                $pdf->Image($file, $x, "", "", 100, 'JPG');
+                $pdf->Ln(120); // Yeni satıra geç
+
+                // Yeni bir fotoğrafın başka bir konumda görüntülenmesi için y koordinatını artır
+            }
+        }
+
         $file_name = "02 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Günlük Rapor ";
 
         if ($P_or_D == 0) {
