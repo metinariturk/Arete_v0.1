@@ -11,7 +11,11 @@
             <tr>
                 <td><strong>Pozlar Toplam Bedeli</strong></td>
                 <td>:</td>
-                <td style="text-align: right"><?php echo money_format($total_boqs = sum_anything("contract_price", "total", "contract_id", "$item->id")); ?><?php echo $item->para_birimi; ?></td>
+                <td style="text-align: right">
+
+                    <?php $total_boqs = $this->Contract_price_model->sum_all(array("contract_id" => $item->id, "sub_group" => null, "main_group" => null),"total"); ?>
+                <?php echo money_format($total_boqs); ?>
+                </td>
             </tr>
             <tr>
                 <td><strong>Fark</strong></td>
@@ -121,6 +125,15 @@
                             <a onclick="update_price(this)" form-id="save_boq">
                                 <i style="color: green" class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
                             </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: right">
+                           TOPLAM
+                        </td>
+                        <td>
+                           <?php echo money_format($sub_group->total); ?>
+                           <?php echo $item->para_birimi; ?>
                         </td>
                     </tr>
                     </tbody>

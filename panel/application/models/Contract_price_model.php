@@ -35,4 +35,14 @@ class Contract_price_model extends CI_Model
         return $this->db->where($where)->delete($this->tableName);
     }
 
+    public function sum_all($where = array(), $column=null)
+    {
+        $result = $this->db->select_sum($column)->where($where)->get($this->tableName)->result();
+
+        // Sadece toplam değerini alın
+        $total = isset($result[0]->$column) ? $result[0]->$column : 0;
+
+        return $total;
+    }
+
 }

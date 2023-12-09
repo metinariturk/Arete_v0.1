@@ -731,28 +731,25 @@ $payments_array = json_encode((array_column($payments, 'E')));
 
             // Sonucu t-X inputuna yazın
             tInput.value = t.toFixed(2);
-
         }
     }
 
-    // Tüm "q-X" inputlarına bir "input" olay dinleyici ekleyin
-    var qInputs = document.querySelectorAll('input[id^="q-"]');
-    qInputs.forEach(function(qInput) {
-        var inputId = qInput.id.split('-')[1];
-        qInput.addEventListener('input', function() {
-            hesaplaT(inputId);
+    function addInputListeners(inputType) {
+        // Tüm "inputType-X" inputlarına bir "input" olay dinleyici ekleyin
+        var inputs = document.querySelectorAll('input[id^="' + inputType + '-"]');
+        inputs.forEach(function(input) {
+            var inputId = input.id.split('-')[1];
+            input.addEventListener('input', function() {
+                hesaplaT(inputId);
+            });
         });
-    });
+    }
 
-    // Tüm "p-X" inputlarına bir "input" olay dinleyici ekleyin
-    var pInputs = document.querySelectorAll('input[id^="p-"]');
-    pInputs.forEach(function(pInput) {
-        var inputId = pInput.id.split('-')[1];
-        pInput.addEventListener('input', function() {
-            hesaplaT(inputId);
-        });
-    });
+    // "q-X" inputlarına olay dinleyicilerini ekle
+    addInputListeners("q");
 
+    // "p-X" inputlarına olay dinleyicilerini ekle
+    addInputListeners("p");
 
 </script>
 <script>
@@ -764,6 +761,9 @@ $payments_array = json_encode((array_column($payments, 'E')));
 
         $.post(formAction, formData, function (response) {
             $(".price_update").html(response);
+            hesaplaT();
+            addInputListeners("q");
+            addInputListeners("p");
         });
     }
 </script>
@@ -774,10 +774,16 @@ $payments_array = json_encode((array_column($payments, 'E')));
 
         $.post(formAction, function(response) {
             $(".price_update").html(response);
+            hesaplaT();
+            addInputListeners("q");
+            addInputListeners("p");
         })
             .fail(function(error) {
                 // Hata durumunda bu fonksiyon çalışır
                 console.error('Error:', error.responseText);
+                hesaplaT();
+                addInputListeners("q");
+                addInputListeners("p");
             });
     }
 </script>

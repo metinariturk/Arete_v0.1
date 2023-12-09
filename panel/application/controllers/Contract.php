@@ -2783,6 +2783,34 @@ class Contract extends CI_Controller
             }
         }
 
+        $sub_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_group" => 1));
+        foreach ($sub_groups as $sub_group) {
+            $group_total = $this->Contract_price_model->sum_all(array("sub_id" => $sub_group->id, "contract_id" => $contract_id), "total");
+            $update = $this->Contract_price_model->update(
+                array(
+                    "id" => $sub_group->id
+                ),
+                array(
+                    "qty" => null,
+                    "price" => null,
+                    "total" => $group_total
+                ));
+        }
+
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1));
+        foreach ($main_groups as $main_group) {
+            $sub_group_total = $this->Contract_price_model->sum_all(array("parent" => $main_group->id, "contract_id" => $contract_id, "sub_group" => 1), "total");
+            $update = $this->Contract_price_model->update(
+                array(
+                    "id" => $main_group->id
+                ),
+                array(
+                    "qty" => null,
+                    "price" => null,
+                    "total" => $sub_group_total
+                ));
+        }
+
 
         // TODO Alert sistemi eklenecek...
         if ($update) {
