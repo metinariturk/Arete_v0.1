@@ -101,7 +101,7 @@
                                 </div>
                                 <div class="form-check radio radio-success">
                                     <input class="form-check-input" id="radio55"
-                                           data-url="<?php echo base_url("report/print_report_image/$item->id/1"); ?>"
+                                           data-url="<?php echo base_url("report/print_report/$item->id/1"); ?>"
                                            type="radio" name="calculate" value="option1">
                                     <label class="form-check-label" for="radio55">Fotoğraf İle Birlikte (Max 4)</label>
                                 </div>
