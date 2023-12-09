@@ -1303,8 +1303,8 @@ class Report extends CI_Controller
         $originalPath = K_PATH_MAIN;
         $removePart = 'application\helpers\tcpdf/';
         $newPath = str_replace($removePart, '', $originalPath);
-        $asd = $newPath . $imageDirectory;
-        $baseDirectory = str_replace('\\', '/', $asd);
+        $path = $newPath . $imageDirectory;
+        $baseDirectory = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
 
         $files = glob($baseDirectory . '/*');
 
@@ -1314,7 +1314,7 @@ class Report extends CI_Controller
         foreach ($files as $file) {
             if (is_file($file)) {
                 $pdf->Image($file, $x, "", "", 100, 'JPG');
-                
+
                 $pdf->Ln(120); // Yeni satıra geç
 
                 // Yeni bir fotoğrafın başka bir konumda görüntülenmesi için y koordinatını artır
