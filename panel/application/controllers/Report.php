@@ -1301,9 +1301,22 @@ class Report extends CI_Controller
         $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
 
         $originalPath = K_PATH_MAIN;
-        $removePart = 'application/helpers/tcpdf/';
+        echo $originalPath;
+        echo "<br>";
+        $removePart = 'application'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'tcpdf'.DIRECTORY_SEPARATOR;
+        echo $removePart;
+        echo "<br>";
+
         $newPath = str_replace($removePart, '', $originalPath);
+        echo $newPath;
+        echo "<br>";
+
         $path = $newPath . $imageDirectory;
+        echo $path;
+        echo "<br>";
+        echo DIRECTORY_SEPARATOR;
+        echo "<br>";
+        die();
         $baseDirectory = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
 
         $files = glob($baseDirectory . '/*');
