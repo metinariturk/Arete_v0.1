@@ -5,54 +5,7 @@
      aria-labelledby="genel-tab">
     <div class="card-body">
         <div class="row">
-            <div class="col-xl-5 col-lg-12 col-md-12 box-col-10">
-                <div class="card-body d-flex">
-                    <div class="row">
-                        <div class="col-10">
-                            <div class="file-sidebar">
-                                <ul>
-                                    <li>
-                                        <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
-                                            <div class="btn btn-light">
-                                                <i data-feather="home"></i>
-                                                <?php echo project_code_name($item->proje_id); ?>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <?php if (!empty($item->parent)) { ?>
-                                        <li>
-                                            <a href="<?php echo base_url("contract/file_form/$item->parent"); ?>">
-                                                <div class="btn btn-light ">
-
-                                    <span style="padding-left: 20px">
-                                    <i class="icofont icofont-law-document"></i>
-                                    <?php echo contract_code_name($item->parent); ?>
-                                    </span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    <?php } ?>
-                                    <li>
-                                        <div class="btn btn-light">
-                                <span style="padding-left: 40px">
-                                    <i class="icon-gallery"></i>
-                                    <?php echo contract_code_name($item->id); ?>
-                                </span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-1">
-                            <a onclick="changeIcon(this)"
-                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
-                               id="myBtn">
-                                <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?> fa-2x"> </i>
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
+            <div class="col-xl-7 col-lg-12 col-md-12 box-col-10">
                 <div class="container">
                     <div class="row py-3">
                         <div class="col-12">
@@ -61,13 +14,58 @@
                             <?php } ?>
                         </div>
                     </div>
+                    <div class="row py-3">
+                        <div class="col-12" style="text-align: center">
+                            <h4>
+                                <?php if (!empty($item->parent)) { ?>
+                                    <strong>Taşeron Sözleşmesi</strong>
+                                <?php } else { ?>
+                                    <strong>Sözleşme</strong>
+                                <?php } ?>
+                                <a onclick="changeIcon(this)"
+                                   url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
+                                   id="myBtn">
+                                    <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?>"> </i>
+                                </a>
+                            </h4>
+                            <?php echo contract_code_name($item->id); ?>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-6">
+                            <strong>Proje</strong>
+                        </div>
+                        <div class="col-6">
+                            <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                <?php echo project_code_name($item->proje_id); ?>
+                            </a>
+                        </div>
+                    </div>
                     <?php if (!empty($item->parent)) { ?>
                         <div class="row py-3">
-                            <div class="col-12" style="text-align: center">
-                                <h4><strong>Taşeron Sözleşmesi</strong></h4>
+                            <div class="col-6">
+                                <strong>Ana Sözleşme:</strong>
+                            </div>
+                            <div class="col-6">
+                                <a href="<?php echo base_url("contract/file_form/$item->parent"); ?>">
+                                    <?php echo contract_code_name($item->parent); ?>
+                                </a>
                             </div>
                         </div>
                     <?php } ?>
+                    <div class="row py-3">
+                        <div class="col-6">
+                            <strong>Şantiye</strong>
+                        </div>
+                        <?php $site = $this->Site_model->get(array("contract_id" => $item->id)); ?>
+                        <div class="col-6">
+                            <?php if (isset($site)){ ?>
+                                <a href="<?php echo base_url("site/file_form/$site->id"); ?>">
+                                    <?php echo site_code_name($site->id); ?>
+                                </a>
+                            <?php } ?>
+                        </div>
+                    </div>
                     <div class="row py-3">
                         <div class="col-6">
                             <strong>İşveren:</strong>
@@ -147,13 +145,14 @@
                             <?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?>
                         </div>
                     </div>
-                    <div class="row py-3">
-                        <div class="col-6">
-                            <strong>Alt Sözleşmeler</strong>
-                            <a href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>"><i class="fa fa-plus-circle fa-lg"></i></a>
-                        </div>
-                        <div class="col-6">
-                            <?php if ($item->parent == 0 or $item->parent = null) { ?>
+                    <?php if ($item->parent == 0 or $item->parent = null) { ?>
+                        <div class="row py-3">
+                            <div class="col-6">
+                                <strong>Alt Sözleşmeler</strong>
+                                <a href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>"><i
+                                            class="fa fa-plus-circle fa-lg"></i></a>
+                            </div>
+                            <div class="col-6">
 
                                 <?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
                                 <ol>
@@ -164,12 +163,13 @@
                                         </li>
                                     <?php } ?>
                                 </ol>
-                            <?php } ?>
+
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
                 </div>
             </div>
-            <div class="col-xl-7 col-lg-12 col-md-12 box-col-10">
+            <div class="col-xl-5 col-lg-12 col-md-12 box-col-10">
                 <div class="card">
                     <div class="file-content">
                         <div class="card-header">
