@@ -1714,8 +1714,12 @@ class Report extends CI_Controller
         $pdf->Cell(95, 5, "İşveren Temsilcisi", 1, 0, "C", 1);
         $pdf->Cell(95, 5, "Taşeron-Yüklenici Temsilcisi", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
-        $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
+        if (isset($owner_sign)){
+            $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
+        }
+        if (isset($contractor_sign)){
+            $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
+        }
         $pdf->Ln(); // Yeni satıra geç
 
         $file_name = "02 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Günlük Rapor ";
