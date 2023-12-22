@@ -1280,13 +1280,14 @@ class Report extends CI_Controller
         $pdf->SetX(10);
         $pdf->SetFont('dejavusans', 'N', 7);
 
-
         $pdf->SetXY(10, 265);
         $pdf->SetFont('dejavusans', 'B', 7);
         $pdf->Cell(95, 5, "İşveren", 1, 0, "C", 1);
         $pdf->Cell(95, 5, "Taşeron/Yüklenici", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
+        if (isset($owner_sign)){
+            $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
+        }
         if (isset($contractor_sign)) {
             $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
         }
