@@ -8,8 +8,7 @@
                 <th>Çalışan Sayı</th>
                 <th class="d-none d-sm-table-cell">Mekine Sayı</th>
                 <th class="d-none d-sm-table-cell">Oluşturan</th>
-                <th class="d-none d-sm-table-cell">Dosyalar</th>
-                <th></th>
+                <th>İşlem</th>
             </tr>
             </thead>
             <tbody>
@@ -51,38 +50,20 @@
                             <?php } ?>
                             <?php echo full_name($report->createdBy); ?>
                         </td>
-                        <td class="d-none d-sm-table-cell">
-                            <div>
-                                <?php if (!empty($report->id)) {
-                                    $report_files = get_module_files("report_files", "report_id", "$report->id");
-                                    if (!empty($report_files)) { ?>
-                                        <a class="btn btn-pill btn-success btn-air-success" type="button" title=""
-                                           href="<?php echo base_url("report/download_all/$report->id"); ?>"
-                                           data-bs-original-title="<?php foreach ($report_files as $report_file) { ?>
-                                            <?php echo filenamedisplay($report_file->img_url); ?> |
-                                            <?php } ?>"
-                                           data-original-title="btn btn-pill btn-info btn-air-info ">
-                                            <i class="fa fa-download" aria-hidden="true"></i> Dosya
-                                            (<?php echo count($report_files); ?>)
-                                        </a>
-                                    <?php } ?>
-                                <?php } else { ?>
-                                    <div class="div-table">
-                                        <div class="div-table-row">
-                                            <div class="div-table-col">
-                                                Dosya Yok, Eklemek İçin Görüntüle Butonundan Şartname Sayfasına
-                                                Gidiniz
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        </td>
+
                         <td>
-                            <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
-                                <button class="btn btn-success m-r-10" type="button" title="" data-bs-original-title="">
-                                    <i class="fa fa-arrow-right me-1"></i></button>
-                            </a>
+                            <div class="btn-group btn-group-pill" role="group"
+                                 aria-label="Basic example">
+                                <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>"
+                                   class="btn btn-outline-success">
+
+                                    <i class="fa fa-download"></i>
+                                </a>
+                                <a href="<?php echo base_url("report/print_report/$report->id/1/0"); ?>"
+                                   class="btn btn-outline-success">
+                                    <i class="fa fa-desktop"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 <?php } ?>

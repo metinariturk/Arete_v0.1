@@ -1408,7 +1408,7 @@ class Report extends CI_Controller
             }
         }
 
-        $file_name = "02 - Hakediş Raporu(Hesap Cetveli)-" . contract_name($contract->id) . "-Günlük Rapor ";
+        $file_name = dateFormat_dmy($report->report_date) ."_". site_name($site->id)."_"."Günlük Rapor";
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
