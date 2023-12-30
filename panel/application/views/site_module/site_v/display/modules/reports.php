@@ -7,6 +7,7 @@
                 <th>Rapor Gün</th>
                 <th>Çalışan Sayı</th>
                 <th class="d-none d-sm-table-cell">Mekine Sayı</th>
+                <th class="d-none d-sm-table-cell">Görsel</th>
                 <th class="d-none d-sm-table-cell">Oluşturan</th>
                 <th>İşlem</th>
             </tr>
@@ -36,21 +37,17 @@
                             </a>
                         </td>
                         <td class="d-none d-sm-table-cell">
-                            <?php if (!empty($report->createdBy)) { ?>
-                                <span data-tooltip-location="top"
-                                      data-tooltip="<?php echo full_name($report->createdBy); ?>">
-                                            <a href="<?php echo base_url("user/file_form/$report->createdBy"); ?>">
-                                                <img
-                                                        class="img-50 rounded-circle" <?php echo get_avatar($report->createdBy); ?>
-                                                        alt=""
-                                                        data-original-title=""
-                                                        title="<?php echo full_name($report->createdBy); ?>">
-                                            </a>
-                                            </span>
+                            <?php if (!empty($report->id)) {
+                                $report_files = get_module_files("report_files", "report_id", "$report->id");
+                                if (!empty($report_files)) { ?>
+                                    (<?php echo count($report_files); ?>)
+                                <?php } ?>
                             <?php } ?>
+
+                        </td>
+                        <td class="d-none d-sm-table-cell">
                             <?php echo full_name($report->createdBy); ?>
                         </td>
-
                         <td>
                             <div class="btn-group btn-group-pill" role="group"
                                  aria-label="Basic example">
