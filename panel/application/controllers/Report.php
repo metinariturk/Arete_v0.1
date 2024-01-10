@@ -450,6 +450,8 @@ class Report extends CI_Controller
 
     public function update($id)
     {
+        $report = $this->Report_model->get(array("id" => $id));
+
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
         $this->load->model("Report_supply_model");
@@ -457,6 +459,7 @@ class Report extends CI_Controller
         $workgroups = $this->input->post("workgroups[]");
         $workmachine = $this->input->post("workmachine[]");
         $supplies = $this->input->post("supplies[]");
+
 
         $workgroups_filter = array();
         foreach ($workgroups as $workgroup) {
@@ -488,8 +491,6 @@ class Report extends CI_Controller
 
         $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
 
-        $report = $this->Report_model->get(array("id" => $id));
-
         $update = $this->Report_model->update(
             array(
                 "id" => $id
@@ -500,16 +501,20 @@ class Report extends CI_Controller
                 "createdAt" => date("Y-m-d"),
                 "createdBy" => active_user_id(),
                 "off_days" => $off_days
-
             )
         );
 
+        $delete_old = $this->Report_workgroup_model->delete(array( "report_id" => $id));
+        $delete_old = $this->Report_workmachine_model->delete(array( "report_id" => $id));
+        $delete_old = $this->Report_supply_model->delete(array( "report_id" => $id));
+
         foreach ($workgroups_filter as $workgroup) {
-            $update_workgroup = $this->Report_workgroup_model->update(
+            $insert_workgroup = $this->Report_workgroup_model->add(
                 array(
-                    "id" => $id
-                ),
-                array(
+                    "site_id" => $report->site_id,
+                    "report_id" => $report->id,
+                    "project_id" => $report->proje_id,
+                    "contract_id" => $report->contract_id,
                     "workgroup" => $workgroup['workgroup'],
                     "number" => $workgroup['worker_count'],
                     "notes" => $workgroup['notes'],
@@ -519,11 +524,14 @@ class Report extends CI_Controller
             );
         }
 
+
         foreach ($workmachine_filter as $workmachine) {
-            $update_workmachine = $this->Report_workmachine_model->update(
+            $insert_workmachine = $this->Report_workmachine_model->add(
                 array(
-                    "id" => $id
-                ), array(
+                    "site_id" => $report->site_id,
+                    "report_id" => $report->id,
+                    "project_id" => $report->proje_id,
+                    "contract_id" => $report->contract_id,
                     "workmachine" => $workmachine['workmachine'],
                     "number" => $workmachine['machine_count'],
                     "notes" => $workmachine['machine_notes'],
@@ -534,10 +542,12 @@ class Report extends CI_Controller
         }
 
         foreach ($supplies_filter as $supplies) {
-            $update_workmachine = $this->Report_supply_model->update(
+            $insert_workmachine = $this->Report_supply_model->add(
                 array(
-                    "id" => $id
-                ), array(
+                    "site_id" => $report->site_id,
+                    "report_id" => $report->id,
+                    "project_id" => $report->proje_id,
+                    "contract_id" => $report->contract_id,
                     "supply" => $supplies['supply'],
                     "qty" => $supplies['qty'],
                     "unit" => $supplies['unit'],
@@ -547,19 +557,6 @@ class Report extends CI_Controller
                 )
             );
         }
-
-        $record_id = $this->db->insert_id();
-
-        $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
-
-        $update2 = $this->Order_model->update(
-            array(
-                "id" => $file_order_id
-            ),
-            array(
-                "updatedAt" => date("Y-m-d H:i:s"),
-            )
-        );
 
         // TODO Alert sistemi eklenecek...
         if ($update) {
@@ -1282,13 +1279,16 @@ class Report extends CI_Controller
 
         $pdf->SetXY(10, 265);
         $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(95, 5, "İşveren", 1, 0, "C", 1);
-        $pdf->Cell(95, 5, "Taşeron/Yüklenici", 1, 0, "C", 1);
-        $pdf->Ln(); // Yeni satıra geç
         if (isset($owner_sign)){
+            $pdf->Cell(95, 5, $owner_sign->position, 1, 0, "C", 1);
+            $pdf->Ln(); // Yeni satıra geç
             $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
         }
+        $pdf->SetXY(105, 265);
         if (isset($contractor_sign)) {
+            $pdf->Cell(95, 5, $contractor_sign->position, 1, 0, "C", 1);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(105);
             $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
         }
         $pdf->Ln(); // Yeni satıra geç
@@ -1678,9 +1678,9 @@ class Report extends CI_Controller
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetX(10);
             $pdf->SetFont('dejavusans', 'B', 7);
-            $pdf->Cell(30, 5, "Makine Adı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Sayısı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Çalıştığı Mahal", 1, 0, "C", 0);
+            $pdf->Cell(30, 5, "Malzeme Adı", 1, 0, "C", 0);
+            $pdf->Cell(30, 5, "Miktarı", 1, 0, "C", 0);
+            $pdf->Cell(30, 5, "Birim", 1, 0, "C", 0);
             $pdf->Cell(100, 5, "Açıklama", 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetFont('dejavusans', 'N', 7);
