@@ -73,14 +73,10 @@
                     </div>
                     <div class="col-sm-2 col-md-2">
                         <div class="mb-2">
-                            <select name="unit" class="form-control">
-                                <option>Birim</option>
-                                <option>m²</option>
-                                <option>m³</option>
-                                <option>kg</option>
-                                <option>ton</option>
-                                <option>m</option>
-                            </select>
+                            <div class="mb-2">
+                                <input type="text" step="any" class="form-control"
+                                       name="unit" placeholder="Birim">
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-10 col-md-4">
