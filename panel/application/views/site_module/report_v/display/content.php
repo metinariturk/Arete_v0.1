@@ -74,6 +74,9 @@
                             <p style="text-align:left; margin-top:3pt; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
                                 <strong><?php echo ($item->off_days == 1) ? 'Çalışma Yok' : ''; ?></strong>
                             </p>
+                            <p style="text-align:left; margin-top:3pt; margin-bottom:3pt; widows:0; orphans:0; font-size:10pt;">
+                                <strong>Oluşturan : <?php echo full_name($item->createdBy); ?></strong>
+                            </p>
                         </div>
                         <div class="col-6">
                         </div>

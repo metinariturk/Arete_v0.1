@@ -416,7 +416,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        $reports = $this->Report_model->get_all(array("site_id" => $id), "report_date DESC ");
+        $reports = $this->Report_model->get_all(array("site_id" => $id), "report_date DESC");
         $contractor_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "contractor_sign"));
         $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "contractor_staff"));
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "owner_sign"));

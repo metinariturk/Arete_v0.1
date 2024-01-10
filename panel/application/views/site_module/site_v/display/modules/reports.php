@@ -1,6 +1,6 @@
 <div class="col-12">
     <div class="text-center">
-        <table class="table">
+        <table class="table" id="report_table">
             <thead>
             <tr>
                 <th class="d-none d-sm-table-cell"><i class="fa fa-reorder"></i></th>
@@ -8,7 +8,6 @@
                 <th>Çalışan Sayı</th>
                 <th class="d-none d-sm-table-cell">Mekine Sayı</th>
                 <th class="d-none d-sm-table-cell">Görsel</th>
-                <th class="d-none d-sm-table-cell">Oluşturan</th>
                 <th>İşlem</th>
             </tr>
             </thead>
@@ -16,9 +15,8 @@
             <?php if (!empty($reports)) { ?>
                 <?php foreach ($reports as $report) { ?>
                     <tr id="center_row">
-                        <td class="d-none d-sm-table-cell">
-                            <?php echo $report->id; ?>
-                        </td>
+                        <td></td>
+
                         <td>
                             <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
                                 <?php
@@ -45,9 +43,7 @@
                             <?php } ?>
 
                         </td>
-                        <td class="d-none d-sm-table-cell">
-                            <?php echo full_name($report->createdBy); ?>
-                        </td>
+
                         <td>
                             <div class="btn-group btn-group-pill" role="group"
                                  aria-label="Basic example">

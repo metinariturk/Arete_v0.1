@@ -116,6 +116,19 @@
     }
 </script>
 
+<script>
+    $(document).ready(function () {
+        $('#report_table').DataTable({
+            "order": [[0, 'asc']], // 0. sütunu (sıra numarası sütunu) artan sıraya göre sırala
+            "initComplete": function (settings, json) {
+                // Sıra numaralarını güncelle
+                $('#report_table').DataTable().column(0, {search:'applied', order:'applied'}).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
