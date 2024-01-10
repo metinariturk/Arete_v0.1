@@ -119,7 +119,7 @@
 <script>
     $(document).ready(function () {
         $('#report_table').DataTable({
-            "order": [[0, 'asc']], // 0. sütunu (sıra numarası sütunu) artan sıraya göre sırala
+            "order": [[1, 'desc']], // Tarih sütununu azalana göre sırala (1: ikinci sütun)
             "initComplete": function (settings, json) {
                 // Sıra numaralarını güncelle
                 $('#report_table').DataTable().column(0, {search:'applied', order:'applied'}).nodes().each(function (cell, i) {
