@@ -35,7 +35,7 @@
                     <div class="mb-2">
                         <div class="mb-2">
                             <input type="text" step="any" class="form-control" value="<?php echo $supply->unit; ?>"
-                                   name="supplies[<?php echo $p; ?>][unit]" placeholder="Miktar">
+                                   name="supplies[<?php echo $p; ?>][unit]" placeholder="Birim">
                         </div>
                     </div>
                 </div>

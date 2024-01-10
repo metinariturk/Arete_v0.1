@@ -49,7 +49,7 @@
         <hr>
         <div class="row box-col-3">
             <label>Genel Notlar</label>
-            <input type="text" class="form-control"
+            <input type="text" class="form-control" value="<?php echo $item->aciklama; ?>"
                    name="note">
         </div>
     </div>
