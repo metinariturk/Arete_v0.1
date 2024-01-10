@@ -15,6 +15,42 @@
         </div>
         <div class="mb-2">
             <div class="row">
+                <div class="col-12">
+                    <div class="col-form-label">Sözleşme İşveren</div>
+                    <select id="select2-demo-1"
+                            class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
+                            data-plugin="select2" name="isveren">
+                        <option value="<?php echo isset($form_error) ? set_value("isveren") : "$item->isveren"; ?>"><?php echo isset($form_error) ? company_name(set_value("isveren")) : company_name($item->isveren); ?></option>
+                        <?php foreach ($companys as $company) { ?>
+                            <option value="<?php echo $company->id; ?>"><?php echo $company->company_name; ?></option>
+                        <?php } ?>
+                    </select>
+                    <?php if (isset($form_error)) { ?>
+                        <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="col-form-label">Taşeron/Tedarikçi</div>
+                    <select id="select2-demo-1"
+                            class="form-control <?php cms_isset(form_error("yuklenici"), "is-invalid", ""); ?>"
+                            data-plugin="select2" name="yuklenici">
+                        <option value="<?php echo isset($form_error) ? set_value("yuklenici") : "$item->yuklenici"; ?>"><?php echo isset($form_error) ? company_name(set_value("yuklenici")) : company_name($item->yuklenici); ?></option>
+                        <?php foreach ($companys as $company) { ?>
+                            <option value="<?php echo $company->id; ?>"><?php echo $company->company_name; ?></option>
+                        <?php } ?>
+                    </select>
+                    <?php if (isset($form_error)) { ?>
+                        <div class="invalid-feedback"><?php echo form_error("yuklenici"); ?></div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <div class="row">
                 <div class="col-6">
                     <div class="col-form-label">Teklif Türü</div>
                     <select id="select2-demo-1"

@@ -603,9 +603,7 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
-        $yukleniciler = $this->Company_model->get_all(array());
-        $yuklenici_users = $this->User_model->get_all(array("user_role" => 2));
-        $isveren_users = $this->User_model->get_all(array("user_role" => 1));
+        $companys = $this->Company_model->get_all(array());
 
         $settings = $this->Settings_model->get();
 
@@ -627,11 +625,8 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
         $viewData->settings = $settings;
-        $viewData->yukleniciler = $yukleniciler;
-        $viewData->yuklenici_users = $yuklenici_users;
         $viewData->distircts = $distircts;
-        $viewData->isveren_users = $isveren_users;
-        $viewData->not_employers = $not_employers;
+        $viewData->companys = $companys;
         $viewData->cities = $cities;
         $viewData->isverenler = $isverenler;
         $viewData->active_tab = $active_tab;
