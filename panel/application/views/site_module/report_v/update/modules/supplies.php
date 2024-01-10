@@ -33,14 +33,10 @@
                 </div>
                 <div class="col-sm-2 col-md-2">
                     <div class="mb-2">
-                        <select name="supplies[<?php echo $p; ?>][unit]" class="form-control">
-                            <option selected="selected[]" value="<?php echo $supply->unit; ?>"><?php echo $supply->unit; ?></option>
-                            <option>m²</option>
-                            <option>m³</option>
-                            <option>kg</option>
-                            <option>ton</option>
-                            <option>m</option>
-                        </select>
+                        <div class="mb-2">
+                            <input type="text" step="any" class="form-control" value="<?php echo $supply->unit; ?>"
+                                   name="unit" placeholder="Miktar">
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-10 col-md-4">
