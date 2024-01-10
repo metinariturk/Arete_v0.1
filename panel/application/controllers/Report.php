@@ -451,6 +451,19 @@ class Report extends CI_Controller
     public function update($id)
     {
         $report = $this->Report_model->get(array("id" => $id));
+        $project_code = project_code($report->project_id);
+        $site_code = site_code($report->site_id);
+
+            $old_report_date = dateFormat('d-m-Y', $report->report_date);
+            $new_report_date = dateFormat('d-m-Y', $this->input->post("report_date"));
+            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site_code/Reports/";
+        if ($this->input->post("report_date")) {
+            if (rename($old_folder_dir . $old_report_date, $old_folder_dir . $new_report_date)) {
+                echo 'Klasör adı başarıyla değiştirildi.';
+            } else {
+                echo 'Klasör adı değiştirilirken bir hata oluştu.';
+            }
+        }
 
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
@@ -482,13 +495,6 @@ class Report extends CI_Controller
             }
         }
 
-
-        if ($this->input->post("report_date")) {
-            $report_date = dateFormat('Y-m-d', $this->input->post("report_date"));
-        } else {
-            $report_date = null;
-        }
-
         $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
 
         $update = $this->Report_model->update(
@@ -496,7 +502,7 @@ class Report extends CI_Controller
                 "id" => $id
             ),
             array(
-                "report_date" => $report_date,
+                "report_date" => $new_report_date,
                 "aciklama" => $this->input->post("note"),
                 "createdAt" => date("Y-m-d"),
                 "createdBy" => active_user_id(),
