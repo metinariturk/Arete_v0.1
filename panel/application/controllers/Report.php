@@ -319,6 +319,7 @@ class Report extends CI_Controller
                     "createdAt" => date("Y-m-d"),
                     "createdBy" => active_user_id(),
                     "off_days" => $off_days,
+                    "aciklama" => $this->input->post("note"),
                 )
             );
 
@@ -1253,9 +1254,9 @@ class Report extends CI_Controller
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetX(10);
             $pdf->SetFont('dejavusans', 'B', 7);
-            $pdf->Cell(30, 5, "Makine Adı", 1, 0, "C", 0);
+            $pdf->Cell(30, 5, "Malzeme Adı", 1, 0, "C", 0);
             $pdf->Cell(30, 5, "Sayısı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Çalıştığı Mahal", 1, 0, "C", 0);
+            $pdf->Cell(30, 5, "Birim", 1, 0, "C", 0);
             $pdf->Cell(100, 5, "Açıklama", 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetFont('dejavusans', 'N', 7);
@@ -1266,7 +1267,7 @@ class Report extends CI_Controller
 
                 $pdf->Cell(30, 5, yazim_duzen($supply->supply), 1, 0, "L", 0);
                 $pdf->Cell(30, 5, $supply->qty, 1, 0, "C", 0);
-                $pdf->Cell(30, 5, $supply->unit, 1, 0, "L", 0);
+                $pdf->Cell(30, 5, $supply->unit, 1, 0, "C", 0);
                 $pdf->Cell(100, 5, $supply->notes, 1, 0, "L", 0);
                 $pdf->Ln(); // Yeni satıra geç
             }
