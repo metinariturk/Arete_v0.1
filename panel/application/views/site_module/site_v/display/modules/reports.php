@@ -20,7 +20,8 @@
                         <td>
                             <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
                                 <?php
-                                echo dateFormat_dmy($report->report_date);
+                                $formatter = new IntlDateFormatter('tr_TR', IntlDateFormatter::FULL, IntlDateFormatter::FULL, 'Europe/Istanbul');
+                                echo $formatter->format(strtotime($report->report_date));
                                 ?>
                             </a>
                         </td>

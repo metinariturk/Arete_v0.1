@@ -466,6 +466,8 @@ class Report extends CI_Controller
             }
         }
 
+
+
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
         $this->load->model("Report_supply_model");
@@ -498,12 +500,18 @@ class Report extends CI_Controller
 
         $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
 
+        if ($this->input->post("report_date")) {
+            $update_date = dateFormat('Y-m-d', $this->input->post("report_date"));
+        } else {
+            $update_date = null;
+        }
+
         $update = $this->Report_model->update(
             array(
                 "id" => $id
             ),
             array(
-                "report_date" => $new_report_date,
+                "report_date" => $update_date,
                 "aciklama" => $this->input->post("note"),
                 "createdAt" => date("Y-m-d"),
                 "createdBy" => active_user_id(),

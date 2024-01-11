@@ -15,7 +15,7 @@ class Report_model extends CI_Model
         return $this->db->where($where)->get($this->tableName)->row();
     }
 
-    public function get_all($where = array(), $order = "id ASC")
+    public function get_all($where = array(), $order = "id DESC")
     {
         return $this->db->where($where)->order_by($order)->get($this->tableName)->result();
     }
