@@ -1179,9 +1179,9 @@ class Report extends CI_Controller
             $pdf->SetX(10);
             $pdf->SetFont('dejavusans', 'B', 7);
             $pdf->Cell(30, 5, "Ekip Adı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Sayısı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Çalıştığı Mahal", 1, 0, "C", 0);
-            $pdf->Cell(100, 5, "Açıklama", 1, 0, "C", 0);
+            $pdf->Cell(15, 5, "Sayısı", 1, 0, "C", 0);
+            $pdf->Cell(35, 5, "Çalıştığı Mahal", 1, 0, "C", 0);
+            $pdf->Cell(110, 5, "Açıklama", 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetFont('dejavusans', 'N', 7);
 
@@ -1190,16 +1190,16 @@ class Report extends CI_Controller
                 $pdf->SetFont('dejavusans', 'N', 7);
 
                 $pdf->Cell(30, 5, group_name($workgroup->workgroup), 1, 0, "L", 0);
-                $pdf->Cell(30, 5, $workgroup->number, 1, 0, "C", 0);
-                $pdf->Cell(30, 5, yazim_duzen($workgroup->place), 1, 0, "L", 0);
-                $pdf->Cell(100, 5, yazim_duzen($workgroup->notes), 1, 0, "L", 0);
+                $pdf->Cell(15, 5, $workgroup->number, 1, 0, "C", 0);
+                $pdf->Cell(35, 5, yazim_duzen($workgroup->place), 1, 0, "L", 0);
+                $pdf->Cell(110, 5, yazim_duzen($workgroup->notes), 1, 0, "L", 0);
                 $pdf->Ln(); // Yeni satıra geç
             }
             $pdf->SetX(10);
             $pdf->SetFont('dejavusans', 'B', 7);
 
             $pdf->Cell(30, 5, "TOPLAM", 1, 0, "L", 0);
-            $pdf->Cell(30, 5, $this->Report_workgroup_model->sum_all(array("report_id" => $report->id), "number"), 1, 0, "C", 0);
+            $pdf->Cell(15, 5, $this->Report_workgroup_model->sum_all(array("report_id" => $report->id), "number"), 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
         } else {
             $pdf->Ln(); // Yeni satıra geç
@@ -1222,9 +1222,9 @@ class Report extends CI_Controller
             $pdf->SetX(10);
             $pdf->SetFont('dejavusans', 'B', 7);
             $pdf->Cell(30, 5, "Makine Adı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Sayısı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Çalıştığı Mahal", 1, 0, "C", 0);
-            $pdf->Cell(100, 5, "Açıklama", 1, 0, "C", 0);
+            $pdf->Cell(15, 5, "Sayısı", 1, 0, "C", 0);
+            $pdf->Cell(35, 5, "Çalıştığı Mahal", 1, 0, "C", 0);
+            $pdf->Cell(110, 5, "Açıklama", 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetFont('dejavusans', 'N', 7);
 
@@ -1233,16 +1233,16 @@ class Report extends CI_Controller
                 $pdf->SetFont('dejavusans', 'N', 7);
 
                 $pdf->Cell(30, 5, machine_name($workmachine->workmachine), 1, 0, "L", 0);
-                $pdf->Cell(30, 5, $workmachine->number, 1, 0, "C", 0);
-                $pdf->Cell(30, 5, yazim_duzen($workmachine->place), 1, 0, "L", 0);
-                $pdf->Cell(100, 5, yazim_duzen($workmachine->notes), 1, 0, "L", 0);
+                $pdf->Cell(15, 5, $workmachine->number, 1, 0, "C", 0);
+                $pdf->Cell(35, 5, yazim_duzen($workmachine->place), 1, 0, "L", 0);
+                $pdf->Cell(110, 5, yazim_duzen($workmachine->notes), 1, 0, "L", 0);
                 $pdf->Ln(); // Yeni satıra geç
             }
             $pdf->SetX(10);
             $pdf->SetFont('dejavusans', 'B', 7);
 
             $pdf->Cell(30, 5, "TOPLAM", 1, 0, "L", 0);
-            $pdf->Cell(30, 5, $this->Report_workmachine_model->sum_all(array("report_id" => $report->id), "number"), 1, 0, "C", 0);
+            $pdf->Cell(15, 5, $this->Report_workmachine_model->sum_all(array("report_id" => $report->id), "number"), 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
         } else {
             $pdf->Ln(); // Yeni satıra geç
@@ -1263,9 +1263,9 @@ class Report extends CI_Controller
             $pdf->SetX(10);
             $pdf->SetFont('dejavusans', 'B', 7);
             $pdf->Cell(30, 5, "Malzeme Adı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Sayısı", 1, 0, "C", 0);
-            $pdf->Cell(30, 5, "Birim", 1, 0, "C", 0);
-            $pdf->Cell(100, 5, "Açıklama", 1, 0, "C", 0);
+            $pdf->Cell(15, 5, "Sayısı", 1, 0, "C", 0);
+            $pdf->Cell(25, 5, "Birim", 1, 0, "C", 0);
+            $pdf->Cell(120, 5, "Açıklama", 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetFont('dejavusans', 'N', 7);
 
@@ -1274,9 +1274,9 @@ class Report extends CI_Controller
                 $pdf->SetFont('dejavusans', 'N', 7);
 
                 $pdf->Cell(30, 5, yazim_duzen($supply->supply), 1, 0, "L", 0);
-                $pdf->Cell(30, 5, $supply->qty, 1, 0, "C", 0);
-                $pdf->Cell(30, 5, $supply->unit, 1, 0, "C", 0);
-                $pdf->Cell(100, 5, $supply->notes, 1, 0, "L", 0);
+                $pdf->Cell(15, 5, $supply->qty, 1, 0, "C", 0);
+                $pdf->Cell(25, 5, $supply->unit, 1, 0, "C", 0);
+                $pdf->Cell(120, 5, $supply->notes, 1, 0, "L", 0);
                 $pdf->Ln(); // Yeni satıra geç
             }
         } else {
