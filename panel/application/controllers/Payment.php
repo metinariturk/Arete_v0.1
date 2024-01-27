@@ -2192,7 +2192,7 @@ class Payment extends CI_Controller
             array(
                 array("text" => "F", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
                 array("text" => "KDV (E x %" . $payment->F_a . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
-                array("text" => money_format($payment->E) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+                array("text" => money_format($payment->E*$payment->F_a/100) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
             ),
             array(
                 array("text" => "G", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
