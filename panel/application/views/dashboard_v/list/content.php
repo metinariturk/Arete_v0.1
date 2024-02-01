@@ -1,3 +1,22 @@
+<?php
+require 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+// Yeni bir Spreadsheet oluştur
+$spreadsheet = new Spreadsheet();
+
+// Aktif çalışma sayfasını al
+$sheet = $spreadsheet->getActiveSheet();
+
+// Hücreye değer ekle
+$sheet->setCellValue('A1', 'Hello World !');
+
+// Excel dosyasını kaydet
+$writer = new Xlsx($spreadsheet);
+$writer->save('ahmet.xlsx');
+?>
 <div class="row">
     <div class="col-xl-3 xl-100 box-col-12">
         <div class="card">

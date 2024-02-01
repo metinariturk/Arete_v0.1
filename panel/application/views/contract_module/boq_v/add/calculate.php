@@ -47,6 +47,12 @@
     <div class="card-body">
         <div class="container-fluid">
             <div class="card text-end">
+                <h2>Excel Yükleme Formu</h2>
+                <form action="<?php echo base_url("boq/convert_to_array/$contract_id/$payment->id"); ?>" method="post" enctype="multipart/form-data">
+                    <label for="excelDosyasi">Excel Dosyası Seçin:</label><br>
+                    <input type="file" id="excelDosyasi" name="excelDosyasi" accept=".xlsx, .xls"><br><br>
+                    <input type="submit" value="Excel Dosyasını Yükle">
+                </form>
                 <p><?php echo $income; ?></p>
                 <button
                         class="btn btn-outline-primary"
