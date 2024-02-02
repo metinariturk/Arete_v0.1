@@ -181,11 +181,6 @@ class Boq extends CI_Controller
 
         $boq_array = ($this->input->post('boq[]'));
 
-        echo "<pre>";
-        print_r($boq_array);
-        echo "</pre>";
-        die();
-
         if ($total_bypass == "on") {
             $boq_total = ($this->input->post("total_$boq_id"));
         } else {
@@ -351,8 +346,9 @@ class Boq extends CI_Controller
     }
 
 
-    public function delete($boq_id)
+    public function delete($contract_id, $payment_no, $boq_id)
     {
+
 
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -365,14 +361,24 @@ class Boq extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
 
+        $boq = $this->Boq_model->get(array("boq_id" => $boq_id,
+            "contract_id" => $contract_id,
+            "payment_no" => $payment_no)
+        );
+
         $delete = $this->Boq_model->delete(
             array(
-                "id" => $boq_id
+                "id" => $boq->id,
+                "contract_id" => $contract_id,
+                "payment_no" => $payment_no
             )
         );
 
-        $viewData->payment_no = get_from_id("boq", "payment_no", "$boq_id");
-        $viewData->contract_id = get_from_id("boq", "contract_id", "$boq_id");
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+        $payment = $this->Payment_model->get(array('contract_id' => $contract_id, "hakedis_no" => $payment_no));
+
+        $viewData->payment = $payment;
+        $viewData->contract = $contract;
 
         $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
 
@@ -435,89 +441,53 @@ class Boq extends CI_Controller
 
     }
 
-    public function convert_to_html($excelFilePath)
-    {
-        // Excel dosyasını yükleyin
-        $spreadsheet = IOFactory::load($excelFilePath);
-
-        // İlk çalışma sayfasını seçin
-        $sheet = $spreadsheet->getActiveSheet();
-
-        // HTML tablosunu başlatın
-        $html = '<table border="1">';
-
-        // Her satırı döngüyle işleyin
-        foreach ($sheet->getRowIterator() as $row) {
-            $html .= '<tr>';
-            // Her hücreyi döngüyle işleyin
-            foreach ($row->getCellIterator() as $cell) {
-                $html .= '<td>' . $cell->getValue() . '</td>';
-            }
-            $html .= '</tr>';
-        }
-
-        // HTML tablosunu kapatın
-        $html .= '</table>';
-
-        // Oluşturulan HTML'yi döndürün
-        return $html;
-    }
-
-    public function convert_to_array($contract_id = null, $payment_id = null, $stay = null)
+    public function convert_to_array($contract_id = null, $payment_id = null, $boq_id = null)
     {
 
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        $tempFilePath = $_FILES['excelDosyasi']['tmp_name'];
+        $tempFolderPath = 'uploads/temp/';
 
-        // Geçici klasöre dosyayı kaydedin
-        $targetFilePath = 'uploads/temp/' . $_FILES['excelDosyasi']['name'];
-        move_uploaded_file($tempFilePath, $targetFilePath);
-
-        // Excel dosyasını diziye dönüştürün
-
-        $workbook = IOFactory::load($targetFilePath);
-
-// İlk çalışma sayfasını seç
-        $worksheet = $workbook->getActiveSheet();
-
-// Çalışma sayfasındaki verileri bir diziye dönüştür
-        $data = $worksheet->toArray();
-
-
-        array_shift($data);
-        array_shift($data);
-
-// Array'in her bir alt dizisi için döngü
-        foreach ($data as &$values) {
-            foreach ($values as &$value) {
-                if ($value === 0) { // Burada 0'a karşı kontrol yapılmalıdır, 0'a karşı kontrol yapılacaksa değer tipine karşı yapılmalıdır.
-                    $value = "s"; // Eğer 0 ise 's' ile değiştir
-                }
-                print_r($value);
+// Temp klasör yoksa oluştur
+        if (!is_dir($tempFolderPath)) {
+            if (!mkdir($tempFolderPath, 0777, true)) {
+                die('Temp klasör oluşturulamadı...');
             }
         }
 
+        $tempFilePath = $_FILES['excelDosyasi']['tmp_name'];
 
-// Diziyi görüntüle
-        echo "<pre>";
-        print_r($data);
-        echo "</pre>";
+        $targetFilePath = 'uploads/temp/' . $_FILES['excelDosyasi']['name'];
+        move_uploaded_file($tempFilePath, $targetFilePath);
 
-        die();
+        $workbook = IOFactory::load($targetFilePath);
 
+        $worksheet = $workbook->getActiveSheet();
 
+        $data = $worksheet->toArray();
+
+        array_shift($data);
+        array_shift($data);
+
+        $newArray = array();
+
+        $newKeys = array('s', 'n', 'q', 'w', 'h', 'l', 't');
+
+        foreach ($data as $subArray) {
+            $newSubArray = array();
+            foreach ($subArray as $keyIndex => $value) {
+                $newSubArray[$newKeys[$keyIndex]] = $value;
+            }
+            $newArray[] = $newSubArray;
+        }
 
         $payment = $this->Payment_model->get(array('id' => $payment_id));
 
         $total_bypass = $this->input->post('bypass_total');
 
-        $boq_id = ($this->input->post('boq_id'));
-
         $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
-
 
         $old_record = get_from_any_and_and(
             "boq",
@@ -527,7 +497,7 @@ class Boq extends CI_Controller
         );
 
 
-        $boq_array = ($this->input->post('boq[]'));
+        $boq_array = $newArray;
 
         if ($total_bypass == "on") {
             $boq_total = ($this->input->post("total_$boq_id"));
@@ -674,17 +644,11 @@ class Boq extends CI_Controller
                 )
             );
             $viewData->old_boq = $old_boq;
-
         }
         $viewData->contract_id = $contract_id;
 
         $group_id = get_from_id("book", "parent", "$boq_id");
         $viewData->group_id = $group_id;
-
-
-        if ($stay != null) {
-            redirect(base_url("payment/file_form/$payment_id"));
-        }
 
         $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
 

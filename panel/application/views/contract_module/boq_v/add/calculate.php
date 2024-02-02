@@ -37,7 +37,7 @@
                    aria-hidden="true"></i>
             </a>
 
-            <a onclick="delete_boq(this)" url="<?php echo base_url("$this->Module_Name/delete/$income"); ?>">
+            <a onclick="delete_boq(this)" url="<?php echo base_url("$this->Module_Name/delete/$contract_id/$payment->hakedis_no/$income"); ?>">
                 <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"></i>
             </a>
         </div>
@@ -48,9 +48,20 @@
         <div class="container-fluid">
             <div class="card text-end">
                 <h2>Excel Yükleme Formu</h2>
-                <form action="<?php echo base_url("boq/convert_to_array/$contract_id/$payment->id"); ?>" method="post" enctype="multipart/form-data">
+                <form name="save_excel" action="<?php echo base_url("boq/convert_to_array/$contract_id/$payment->id/$income"); ?>" method="post" enctype="multipart/form-data">
                     <label for="excelDosyasi">Excel Dosyası Seçin:</label><br>
                     <input type="file" id="excelDosyasi" name="excelDosyasi" accept=".xlsx, .xls"><br><br>
+                    <button
+                            class="btn btn-outline-primary"
+                            type="button"
+                            data-bs-original-title=""
+                            onclick="saveCalc(this)"
+                            form="save_excel"
+                            data-url="<?php echo base_url("boq/convert_to_array/$contract_id/$payment->id/$income"); ?>"
+                            title="">
+                        Kaydet/Satır Ekle
+                    </button>
+
                     <input type="submit" value="Excel Dosyasını Yükle">
                 </form>
                 <p><?php echo $income; ?></p>
@@ -220,7 +231,7 @@
         <?php } else { ?>
             <div class="card" style="height: 150px">
                 <div class="card-body">
-                    <h4 class="m-t-10 text-center"><?php echo contract_name($contract_id); ?> </h4>
+                    <h4 class="m-t-10 text-center"><?php echo contract_name($contract->id); ?> </h4>
                     <h5 class="text-center"> <?php echo $payment->hakedis_no; ?> Nolu Hakediş </h5>
                 </div>
             </div>
