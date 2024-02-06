@@ -4,6 +4,7 @@ require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 
 class Boq extends CI_Controller
@@ -429,6 +430,52 @@ class Boq extends CI_Controller
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/renderList", $viewData, true);
         echo $render_html;
+
+    }
+
+    public function excel_sample($contract_id, $payment_id)
+    {
+        $spreadsheet = new Spreadsheet();
+
+// Aktif çalışma sayfasını ayarlama
+        $sheet = $spreadsheet->getActiveSheet();
+
+// Başlık satırını ekleyin
+        $sheet->setCellValue('A2', '#');
+        $sheet->setCellValue('B2', 'Bölüm');
+        $sheet->setCellValue('C2', 'Açıklama');
+        $sheet->setCellValue('D2', 'Adet');
+        $sheet->setCellValue('E2', 'En');
+        $sheet->setCellValue('F2', 'Boy');
+        $sheet->setCellValue('G2', 'Yükseklik');
+        $sheet->setCellValue('H2', 'Toplam');
+
+// Satır sayısını temsil eden işareti ekleme
+// 20 adet satır ekleme
+        for ($i = 1; $i <= 20; $i++) {
+            $sheet->setCellValue('A'.($i+1), $i);
+        }
+
+        // Başlık için hücre birleştirme ve metin ekleme
+        $sheet->mergeCells('A1:H1'); // Başlık hücrelerini birleştir
+        $sheet->setCellValue('A1', 'Metraj Şablonu'); // Başlık metnini ekle
+
+// Başlık hücresini stilini ayarlama
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // Metni ortala
+
+// Dosyayı oluşturmak için Writer'ı kullanma
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'excel_template.xlsx'; // Excel dosyasının adı
+
+// Excel dosyasını oluşturun
+        $writer->save($filename);
+
+// İndirme işlemi
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
 
     }
 
