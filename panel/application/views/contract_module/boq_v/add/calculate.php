@@ -22,7 +22,7 @@
                                } ?>"
                                class="form-control btn-square" type="text" placeholder=""><span
                                 class="input-group-text"><?php echo boq_unit($income); ?></span>
-                        <input name="boq_id" id="dont_delete" hidden value="<?php echo $income; ?>">
+                        <input name="boq_id" id="dont_delete" value="<?php echo $income; ?>">
                     </div>
                 </div>
             </div>
@@ -48,22 +48,20 @@
         <div class="container-fluid">
             <div class="card text-end">
                 <h2>Excel Yükleme Formu</h2>
-                <form name="save_excel" action="<?php echo base_url("boq/convert_to_array/$contract_id/$payment->id/$income"); ?>" method="post" enctype="multipart/form-data">
                     <label for="excelDosyasi">Excel Dosyası Seçin:</label><br>
                     <input type="file" id="excelDosyasi" name="excelDosyasi" accept=".xlsx, .xls"><br><br>
-                    <button
-                            class="btn btn-outline-primary"
-                            type="button"
-                            data-bs-original-title=""
-                            onclick="saveCalc(this)"
-                            form="save_excel"
-                            data-url="<?php echo base_url("boq/convert_to_array/$contract_id/$payment->id/$income"); ?>"
-                            title="">
-                        Kaydet/Satır Ekle
-                    </button>
 
-                    <input type="submit" value="Excel Dosyasını Yükle">
-                </form>
+                <button
+                        class="btn btn-outline-primary"
+                        type="button"
+                        data-bs-original-title=""
+                        onclick="saveCalc(this)"
+                        form="save_boq"
+                        data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id"); ?>"
+                        title="">
+                    Excel Yükle
+                </button>
+
                 <p><?php echo $income; ?></p>
                 <button
                         class="btn btn-outline-primary"
@@ -105,6 +103,7 @@
         <?php if (!empty($old_boq)) { ?>
             <?php $old_boqs = json_decode($old_boq->calculation, true); ?>
             <?php foreach ($old_boqs as $row_no => $info) { ?>
+                <?php echo $row_no; ?>
                 <?php $range = count($old_boqs); ?>
                 <div class="container-fluid">
                     <div class="row" id="row_<?php echo $old_boq->boq_id; ?>_<?php echo $row_no; ?>">
@@ -162,7 +161,7 @@
             <?php } ?>
         <?php } ?>
         <?php if (isset($old_boq)) { ?>
-            <?php $row_numbers = range($range + 1, ($range + 10)); ?>
+            <?php $row_numbers = range($range, ($range + 10)); ?>
         <?php } else { ?>
             <?php $row_numbers = range(1, 10); ?>
         <?php } ?>
@@ -482,6 +481,7 @@
             document.getElementById('total_' + income).value = totalResult.toFixed(2);
         }
 
+
     }
 
 </script>
@@ -494,7 +494,6 @@
         readonlyInput.readOnly = !toggleCheckbox.checked;
 
         var pointerEventsValue = toggleCheckbox.checked ? "none" : "auto"; // pointerEvents ayarı
-
 
         for (var i = 1; i <= <?php echo $last_row; ?>; i++) {
             var qInput = document.getElementById('q_' + income + '_' + i);
@@ -520,6 +519,8 @@
             tInput.readOnly = toggleCheckbox.checked;
             tInput.style.pointerEvents = pointerEventsValue;
         }
+
+
     }
 </script>
 

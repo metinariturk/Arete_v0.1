@@ -156,7 +156,7 @@ class Boq extends CI_Controller
         echo $render_calculate;
     }
 
-    public function save($contract_id = null, $payment_id = null, $stay = null)
+    public function save($contract_id, $payment_id, $stay = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -164,33 +164,11 @@ class Boq extends CI_Controller
 
         $payment = $this->Payment_model->get(array('id' => $payment_id));
 
-        $total_bypass = $this->input->post('bypass_total');
-
         $boq_id = ($this->input->post('boq_id'));
-
-        $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
-
-
-        $old_record = get_from_any_and_and(
-            "boq",
-            "contract_id", "$contract_id",
-            "payment_no", "$payment->hakedis_no",
-            "boq_id", "$boq_id"
-        );
-
-
         $boq_array = ($this->input->post('boq[]'));
 
-        if ($total_bypass == "on") {
-            $boq_total = ($this->input->post("total_$boq_id"));
-        } else {
-            $boq_total = 0.0;
-            foreach ($boq_array as $item) {
-                if (isset($item['t'])) {
-                    $boq_total += (float)$item['t'];
-                }
-            }
-        }
+        $boq_total = ($this->input->post("total_$boq_id"));
+        $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
 
         foreach ($boq_array as $key => $sub_array) {
             if (empty(array_filter($sub_array))) {
@@ -198,88 +176,107 @@ class Boq extends CI_Controller
             }
         }
 
-        if (isset($old_record)) {
-            if ($total_bypass == "on") {
-                $boq_total = ($this->input->post("total_$boq_id"));
 
-                $update = $this->Boq_model->update(
-                    array(
-                        "id" => $old_record
-                    ),
-                    array(
-                        "calculation" => null,
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
-                    )
-                );
+        $old_boq = $this->Boq_model->get(
+            array(
+                "boq_id" => $boq_id,
+                "contract_id" => $contract_id,
+                "payment_no" => $payment->hakedis_no
+            )
+        );
 
-            } else {
-                $boq_total = 0.0;
-                foreach ($boq_array as $item) {
-                    if (isset($item['t'])) {
-                        $boq_total += (float)$item['t'];
-                    }
+        if (!empty($_FILES['excelDosyasi']['name'])) {
+            $tempFolderPath = 'uploads/temp/';
+
+// Temp klasör yoksa oluştur
+            if (!is_dir($tempFolderPath)) {
+                if (!mkdir($tempFolderPath, 0777, true)) {
+                    die('Temp klasör oluşturulamadı...');
                 }
+            }
 
-                $update = $this->Boq_model->update(
+            $tempFilePath = $_FILES['excelDosyasi']['tmp_name'];
+
+            $targetFilePath = 'uploads/temp/' . $_FILES['excelDosyasi']['name'];
+            move_uploaded_file($tempFilePath, $targetFilePath);
+
+            $workbook = IOFactory::load($targetFilePath);
+
+            $worksheet = $workbook->getActiveSheet();
+
+            $data = $worksheet->toArray();
+
+            array_shift($data);
+            array_shift($data);
+
+            $excel_array = array();
+
+            $newKeys = array('s', 'n', 'q', 'w', 'h', 'l', 't');
+
+            $i = 1;
+            foreach ($data as $subArray) {
+                $newSubArray = array();
+                foreach ($subArray as $keyIndex => $value) {
+                    $newSubArray[$newKeys[$keyIndex]] = $value;
+                }
+                $excel_array[$i++] = $newSubArray;
+            }
+            $excel_array;
+
+            $boq_array = ($this->input->post('boq[]'));
+
+            $mergedArray = array_merge($excel_array, $boq_array);
+
+            foreach ($mergedArray as $key => $sub_array) {
+                if (empty(array_filter($sub_array))) {
+                    unset($mergedArray[$key]);
+                }
+            }
+
+            if (isset($old_boq)) {
+                $delete = $this->Boq_model->delete(
                     array(
-                        "id" => $old_record
-                    ),
-                    array(
-                        "calculation" => json_encode($boq_array),
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
+                        "boq_id" => $boq_id,
+                        "contract_id" => $contract_id,
+                        "payment_no" => $payment->hakedis_no
                     )
                 );
             }
 
-
-        } elseif (!empty($boq_array)) {
-            if ($total_bypass == "on") {
-                $boq_total = ($this->input->post("total_$boq_id"));
-                $insert = $this->Boq_model->add(
-                    array(
-                        "contract_id" => $contract_id,
-                        "boq_id" => $boq_id,
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
-                        "payment_no" => $payment->hakedis_no,
-                        "calculation" => null,
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                    )
-                );
-            } else {
-                $boq_total = 0.0;
-                foreach ($boq_array as $item) {
-                    if (isset($item['t'])) {
-                        $boq_total += (float)$item['t'];
-                    }
-                }
-
-                $insert = $this->Boq_model->add(
-                    array(
-                        "contract_id" => $contract_id,
-                        "boq_id" => $boq_id,
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
-                        "payment_no" => $payment->hakedis_no,
-                        "calculation" => json_encode($boq_array),
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                    )
-                );
-            }
-        }
-
-        if (empty($boq_array)) {
-            $delete = $this->Boq_model->delete(
+            $insert = $this->Boq_model->add(
                 array(
-                    "id" => $old_record
+                    "contract_id" => $contract_id,
+                    "boq_id" => $boq_id,
+                    "sub_id" => $contract_item->sub_id,
+                    "main_id" => $contract_item->main_id,
+                    "payment_no" => $payment->hakedis_no,
+                    "calculation" => json_encode($mergedArray),
+                    "total" => $boq_total,
+                    "createdAt" => date("Y-m-d H:i:s"),
+                )
+            );
+        } else {
+
+            if (isset($old_boq)) {
+                $delete = $this->Boq_model->delete(
+                    array(
+                        "boq_id" => $boq_id,
+                        "contract_id" => $contract_id,
+                        "payment_no" => $payment->hakedis_no
+                    )
+                );
+            }
+
+            $insert = $this->Boq_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "boq_id" => $boq_id,
+                    "sub_id" => $contract_item->sub_id,
+                    "main_id" => $contract_item->main_id,
+                    "payment_no" => $payment->hakedis_no,
+                    "calculation" => json_encode($boq_array),
+                    "total" => $boq_total,
+                    "createdAt" => date("Y-m-d H:i:s"),
                 )
             );
         }
@@ -312,7 +309,6 @@ class Boq extends CI_Controller
                 "payment_no", "$payment->hakedis_no",
                 "boq_id", $boq_id);
 
-
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -326,13 +322,11 @@ class Boq extends CI_Controller
                 )
             );
             $viewData->old_boq = $old_boq;
-
         }
         $viewData->contract_id = $contract_id;
 
         $group_id = get_from_id("book", "parent", "$boq_id");
         $viewData->group_id = $group_id;
-
 
         if ($stay != null) {
             redirect(base_url("payment/file_form/$payment_id"));
@@ -342,9 +336,7 @@ class Boq extends CI_Controller
 
         echo $render_calculate;
 
-        //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
     }
-
 
     public function delete($contract_id, $payment_no, $boq_id)
     {
@@ -362,8 +354,8 @@ class Boq extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
 
         $boq = $this->Boq_model->get(array("boq_id" => $boq_id,
-            "contract_id" => $contract_id,
-            "payment_no" => $payment_no)
+                "contract_id" => $contract_id,
+                "payment_no" => $payment_no)
         );
 
         $delete = $this->Boq_model->delete(
@@ -417,7 +409,6 @@ class Boq extends CI_Controller
 
     public function back_main($contract_id, $payment_id)
     {
-
         $contract = $this->Contract_model->get(array('id' => $contract_id));
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
@@ -441,219 +432,4 @@ class Boq extends CI_Controller
 
     }
 
-    public function convert_to_array($contract_id = null, $payment_id = null, $boq_id = null)
-    {
-
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $tempFolderPath = 'uploads/temp/';
-
-// Temp klasör yoksa oluştur
-        if (!is_dir($tempFolderPath)) {
-            if (!mkdir($tempFolderPath, 0777, true)) {
-                die('Temp klasör oluşturulamadı...');
-            }
-        }
-
-        $tempFilePath = $_FILES['excelDosyasi']['tmp_name'];
-
-        $targetFilePath = 'uploads/temp/' . $_FILES['excelDosyasi']['name'];
-        move_uploaded_file($tempFilePath, $targetFilePath);
-
-        $workbook = IOFactory::load($targetFilePath);
-
-        $worksheet = $workbook->getActiveSheet();
-
-        $data = $worksheet->toArray();
-
-        array_shift($data);
-        array_shift($data);
-
-        $newArray = array();
-
-        $newKeys = array('s', 'n', 'q', 'w', 'h', 'l', 't');
-
-        foreach ($data as $subArray) {
-            $newSubArray = array();
-            foreach ($subArray as $keyIndex => $value) {
-                $newSubArray[$newKeys[$keyIndex]] = $value;
-            }
-            $newArray[] = $newSubArray;
-        }
-
-        $payment = $this->Payment_model->get(array('id' => $payment_id));
-
-        $total_bypass = $this->input->post('bypass_total');
-
-        $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
-
-        $old_record = get_from_any_and_and(
-            "boq",
-            "contract_id", "$contract_id",
-            "payment_no", "$payment->hakedis_no",
-            "boq_id", "$boq_id"
-        );
-
-
-        $boq_array = $newArray;
-
-        if ($total_bypass == "on") {
-            $boq_total = ($this->input->post("total_$boq_id"));
-        } else {
-            $boq_total = 0.0;
-            foreach ($boq_array as $item) {
-                if (isset($item['t'])) {
-                    $boq_total += (float)$item['t'];
-                }
-            }
-        }
-
-        foreach ($boq_array as $key => $sub_array) {
-            if (empty(array_filter($sub_array))) {
-                unset($boq_array[$key]);
-            }
-        }
-
-        if (isset($old_record)) {
-            if ($total_bypass == "on") {
-                $boq_total = ($this->input->post("total_$boq_id"));
-
-                $update = $this->Boq_model->update(
-                    array(
-                        "id" => $old_record
-                    ),
-                    array(
-                        "calculation" => null,
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
-                    )
-                );
-
-            } else {
-                $boq_total = 0.0;
-                foreach ($boq_array as $item) {
-                    if (isset($item['t'])) {
-                        $boq_total += (float)$item['t'];
-                    }
-                }
-
-                $update = $this->Boq_model->update(
-                    array(
-                        "id" => $old_record
-                    ),
-                    array(
-                        "calculation" => json_encode($boq_array),
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
-                    )
-                );
-            }
-
-
-        } elseif (!empty($boq_array)) {
-            if ($total_bypass == "on") {
-                $boq_total = ($this->input->post("total_$boq_id"));
-                $insert = $this->Boq_model->add(
-                    array(
-                        "contract_id" => $contract_id,
-                        "boq_id" => $boq_id,
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
-                        "payment_no" => $payment->hakedis_no,
-                        "calculation" => null,
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                    )
-                );
-            } else {
-                $boq_total = 0.0;
-                foreach ($boq_array as $item) {
-                    if (isset($item['t'])) {
-                        $boq_total += (float)$item['t'];
-                    }
-                }
-
-                $insert = $this->Boq_model->add(
-                    array(
-                        "contract_id" => $contract_id,
-                        "boq_id" => $boq_id,
-                        "sub_id" => $contract_item->sub_id,
-                        "main_id" => $contract_item->main_id,
-                        "payment_no" => $payment->hakedis_no,
-                        "calculation" => json_encode($boq_array),
-                        "total" => $boq_total,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                    )
-                );
-            }
-        }
-
-        if (empty($boq_array)) {
-            $delete = $this->Boq_model->delete(
-                array(
-                    "id" => $old_record
-                )
-            );
-        }
-
-        if (isset($insert) or isset($update) or isset($delete)) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Metraj başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Metraj Ekleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-        }
-
-
-// İşlemin Sonucunu Session'a yazma işlemi...
-        $this->session->set_flashdata("alert", $alert);
-
-        $viewData = new stdClass();
-
-        $viewData->payment = $payment;
-
-        $isset_boq =
-            get_from_any_and_and("boq",
-                "contract_id", "$contract_id",
-                "payment_no", "$payment->hakedis_no",
-                "boq_id", $boq_id);
-
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
-
-        $viewData->income = $boq_id;
-        if (isset($isset_boq)) {
-            $old_boq = $this->Boq_model->get(
-                array(
-                    "id" => $isset_boq,
-                )
-            );
-            $viewData->old_boq = $old_boq;
-        }
-        $viewData->contract_id = $contract_id;
-
-        $group_id = get_from_id("book", "parent", "$boq_id");
-        $viewData->group_id = $group_id;
-
-        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
-
-        echo $render_calculate;
-
-
-    }
 }

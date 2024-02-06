@@ -4,7 +4,7 @@
       div="refresh_calculate_sign"
       enctype="multipart/form-data" autocomplete="off">
     <div class="div">
-        <?php $calculate_sings = $this->Payment_sign_model->get_all(array("contract_id"=>$item->contract_id, "sign_page" => "calculate_sign"), "rank ASC"); ?>
+        <?php $calculate_sings = $this->Payment_sign_model->get_all(array("contract_id" => $item->contract_id, "sign_page" => "calculate_sign"), "rank ASC"); ?>
 
         <table style="width: 100%;">
             <thead>
@@ -29,7 +29,8 @@
                             <a onclick="delete_sign(this)"
                                div="refresh_calculate_sign"
                                url="<?php echo base_url("$this->Module_Name/delete_sign/$calculate_sing->id/calculate_sign/$item->id"); ?>">
-                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
+                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                                   aria-hidden="true">
                                 </i>
                             </a>
                         </td>
@@ -61,3 +62,4 @@
         <i class="fa fa-plus fa-lg"></i> Ekle
     </a>
 </form>
+{"2":{"s":"Konferans Salonu","n":"\u0130\u015fler G\u00fc\u00e7ler Halledildi","q":"2","w":"1","h":"0.75","l":"0.2","t":"0.30"},"1":{"n":"Deneme \u0130\u00e7in K\u00f6\u015fe Kal\u0131b\u0131 Yap\u0131lmas\u0131","q":"10","w":"2","h":"1","l":"0.5","t":"10.00"},"3":{"s":"asdfasdf","n":"asd","q":"2","w":"3","h":"1","l":"1","t":"6.00"}}
