@@ -11,6 +11,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ComposerSettings">
+    <pharConfigPath>$PROJECT_DIR$/panel/composer.json</pharConfigPath>
     <execution />
   </component>
   <component name="Git.Settings">
@@ -27,13 +28,37 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/panel/vendor/composer" />
+      <path value="$PROJECT_DIR$/panel/vendor/maennchen/zipstream-php" />
+      <path value="$PROJECT_DIR$/panel/vendor/markbaker/complex" />
+      <path value="$PROJECT_DIR$/panel/vendor/markbaker/matrix" />
+      <path value="$PROJECT_DIR$/panel/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/panel/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/panel/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/panel/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/panel/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/panel/vendor/voku/anti-xss" />
+      <path value="$PROJECT_DIR$/panel/vendor/voku/portable-ascii" />
+      <path value="$PROJECT_DIR$/panel/vendor/voku/portable-utf8" />
+      <path value="$PROJECT_DIR$/panel/vendor/myclabs/php-enum" />
+      <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-iconv" />
+      <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-php72" />
+    </include_path>
+  </component>
   <component name="ProjectId" id="2WCsf1FIyj311z3OrPJTXMudnx6" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/libraries" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -102,6 +127,7 @@
       <workItem from="1700998732059" duration="14377000" />
       <workItem from="1701199638091" duration="11429000" />
       <workItem from="1702129679779" duration="6199000" />
+      <workItem from="1707329475751" duration="8213000" />
     </task>
     <servers />
   </component>
@@ -111,15 +137,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>61</line>
-          <properties>
-            <option name="className" value="\Boq" />
-            <option name="methodName" value="new_form" />
-          </properties>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
           <line>305</line>
@@ -137,6 +154,15 @@
             <option name="methodName" value="sign_rankSetter" />
           </properties>
           <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
+          <line>455</line>
+          <properties>
+            <option name="className" value="\Boq" />
+            <option name="methodName" value="template_download" />
+          </properties>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>

@@ -22,7 +22,7 @@
                                } ?>"
                                class="form-control btn-square" type="text" placeholder=""><span
                                 class="input-group-text"><?php echo boq_unit($income); ?></span>
-                        <input name="boq_id" hidden id="dont_delete" value="<?php echo $income; ?>">
+                        <input name="boq_id" id="dont_delete" hidden value="<?php echo $income; ?>">
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                             data-bs-original-title=""
                             onclick="saveCalc(this)"
                             form="save_boq"
-                            data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id"); ?>"
+                            data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id/$income"); ?>"
                             title="">
                         <i class="fa fa-file-excel-o"></i> Excel Yükle
                     </button>
@@ -118,7 +118,6 @@
             <?php $i = 1; ?>
             <?php foreach ($old_boqs as $row_no => $info) { ?>
                 <?php $j = $i++; ?>
-                <?php echo $row_no; ?>
                 <?php $range = count($old_boqs); ?>
                 <div class="container-fluid">
                     <div class="row" id="row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>">
@@ -126,49 +125,49 @@
                             <input name="boq[<?php echo $j; ?>][s]" style="width: 100%"
                                    id="s_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo $info['s']; ?>"
-                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="text">
                         </div>
                         <div class="col-4" style="margin: 0; padding: 0;">
                             <input name="boq[<?php echo $j; ?>][n]" style="width: 100%"
                                    id="n_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo $info['n']; ?>"
-                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="text">
                         </div>
                         <div class="col-1" style="margin: 0; padding: 0;">
                             <input name="boq[<?php echo $j; ?>][q]" style="width: 100%"
                                    id="q_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo $info['q']; ?>"
-                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="number" step="any">
                         </div>
                         <div class="col-1" style="margin: 0; padding: 0;">
                             <input name="boq[<?php echo $j; ?>][w]" style="width: 100%"
                                    id="w_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo $info['w']; ?>"
-                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="number" step="any">
                         </div>
                         <div class="col-1" style="margin: 0; padding: 0;" id="h_<?php echo $j; ?>">
                             <input name="boq[<?php echo $j; ?>][h]" style="width: 100%"
                                    id="h_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo $info['h']; ?>"
-                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="number" step="any">
                         </div>
                         <div class="col-1" style="margin: 0; padding: 0;" id="l_<?php echo $j; ?>">
                             <input name="boq[<?php echo $j; ?>][l]" style="width: 100%"
                                    id="l_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo $info['l']; ?>"
-                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="number" step="any">
                         </div>
                         <div class="col-2" style="margin: 0; padding: 0;" id="t_<?php echo $j; ?>">
                             <input readonly name="boq[<?php echo $j; ?>][t]" style="width: 100%"
                                    id="t_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                                   value="<?php echo $info['t']; ?>"
-                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   value="<?php echo isset($info['t']) ? $info['t'] : ''; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="number" step="any">
                         </div>
                     </div>
@@ -183,43 +182,43 @@
                     <div class="col-2 mb-1" style="margin: 0; padding: 0;">
                         <input name="boq[<?php echo $row_number; ?>][s]" style="width: 100%"
                                id="s_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                               onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                               onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                                type="text">
                     </div>
                     <div class="col-4" style="margin: 0; padding: 0;">
                         <input name="boq[<?php echo $row_number; ?>][n]" style="width: 100%"
                                id="n_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                               onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                               onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                                type="text">
                     </div>
                     <div class="col-1" style="margin: 0; padding: 0;">
                         <input name="boq[<?php echo $row_number; ?>][q]" style="width: 100%"
                                id="q_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                               onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                               onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                                type="number" step="any">
                     </div>
                     <div class="col-1" style="margin: 0; padding: 0;">
                         <input name="boq[<?php echo $row_number; ?>][w]" style="width: 100%"
                                id="w_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                               onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                               onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                                type="number" step="any">
                     </div>
                     <div class="col-1" style="margin: 0; padding: 0;" id="h_<?php echo $row_number; ?>">
                         <input name="boq[<?php echo $row_number; ?>][h]" style="width: 100%"
                                id="h_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                               onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                               onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                                type="number" step="any">
                     </div>
                     <div class="col-1" style="margin: 0; padding: 0;" id="l_<?php echo $row_number; ?>">
                         <input name="boq[<?php echo $row_number; ?>][l]" style="width: 100%"
                                id="l_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                               onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                               onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                                type="number" step="any">
                     </div>
                     <div class="col-2" style="margin: 0; padding: 0;" id="t_<?php echo $row_number; ?>">
                         <input readonly name="boq[<?php echo $row_number; ?>][t]" style="width: 100%"
                                id="t_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                               onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                               onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                                type="number" step="any">
                     </div>
                 </div>
@@ -462,10 +461,10 @@
             if (isNaN(q) && isNaN(w) && isNaN(h) && isNaN(l)) {
                 document.getElementById('t_' + income + '_' + i).value = "0";
             } else {
-                q = q || 1; // Eğer q değeri yoksa veya NaN ise 1 olarak ayarla
-                w = w || 1; // Benzer şekilde diğer değerleri de düzelt
-                h = h || 1;
-                l = l || 1;
+                q = isNaN(q) ? 1 : q;
+                w = isNaN(w) ? 1 : w;
+                h = isNaN(h) ? 1 : h;
+                l = isNaN(l) ? 1 : l;
 
                 var m = n.includes(forbiddenWord) ? -1 : 1;
 

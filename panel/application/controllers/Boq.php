@@ -186,6 +186,16 @@ class Boq extends CI_Controller
             )
         );
 
+        if (isset($old_boq)) {
+            $delete = $this->Boq_model->delete(
+                array(
+                    "boq_id" => $boq_id,
+                    "contract_id" => $contract_id,
+                    "payment_no" => $payment->hakedis_no
+                )
+            );
+        }
+
         if (!empty($_FILES['excelDosyasi']['name'])) {
             $tempFolderPath = 'uploads/temp/';
 
@@ -205,43 +215,61 @@ class Boq extends CI_Controller
 
             $worksheet = $workbook->getActiveSheet();
 
-            $data = $worksheet->toArray();
 
-            array_shift($data);
-            array_shift($data);
+            $dataArray = array();
+            $startRow = 7;
+            $endRow = 257; // 250 satır daha eklendiğini varsayıyorum
 
-            $excel_array = array();
+// Boş satır sayacını tanımlayın
+            $emptyRowCount = 0;
 
-            $newKeys = array('s', 'n', 'q', 'w', 'h', 'l', 't');
+// Her bir satır için döngü oluşturun
+            for ($row = $startRow; $row <= $endRow; $row++) {
+                // Her bir satırdaki B'den G'ye kadar olan hücrelerden veriyi alarak bir dizi oluşturun
+                $rowData = array(
+                    's' => $worksheet->getCell('B' . $row)->getValue(),
+                    'n' => $worksheet->getCell('C' . $row)->getValue(),
+                    'q' => $worksheet->getCell('D' . $row)->getValue(),
+                    'w' => $worksheet->getCell('E' . $row)->getValue(),
+                    'h' => $worksheet->getCell('F' . $row)->getValue(),
+                    'l' => $worksheet->getCell('G' . $row)->getValue()
+                );
 
-            $i = 1;
-            foreach ($data as $subArray) {
-                $newSubArray = array();
-                foreach ($subArray as $keyIndex => $value) {
-                    $newSubArray[$newKeys[$keyIndex]] = $value;
+                // Satırın boş olup olmadığını kontrol edin
+                $isEmptyRow = true;
+                foreach ($rowData as $cellValue) {
+                    if (!empty($cellValue)) {
+                        $isEmptyRow = false;
+                        break;
+                    }
                 }
-                $excel_array[$i++] = $newSubArray;
+
+                // Eğer satır boşsa boş satır sayacını artır, aksi takdirde sıfırla
+                if ($isEmptyRow) {
+                    $emptyRowCount++;
+                } else {
+                    $emptyRowCount = 0;
+                }
+
+                // Boş satır sayacı 10 ise döngüyü durdur
+                if ($emptyRowCount >= 5) {
+                    break;
+                }
+
+                // Oluşturulan dizi, ana diziye eklenir
+                $dataArray[] = $rowData;
             }
-            $excel_array;
+
+            print_r($dataArray);
 
             $boq_array = ($this->input->post('boq[]'));
 
-            $mergedArray = array_merge($excel_array, $boq_array);
+            $mergedArray = array_merge($dataArray, $boq_array);
 
             foreach ($mergedArray as $key => $sub_array) {
                 if (empty(array_filter($sub_array))) {
                     unset($mergedArray[$key]);
                 }
-            }
-
-            if (isset($old_boq)) {
-                $delete = $this->Boq_model->delete(
-                    array(
-                        "boq_id" => $boq_id,
-                        "contract_id" => $contract_id,
-                        "payment_no" => $payment->hakedis_no
-                    )
-                );
             }
 
             $insert = $this->Boq_model->add(
@@ -257,17 +285,6 @@ class Boq extends CI_Controller
                 )
             );
         } else {
-
-            if (isset($old_boq)) {
-                $delete = $this->Boq_model->delete(
-                    array(
-                        "boq_id" => $boq_id,
-                        "contract_id" => $contract_id,
-                        "payment_no" => $payment->hakedis_no
-                    )
-                );
-            }
-
             $insert = $this->Boq_model->add(
                 array(
                     "contract_id" => $contract_id,
@@ -282,7 +299,7 @@ class Boq extends CI_Controller
             );
         }
 
-        if (isset($insert) or isset($update) or isset($delete)) {
+        if ($insert) {
             $alert = array(
                 "title" => "İşlem Başarılı",
                 "text" => "Metraj başarılı bir şekilde eklendi",
@@ -300,6 +317,10 @@ class Boq extends CI_Controller
         // İşlemin Sonucunu Session'a yazma işlemi...
         $this->session->set_flashdata("alert", $alert);
 
+        if ($stay != null) {
+            redirect(base_url("payment/file_form/$payment_id"));
+        }
+        
         $viewData = new stdClass();
 
         $viewData->payment = $payment;
@@ -316,6 +337,7 @@ class Boq extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
 
         $viewData->income = $boq_id;
+
         if (isset($isset_boq)) {
             $old_boq = $this->Boq_model->get(
                 array(
@@ -329,13 +351,11 @@ class Boq extends CI_Controller
         $group_id = get_from_id("book", "parent", "$boq_id");
         $viewData->group_id = $group_id;
 
-        if ($stay != null) {
-            redirect(base_url("payment/file_form/$payment_id"));
-        }
-
         $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
 
         echo $render_calculate;
+
+
 
     }
 
@@ -439,8 +459,15 @@ class Boq extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $payment = $this->Payment_model->get(array('id' => $payment_id));
+        // Ödeme bilgilerini al
+        $this->load->model("Company_model");
 
+        $payment = $this->Payment_model->get(array('id' => $payment_id));
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+        $company = $this->Company_model->get(array('id' => $contract->isveren));
+        $boq = $this->Contract_price_model->get(array('id' => $boq_id));
+
+        // BOQ verilerini al
         $old_boq = $this->Boq_model->get(
             array(
                 "boq_id" => $boq_id,
@@ -449,37 +476,40 @@ class Boq extends CI_Controller
             )
         );
 
-
-        print_r(json_decode($old_boq->calculation,true));
-
-
-        $row = 7;
-        foreach ($dataArray as $data) {
-            $sheet->setCellValue('B'.$row, $data['s']);
-            $sheet->setCellValue('C'.$row, $data['n']);
-            $sheet->setCellValue('D'.$row, $data['q']);
-            $sheet->setCellValue('E'.$row, $data['w']);
-            $sheet->setCellValue('F'.$row, $data['h']);
-            $sheet->setCellValue('G'.$row, $data['l']);
-            $sheet->setCellValue('H'.$row, $data['l']);
-            $row++;
-        }
-// Excel dosyasını yükleme
+        // Excel şablonunu yükle
         $templatePath = 'uploads/Excel_Template.xlsx';
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
-// Çalışma sayfasını seçme
         $sheet = $spreadsheet->getActiveSheet();
-// Verileri hücrelere yazma
-        $cellIndex = 'B';
-        foreach ($data as $value) {
-            $sheet->setCellValue($cellIndex . '7', $value);
-            $cellIndex++;
+
+        $sheet->setCellValue('A2', "$company->company_name" );
+        $sheet->setCellValue('A3', "$contract->sozlesme_ad" );
+        $sheet->setCellValue('A4', "$boq->name" );
+        $sheet->setCellValue('H4', "$boq->unit" );
+
+        // BOQ hesaplama verilerini al
+        if (isset($old_boq)) {
+            $dataArray = json_decode($old_boq->calculation, true);
+        } else {
+            $dataArray = array();
         }
-// Dosyayı indirme
+        // Hücrelere veriyi yaz
+        $row = 7;
+        foreach ($dataArray as $data) {
+            $sheet->setCellValue('B' . $row, $data['s']);
+            $sheet->setCellValue('C' . $row, $data['n']);
+            $sheet->setCellValue('D' . $row, $data['q']);
+            $sheet->setCellValue('E' . $row, $data['w']);
+            $sheet->setCellValue('F' . $row, $data['h']);
+            $sheet->setCellValue('G' . $row, $data['l']);
+            $sheet->setCellValue('H' . $row, $data['t']); // Bu satırda 't' hücresine yazılması gerektiğini düzelttim.
+            $row++;
+        }
+
+        // Dosyayı indirme
         $writer = new Xlsx($spreadsheet);
         $downloadFileName = 'excel_output.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'. $downloadFileName .'"');
+        header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
