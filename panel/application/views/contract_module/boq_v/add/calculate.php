@@ -66,6 +66,10 @@
                             title="">
                         <i class="fa fa-file-excel-o"></i> Excel Yükle
                     </button>
+                    <a href="<?php echo base_url("$this->Module_Name/template_download/$contract_id/$payment->id/$income"); ?>">
+
+                        <i class="fa fa-file-excel-o"></i> Şablon İndir
+                    </a>
                 </div>
             </div>
         </div>

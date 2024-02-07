@@ -433,50 +433,37 @@ class Boq extends CI_Controller
 
     }
 
-    public function excel_sample($contract_id, $payment_id)
+    public function template_download($contract_id, $payment_id, $boq_id)
     {
-        $spreadsheet = new Spreadsheet();
-
-// Aktif çalışma sayfasını ayarlama
-        $sheet = $spreadsheet->getActiveSheet();
-
-// Başlık satırını ekleyin
-        $sheet->setCellValue('A2', '#');
-        $sheet->setCellValue('B2', 'Bölüm');
-        $sheet->setCellValue('C2', 'Açıklama');
-        $sheet->setCellValue('D2', 'Adet');
-        $sheet->setCellValue('E2', 'En');
-        $sheet->setCellValue('F2', 'Boy');
-        $sheet->setCellValue('G2', 'Yükseklik');
-        $sheet->setCellValue('H2', 'Toplam');
-
-// Satır sayısını temsil eden işareti ekleme
-// 20 adet satır ekleme
-        for ($i = 1; $i <= 20; $i++) {
-            $sheet->setCellValue('A'.($i+1), $i);
+        if (!isAdmin()) {
+            redirect(base_url("error"));
         }
-
-        // Başlık için hücre birleştirme ve metin ekleme
-        $sheet->mergeCells('A1:H1'); // Başlık hücrelerini birleştir
-        $sheet->setCellValue('A1', 'Metraj Şablonu'); // Başlık metnini ekle
-
-// Başlık hücresini stilini ayarlama
-        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // Metni ortala
-
-// Dosyayı oluşturmak için Writer'ı kullanma
+        $data = array(
+            'deger1',
+            'Minha Kapı Girişi',
+            '3',
+            '4.16',
+            '3.25',
+            '6.85',
+            '7.12'
+        );
+// Excel dosyasını yükleme
+        $templatePath = 'uploads/Excel_Template.xlsx';
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
+// Çalışma sayfasını seçme
+        $sheet = $spreadsheet->getActiveSheet();
+// Verileri hücrelere yazma
+        $cellIndex = 'B';
+        foreach ($data as $value) {
+            $sheet->setCellValue($cellIndex . '7', $value);
+            $cellIndex++;
+        }
+// Dosyayı indirme
         $writer = new Xlsx($spreadsheet);
-        $filename = 'excel_template.xlsx'; // Excel dosyasının adı
-
-// Excel dosyasını oluşturun
-        $writer->save($filename);
-
-// İndirme işlemi
+        $downloadFileName = 'excel_output.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Content-Disposition: attachment;filename="'. $downloadFileName .'"');
         header('Cache-Control: max-age=0');
-
         $writer->save('php://output');
-
     }
-
 }
