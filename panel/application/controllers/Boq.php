@@ -438,15 +438,32 @@ class Boq extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
-        $data = array(
-            'deger1',
-            'Minha Kapı Girişi',
-            '3',
-            '4.16',
-            '3.25',
-            '6.85',
-            '7.12'
+
+        $payment = $this->Payment_model->get(array('id' => $payment_id));
+
+        $old_boq = $this->Boq_model->get(
+            array(
+                "boq_id" => $boq_id,
+                "contract_id" => $contract_id,
+                "payment_no" => $payment->hakedis_no
+            )
         );
+
+
+        print_r(json_decode($old_boq->calculation,true));
+
+
+        $row = 7;
+        foreach ($dataArray as $data) {
+            $sheet->setCellValue('B'.$row, $data['s']);
+            $sheet->setCellValue('C'.$row, $data['n']);
+            $sheet->setCellValue('D'.$row, $data['q']);
+            $sheet->setCellValue('E'.$row, $data['w']);
+            $sheet->setCellValue('F'.$row, $data['h']);
+            $sheet->setCellValue('G'.$row, $data['l']);
+            $sheet->setCellValue('H'.$row, $data['l']);
+            $row++;
+        }
 // Excel dosyasını yükleme
         $templatePath = 'uploads/Excel_Template.xlsx';
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
