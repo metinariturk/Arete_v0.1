@@ -260,8 +260,6 @@ class Boq extends CI_Controller
                 $dataArray[] = $rowData;
             }
 
-            print_r($dataArray);
-
             $boq_array = ($this->input->post('boq[]'));
 
             $mergedArray = array_merge($dataArray, $boq_array);
@@ -320,7 +318,7 @@ class Boq extends CI_Controller
         if ($stay != null) {
             redirect(base_url("payment/file_form/$payment_id"));
         }
-        
+
         $viewData = new stdClass();
 
         $viewData->payment = $payment;
