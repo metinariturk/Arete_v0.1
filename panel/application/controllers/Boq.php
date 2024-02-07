@@ -499,7 +499,6 @@ class Boq extends CI_Controller
             $sheet->setCellValue('E' . $row, $data['w']);
             $sheet->setCellValue('F' . $row, $data['h']);
             $sheet->setCellValue('G' . $row, $data['l']);
-            $sheet->setCellValue('H' . $row, $data['t']); // Bu satırda 't' hücresine yazılması gerektiğini düzelttim.
             $row++;
         }
 
