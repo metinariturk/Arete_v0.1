@@ -62,4 +62,3 @@
         <i class="fa fa-plus fa-lg"></i> Ekle
     </a>
 </form>
-{"2":{"s":"Konferans Salonu","n":"\u0130\u015fler G\u00fc\u00e7ler Halledildi","q":"2","w":"1","h":"0.75","l":"0.2","t":"0.30"},"1":{"n":"Deneme \u0130\u00e7in K\u00f6\u015fe Kal\u0131b\u0131 Yap\u0131lmas\u0131","q":"10","w":"2","h":"1","l":"0.5","t":"10.00"},"3":{"s":"asdfasdf","n":"asd","q":"2","w":"3","h":"1","l":"1","t":"6.00"}}
