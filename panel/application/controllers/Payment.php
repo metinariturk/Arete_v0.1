@@ -1061,13 +1061,24 @@ class Payment extends CI_Controller
                                 $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
                                 $pdf->setLineWidth(0.1);
                                 $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
-                                $pdf->Cell($page_width * 15 / 100, 5, "Bölüm", 1, 0, "L", 1);
-                                $pdf->Cell($page_width * 35 / 100, 5, "Açıklama", 1, 0, "L", 1);
-                                $pdf->Cell($page_width * 9 / 100, 5, "Miktar", 1, 0, "C", 1);
-                                $pdf->Cell($page_width * 9 / 100, 5, "En", 1, 0, "C", 1);
-                                $pdf->Cell($page_width * 9 / 100, 5, "Boy", 1, 0, "C", 1);
-                                $pdf->Cell($page_width * 9 / 100, 5, "Yükseklik", 1, 0, "C", 1);
-                                $pdf->Cell($page_width * 14 / 100, 5, "Toplam", 1, 0, "C", 1);
+                                if ($contract_item->type == "rebar"){
+                                    $pdf->Cell($page_width * 15 / 100, 5, "Bölüm", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 35 / 100, 5, "Açıklama", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Çap (mm)", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Benzer", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Adet", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Uzunluk (m)", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 14 / 100, 5, "Toplam (kg)", 1, 0, "C", 1);
+                                } else {
+                                    $pdf->Cell($page_width * 15 / 100, 5, "Bölüm", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 35 / 100, 5, "Açıklama", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Miktar", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "En", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Boy", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Yükseklik", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 14 / 100, 5, "Toplam", 1, 0, "C", 1);
+                                }
+
                                 $pdf->Ln();
                                 $k = $k + 1;
                                 $pdf->SetFillColor();
@@ -1078,11 +1089,40 @@ class Payment extends CI_Controller
 
                                     $pdf->Cell($page_width * 15 / 100, 5, $calculation_data["s"], 1, 0, "L", 0);
                                     $pdf->Cell($page_width * 35 / 100, 5, $calculation_data["n"], 1, 0, "L", 0);
-                                    $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["q"]), 1, 0, "R", 0);
-                                    $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["w"]), 1, 0, "R", 0);
-                                    $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["h"]), 1, 0, "R", 0);
-                                    $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["l"]), 1, 0, "R", 0);
-                                    $pdf->Cell($page_width * 14 / 100, 5, money_format($calculation_data["t"]), 1, 0, "R", 0);
+                                    if ($contract_item->type == "rebar"){
+                                        if (!empty($calculation_data["q"])){
+                                            $pdf->Cell($page_width * 9 / 100, 5, "Ø".$calculation_data["q"], 1, 0, "R", 0);
+                                        } else {
+                                            $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                        }
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["q"]), 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["w"])){
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["w"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["h"])){
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["h"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["l"])){
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["l"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["t"])){
+                                        $pdf->Cell($page_width * 14 / 100, 5, money_format($calculation_data["t"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 14 / 100, 5,"", 1, 0, "R", 0);
+                                    }
+
                                     $pdf->Ln();
                                     $k = $k + 1;
 

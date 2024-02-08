@@ -10,8 +10,8 @@
                href="#"
                data-bs-original-title=""
                title=""
-               url="<?php echo base_url("$this->Module_Name/rebar_render/$contract_id/$payment->id/$income"); ?>">
-                Donatı Metrajı
+               url="<?php echo base_url("$this->Module_Name/calculate_render/$contract_id/$payment->id/$income"); ?>">
+               Normal Metraj
             </a>
             <hr>
             <div class="mb-3 row">
@@ -79,7 +79,7 @@
                     <label for="formFileLg" class="form-label">Metrajı İndirin</label>
                     <br>
                     <a class="btn btn-outline-primary"
-                       href="<?php echo base_url("$this->Module_Name/template_download/$contract_id/$payment->id/$income"); ?>">
+                       href="<?php echo base_url("$this->Module_Name/template_download_rebar/$contract_id/$payment->id/$income"); ?>">
                         <i class="fa fa-file-excel-o"></i> Şablon İndir
                     </a>
                 </div>
@@ -102,25 +102,25 @@
         </div>
         <div class="row">
             <div class="col-2">
-                <strong>Bölüm</strong>
+                <strong>Mahal</strong>
             </div>
             <div class="col-4">
                 <strong>Açıklama</strong>
             </div>
             <div class="col-1">
-                <strong>Adet</strong>
+                <strong>Çap</strong>
             </div>
             <div class="col-1">
-                <strong>En</strong>
+                <strong>Benzer</strong>
+            </div>
+            <div class="col-1">
+                <strong>Adet</strong>
             </div>
             <div class="col-1">
                 <strong>Boy</strong>
             </div>
-            <div class="col-1">
-                <strong>Yükseklik</strong>
-            </div>
             <div class="col-2" style="text-align: right">
-                <strong>Toplam</strong>
+                <strong>Ağırlık</strong>
             </div>
         </div>
     </div>
@@ -151,12 +151,29 @@
                                type="text">
                     </div>
                     <div class="col-1" style="margin: 0; padding: 0;">
-                        <input name="boq[<?php echo $j; ?>][q]" style="width: 100%"
-                               id="q_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo $info['q']; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="number" step="any">
+                        <select name="boq[<?php echo $j; ?>][q]" style="width: 100%"
+                                id="q_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                value="<?php echo $info['q']; ?>"
+                                onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)">
+                            <option><?php echo $info['q']; ?></option>
+                            <option>8</option>
+                            <option>10</option>
+                            <option>12</option>
+                            <option>14</option>
+                            <option>16</option>
+                            <option>18</option>
+                            <option>20</option>
+                            <option>22</option>
+                            <option>24</option>
+                            <option>25</option>
+                            <option>26</option>
+                            <option>28</option>
+                            <option>30</option>
+                            <option>32</option>
+                            <option>36</option>
+                            <option>40</option>
+                        </select>
                     </div>
                     <div class="col-1" style="margin: 0; padding: 0;">
                         <input name="boq[<?php echo $j; ?>][w]" style="width: 100%"
@@ -214,11 +231,28 @@
                            type="text">
                 </div>
                 <div class="col-1" style="margin: 0; padding: 0;">
-                    <input name="boq[<?php echo $row_number; ?>][q]" style="width: 100%"
-                           id="q_<?php echo $income; ?>_<?php echo $row_number; ?>"
-                           onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
-                           onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
-                           type="number" step="any">
+                    <select name="boq[<?php echo $row_number; ?>][q]" style="width: 100%"
+                            id="q_<?php echo $income; ?>_<?php echo $row_number; ?>"
+                            onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
+                            onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)">
+                        <option></option>
+                        <option>8</option>
+                        <option>10</option>
+                        <option>12</option>
+                        <option>14</option>
+                        <option>16</option>
+                        <option>18</option>
+                        <option>20</option>
+                        <option>22</option>
+                        <option>24</option>
+                        <option>25</option>
+                        <option>26</option>
+                        <option>28</option>
+                        <option>30</option>
+                        <option>32</option>
+                        <option>36</option>
+                        <option>40</option>
+                    </select>
                 </div>
                 <div class="col-1" style="margin: 0; padding: 0;">
                     <input name="boq[<?php echo $row_number; ?>][w]" style="width: 100%"
@@ -291,7 +325,6 @@
         })
     }
 </script>
-
 <script>
     function delete_boq(btn) {
         var $url = btn.getAttribute('url');
@@ -474,10 +507,10 @@
 
                 var m = n.includes(forbiddenWord) ? -1 : 1;
 
-                var result = m * q * w * h * l;
+                var result = Math.PI* (q**2)/4 * 7.85 / 1000 * m * w * h * l;
                 result = result.toFixed(2);
                 document.getElementById('t_' + income + '_' + i).value = result;
-                totalResult += parseFloat(result);
+                totalResult += parseFloat(result)/1000;
                 allEmpty = false; // En az bir değer dolu, allEmpty değerini false yap
             }
 
@@ -529,7 +562,6 @@
 
     }
 </script>
-
 
 
 

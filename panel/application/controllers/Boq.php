@@ -121,6 +121,15 @@ class Boq extends CI_Controller
             redirect(base_url("error"));
         }
 
+        $update = $this->Contract_price_model->update(
+            array(
+                "id" => $boq_id
+            ),
+            array(
+                "type" => null,
+            )
+        );
+
 
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
@@ -157,6 +166,61 @@ class Boq extends CI_Controller
         echo $render_calculate;
     }
 
+    public function rebar_render($contract_id, $payment_id, $boq_id)
+    {
+
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+
+
+        $update = $this->Contract_price_model->update(
+            array(
+                "id" => $boq_id
+            ),
+            array(
+                "type" => "rebar",
+            )
+        );
+
+
+
+        $payment = $this->Payment_model->get(array('id' => $payment_id));
+        $viewData = new stdClass();
+        $isset_boq =
+            get_from_any_and_and("boq",
+                "contract_id", "$contract_id",
+                "payment_no", "$payment->hakedis_no",
+                "boq_id", $boq_id);
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
+
+        $viewData->income = $boq_id;
+        $viewData->payment = $payment;
+
+        if (isset($isset_boq)) {
+            $old_boq = $this->Boq_model->get(
+                array(
+                    "id" => $isset_boq,
+                )
+            );
+            $viewData->old_boq = $old_boq;
+        }
+        $viewData->contract_id = $contract_id;
+
+        $group_id = get_from_id("book", "parent", "$boq_id");
+        $viewData->group_id = $group_id;
+
+
+        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/rebar", $viewData, true);
+
+        echo $render_calculate;
+    }
+
     public function save($contract_id, $payment_id, $stay = null)
     {
         if (!isAdmin()) {
@@ -168,8 +232,10 @@ class Boq extends CI_Controller
         $boq_id = ($this->input->post('boq_id'));
         $boq_array = ($this->input->post('boq[]'));
 
-        $boq_total = ($this->input->post("total_$boq_id"));
+
         $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
+
+        $boq_total = ($this->input->post("total_$boq_id"));
 
         foreach ($boq_array as $key => $sub_array) {
             if (empty(array_filter($sub_array))) {
@@ -270,6 +336,8 @@ class Boq extends CI_Controller
                 }
             }
 
+
+
             $insert = $this->Boq_model->add(
                 array(
                     "contract_id" => $contract_id,
@@ -349,7 +417,11 @@ class Boq extends CI_Controller
         $group_id = get_from_id("book", "parent", "$boq_id");
         $viewData->group_id = $group_id;
 
-        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
+        if ($contract_item->type == "rebar"){
+            $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/rebar", $viewData, true);
+        } else {
+            $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
+        }
 
         echo $render_calculate;
 
@@ -505,6 +577,66 @@ class Boq extends CI_Controller
         // Dosyayı indirme
         $writer = new Xlsx($spreadsheet);
         $downloadFileName = 'excel_output.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
+
+    public function template_download_rebar($contract_id, $payment_id, $boq_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        // Ödeme bilgilerini al
+        $this->load->model("Company_model");
+
+        $payment = $this->Payment_model->get(array('id' => $payment_id));
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+        $company = $this->Company_model->get(array('id' => $contract->isveren));
+        $boq = $this->Contract_price_model->get(array('id' => $boq_id));
+
+        // BOQ verilerini al
+        $old_boq = $this->Boq_model->get(
+            array(
+                "boq_id" => $boq_id,
+                "contract_id" => $contract_id,
+                "payment_no" => $payment->hakedis_no
+            )
+        );
+
+        // Excel şablonunu yükle
+        $templatePath = 'uploads/Excel_Template_Rebar.xlsx';
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A2', "$company->company_name" );
+        $sheet->setCellValue('A3', "$contract->sozlesme_ad" );
+        $sheet->setCellValue('A4', "$boq->name" );
+        $sheet->setCellValue('H4', "$boq->unit" );
+
+        // BOQ hesaplama verilerini al
+        if (isset($old_boq)) {
+            $dataArray = json_decode($old_boq->calculation, true);
+        } else {
+            $dataArray = array();
+        }
+        // Hücrelere veriyi yaz
+        $row = 7;
+        foreach ($dataArray as $data) {
+            $sheet->setCellValue('B' . $row, $data['s']);
+            $sheet->setCellValue('C' . $row, $data['n']);
+            $sheet->setCellValue('D' . $row, $data['q']);
+            $sheet->setCellValue('E' . $row, $data['w']);
+            $sheet->setCellValue('F' . $row, $data['h']);
+            $sheet->setCellValue('G' . $row, $data['l']);
+            $row++;
+        }
+
+        // Dosyayı indirme
+        $writer = new Xlsx($spreadsheet);
+        $downloadFileName = "$boq->name.xlsx";
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
         header('Cache-Control: max-age=0');
