@@ -1009,7 +1009,7 @@ class Payment extends CI_Controller
 
         $pdf->module = "calculate";
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
 
         $pdf->headerText = "METRAJ CETVELİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
@@ -1197,7 +1197,7 @@ class Payment extends CI_Controller
         $pdf->SetPageOrientation('L');
 
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
 
         $pdf->headerText = "METRAJ İCMALİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
@@ -1328,7 +1328,7 @@ class Payment extends CI_Controller
         $pdf->SetPageOrientation('L');
 
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
 
         $pdf->headerText = "METRAJ İCMALİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
@@ -1455,7 +1455,7 @@ class Payment extends CI_Controller
         $pdf->SetPageOrientation('L');
 
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
 
         $pdf->headerText = "YAPILAN İŞLER LİSTESİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
@@ -1606,7 +1606,7 @@ class Payment extends CI_Controller
         $pdf->SetPageOrientation('L');
 
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
 
         $pdf->headerText = "YAPILAN İŞLER LİSTESİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
@@ -1755,7 +1755,7 @@ class Payment extends CI_Controller
         $pdf->SetPageOrientation('P');
 
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
 
         $pdf->headerText = "YAPILAN İŞLER GRUP İCMALLERİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
@@ -1895,7 +1895,7 @@ class Payment extends CI_Controller
         $pdf->SetPageOrientation('P');
 
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
-        $pdf->headerPaymentNo = "Hakediş No :" . $payment_no;
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
 
         $pdf->headerText = "YAPILAN İŞLER İCMALİ";
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)

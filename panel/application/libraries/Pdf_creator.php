@@ -49,7 +49,7 @@ class Pdf_creator extends TCPDF
         $image_file = K_PATH_IMAGES . 'logo_example.jpg';
         $this->SetY(20); // Sayfa numarasını sayfanın en üstüne eklemek için yüksekliği ayarlayın
         $this->SetX($page_number_location); // Sayfa numarasını sayfanın en üstüne eklemek için yüksekliği ayarlayın
-        $this->Cell(25, 10, 'Sayfa ' . $this->PageNo() . ' / ' . $this->getNumPages(), 0, 0, 'R', 0, '', 0, false, '', '');
+        $this->Cell(25, 10, 'Sayfa : ' . $this->PageNo(), 0, 0, 'R', 0, '', 0, false, '', '');
         $this->Image($image_file, 10, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
         $this->setFont('dejavusans', 'B', 16);
         $this->Cell($paymnet_no_location, 15, $this->headerText, 0, 1, 'C', 0, '', 0, false, '', '');
