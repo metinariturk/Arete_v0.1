@@ -284,7 +284,7 @@ class Boq extends CI_Controller
 
             $dataArray = array();
             $startRow = 7;
-            $endRow = 257; // 250 satır daha eklendiğini varsayıyorum
+            $endRow = 3000; // 3000 satır daha eklendiğini varsayıyorum
 
 // Boş satır sayacını tanımlayın
             $emptyRowCount = 0;
