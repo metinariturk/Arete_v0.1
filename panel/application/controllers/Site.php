@@ -397,8 +397,15 @@ class Site extends CI_Controller
 
     public function file_form($id, $active_tab = null)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        $session_user = $this->session->userdata("user");
+
+        if ($session_user->user_role == 2) {
+            echo "true";
+        } else {
+            echo "false";
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
         }
 
         $this->load->model("Report_workgroup_model");
