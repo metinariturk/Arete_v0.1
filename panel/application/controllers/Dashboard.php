@@ -75,7 +75,7 @@ class Dashboard extends CI_Controller
             )
         );
 
-        $notes = $this->Notes_model->get_all(array());
+        $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
 
         $viewData = new stdClass();
 
@@ -127,7 +127,7 @@ class Dashboard extends CI_Controller
 
         $viewData = new stdClass();
 
-        $notes = $this->Notes_model->get_all(array());
+        $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
 
         $viewData->notes = $notes;
 
