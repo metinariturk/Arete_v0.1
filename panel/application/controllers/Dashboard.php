@@ -38,13 +38,14 @@ class Dashboard extends CI_Controller
 
         $viewData = new stdClass();
 
+
         $favorites = $this->Favorite_model->get_all(array(
                 "user_id" => active_user_id(),
             )
         );
 
 
-        $notes = $this->Notes_model->get_all(array());
+        $notes = $this->Notes_model->get_all(array("owner"=> active_user_id()));
         $last_created_elements = $this->Order_model->get_all_or(array(
             "createdBy" => active_user_id(),
             "deletedBy" => active_user_id(),
@@ -70,6 +71,7 @@ class Dashboard extends CI_Controller
             array(
                 "note" => $note,
                 "isActive" => 1,
+                "owner" => active_user_id(),
             )
         );
 
@@ -118,7 +120,8 @@ class Dashboard extends CI_Controller
     {
         $delete = $this->Notes_model->delete(
             array(
-                "id" => $id
+                "id" => $id,
+                "owner" => active_user_id()
             )
         );
 
@@ -139,7 +142,7 @@ class Dashboard extends CI_Controller
 
         $viewData = new stdClass();
 
-        $notes = $this->Notes_model->get_all(array());
+        $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
 
         $viewData->notes = $notes;
 
