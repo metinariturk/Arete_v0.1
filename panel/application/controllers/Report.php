@@ -232,40 +232,9 @@ class Report extends CI_Controller
     }
 
     public function save($site_id)
+
+
     {
-        $site = $this->Site_model->get(array("id" => $site_id));
-
-        $this->load->model("Report_workgroup_model");
-        $this->load->model("Report_workmachine_model");
-        $this->load->model("Report_supply_model");
-
-        $workgroups = $this->input->post("workgroups[]");
-        $workmachine = $this->input->post("workmachine[]");
-        $supplies = $this->input->post("supplies[]");
-
-        $workgroups_filter = array();
-        foreach ($workgroups as $workgroup) {
-            if (!empty($workgroup["workgroup"])) {
-                $workgroups_filter[] = $workgroup;
-            }
-        }
-
-        $workmachine_filter = array();
-        foreach ($workmachine as $workmachine) {
-            if (!empty($workmachine["workmachine"])) {
-                $workmachine_filter[] = $workmachine;
-            }
-        }
-
-        $supplies_filter = array();
-        foreach ($supplies as $supply) {
-            if (!empty($supply["supply"])) {
-                $supplies_filter[] = $supply;
-            }
-        }
-
-        $file_name_len = file_name_digits();
-        $file_name = "GR-" . $this->input->post('dosya_no');
 
         if ($this->input->post("report_date")) {
             $report_date = dateFormat('Y-m-d', $this->input->post("report_date"));
@@ -273,65 +242,325 @@ class Report extends CI_Controller
             $report_date = null;
         }
 
-        $this->load->library("form_validation");
+        $record_control = $this->Report_model->get(array("site_id" => $site_id, "report_date" => $report_date));
+        if ($record_control) {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Bu tarihte başka bir günlük rapor var işlem yapılamaz",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
 
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[report.dosya_no]|required|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
-        $this->form_validation->set_rules("report_date", "Rapor Tarihi", "required|trim");
+            redirect(base_url("$this->Module_Name/new_form/$site_id"));
+        } else {
+            $site = $this->Site_model->get(array("id" => $site_id));
 
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "greater_than" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
-                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
+            $this->load->model("Report_workgroup_model");
+            $this->load->model("Report_workmachine_model");
+            $this->load->model("Report_supply_model");
+
+            $workgroups = $this->input->post("workgroups[]");
+            $workmachine = $this->input->post("workmachine[]");
+            $supplies = $this->input->post("supplies[]");
+
+            $workgroups_filter = array();
+            foreach ($workgroups as $workgroup) {
+                if (!empty($workgroup["workgroup"])) {
+                    $workgroups_filter[] = $workgroup;
+                }
+            }
+
+            $workmachine_filter = array();
+            foreach ($workmachine as $workmachine) {
+                if (!empty($workmachine["workmachine"])) {
+                    $workmachine_filter[] = $workmachine;
+                }
+            }
+
+            $supplies_filter = array();
+            foreach ($supplies as $supply) {
+                if (!empty($supply["supply"])) {
+                    $supplies_filter[] = $supply;
+                }
+            }
+
+            $file_name_len = file_name_digits();
+            $file_name = "GR-" . $this->input->post('dosya_no');
+
+
+            $this->load->library("form_validation");
+
+            $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[report.dosya_no]|required|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+            $this->form_validation->set_rules("report_date", "Rapor Tarihi", "required|trim");
+
+            $this->form_validation->set_message(
+                array(
+                    "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                    "greater_than" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
+                    "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
                                            <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
+                    "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
                                             <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
 
-            )
-        );
+                )
+            );
 
-        $validate = $this->form_validation->run();
+            $validate = $this->form_validation->run();
 
-        if ($validate) {
+            if ($validate) {
 
-            $rep_date = $this->input->post("report_date");
+                $rep_date = $this->input->post("report_date");
 
-            $project_code = project_code($site->project_id);
-            $path = "$this->File_Dir_Prefix/$project_code/$site->dosya_no/Reports/$rep_date";
+                $project_code = project_code($site->project_id);
+                $path = "$this->File_Dir_Prefix/$project_code/$site->dosya_no/Reports/$rep_date";
 
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-                echo "oluştu";
+                if (!is_dir($path)) {
+                    mkdir("$path", 0777, TRUE);
+                    echo "oluştu";
+                } else {
+                    echo "Dosya Oluşturulamadı";
+                    echo $path;
+                }
+
+                $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
+
+                $insert_report = $this->Report_model->add(
+                    array(
+                        "site_id" => $site_id,
+                        "project_id" => $site->proje_id,
+                        "contract_id" => $site->contract_id,
+                        "report_date" => $report_date,
+                        "createdAt" => date("Y-m-d"),
+                        "createdBy" => active_user_id(),
+                        "off_days" => $off_days,
+                        "aciklama" => $this->input->post("note"),
+                    )
+                );
+
+                $report_id = $this->db->insert_id();
+
+                foreach ($workgroups_filter as $workgroup) {
+                    $insert_workgroup = $this->Report_workgroup_model->add(
+                        array(
+                            "site_id" => $site_id,
+                            "report_id" => $report_id,
+                            "project_id" => $site->proje_id,
+                            "contract_id" => $site->contract_id,
+                            "workgroup" => $workgroup['workgroup'],
+                            "number" => $workgroup['worker_count'],
+                            "notes" => $workgroup['notes'],
+                            "place" => $workgroup['place'],
+                            "createdBy" => active_user_id(),
+                        )
+                    );
+                }
+
+                foreach ($workmachine_filter as $workmachine) {
+                    $insert_workmachine = $this->Report_workmachine_model->add(
+                        array(
+                            "site_id" => $site_id,
+                            "report_id" => $report_id,
+                            "project_id" => $site->proje_id,
+                            "contract_id" => $site->contract_id,
+                            "workmachine" => $workmachine['workmachine'],
+                            "number" => $workmachine['machine_count'],
+                            "notes" => $workmachine['machine_notes'],
+                            "place" => $workmachine['machine_place'],
+                            "createdBy" => active_user_id(),
+                        )
+                    );
+                }
+
+                foreach ($supplies_filter as $supplies) {
+                    $insert_workmachine = $this->Report_supply_model->add(
+                        array(
+                            "site_id" => $site_id,
+                            "report_id" => $report_id,
+                            "project_id" => $site->proje_id,
+                            "contract_id" => $site->contract_id,
+                            "supply" => $supplies['supply'],
+                            "qty" => $supplies['qty'],
+                            "unit" => $supplies['unit'],
+                            "place" => null,
+                            "notes" => $supplies['supply_notes'],
+                            "createdBy" => active_user_id(),
+                        )
+                    );
+                }
+
+                $record_id = $this->db->insert_id();
+
+                $insert2 = $this->Order_model->add(
+                    array(
+                        "module" => $this->Module_Name,
+                        "connected_module_id" => $report_id,
+                        "connected_project_id" => $site->proje_id,
+                        "file_order" => $file_name,
+                        "createdAt" => date("Y-m-d H:i:s"),
+                        "createdBy" => active_user_id(),
+                    )
+                );
+
+                // TODO Alert sistemi eklenecek...
+                if ($insert_report) {
+
+                    $alert = array(
+                        "title" => "İşlem Başarılı",
+                        "text" => "Kayıt başarılı bir şekilde eklendi",
+                        "type" => "success"
+                    );
+
+                } else {
+
+                    $alert = array(
+                        "title" => "İşlem Başarısız",
+                        "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                        "type" => "danger"
+                    );
+                }
+
+
+                // İşlemin Sonucunu Session'a yazma işlemi...
+                $this->session->set_flashdata("alert", $alert);
+
+                $this->load->model("Weather_model");
+
+                $weather = $this->Weather_model->get(array('date' => $report_date));
+
+                if (isset($weather)) {
+                    redirect(base_url("$this->Module_Name/$this->Display_route/$report_id"));
+                } else {
+                    redirect(base_url("Weather/add_date/$report_id"));
+                }
+
+
             } else {
-                echo "Dosya Oluşturulamadı";
-                echo $path;
+
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Form verilerinde eksik veya hatalı giriş var.",
+                    "type" => "danger"
+                );
+                $this->session->set_flashdata("alert", $alert);
+
+
+                $viewData = new stdClass();
+                $settings = $this->Settings_model->get();
+                $site = $this->Site_model->get(array("id" => $site_id));
+
+                $viewData->settings = $settings;
+
+                /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+                $viewData->viewModule = $this->moduleFolder;
+                $viewData->viewFolder = $this->viewFolder;
+                $viewData->subViewFolder = "$this->Add_Folder";
+                $viewData->form_error = true;
+                $viewData->site = $site;
+
+
+                $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+            }
+        }
+    }
+
+    public function update($id)
+    {
+
+
+        $report = $this->Report_model->get(array("id" => $id));
+        $project_code = project_code($report->project_id);
+        $site_code = site_code($report->site_id);
+
+        $old_report_date = dateFormat('d-m-Y', $report->report_date);
+        $new_report_date = dateFormat('d-m-Y', $this->input->post("report_date"));
+
+        $control_new_date = dateFormat("Y-m-d", $this->input->post("report_date"));
+
+        $record_control = $this->Report_model->get(array("site_id" => $report->site_id, "report_date" => $control_new_date));
+
+        if ($record_control and $old_report_date != $new_report_date) {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Bu tarihte başka bir günlük rapor var işlem yapılamaz",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
+
+        } else {
+            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site_code/Reports/";
+            if ($this->input->post("report_date")) {
+                if (rename($old_folder_dir . $old_report_date, $old_folder_dir . $new_report_date)) {
+                    echo 'Klasör adı başarıyla değiştirildi.';
+                } else {
+                    echo 'Klasör adı değiştirilirken bir hata oluştu.';
+                }
+            }
+
+            $this->load->model("Report_workgroup_model");
+            $this->load->model("Report_workmachine_model");
+            $this->load->model("Report_supply_model");
+
+            $workgroups = $this->input->post("workgroups[]");
+            $workmachine = $this->input->post("workmachine[]");
+            $supplies = $this->input->post("supplies[]");
+
+
+            $workgroups_filter = array();
+            foreach ($workgroups as $workgroup) {
+                if (!empty($workgroup["workgroup"])) {
+                    $workgroups_filter[] = $workgroup;
+                }
+            }
+
+            $workmachine_filter = array();
+            foreach ($workmachine as $workmachine) {
+                if (!empty($workmachine["workmachine"])) {
+                    $workmachine_filter[] = $workmachine;
+                }
+            }
+
+            $supplies_filter = array();
+            foreach ($supplies as $supply) {
+                if (!empty($supply["supply"])) {
+                    $supplies_filter[] = $supply;
+                }
             }
 
             $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
 
-            $insert_report = $this->Report_model->add(
+            if ($this->input->post("report_date")) {
+                $update_date = dateFormat('Y-m-d', $this->input->post("report_date"));
+            } else {
+                $update_date = null;
+            }
+
+            $update = $this->Report_model->update(
                 array(
-                    "site_id" => $site_id,
-                    "project_id" => $site->proje_id,
-                    "contract_id" => $site->contract_id,
-                    "report_date" => $report_date,
+                    "id" => $id
+                ),
+                array(
+                    "report_date" => $update_date,
+                    "aciklama" => $this->input->post("note"),
                     "createdAt" => date("Y-m-d"),
                     "createdBy" => active_user_id(),
-                    "off_days" => $off_days,
-                    "aciklama" => $this->input->post("note"),
+                    "off_days" => $off_days
                 )
             );
 
-            $report_id = $this->db->insert_id();
+            $delete_old = $this->Report_workgroup_model->delete(array("report_id" => $id));
+            $delete_old = $this->Report_workmachine_model->delete(array("report_id" => $id));
+            $delete_old = $this->Report_supply_model->delete(array("report_id" => $id));
 
             foreach ($workgroups_filter as $workgroup) {
                 $insert_workgroup = $this->Report_workgroup_model->add(
                     array(
-                        "site_id" => $site_id,
-                        "report_id" => $report_id,
-                        "project_id" => $site->proje_id,
-                        "contract_id" => $site->contract_id,
+                        "site_id" => $report->site_id,
+                        "report_id" => $report->id,
+                        "project_id" => $report->proje_id,
+                        "contract_id" => $report->contract_id,
                         "workgroup" => $workgroup['workgroup'],
                         "number" => $workgroup['worker_count'],
                         "notes" => $workgroup['notes'],
@@ -341,13 +570,14 @@ class Report extends CI_Controller
                 );
             }
 
+
             foreach ($workmachine_filter as $workmachine) {
                 $insert_workmachine = $this->Report_workmachine_model->add(
                     array(
-                        "site_id" => $site_id,
-                        "report_id" => $report_id,
-                        "project_id" => $site->proje_id,
-                        "contract_id" => $site->contract_id,
+                        "site_id" => $report->site_id,
+                        "report_id" => $report->id,
+                        "project_id" => $report->proje_id,
+                        "contract_id" => $report->contract_id,
                         "workmachine" => $workmachine['workmachine'],
                         "number" => $workmachine['machine_count'],
                         "notes" => $workmachine['machine_notes'],
@@ -360,10 +590,10 @@ class Report extends CI_Controller
             foreach ($supplies_filter as $supplies) {
                 $insert_workmachine = $this->Report_supply_model->add(
                     array(
-                        "site_id" => $site_id,
-                        "report_id" => $report_id,
-                        "project_id" => $site->proje_id,
-                        "contract_id" => $site->contract_id,
+                        "site_id" => $report->site_id,
+                        "report_id" => $report->id,
+                        "project_id" => $report->proje_id,
+                        "contract_id" => $report->contract_id,
                         "supply" => $supplies['supply'],
                         "qty" => $supplies['qty'],
                         "unit" => $supplies['unit'],
@@ -374,223 +604,33 @@ class Report extends CI_Controller
                 );
             }
 
-            $record_id = $this->db->insert_id();
-
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $report_id,
-                    "connected_project_id" => $site->proje_id,
-                    "file_order" => $file_name,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                )
-            );
-
             // TODO Alert sistemi eklenecek...
-            if ($insert_report) {
-
+            if ($update) {
                 $alert = array(
                     "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
+                    "text" => "Kayıt başarılı bir şekilde güncellendi",
                     "type" => "success"
                 );
-
             } else {
-
                 $alert = array(
                     "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                    "text" => "Güncelleme sırasında bir problem oluştu",
                     "type" => "danger"
                 );
             }
 
-
-            // İşlemin Sonucunu Session'a yazma işlemi...
             $this->session->set_flashdata("alert", $alert);
 
             $this->load->model("Weather_model");
 
-            $weather = $this->Weather_model->get(array('date' => $report_date));
+            $weather = $this->Weather_model->get(array('date' => $update_date));
 
             if (isset($weather)) {
-                redirect(base_url("$this->Module_Name/$this->Display_route/$report_id"));
+                redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
             } else {
-                redirect(base_url("weather"));
-            }
-
-            redirect(base_url("$this->Module_Name/$this->Display_route/$report_id"));
-
-        } else {
-
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Form verilerinde eksik veya hatalı giriş var.",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-
-            $viewData = new stdClass();
-            $settings = $this->Settings_model->get();
-            $site = $this->Site_model->get(array("id" => $site_id));
-
-            $viewData->settings = $settings;
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Add_Folder";
-            $viewData->form_error = true;
-            $viewData->site = $site;
-
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-        }
-    }
-
-    public function update($id)
-    {
-        $report = $this->Report_model->get(array("id" => $id));
-        $project_code = project_code($report->project_id);
-        $site_code = site_code($report->site_id);
-
-            $old_report_date = dateFormat('d-m-Y', $report->report_date);
-            $new_report_date = dateFormat('d-m-Y', $this->input->post("report_date"));
-            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site_code/Reports/";
-        if ($this->input->post("report_date")) {
-            if (rename($old_folder_dir . $old_report_date, $old_folder_dir . $new_report_date)) {
-                echo 'Klasör adı başarıyla değiştirildi.';
-            } else {
-                echo 'Klasör adı değiştirilirken bir hata oluştu.';
+                redirect(base_url("Weather/add_date/$id"));
             }
         }
-
-
-
-        $this->load->model("Report_workgroup_model");
-        $this->load->model("Report_workmachine_model");
-        $this->load->model("Report_supply_model");
-
-        $workgroups = $this->input->post("workgroups[]");
-        $workmachine = $this->input->post("workmachine[]");
-        $supplies = $this->input->post("supplies[]");
-
-
-        $workgroups_filter = array();
-        foreach ($workgroups as $workgroup) {
-            if (!empty($workgroup["workgroup"])) {
-                $workgroups_filter[] = $workgroup;
-            }
-        }
-
-        $workmachine_filter = array();
-        foreach ($workmachine as $workmachine) {
-            if (!empty($workmachine["workmachine"])) {
-                $workmachine_filter[] = $workmachine;
-            }
-        }
-
-        $supplies_filter = array();
-        foreach ($supplies as $supply) {
-            if (!empty($supply["supply"])) {
-                $supplies_filter[] = $supply;
-            }
-        }
-
-        $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
-
-        if ($this->input->post("report_date")) {
-            $update_date = dateFormat('Y-m-d', $this->input->post("report_date"));
-        } else {
-            $update_date = null;
-        }
-
-        $update = $this->Report_model->update(
-            array(
-                "id" => $id
-            ),
-            array(
-                "report_date" => $update_date,
-                "aciklama" => $this->input->post("note"),
-                "createdAt" => date("Y-m-d"),
-                "createdBy" => active_user_id(),
-                "off_days" => $off_days
-            )
-        );
-
-        $delete_old = $this->Report_workgroup_model->delete(array( "report_id" => $id));
-        $delete_old = $this->Report_workmachine_model->delete(array( "report_id" => $id));
-        $delete_old = $this->Report_supply_model->delete(array( "report_id" => $id));
-
-        foreach ($workgroups_filter as $workgroup) {
-            $insert_workgroup = $this->Report_workgroup_model->add(
-                array(
-                    "site_id" => $report->site_id,
-                    "report_id" => $report->id,
-                    "project_id" => $report->proje_id,
-                    "contract_id" => $report->contract_id,
-                    "workgroup" => $workgroup['workgroup'],
-                    "number" => $workgroup['worker_count'],
-                    "notes" => $workgroup['notes'],
-                    "place" => $workgroup['place'],
-                    "createdBy" => active_user_id(),
-                )
-            );
-        }
-
-
-        foreach ($workmachine_filter as $workmachine) {
-            $insert_workmachine = $this->Report_workmachine_model->add(
-                array(
-                    "site_id" => $report->site_id,
-                    "report_id" => $report->id,
-                    "project_id" => $report->proje_id,
-                    "contract_id" => $report->contract_id,
-                    "workmachine" => $workmachine['workmachine'],
-                    "number" => $workmachine['machine_count'],
-                    "notes" => $workmachine['machine_notes'],
-                    "place" => $workmachine['machine_place'],
-                    "createdBy" => active_user_id(),
-                )
-            );
-        }
-
-        foreach ($supplies_filter as $supplies) {
-            $insert_workmachine = $this->Report_supply_model->add(
-                array(
-                    "site_id" => $report->site_id,
-                    "report_id" => $report->id,
-                    "project_id" => $report->proje_id,
-                    "contract_id" => $report->contract_id,
-                    "supply" => $supplies['supply'],
-                    "qty" => $supplies['qty'],
-                    "unit" => $supplies['unit'],
-                    "place" => null,
-                    "notes" => $supplies['supply_notes'],
-                    "createdBy" => active_user_id(),
-                )
-            );
-        }
-
-        // TODO Alert sistemi eklenecek...
-        if ($update) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde güncellendi",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Güncelleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-        }
-
-        $this->session->set_flashdata("alert", $alert);
-        redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
-
     }
 
     public function delete($report_id)
@@ -1294,7 +1334,7 @@ class Report extends CI_Controller
 
         $pdf->SetXY(10, 265);
         $pdf->SetFont('dejavusans', 'B', 7);
-        if (isset($owner_sign)){
+        if (isset($owner_sign)) {
             $pdf->Cell(95, 5, $owner_sign->position, 1, 0, "C", 1);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
@@ -1423,7 +1463,7 @@ class Report extends CI_Controller
             }
         }
 
-        $file_name = dateFormat_dmy($report->report_date) ."_". site_name($site->id)."_"."Günlük Rapor";
+        $file_name = dateFormat_dmy($report->report_date) . "_" . site_name($site->id) . "_" . "Günlük Rapor";
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -1729,10 +1769,10 @@ class Report extends CI_Controller
         $pdf->Cell(95, 5, "İşveren Temsilcisi", 1, 0, "C", 1);
         $pdf->Cell(95, 5, "Taşeron-Yüklenici Temsilcisi", 1, 0, "C", 1);
         $pdf->Ln(); // Yeni satıra geç
-        if (isset($owner_sign)){
+        if (isset($owner_sign)) {
             $pdf->Cell(95, 5, $owner_sign->name, 1, 0, "C", 0);
         }
-        if (isset($contractor_sign)){
+        if (isset($contractor_sign)) {
             $pdf->Cell(95, 5, $contractor_sign->name, 1, 0, "C", 0);
         }
         $pdf->Ln(); // Yeni satıra geç

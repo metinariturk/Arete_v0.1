@@ -12,23 +12,25 @@ class Weather extends CI_Controller
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
+
         $this->Theme_mode = get_active_user()->mode;
+
         if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
-
 
         $this->moduleFolder = "site_module";
         $this->viewFolder = "weather_v";
 
         $this->load->model("Weather_model");
+        $this->load->model("Report_model");
+
         $this->Module_Title = "Hava Durumu Verileri";
 
     }
 
     public function index()
     {
-
         $viewData = new stdClass();
 
         /** Tablodan Verilerin Getirilmesi.. */
@@ -43,7 +45,24 @@ class Weather extends CI_Controller
         $this->load->view("{$this->moduleFolder}/{$this->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function new_form()
+    public function add_date($report_id = null)
+    {
+        $viewData = new stdClass();
+
+        /** Tablodan Verilerin Getirilmesi.. */
+        $items = $this->Weather_model->get_all(
+            array()
+        );
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->subViewFolder = "display";
+        $viewData->items = $items;
+        $viewData->report = $this->Report_model->get(array("id" => $report_id));
+
+        $this->load->view("{$this->moduleFolder}/{$this->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+    }
+
+    public function new_form($report_id = null)
     {
 
         $viewData = new stdClass();
@@ -51,12 +70,13 @@ class Weather extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add";
+        $viewData->report_id = $report_id;
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
 
-    public function save()
+    public function save($report_id = null)
     {
 
         $this->load->library("form_validation");
@@ -126,8 +146,11 @@ class Weather extends CI_Controller
                 );
             }
 
-            redirect(base_url("weather"));
-
+            if (!empty($report_id)) {
+                redirect(base_url("report/file_form/$report_id"));
+            } else {
+                redirect(base_url("Weather"));
+            }
 
         } else {
 
@@ -150,7 +173,8 @@ class Weather extends CI_Controller
 
     }
 
-    public function update_form($id)
+    public
+    function update_form($id)
     {
 
         $viewData = new stdClass();
@@ -172,7 +196,8 @@ class Weather extends CI_Controller
 
     }
 
-    public function update($id)
+    public
+    function update($id)
     {
 
         $this->load->library("form_validation");
@@ -258,7 +283,8 @@ class Weather extends CI_Controller
 
     }
 
-    public function delete($id)
+    public
+    function delete($id)
     {
 
         $delete = $this->Weather_model->delete(
@@ -293,7 +319,8 @@ class Weather extends CI_Controller
 
     }
 
-    public function date_control($date)
+    public
+    function date_control($date)
     {
         $this->load->model("Weather_model");
 
