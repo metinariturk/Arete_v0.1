@@ -21,7 +21,6 @@
                                         <div class="media-body">
                                             <h5 class="mb-1">
                                                 <a href="<?php echo base_url("user/file_form/$item->id"); ?>"> <?php echo full_name($item->id); ?></a></h5>
-                                            <p><?php echo user_role_name($item->user_role_id); ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -85,21 +84,7 @@
                                 <?php } ?>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Kullanıcı Rolü</label>
-                                <select class="form-control <?php cms_isset(form_error("user_role"), "is-invalid", ""); ?>"
-                                        data-plugin="select2" name="user_role">
-                                    <option value="<?php echo isset($form_error) ? set_value("user_role") : "$item->user_role_id"; ?>">
-                                        <?php echo isset($form_error) ? set_value("user_role") : user_role_name($item->user_role_id); ?>
-                                    </option>
-                                    <?php foreach ($user_roles as $user_role) { ?>
-                                        <option value="<?php echo $user_role->id; ?>"><?php echo $user_role->title; ?></option>
-                                    <?php } ?>
-                                </select>
-                                <?php if (isset($form_error)) { ?>
-                                    <div class="invalid-feedback"><?php echo form_error("user_role"); ?></div>
-                                <?php } ?>
-                            </div>
+
 
                             <div class="mb-3">
                                 <label class="form-label">Ünvan</label>

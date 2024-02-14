@@ -36,9 +36,6 @@
             <ul class="profile-dropdown onhover-show-div">
                 <li><a href="<?php echo base_url("user/file_form/$user->id"); ?>"><i data-feather="user"></i><span>Hesabım</span></a>
                 </li>
-                <li><a href="#"><i data-feather="mail"></i><span>E-Posta</span></a></li>
-                <li><a href="#"><i data-feather="file-text"></i><span>Yapılacaklar</span></a></li>
-                <li><a href="#"><i data-feather="settings"></i><span>Ayarlar</span></a></li>
                 <li><a href="<?php echo base_url("logout"); ?>"><i data-feather="log-in"> </i><span>Oturumu Kapat</span></a>
                 </li>
             </ul>

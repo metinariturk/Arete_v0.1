@@ -30,7 +30,6 @@
                     class="form-control"
                     data-plugin="select2" name="profession">
                 <option value="">Seçiniz</option>
-
                 <?php work_groups(); ?>
             </select>
         </div>

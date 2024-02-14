@@ -192,33 +192,16 @@ $sidebarList = array(
             )
         )
     ),
+
     array(
         "title" => "Personel Yönetimi",
-        "url" => "#",
-
-        "icon" => "shield",
-        "submodules" => array(
-            array(
-                "title" => "Sistem Kullanıcıları",
-                "url" => base_url("user")
-            ),
-            array(
-                "title" => "Kullanıcı Yetkileri",
-                "url" => base_url("user_roles")
-            ),
-            array(
-                "title" => "Yakıt Yönetimi",
-                "url" => base_url("fuel")
-            ),
-            array(
-                "title" => "Kiralama Yönetimi",
-                "url" => base_url("rent")
-            )
-        )
+        "icon" => "users",
+        "url" => base_url("user")
     ),
+
     array(
         "title" => "Araç/Filo Yönetimi",
-        "icon" => "shield",
+        "icon" => "target",
         "url" => "#",
 
         "submodules" => array(
@@ -242,25 +225,10 @@ $sidebarList = array(
     ),
     array(
         "title" => "Firma Yönetimi",
-        "icon" => "box",
+        "icon" => "trello",
         "url" => base_url("company")
     ),
-    array(
-        "title" => "Ayarlar",
-        "icon" => "shield",
-        "url" => "#",
 
-        "submodules" => array(
-            array(
-                "title" => "Genel Ayarlar",
-                "url" => base_url("settings")
-            ),
-            array(
-                "title" => "E Posta Ayarlar",
-                "url" => base_url("emailsettings")
-            )
-        )
-    ),
     array(
         "title" => "Poz Kitapları",
         "icon" => "book",
@@ -284,8 +252,25 @@ $sidebarList = array(
     ),
 
     array(
+        "title" => "Ayarlar",
+        "icon" => "settings",
+        "url" => "#",
+
+        "submodules" => array(
+            array(
+                "title" => "Genel Ayarlar",
+                "url" => base_url("settings")
+            ),
+            array(
+                "title" => "E Posta Ayarlar",
+                "url" => base_url("emailsettings")
+            )
+        )
+    ),
+
+    array(
         "title" => "ÇIKIŞ",
-        "icon" => "box",
+        "icon" => "log-out",
         "url" => base_url("logout")
     ),
 

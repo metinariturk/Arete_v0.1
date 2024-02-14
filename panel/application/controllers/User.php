@@ -27,7 +27,6 @@ class user extends CI_Controller
         $this->load->model("Project_model");
         $this->load->model("Order_model");
         $this->load->model("Company_model");
-        $this->load->model("User_role_model");
         $this->load->model("Project_model");
         $this->load->model("Auction_model");
         $this->load->model("Contract_model");
@@ -67,7 +66,6 @@ class user extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->User_model->get_all(array());
-        $user_roles = $this->User_role_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
         $auctions = $this->Auction_model->get_all(array());
         $contracts = $this->Contract_model->get_all(array());
@@ -87,7 +85,6 @@ class user extends CI_Controller
         $viewData->auctions = $auctions;
         $viewData->contracts = $contracts;
         $viewData->sites = $sites;
-        $viewData->user_roles = $user_roles;
         $viewData->user = $user;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -101,11 +98,7 @@ class user extends CI_Controller
             "user_role" => 1
         ));
         $companys = $this->Company_model->get_all();
-        $user_roles = $this->User_role_model->get_all(
-            array(
-                "isActive" => 1
-            )
-        );
+
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->settings = $settings;
@@ -114,7 +107,6 @@ class user extends CI_Controller
         $viewData->companys = $companys;
         $viewData->subViewFolder = "add";
         $viewData->items = $items;
-        $viewData->user_roles = $user_roles;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
@@ -161,11 +153,7 @@ class user extends CI_Controller
 
         $settings = $this->Settings_model->get();
         $companys = $this->Company_model->get_all();
-        $user_roles = $this->User_role_model->get_all(
-            array(
-                "isActive" => 1
-            )
-        );
+
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -174,7 +162,6 @@ class user extends CI_Controller
         $viewData->settings = $settings;
         $viewData->modules = $modules;
         $viewData->companys = $companys;
-        $viewData->user_roles = $user_roles;
 
         $viewData->item = $this->User_model->get(
             array(
@@ -288,11 +275,7 @@ class user extends CI_Controller
                 "user_role" => 1
             ));
             $companys = $this->Company_model->get_all();
-            $user_roles = $this->User_role_model->get_all(
-                array(
-                    "isActive" => 1
-                )
-            );
+
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->settings = $settings;
@@ -301,7 +284,6 @@ class user extends CI_Controller
             $viewData->companys = $companys;
             $viewData->subViewFolder = "add";
             $viewData->items = $items;
-            $viewData->user_roles = $user_roles;
             $viewData->form_error = true;
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -425,11 +407,7 @@ class user extends CI_Controller
             /** Tablodan Verilerin Getirilmesi.. */
             $settings = $this->Settings_model->get();
             $companys = $this->Company_model->get_all();
-            $user_roles = $this->User_role_model->get_all(
-                array(
-                    "isActive" => 1
-                )
-            );
+
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
@@ -437,7 +415,6 @@ class user extends CI_Controller
             $viewData->subViewFolder = "$this->Update_Folder";
             $viewData->settings = $settings;
             $viewData->companys = $companys;
-            $viewData->user_roles = $user_roles;
             $viewData->form_error = true;
 
             $viewData->item = $this->User_model->get(

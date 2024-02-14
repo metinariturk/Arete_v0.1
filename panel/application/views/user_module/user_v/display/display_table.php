@@ -31,7 +31,6 @@
                             </div>
                             <div class="col-sm-12 col-lg-4 order-sm-0 order-xl-1">
                                 <div class="user-designation">
-                                    <p><?php echo user_role_name($item->user_role_id); ?></p>
                                     <div class="title"><?php echo full_name($item->id); ?></div>
                                     <div class="desc"><?php echo $item->profession; ?></div>
                                     <p><?php echo $item->unvan; ?></p>
