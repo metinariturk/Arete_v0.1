@@ -1586,3 +1586,8 @@ function sortArrayByCriteria($array, $criteria)
 
     return $array;
 }
+
+function get_days_in_month($year, $month) {
+    // Belirtilen yıl ve ayda kaç gün olduğunu döndürür
+    return cal_days_in_month(CAL_GREGORIAN, $month, $year);
+}

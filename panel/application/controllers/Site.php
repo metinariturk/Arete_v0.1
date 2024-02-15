@@ -1539,7 +1539,7 @@ class Site extends CI_Controller
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|alpha');
+        $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|callback_name_control');
         $this->form_validation->set_rules('group', 'Meslek', 'required');
         $this->form_validation->set_rules('social_id', 'TC Kimlik No', 'numeric');
         $this->form_validation->set_rules('start_date', 'Giriş Tarihi', 'required');
@@ -1633,6 +1633,73 @@ class Site extends CI_Controller
 
     }
 
+    public function update_puantaj($site_id)
+    {
+        $workerId = $this->input->post('workerId');
+        $date = $this->input->post('date');
+
+        // Gelen verileri view dosyasına gönderelim
+        $data = array(
+            'workerId' => $workerId,
+            'date' => $date
+        );
+
+        print_r($data);
+        $isChecked = $this->input->post('isChecked');
+
+        // Checkbox işaretli mi kontrol et
+        if ($isChecked == 1) {
+            // Checkbox işaretli ise burada yapılacak işlemleri gerçekleştirin
+            echo "Checkbox işaretli";
+        } else {
+            // Checkbox işaretli değil ise burada yapılacak işlemleri gerçekleştirin
+            echo "Checkbox işaretli değil";
+        }
+        die();
+        $this->load->model("Attendance_model");
+
+        // Tarih varsa, uygun formata dönüştür
+        $attendance_date = $date ? dateFormat('Y-m-d', $date) : null;
+
+        // Varolan puantajı al
+        $old_puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "attendance_day" => $attendance_date));
+
+        // Puantajda değişiklik yap
+        if ($old_puantaj && isset($old_puantaj->workers)) {
+            // workers alanı geçerli bir JSON dizesi mi?
+            $old_workers = json_decode($old_puantaj->workers, true);
+            if (is_array($old_workers)) {
+                // Aynı işçi listede yoksa, ekle
+                if (!in_array($worker_id, $old_workers)) {
+                    // Varolan işçi listesini diziye dönüştür
+                    $old_workers[] = $worker_id;
+
+                    // Yeni işçi listesini JSON formatına dönüştür
+                    $new_puantaj = json_encode($old_workers);
+
+                    // Varolan puantajı güncelle
+                    $this->Attendance_model->update(
+                        array("id" => $old_puantaj->id),
+                        array("workers" => $new_puantaj)
+                    );
+                }
+            }
+        } else {
+            // Yeni bir puantaj oluştur
+            $contract_id = contract_id_module("site", "$site_id");
+            $new_puantaj = json_encode([$worker_id]);
+
+            $this->Attendance_model->add(
+                array(
+                    "site_id" => $site_id,
+                    "contract_id" => $contract_id,
+                    "attendance_day" => $attendance_date,
+                    "workers" => $new_puantaj
+                )
+            );
+        }
+    }
+
     public function check_end_date($end_date)
     {
         $start_date = $this->input->post('start_date'); // Başlangıç tarihini post verisinden alın
@@ -1652,4 +1719,13 @@ class Site extends CI_Controller
         return TRUE; // Kontrol yapılmadı veya geçerli
     }
 
+    public function name_control($user_name)
+    {
+        if (preg_match('/^([-a-z üğışçöÜĞİŞÇÖ])+$/i', $user_name)) {
+            return TRUE;
+        } else {
+            $this->form_validation->set_message('custom_alpha_check', 'Alan sadece harf, boşluk, tire ve Türkçe karakterler içerebilir.');
+            return FALSE;
+        }
+    }
 }
