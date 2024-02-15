@@ -38,6 +38,7 @@ class Site extends CI_Controller
         $this->load->model("Extime_model");
         $this->load->model("Safety_model");
         $this->load->model("Costinc_model");
+        $this->load->model("Workman_model");
         $this->load->model("Workgroup_model");
         $this->load->model("Workmachine_model");
         $this->load->model("Favorite_model");
@@ -399,10 +400,7 @@ class Site extends CI_Controller
     {
         $session_user = $this->session->userdata("user");
 
-        if ($session_user->user_role == 2) {
-            echo "true";
-        } else {
-            echo "false";
+        if ($session_user->user_role != 2) {
             if (!isAdmin()) {
                 redirect(base_url("error"));
             }
@@ -429,6 +427,7 @@ class Site extends CI_Controller
         $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "contractor_staff"));
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "owner_sign"));
         $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "owner_staff"));
+        $personel_datas = $this->Workman_model->get_all(array("site_id" => $id, "isActive" => 1));
 
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $id, "stock_id" => null));
 
@@ -470,7 +469,7 @@ class Site extends CI_Controller
         $viewData->active_tab = $active_tab;
         $viewData->all_expenses = $all_expenses;
         $viewData->all_deposites = $all_deposites;
-        $viewData->safety = $conn_safety;
+        $viewData->personel_datas = $personel_datas;
         $viewData->main_categories = $main_categories;
         $viewData->main_categories_workmachine = $main_categories_workmachine;
         $viewData->item = $item;
@@ -1533,6 +1532,124 @@ class Site extends CI_Controller
                 )
             );
         }
+    }
+
+    public function save_personel($site_id)
+    {
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|alpha');
+        $this->form_validation->set_rules('group', 'Meslek', 'required');
+        $this->form_validation->set_rules('social_id', 'TC Kimlik No', 'numeric');
+        $this->form_validation->set_rules('start_date', 'Giriş Tarihi', 'required');
+        $this->form_validation->set_rules('end_date', 'Çıkış Tarihi', 'callback_check_end_date');
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            )
+        );
+
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            if ($this->input->post("start_date")) {
+                $start_date = dateFormat('Y-m-d', $this->input->post("start_date"));
+            } else {
+                $start_date = null;
+            }
+
+            if ($this->input->post("end_date")) {
+                $end_date = dateFormat('Y-m-d', $this->input->post("end_date"));
+            } else {
+                $end_date = null;
+            }
+
+            $insert = $this->Workman_model->add(
+                array(
+                    "site_id" => $site_id,
+                    "name_surname" => $this->input->post("name_surname"),
+                    "group" => $this->input->post("group"),
+                    "bank" => $this->input->post("bank"),
+                    "IBAN" => $this->input->post("IBAN"),
+                    "social_id" => $this->input->post('social_id'),
+                    "start_date" => $start_date,
+                    "end_date" => $end_date,
+                    "isActive" => 1,
+                )
+            );
+
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde eklendi",
+                "type" => "success"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+
+            $viewData = new stdClass();
+            /** Tablodan Verilerin Getirilmesi.. */
+            $item = $this->Site_model->get(array("id" => $site_id));
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+            $viewData->form_error = true;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
+        } else {
+
+
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+
+            $viewData = new stdClass();
+            /** Tablodan Verilerin Getirilmesi.. */
+            $item = $this->Site_model->get(array("id" => $site_id));
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+            $viewData->form_error = true;
+
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
+        }
+
+
+    }
+
+    public function check_end_date($end_date)
+    {
+        $start_date = $this->input->post('start_date'); // Başlangıç tarihini post verisinden alın
+
+        // Eğer end date boş değilse ve start date doluysa kontrol yap
+        if (!empty($end_date) && !empty($start_date)) {
+            // İki tarih arasındaki farkı hesaplayın
+            $date_diff = strtotime($end_date) - strtotime($start_date);
+
+            if ($date_diff < 0) {
+                // Eğer çıkış tarihi, giriş tarihinden önce ise hata mesajı ayarlayın
+                $this->form_validation->set_message('check_end_date', 'Çıkış tarihi, giriş tarihinden sonraki bir tarih olmalıdır.');
+                return FALSE;
+            }
+        }
+
+        return TRUE; // Kontrol yapılmadı veya geçerli
     }
 
 }

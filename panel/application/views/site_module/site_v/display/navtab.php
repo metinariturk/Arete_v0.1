@@ -17,6 +17,9 @@
                     <li><a class="show" id="sitewallet-tab" data-bs-toggle="pill" href="#sitewallet"
                            role="tab" aria-controls="sitewallet" aria-selected="false"><span
                                     class="title">Şantiye Harcamaları</span></a></li>
+                    <li><a class="show" id="puntaj-tab" data-bs-toggle="pill" href="#puntaj"
+                           role="tab" aria-controls="puntaj" aria-selected="false"><span
+                                    class="title">Puantaj</span></a></li>
                     <li><a class="show" id="workmachine-tab" data-bs-toggle="pill"
                             href="#workmachine" role="tab" aria-controls="workmachine"
                             aria-selected="false"><span class="title">İş Makineleri</span></a></li>
