@@ -233,8 +233,14 @@ class Report extends CI_Controller
 
     public function save($site_id)
 
-
     {
+        $session_user = $this->session->userdata("user");
+
+        if ($session_user->user_role != 2) {
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
+        }
 
         if ($this->input->post("report_date")) {
             $report_date = dateFormat('Y-m-d', $this->input->post("report_date"));
@@ -467,7 +473,6 @@ class Report extends CI_Controller
     public function update($id)
     {
 
-
         $report = $this->Report_model->get(array("id" => $id));
         $project_code = project_code($report->project_id);
         $site_code = site_code($report->site_id);
@@ -694,8 +699,12 @@ class Report extends CI_Controller
 
     public function file_upload($id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        $session_user = $this->session->userdata("user");
+
+        if ($session_user->user_role != 2) {
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
         }
 
         $report = $this->Report_model->get(array("id" => $id));
@@ -811,6 +820,14 @@ class Report extends CI_Controller
 
     public function file_download($id)
     {
+        $session_user = $this->session->userdata("user");
+
+        if ($session_user->user_role != 2) {
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
+        }
+
         $fileName = $this->Report_file_model->get(
             array(
                 "id" => $id
@@ -842,8 +859,12 @@ class Report extends CI_Controller
 
     public function download_all($report_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        $session_user = $this->session->userdata("user");
+
+        if ($session_user->user_role != 2) {
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
         }
 
         $this->load->library('zip');
@@ -898,10 +919,13 @@ class Report extends CI_Controller
 
     public function fileDelete($id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+        $session_user = $this->session->userdata("user");
 
+        if ($session_user->user_role != 2) {
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
+        }
         $viewData = new stdClass();
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -964,8 +988,12 @@ class Report extends CI_Controller
     public function fileDelete_all($id)
     {
 
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        $session_user = $this->session->userdata("user");
+
+        if ($session_user->user_role != 2) {
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
         }
 
         $viewData = new stdClass();
