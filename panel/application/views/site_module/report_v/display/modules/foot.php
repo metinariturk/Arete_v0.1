@@ -1,6 +1,5 @@
-<?php if (!empty($item->aciklama)){ ?>
-<div class="content">
-    <div class="card-body">
+<?php if (!empty($item->aciklama)) { ?>
+    <div class="content">
         <table style="width:100%;">
             <thead>
             <tr>
@@ -19,19 +18,16 @@
             </tbody>
         </table>
     </div>
-</div>
 <?php } else { ?>
     <div class="content">
-        <div class="card-body">
-            <table style="width:100%;">
-                <thead>
-                <tr>
-                    <th colspan="4">
-                        <p style="font-size:15pt;"><strong>Genel Not Yok</strong></p>
-                    </th>
-                </tr>
-                </thead>
-            </table>
-        </div>
+        <table style="width:100%;">
+            <thead>
+            <tr>
+                <th colspan="4">
+                    <p style="font-size:15pt;"><strong>Genel Not Yok</strong></p>
+                </th>
+            </tr>
+            </thead>
+        </table>
     </div>
 <?php } ?>

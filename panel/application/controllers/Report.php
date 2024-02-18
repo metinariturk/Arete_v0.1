@@ -185,6 +185,24 @@ class Report extends CI_Controller
 
         $item = $this->Report_model->get(array("id" => $id));
 
+        $item = $this->Report_model->get(array("id" => $id));
+        $reports = $this->Report_model->get_all(array("site_id" => $item->site_id), "report_date ASC");
+
+        $current_report_index = array_search($id, array_column($reports, 'id'));
+
+        $previous_report = null;
+        $next_report = null;
+
+        if ($current_report_index !== false) {
+            if ($current_report_index > 0) {
+                $previous_report = $reports[$current_report_index - 1];
+            }
+
+            if ($current_report_index < count($reports) - 1) {
+                $next_report = $reports[$current_report_index + 1];
+            }
+        }
+
 
         $site_id = get_from_any("report", "site_id", "id", "$id");
         $proje_id = get_from_any("site", "proje_id", "id", $site_id);
@@ -212,6 +230,8 @@ class Report extends CI_Controller
         $viewData->proje_id = $proje_id;
         $viewData->weather = $weather;
         $viewData->workgroups = $workgroups;
+        $viewData->previous_report = $previous_report;
+        $viewData->next_report = $next_report;
         $viewData->workmachines = $workmachines;
         $viewData->supplies = $supplies;
         $viewData->site = $site;
@@ -941,14 +961,11 @@ class Report extends CI_Controller
         $report_file = $this->Report_file_model->get(array("id" => $id));
         $report = $this->Report_model->get(array("id" => $report_file->report_id));
         $site = $this->Site_model->get(array("id" => $report->site_id));
-        $project = $this->Project_model->get(array("id" => $report->site_id));
-        $viewData->project = $project;
-        $viewData->site = $site;
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
+
 
         $date = dateFormat_dmy($report->report_date);
-
         $project_code = project_code("$site->proje_id");
-
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
 
 
@@ -978,6 +995,9 @@ class Report extends CI_Controller
                     "report_id" => $report->id
                 )
             );
+
+            $viewData->project = $project;
+            $viewData->site = $site;
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
             echo $render_html;
