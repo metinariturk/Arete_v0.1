@@ -1,6 +1,7 @@
 <?php
 echo validation_errors();
 ?>
+
 <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
@@ -26,10 +27,10 @@ echo validation_errors();
                 <?php for ($j = 1; $j <= 29; $j++): ?>
                     <td>
                         <div class="form-check">
-                            <input type="checkbox" onclick="send_puantaj(this)"
+                            <input type="checkbox" onclick="save_puantaj(puantaj_form)"
                                    worker-id = "<?php echo $personel_data->id; ?>"
                                    date = "$j-$month-$year"
-                                   data-url = "<?php echo base_url("site/update_puantaj/$item->id/"); ?>">
+                            >
                         </div>
                     </td>
                 <?php endfor; ?>
@@ -38,26 +39,3 @@ echo validation_errors();
         </tbody>
     </table>
 </div>
-<script>
-    function send_puantaj(checkbox) {
-        if (checkbox.checked) {
-            var workerId = $(checkbox).attr('worker-id');
-            var date = $(checkbox).attr('date');
-            var url = $(checkbox).attr('data-url');
-
-            // Verileri topladık, şimdi HTTP isteği gönderelim
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: JSON.stringify({ workerId: workerId, date: date }),
-                contentType: 'application/json',
-                success: function(response) {
-                    console.log('Veri başarıyla gönderildi.');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Veri gönderilirken bir hata oluştu:', error);
-                }
-            });
-        }
-    }
-</script>

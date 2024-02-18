@@ -963,18 +963,15 @@ class Report extends CI_Controller
         $site = $this->Site_model->get(array("id" => $report->site_id));
         $project = $this->Project_model->get(array("id" => $site->proje_id));
 
-
         $date = dateFormat_dmy($report->report_date);
         $project_code = project_code("$site->proje_id");
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
-
 
         $delete = $this->Report_file_model->delete(
             array(
                 "id" => $id
             )
         );
-
 
         if ($delete) {
 

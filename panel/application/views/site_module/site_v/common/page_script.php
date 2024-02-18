@@ -211,3 +211,14 @@
         icon.classList.toggle('fa-star-o');
     }
 </script>
+
+<script>
+    function save_puantaj(anchor) {
+
+        $.post($url, {}, function (response) {
+            $(".personel_list").html(response);
+        })
+    }
+</script>
+
+

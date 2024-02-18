@@ -1644,18 +1644,9 @@ class Site extends CI_Controller
             'date' => $date
         );
 
-        print_r($data);
-        $isChecked = $this->input->post('isChecked');
-
-        // Checkbox işaretli mi kontrol et
-        if ($isChecked == 1) {
-            // Checkbox işaretli ise burada yapılacak işlemleri gerçekleştirin
-            echo "Checkbox işaretli";
-        } else {
-            // Checkbox işaretli değil ise burada yapılacak işlemleri gerçekleştirin
-            echo "Checkbox işaretli değil";
-        }
+        echo "asd";
         die();
+
         $this->load->model("Attendance_model");
 
         // Tarih varsa, uygun formata dönüştür
@@ -1698,6 +1689,22 @@ class Site extends CI_Controller
                 )
             );
         }
+
+        $viewData = new stdClass();
+        /** Tablodan Verilerin Getirilmesi.. */
+        $item = $this->Site_model->get(array("id" => $site_id));
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+        $viewData->form_error = true;
+
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
+
     }
 
     public function check_end_date($end_date)

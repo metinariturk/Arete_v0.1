@@ -17,8 +17,14 @@
         </div>
         <div class="card-body">
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/puantaj"); ?>
+
+
             <div class="personel_list">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/puantaj_liste"); ?>
+                <form id="puantaj_form"
+                      action="<?php echo base_url("$this->Module_Name/update_puantaj/$item->id"); ?>" method="post"
+                      enctype="multipart/form-data" autocomplete="off">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/puantaj_liste"); ?>
+                </form>
             </div>
         </div>
     </div>
