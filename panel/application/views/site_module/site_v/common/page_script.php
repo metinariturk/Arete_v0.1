@@ -213,11 +213,31 @@
 </script>
 
 <script>
-    function save_puantaj(anchor) {
+    function save_puantaj(checkbox) {
+        // Checkbox'tan ilgili verileri al
+        var workerId = $(checkbox).attr('worker-id');
+        var site = $(checkbox).attr('site');
+        var date = $(checkbox).attr('date');
+        var isChecked = checkbox.checked ? 1 : 0; // CheckBox'ın durumuna göre 1 (checked) veya 0 (unchecked) değeri
 
-        $.post($url, {}, function (response) {
-            $(".personel_list").html(response);
-        })
+        // AJAX isteği gönder
+        $.post({
+            url: '<?php echo base_url("$this->Module_Name/update_puantaj"); ?>', // Sunucunuzun POST isteğini alacağı adres
+            data: {
+                workerId: workerId,
+                site: site,
+                date: date,
+                isChecked: isChecked // CheckBox'ın durumu
+            },
+            success: function(response) {
+                // Başarılı yanıt aldığınızda yapılacak işlemler
+                $(".personel_list").html(response);
+            },
+            error: function(xhr, status, error) {
+                // Hata durumunda yapılacak işlemler
+                console.error(xhr.responseText);
+            }
+        });
     }
 </script>
 

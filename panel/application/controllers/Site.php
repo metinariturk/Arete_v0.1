@@ -410,6 +410,7 @@ class Site extends CI_Controller
         $this->load->model("Report_workmachine_model");
         $this->load->model("Report_supply_model");
         $this->load->model("Report_sign_model");
+        $this->load->model("Attendance_model");
 
 
         $fav = $this->Favorite_model->get(array(
@@ -427,7 +428,9 @@ class Site extends CI_Controller
         $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "contractor_staff"));
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "owner_sign"));
         $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "owner_staff"));
-        $personel_datas = $this->Workman_model->get_all(array("site_id" => $id, "isActive" => 1));
+        $personel_datas = $this->Workman_model->get_all(array("site_id" => $id, "isActive" => 1), "group DESC");
+        $year_month = date('Y-m');
+        $puantaj = $this->Attendance_model->get(array("site_id" => $id, "year_month" => $year_month));
 
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $id, "stock_id" => null));
 
@@ -473,6 +476,10 @@ class Site extends CI_Controller
         $viewData->main_categories = $main_categories;
         $viewData->main_categories_workmachine = $main_categories_workmachine;
         $viewData->item = $item;
+        $viewData->puantaj = $puantaj;
+        if (!empty($puantaj->puantaj)) {
+            $viewData->puantaj_data = json_decode($puantaj->puantaj,true);
+        }
         $viewData->contractor_sign = $contractor_sign;
         $viewData->contractor_staff = $contractor_staff;
         $viewData->owner_sign = $owner_sign;
@@ -1633,73 +1640,86 @@ class Site extends CI_Controller
 
     }
 
-    public function update_puantaj($site_id)
+
+    public function update_puantaj()
     {
+
         $workerId = $this->input->post('workerId');
         $date = $this->input->post('date');
-
-        // Gelen verileri view dosyasına gönderelim
-        $data = array(
-            'workerId' => $workerId,
-            'date' => $date
-        );
-
-        echo "asd";
-        die();
+        $site_id = $this->input->post('site');
+        $is_checked = $this->input->post('isChecked');
 
         $this->load->model("Attendance_model");
 
-        // Tarih varsa, uygun formata dönüştür
-        $attendance_date = $date ? dateFormat('Y-m-d', $date) : null;
+        $year_month = dateFormat('Y-m', $date);
+        $day = dateFormat('d', $date);
 
-        // Varolan puantajı al
-        $old_puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "attendance_day" => $attendance_date));
+        $old_puantaj = $this->Attendance_model->get(array("site_id" => 1, "year_month" => $year_month));
 
-        // Puantajda değişiklik yap
-        if ($old_puantaj && isset($old_puantaj->workers)) {
-            // workers alanı geçerli bir JSON dizesi mi?
-            $old_workers = json_decode($old_puantaj->workers, true);
-            if (is_array($old_workers)) {
-                // Aynı işçi listede yoksa, ekle
-                if (!in_array($worker_id, $old_workers)) {
-                    // Varolan işçi listesini diziye dönüştür
-                    $old_workers[] = $worker_id;
+        if (!empty($old_puantaj)){
+            $old_puantaj_array = json_decode($old_puantaj->puantaj, true);
+        }
 
-                    // Yeni işçi listesini JSON formatına dönüştür
-                    $new_puantaj = json_encode($old_workers);
-
-                    // Varolan puantajı güncelle
-                    $this->Attendance_model->update(
-                        array("id" => $old_puantaj->id),
-                        array("workers" => $new_puantaj)
-                    );
+        if ($is_checked == 1) {
+            if (isset($old_puantaj_array[$day])) {
+                // Anahtar varsa, içine yeni bir değer ekleyin
+                $old_puantaj_array[$day][] = $workerId;
+            } else {
+                // Anahtar yoksa, yeni bir anahtar oluşturun ve içine yeni bir dizi ekleyin
+                $old_puantaj_array[$day] = array($workerId);
+            }
+        } elseif ($is_checked == 0) {
+            if (isset($old_puantaj_array[$day])) {
+                // $workerId değerini $day anahtarı altından kaldırın
+                $key = array_search($workerId, $old_puantaj_array[$day]);
+                if ($key !== false) {
+                    unset($old_puantaj_array[$day][$key]);
+                    // Eğer $day anahtarının altında başka bir değer yoksa, $day anahtarını tamamen kaldırın
+                    if (count($old_puantaj_array[$day]) == 0) {
+                        unset($old_puantaj_array[$day]);
+                    }
                 }
             }
+        }
+
+        // Puantajda değişiklik yap
+        if (isset($old_puantaj)) {
+            $this->Attendance_model->update(
+                array("id" => $old_puantaj->id),
+                array("puantaj" => json_encode($old_puantaj_array))
+            );
         } else {
             // Yeni bir puantaj oluştur
             $contract_id = contract_id_module("site", "$site_id");
-            $new_puantaj = json_encode([$worker_id]);
+            $new_puantaj = json_encode($old_puantaj_array);
 
             $this->Attendance_model->add(
                 array(
                     "site_id" => $site_id,
                     "contract_id" => $contract_id,
-                    "attendance_day" => $attendance_date,
-                    "workers" => $new_puantaj
+                    "year_month" => $year_month,
+                    "puantaj" => $new_puantaj
                 )
             );
         }
 
         $viewData = new stdClass();
+        $puantaj = $this->Attendance_model->get(array("site_id" => 1, "year_month" => $year_month));
+
+
         /** Tablodan Verilerin Getirilmesi.. */
         $item = $this->Site_model->get(array("id" => $site_id));
+        $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
+
+
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
-        $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+        $viewData->puantaj_data = json_decode($puantaj->puantaj,true);;
+        $viewData->personel_datas = $personel_datas;
         $viewData->form_error = true;
 
 

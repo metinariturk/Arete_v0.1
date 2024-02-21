@@ -129,6 +129,14 @@ function dateFormat_dmy($givenDate = null)
     //gelen tarih verisini YY-mm-dd -> dd-mm-YYYY şekline çeviriyor
 }
 
+function gun_sayisi() {
+    $ilk_gun = date('Y-m-01');
+    $son_gun = date('Y-m-t');
+    $gun_sayisi = (int)date('d', strtotime($son_gun));
+
+    return $gun_sayisi;
+}
+
 function dateFormat_dmy_hi($givenDate = null)
 {
 
