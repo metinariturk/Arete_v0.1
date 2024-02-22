@@ -60,32 +60,37 @@ echo validation_errors();
                         <?php endfor; ?>
                         <td>
                             <?php
-                            $value_to_count = $personel_data->id;
+                            if (isset($puantaj_data)) {
+                                $value_to_count = $personel_data->id;
 
-                            // Toplam sayacı başlat
-                            $count_of_value = 0;
+                                // Toplam sayacı başlat
+                                $count_of_value = 0;
 
-                            // Her bir alt dizi için kontrol edelim
-                            foreach ($puantaj_data as $sub_array) {
-                                // Eğer değer alt dizide bulunuyorsa, sayaca ekleyelim
-                                if (in_array($value_to_count, $sub_array)) {
-                                    // Değerin sayısını alt dizide say
-                                    $count_of_value += array_count_values($sub_array)[$value_to_count];
+                                // Her bir alt dizi için kontrol edelim
+                                foreach ($puantaj_data as $sub_array) {
+                                    // Eğer değer alt dizide bulunuyorsa, sayaca ekleyelim
+                                    if (in_array($value_to_count, $sub_array)) {
+                                        // Değerin sayısını alt dizide say
+                                        $count_of_value += array_count_values($sub_array)[$value_to_count];
+                                    }
                                 }
+                                echo $count_of_value;
                             }
-                            echo $count_of_value;
                             ?>
                         </td>
                     </tr>
                 <?php } ?>
                 </tbody>
                 <tfoot>
+                <?php                             if (isset($puantaj_data)) { ?>
                 <tr>
                     <td colspan="3">
                         Toplam
                     </td>
 
+
                     <?php
+
                     for ($j = 1;
                          $j <= gun_sayisi();
                          $j++):
@@ -111,6 +116,8 @@ echo validation_errors();
                             ?></b>
                     </td>
                 </tr>
+                <?php } ?>
+
                 </tfoot>
             </table>
         </div>
