@@ -9,7 +9,7 @@ echo validation_errors();
                 <?php
                 $month = date('n');
                 $year = date('Y');
-                echo ay_isimleri($month)." - ".$year;
+                echo ay_isimleri($month) . " - " . $year;
                 ?>
             </h3>
             <table class="table-bordered">
@@ -28,23 +28,20 @@ echo validation_errors();
                 </thead>
                 <tbody>
                 <?php
-
-
-
                 $i = 1;
                 $count_of_days = get_days_in_month($year, $month);
                 foreach ($personel_datas as $personel_data) { ?>
                     <tr>
                         <td> <?php echo $i++; ?></td>
                         <td> <?php echo $personel_data->name_surname; ?></td>
-                        <td> <?php echo group_name($personel_data->group); ?></td>
+                        <td> <?php echo group_name($personel_data->group); ?>a</td>
                         <?php
 
                         for ($j = 1; $j <= gun_sayisi(); $j++): ?>
                             <?php $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT); ?>
                             <td>
                                 <div>
-                                    <input type="checkbox" onclick="save_puantaj(this)"
+                                    <input type="checkbox" onclick="savePuantaj(this)"
                                            style="margin: 6px; padding: 6px;"
                                         <?php if (isset($puantaj_data[$j_double_digit]) && in_array($personel_data->id, $puantaj_data[$j_double_digit])) {
                                             echo "checked";
@@ -82,42 +79,40 @@ echo validation_errors();
                 <?php } ?>
                 </tbody>
                 <tfoot>
-                <?php                             if (isset($puantaj_data)) { ?>
-                <tr>
-                    <td colspan="3">
-                        Toplam
-                    </td>
+                <?php if (isset($puantaj_data)) { ?>
+                    <tr>
+                        <td colspan="3">
+                            Toplam
+                        </td>
+                        <?php
 
-
-                    <?php
-
-                    for ($j = 1;
-                         $j <= gun_sayisi();
-                         $j++):
-                        $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
-                        if (array_key_exists($j_double_digit, $puantaj_data)) { ?>
-                            <td>
-                                <?php echo count($puantaj_data[$j_double_digit]); ?>
-                            </td>
-                            <?php
-                        } else { ?>
-                            <td>
-                                <?php echo "0"; ?>
-                            </td>
-                        <?php }
-                    endfor; ?>
-                    <td colspan="3"><b>
-                            <?php
-                            $total_keys = 0;
-                            foreach ($puantaj_data as $sub_array) {
-                                $total_keys += count($sub_array);
-                            }
-                            echo $total_keys;
-                            ?></b>
-                    </td>
-                </tr>
+                        for ($j = 1;
+                             $j <= gun_sayisi();
+                             $j++):
+                            $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
+                            if (array_key_exists($j_double_digit, $puantaj_data)) { ?>
+                                <td>
+                                    <?php echo count($puantaj_data[$j_double_digit]); ?>
+                                </td>
+                                <?php
+                            } else { ?>
+                                <td>
+                                    <?php echo "0"; ?>
+                                </td>
+                            <?php }
+                        endfor; ?>
+                        <td colspan="3"><b>
+                                <?php
+                                $total_keys = 0;
+                                $total_keys = 0;
+                                foreach ($puantaj_data as $sub_array) {
+                                    $total_keys += count($sub_array);
+                                }
+                                echo $total_keys;
+                                ?></b>
+                        </td>
+                    </tr>
                 <?php } ?>
-
                 </tfoot>
             </table>
         </div>

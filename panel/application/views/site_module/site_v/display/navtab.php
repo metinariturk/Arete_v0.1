@@ -20,6 +20,9 @@
                     <li><a class="show" id="puntaj-tab" data-bs-toggle="pill" href="#puntaj"
                            role="tab" aria-controls="puntaj" aria-selected="false"><span
                                     class="title">Puantaj</span></a></li>
+                    <li><a class="show" id="personel-tab" data-bs-toggle="pill" href="#personel"
+                           role="tab" aria-controls="personel" aria-selected="false"><span
+                                    class="title">Personel</span></a></li>
                     <li><a class="show" id="workmachine-tab" data-bs-toggle="pill"
                             href="#workmachine" role="tab" aria-controls="workmachine"
                             aria-selected="false"><span class="title">İş Makineleri</span></a></li>

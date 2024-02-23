@@ -1611,8 +1611,6 @@ class Site extends CI_Controller
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
         } else {
-
-
             $alert = array(
                 "title" => "İşlem Başarısız",
                 "text" => "Kayıt Ekleme sırasında bir problem oluştu",
@@ -1633,7 +1631,6 @@ class Site extends CI_Controller
             $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
             $viewData->form_error = true;
 
-
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
         }
 
@@ -1643,7 +1640,6 @@ class Site extends CI_Controller
 
     public function update_puantaj()
     {
-
         $workerId = $this->input->post('workerId');
         $date = $this->input->post('date');
         $site_id = $this->input->post('site');
@@ -1706,22 +1702,18 @@ class Site extends CI_Controller
         $viewData = new stdClass();
         $puantaj = $this->Attendance_model->get(array("site_id" => 1, "year_month" => $year_month));
 
-
         /** Tablodan Verilerin Getirilmesi.. */
         $item = $this->Site_model->get(array("id" => $site_id));
         $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
-
-
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
-        $viewData->puantaj_data = json_decode($puantaj->puantaj,true);;
+        $viewData->puantaj_data = json_decode($puantaj->puantaj,true);
         $viewData->personel_datas = $personel_datas;
         $viewData->form_error = true;
-
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
 
