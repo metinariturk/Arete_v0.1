@@ -74,14 +74,6 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 book_list">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/book"); ?>
-            </div>
-            <div class="col-md-6 contract_group">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/contract_group"); ?>
-            </div>
-        </div>
     </div>
 </div>
 

@@ -63,13 +63,22 @@
                     <?php foreach ($boq_items as $boq_item) { ?>
                         <tr>
                             <td class="table-cell">
-                                <?php echo $boq_item->code; ?>
+                                <input name="boq[<?php echo $boq_item->id; ?>][code]" onclick="hesaplaT"
+                                        style="width: 100%"
+                                       value="<?php echo $boq_item->code; ?>">
+
                             </td>
                             <td class="table-cell">
-                                <?php echo $boq_item->name; ?>
+                                <input name="boq[<?php echo $boq_item->id; ?>][name]" onclick="hesaplaT"
+                                        style="width: 100%"
+                                       value="<?php echo $boq_item->name; ?>">
+
                             </td>
                             <td class="table-cell">
-                                <?php echo $boq_item->unit; ?>
+                                <input name="boq[<?php echo $boq_item->id; ?>][unit]" onclick="hesaplaT"
+                                        style="width: 100%"
+                                       value="<?php echo $boq_item->unit; ?>">
+
                             </td>
                             <td class="table-cell w10">
                                 <input name="boq[<?php echo $boq_item->id; ?>][qty]" onclick="hesaplaT"

@@ -2772,6 +2772,9 @@ class Contract extends CI_Controller
                     ),
                     array(
                         "qty" => $values['qty'],
+                        "unit" => $values['unit'],
+                        "code" => $values['code'],
+                        "name" => $values['name'],
                         "price" => $values['price'],
                         "total" => $values['total']
                     ));
