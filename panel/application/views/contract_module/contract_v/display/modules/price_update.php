@@ -40,7 +40,7 @@
                         <td hidden class="table-header-cell">
                             <p><strong>Sub_id</strong></p>
                         </td>
-                        <td class="table-header-cell">
+                        <td class="table-header-cell" delete_group>
                             <p><strong>Poz No:</strong></p>
                         </td>
                         <td class="table-header-cell">
@@ -71,19 +71,19 @@
                                        value="<?php echo $boq_item->sub_id; ?>">
 
                             </td>
-                            <td class="table-cell">
+                            <td class="table-cell w10">
                                 <input name="boq[<?php echo $boq_item->id; ?>][code]" onclick="hesaplaT"
                                         style="width: 100%"
                                        value="<?php echo $boq_item->code; ?>">
 
                             </td>
-                            <td class="table-cell">
+                            <td class="table-cell w50">
                                 <input name="boq[<?php echo $boq_item->id; ?>][name]" onclick="hesaplaT"
                                         style="width: 100%"
                                        value="<?php echo $boq_item->name; ?>">
 
                             </td>
-                            <td class="table-cell">
+                            <td class="table-cell w5">
                                 <input name="boq[<?php echo $boq_item->id; ?>][unit]" onclick="hesaplaT"
                                         style="width: 100%"
                                        value="<?php echo $boq_item->unit; ?>">
@@ -99,12 +99,12 @@
                                        id="p-<?php echo $boq_item->id; ?>" style="width: 100%" type="number"
                                        value="<?php echo $boq_item->price; ?>">
                             </td>
-                            <td class="table-cell w10">
+                            <td class="table-cell w15">
                                 <input name="boq[<?php echo $boq_item->id; ?>][total]" onclick="hesaplaT"
                                        id="t-<?php echo $boq_item->id; ?>" style="width: 100%" type="number"
                                        value="<?php echo $boq_item->total; ?>">
                             </td>
-                            <td class="table-cell w10">
+                            <td class="table-cell w5">
                                 <a onclick="delete_price_item(this)" id="<?php echo $boq_item->id; ?>">
                                     <i style="color: tomato" class="fa fa-minus-circle fa-2x" aria-hidden="true"></i>
                                 </a>
@@ -112,11 +112,10 @@
                         </tr>
                     <?php } ?>
                     <tr>
-                        <td hidden  class="table-cell">
-                            <input  style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][id]"
-                                   >
-                        </tdhidden>
-                        <td class="table-cell">
+                        <td hidden class="table-cell" >
+                            <input  style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][id]">
+                        </td>
+                        <td class="table-cell" delete_group>
                             <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][code]"
                                    placeholder="Poz No">
                         </td>

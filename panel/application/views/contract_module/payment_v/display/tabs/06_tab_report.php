@@ -391,7 +391,7 @@
 
                 </div>
             <?php } else { ?>
-                <div class="col-sm-8 offset-2">
+                <div class="col-sm-8 offset-2" style="overflow-x: auto; white-space: nowrap;">
                     <form id="save_payment"
                           action="<?php echo base_url("$this->Module_Name/empty_report/$item->id"); ?>" method="post"
                           enctype="multipart/form-data" autocomplete="off">
