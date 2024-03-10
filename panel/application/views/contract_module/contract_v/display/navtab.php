@@ -96,7 +96,7 @@
                            href="#boq" role="tab" aria-controls="boq"
                            aria-selected="false">
                             <span class="title">
-                                Sözleşme Pozları
+                                İmalat Grupları
                             </span>
                         </a>
                     </li>

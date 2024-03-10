@@ -2453,38 +2453,6 @@ class Contract extends CI_Controller
         }
     }
 
-    public function add_book($contract_id, $book_id = null)
-    {
-
-        $update = $this->Contract_model->update(
-            array(
-                "id" => $contract_id
-            ),
-            array(
-                "book" => $book_id,
-            )
-        );
-
-        $book = $this->Books_model->get(array("id" => $book_id));
-        $books = $this->Books_model->get_all(array("isActive" => 1));
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->item = $item;
-        $viewData->book = $book;
-        $viewData->books = $books;
-
-
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
-
-        echo $render_boq;
-
-    }
-
     public function add_main_group($contract_id)
     {
         $group_name = $this->input->post('main_group');
@@ -2614,95 +2582,106 @@ class Contract extends CI_Controller
 
     }
 
-
-    public function add_sub_group($contract_id)
+    public function update_sub_group($contract_id)
     {
-        $main_group = $this->input->post('main_group_id');
-        $group_name = $this->input->post('sub_group_name');
-        $group_code = $this->input->post('sub_group_code');
 
-        $this->load->library("form_validation");
+        $groups = $this->input->post("groups[]");
 
-        $this->form_validation->set_rules("main_group_id", "Grup Kodu", "integer|trim");
-        $this->form_validation->set_rules("sub_group_name", "Grup Kodu", "min_length[3]|max_length[30]|required|trim");
-        $this->form_validation->set_rules("sub_group_code", "Grup Kodu", "min_length[1]|max_length[3]|required|trim");
+        $filtered_boqs = array_filter($groups, function ($value) {
+            return !empty($value['code']) || !empty($value['name']);
+        });
 
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "max_length" => "<b>{field}</b> en fazla <b>{param}</b> karakter uzunluğunda olmalıdır",
-                "min_length" => "<b>{field}</b> en az <b>{param}</b> karakter uzunluğunda olmalıdır",
-                "alpha_numeric" => "<b>{field}</b> geçersiz karakter içeriyor üğişçö gibi",
-            )
-        );
+        foreach ($filtered_boqs as $boq_id => $values) {
+            if (isset($values['id'])) {
+                $update = $this->Contract_price_model->update(
+                    array(
+                        "id" => $values['id']
+                    ),
+                    array(
+                        "code" => $values['code'],
+                        "name" => $values['name'],
+                    ));
+            }
 
-        // Form Validation Calistirilir..
-        $validate = $this->form_validation->run();
+            if ($boq_id == "new_main") {
+                $insert = $this->Contract_price_model->add(
+                    array(
+                        "contract_id" => $contract_id,
+                        "main_group" => 1,
+                        "code" => $values['code'],
+                        "name" => $values['name'],
+                    )
+                );
+            }
+            if (isset($values['new_sub'])) {
+                if (!empty($values['new_sub']['code'] || !empty($values['new_sub']['name']))) {
+                    $insert = $this->Contract_price_model->add(
+                        array(
+                            "contract_id" => $contract_id,
+                            "parent" => $values['new_sub']['main_id'],
+                            "sub_group" => 1,
+                            "code" => $values['new_sub']['code'],
+                            "name" => $values['new_sub']['name'],
+                        )
+                    );
+                }
+            }
 
-        if ($validate) {
-
-            $insert = $this->Contract_price_model->add(
-                array(
-                    "contract_id" => $contract_id,
-                    "sub_group" => 1,
-                    "parent" => $main_group,
-                    "name" => $group_name,
-                    "code" => $group_code,
-                )
-            );
-
-            $item = $this->Contract_model->get(array("id" => $contract_id));
-
-            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
-
-            $book_items = $this->Books_model->get_all(array());
-            $criteria = array(
-                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
-            );
-
-            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
-            $viewData = new stdClass();
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->item = $item;
-            $viewData->main_groups = $main_groups;
-            $viewData->sub_groups = $sub_groups;
-            $viewData->sortedBooks = $sortedBooks;
-
-        } else {
-
-            $item = $this->Contract_model->get(array("id" => $contract_id));
-
-            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
-
-            $book_items = $this->Books_model->get_all(array());
-            $criteria = array(
-                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
-            );
-
-            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
-            $viewData = new stdClass();
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->item = $item;
-            $viewData->main_groups = $main_groups;
-            $viewData->sub_groups = $sub_groups;
-            $viewData->sortedBooks = $sortedBooks;
-            $viewData->form_error = true;
 
         }
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
+        $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+        $viewData->main_groups = $main_groups;
+        $viewData->sub_groups = $sub_groups;
+
         $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
         echo $render_boq;
 
     }
 
-    public function delete_boq($contract_id, $boq_id)
+    public function delete_group($group_id)
+    {
+        $group =  $this->Contract_price_model->get(array("id" => $group_id));
+
+        $delete = $this->Contract_price_model->delete(
+            array(
+                "id" => $group_id,
+            )
+        );
+
+        $item = $this->Contract_model->get(array("id" => $group->contract_id));
+
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $group->contract_id, "main_group" => 1));
+        $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $group->contract_id, "sub_group" => 1));
+
+
+        $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+        $viewData->main_groups = $main_groups;
+        $viewData->sub_groups = $sub_groups;
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+        echo $render_boq;
+
+    }
+
+    public
+    function delete_boq($contract_id, $boq_id)
     {
 
         $get_main_group = get_from_any("book", "parent", "id", $boq_id);
@@ -2739,7 +2718,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function save_price($contract_id)
+    public
+    function save_price($contract_id)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -2747,39 +2727,42 @@ class Contract extends CI_Controller
 
         $boqs = $this->input->post("boq[]");
 
-        foreach ($boqs as $boq => $values) {
-            if (!empty($values['name']) && !empty($values['code']) && !empty($values['unit'])) {
-                $sub = $this->Contract_price_model->get(array("id" => $boq));
+        $filtered_boqs = array_filter($boqs, function ($value) {
+            return !empty($value['id']) || !empty($value['code']) || !empty($value['name']);
+        });
+
+        foreach ($filtered_boqs as $boq_id => $values) {
+            if (!empty($values['id'])) {
+                $update = $this->Contract_price_model->update(
+                    array(
+                        "id" => $boq_id
+                    ),
+                    array(
+                        "code" => $values['code'],
+                        "name" => $values['name'],
+                        "unit" => $values['unit'],
+                        "qty" => $values['qty'],
+                        "price" => $values['price'],
+                        "total" => $values['total']
+                    ));
+            } else {
+                $sub = $this->Contract_price_model->get(array("id" => $boq_id));
                 $insert = $this->Contract_price_model->add(
                     array(
                         "contract_id" => $contract_id,
-                        "book_id" => 0,
                         "main_id" => $sub->parent,
                         "sub_id" => $sub->id,
-                        "item_id" => null,
+                        "code" => $values['code'],
                         "name" => $values['name'],
                         "unit" => $values['unit'],
-                        "code" => $values['code'],
                         "qty" => $values['qty'],
                         "price" => $values['price'],
                         "total" => $values['total']
                     )
                 );
-            } else {
-                $update = $this->Contract_price_model->update(
-                    array(
-                        "id" => $boq
-                    ),
-                    array(
-                        "qty" => $values['qty'],
-                        "unit" => $values['unit'],
-                        "code" => $values['code'],
-                        "name" => $values['name'],
-                        "price" => $values['price'],
-                        "total" => $values['total']
-                    ));
             }
         }
+
 
         $sub_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_group" => 1));
         foreach ($sub_groups as $sub_group) {
@@ -2844,7 +2827,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function delete_contract_price($item_id)
+    public
+    function delete_contract_price($item_id)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -2892,7 +2876,8 @@ class Contract extends CI_Controller
     }
 
 
-    public function show_main($contract_id, $book_id)
+    public
+    function show_main($contract_id, $book_id)
     {
         $main_groups = $this->Books_main_model->get_all(array(
             'book_id' => $book_id,
@@ -2917,7 +2902,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function show_sub($contract_id, $main_id)
+    public
+    function show_sub($contract_id, $main_id)
     {
         $sub_groups = $this->Books_sub_model->get_all(array(
             'main_id' => $main_id,
@@ -2947,7 +2933,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function show_item($contract_id, $sub_id)
+    public
+    function show_item($contract_id, $sub_id)
     {
         $book_titles = $this->Books_title_model->get_all(array(
             'sub_id' => $sub_id,
@@ -2980,7 +2967,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function open_sub($contract_id, $sub_id)
+    public
+    function open_sub($contract_id, $sub_id)
     {
         $sub_cont_items = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_id" => $sub_id));
         $main_group = $this->Contract_price_model->get(array("contract_id" => $contract_id));
@@ -3007,7 +2995,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function add_item_sub($contract_id, $item_id, $sub_id)
+    public
+    function add_item_sub($contract_id, $item_id, $sub_id)
     {
         $item = $this->Contract_model->get(array('id' => $contract_id));
         $sub_group = $this->Contract_price_model->get(array('id' => $sub_id));
@@ -3059,7 +3048,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function delete_item($contract_id, $item_id)
+    public
+    function delete_item($contract_id, $item_id)
     {
         $item = $this->Contract_model->get(array('id' => $contract_id));
         $book_item = $this->Contract_price_model->get(array('id' => $item_id));
@@ -3092,7 +3082,8 @@ class Contract extends CI_Controller
     }
 
 
-    public function delete_sub($contract_id, $sub_id)
+    public
+    function delete_sub($contract_id, $sub_id)
     {
         $item = $this->Contract_model->get(array("id" => $contract_id));
 
@@ -3129,7 +3120,8 @@ class Contract extends CI_Controller
 
     }
 
-    public function delete_main($contract_id, $main_id)
+    public
+    function delete_main($contract_id, $main_id)
     {
         $item = $this->Contract_model->get(array("id" => $contract_id));
 

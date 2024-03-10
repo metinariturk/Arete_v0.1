@@ -38,6 +38,9 @@
                     </tr>
                     <tr>
                         <td class="table-header-cell">
+                            <p><strong>Sub_id</strong></p>
+                        </td>
+                        <td class="table-header-cell">
                             <p><strong>Poz No:</strong></p>
                         </td>
                         <td class="table-header-cell">
@@ -62,6 +65,12 @@
                     <?php $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $item->id, "sub_id" => $sub_group->id), "rank ASC"); ?>
                     <?php foreach ($boq_items as $boq_item) { ?>
                         <tr>
+                            <td class="table-cell">
+                                <input name="boq[<?php echo $boq_item->id; ?>][id]" onclick="hesaplaT"
+                                       style="width: 100%"
+                                       value="<?php echo $boq_item->sub_id; ?>">
+
+                            </td>
                             <td class="table-cell">
                                 <input name="boq[<?php echo $boq_item->id; ?>][code]" onclick="hesaplaT"
                                         style="width: 100%"
@@ -103,6 +112,10 @@
                         </tr>
                     <?php } ?>
                     <tr>
+                        <td class="table-cell">
+                            <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][id]"
+                                   >
+                        </td>
                         <td class="table-cell">
                             <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][code]"
                                    placeholder="Poz No">

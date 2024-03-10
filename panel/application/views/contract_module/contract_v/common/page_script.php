@@ -77,7 +77,7 @@ if (!empty($extimes)) {
         $finance_perc = 0;
     } ?>
 
-        <?php echo "nerede"; ?>
+    <?php echo "nerede"; ?>
     <script>
         var options11 = {
             chart: {
@@ -527,19 +527,8 @@ $payments_array = json_encode((array_column($payments, 'E')));
 
 
 <script>
-    function add_main(anchor) {
 
-        var $form = anchor.getAttribute('form-id');
-
-        var formAction = $("#" + $form).attr("action"); // Formun action özelliğini alır
-        var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
-
-        $.post(formAction, formData, function (response) {
-            $(".refresh_group").html(response);
-        });
-    }
-
-    function add_sub(anchor) {
+    function update_group(anchor) {
 
         var $form = anchor.getAttribute('form-id');
 
@@ -553,11 +542,23 @@ $payments_array = json_encode((array_column($payments, 'E')));
 </script>
 
 <script>
+    function delete_group(element) {
+        var itemId = element.id;
+        var formAction = '<?php echo base_url("contract/delete_group/"); ?>' + itemId;
+
+        $.post(formAction, function (response) {
+            $(".refresh_group").html(response);
+
+        });
+    }
+</script>
+
+<script>
     // Checkbox öğesini seçiyoruz
     var checkbox = document.getElementById("toggleCheckbox");
 
     // Checkbox durumunu takip ediyoruz
-    checkbox.addEventListener("change", function() {
+    checkbox.addEventListener("change", function () {
         // Tüm input öğelerini seçiyoruz
         var inputElements = document.querySelectorAll("input[type='text']");
 
@@ -620,44 +621,6 @@ $payments_array = json_encode((array_column($payments, 'E')));
 </script>
 
 <script>
-    function show_main(anchor) {
-        $(".book_list").show();
-
-        var $url = anchor.getAttribute('url');
-
-        $.post($url, {}, function (response) {
-            $(".book_list").html(response);
-
-        })
-    }
-</script>
-
-<script>
-    function show_sub(anchor) {
-        $(".book_list").show();
-
-        var $url = anchor.getAttribute('url');
-
-        $.post($url, {}, function (response) {
-            $(".book_list").html(response);
-
-        })
-    }
-</script>
-
-<script>
-    function show_items(anchor) {
-        $(".book_list").show();
-        var $url = anchor.getAttribute('url');
-        $.post($url, {}, function (response) {
-            $(".book_list").html(response);
-            $('#list').DataTable();
-            $('#try').DataTable();
-        })
-    }
-</script>
-
-<script>
     function open_contract_group(anchor) {
         $(".contract_group").show();
         var $url = anchor.getAttribute('url');
@@ -666,43 +629,6 @@ $payments_array = json_encode((array_column($payments, 'E')));
             $('#list').DataTable();
         })
     }
-</script>
-
-
-<script>
-    function add_in_group(anchor) {
-        var $url = anchor.getAttribute('url');
-        var table = document.querySelector("table.active_group");
-        var groupId = table.getAttribute("group-id");
-        var $new_url = $url + "/" + groupId;
-        $.post($new_url, {}, function (response) {
-            $(".contract_group").html(response);
-            $('#list').DataTable();
-        })
-
-    }
-</script>
-
-
-<script>
-    function back_main(anchor) {
-        var $url = anchor.getAttribute('url');
-
-        $.post($url, {}, function (response) {
-            $(".contract_group").html(response);
-        })
-    }
-</script>
-
-<script>
-    function back_to_book(anchor) {
-        var $url = anchor.getAttribute('url');
-
-        $.post($url, {}, function (response) {
-            $(".book_list").html(response);
-        })
-    }
-
 </script>
 
 <script>
@@ -737,9 +663,9 @@ $payments_array = json_encode((array_column($payments, 'E')));
     function addInputListeners(inputType) {
         // Tüm "inputType-X" inputlarına bir "input" olay dinleyici ekleyin
         var inputs = document.querySelectorAll('input[id^="' + inputType + '-"]');
-        inputs.forEach(function(input) {
+        inputs.forEach(function (input) {
             var inputId = input.id.split('-')[1];
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 hesaplaT(inputId);
             });
         });
@@ -772,13 +698,13 @@ $payments_array = json_encode((array_column($payments, 'E')));
         var itemId = element.id;
         var formAction = '<?php echo base_url("contract/delete_contract_price/"); ?>' + itemId;
 
-        $.post(formAction, function(response) {
+        $.post(formAction, function (response) {
             $(".price_update").html(response);
             hesaplaT();
             addInputListeners("q");
             addInputListeners("p");
         })
-            .fail(function(error) {
+            .fail(function (error) {
                 // Hata durumunda bu fonksiyon çalışır
                 console.error('Error:', error.responseText);
                 hesaplaT();
@@ -787,3 +713,5 @@ $payments_array = json_encode((array_column($payments, 'E')));
             });
     }
 </script>
+
+
