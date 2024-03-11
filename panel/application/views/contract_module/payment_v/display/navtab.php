@@ -3,15 +3,13 @@
         <div class="card-body">
             <div class="email-app-sidebar left-bookmark refresh_navtab">
                 <ul class="nav main-menu" role="tablist">
-                    <?php if (empty($item->A)) { ?>
 
                         <li>
                             <a target="_blank"
                                href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
-                                <span class="title">Metraj İşlemleri<?php echo $item->A; ?></span>
+                                <span class="title">01 - Metraj İşlemleri</span>
                             </a>
                         </li>
-                    <?php } ?>
 
                     <li>
                         <a class="show active"
@@ -21,7 +19,7 @@
                            role="tab"
                            aria-controls="calculate"
                            aria-selected="true">
-                            <span class="title">01 - Metraj Cetveli</span>
+                            <span class="title">02 - Metraj Cetveli</span>
                         </a>
                     </li>
                     <li>
@@ -32,7 +30,7 @@
                            role="tab"
                            aria-controls="green"
                            aria-selected="false">
-                            <span class="title">02 - Metraj İcmali</span>
+                            <span class="title">03 - Metraj İcmali</span>
                         </a>
                     </li>
                     <li>
@@ -42,7 +40,7 @@
                            role="tab"
                            aria-controls="works_done"
                            aria-selected="false">
-                            <span class="title">03 - Yapılan İşler</span>
+                            <span class="title">04 - Yapılan İşler</span>
                         </a>
                     </li>
                     <li>
@@ -53,7 +51,7 @@
                            role="tab"
                            aria-controls="group_total"
                            aria-selected="false">
-                            <span class="title">04 - Grup İcmali</span>
+                            <span class="title">05 - Grup İcmali</span>
                         </a>
                     </li>
                     <li>
@@ -64,7 +62,7 @@
                            role="tab"
                            aria-controls="main_total"
                            aria-selected="false">
-                            <span class="title">05 - Genel İcmal</span>
+                            <span class="title">06 - Genel İcmal</span>
                         </a>
                     </li>
                     <li>
@@ -75,7 +73,7 @@
                            role="tab"
                            aria-controls="report"
                            aria-selected="false">
-                            <span class="title">06 - Hakediş Raporu</span>
+                            <span class="title">07 - Hakediş Raporu</span>
                         </a>
                     </li>
                     <li>
@@ -85,7 +83,7 @@
                            role="tab"
                            aria-controls="info"
                            aria-selected="false">
-                            <span class="title">07 - Hakediş Kapağı</span>
+                            <span class="title">08 - Hakediş Kapağı</span>
                         </a>
                     </li>
                     <li>

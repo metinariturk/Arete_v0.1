@@ -161,7 +161,11 @@ class Boq extends CI_Controller
         $viewData->group_id = $group_id;
 
 
-        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
+        if (empty($payment->A)){
+            $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
+        } else {
+            $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/show_calculate", $viewData, true);
+        }
 
         echo $render_calculate;
     }

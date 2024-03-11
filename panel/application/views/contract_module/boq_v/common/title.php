@@ -83,9 +83,6 @@ if ($subViewFolder == "list") { ?>
                                 <i class="fa fa-floppy-o fa-lg"></i> Sözleşme Seç
                             </button>
                             <?php } ?>
-                            <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">
-                                <i class="fa fa-times"></i> İptal
-                            </a>
                         </li>
                     </ol>
                 </div>
