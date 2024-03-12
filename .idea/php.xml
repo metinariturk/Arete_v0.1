@@ -30,6 +30,8 @@
       <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-intl-normalizer" />
       <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-php72" />
+      <path value="$PROJECT_DIR$/site/assets/phpmailer/vendor/composer" />
+      <path value="$PROJECT_DIR$/site/assets/phpmailer/vendor/phpmailer/phpmailer" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3">

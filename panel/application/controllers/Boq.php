@@ -220,7 +220,12 @@ class Boq extends CI_Controller
         $viewData->group_id = $group_id;
 
 
-        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/rebar", $viewData, true);
+        if (empty($payment->A)){
+            $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/rebar", $viewData, true);
+        } else {
+            $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/show_rebar", $viewData, true);
+        }
+
 
         echo $render_calculate;
     }
@@ -580,7 +585,7 @@ class Boq extends CI_Controller
 
         // Dosyayı indirme
         $writer = new Xlsx($spreadsheet);
-        $downloadFileName = 'excel_output.xlsx';
+        $downloadFileName = "$boq->name - $payment->hakedis_no Nolu Hakediş.xlsx";
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
         header('Cache-Control: max-age=0');
@@ -640,7 +645,8 @@ class Boq extends CI_Controller
 
         // Dosyayı indirme
         $writer = new Xlsx($spreadsheet);
-        $downloadFileName = "$boq->name.xlsx";
+        $downloadFileName = "$boq->name - $payment->hakedis_no Nolu Hakediş.xlsx";
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
         header('Cache-Control: max-age=0');

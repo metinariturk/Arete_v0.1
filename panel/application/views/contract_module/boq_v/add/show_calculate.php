@@ -1,12 +1,14 @@
 <?php if (isset($income)) { ?>
+<?php $boq = $this->Contract_price_model->get(array("id" => $income)); ?>
 <div class="card">
     <div class="card-body">
         <fieldset>
             <h4 class="m-t-10 text-center"><?php echo contract_name($contract_id); ?></h4>
             <h4 class="m-t-10 text-center"> <?php echo $payment->hakedis_no; ?> Nolu Hakediş</h4>
-            <h5 class="text-center"><?php echo get_from_any("contract_price", "name", "id", "$income"); ?> </h5>
+            <h5 class="text-center"><?php echo $boq->name; ?> </h5>
             <h6 class="text-center">Metraj Görüntüle</h6>
-            <h6 class="text-center">Hakediş Kapağı Oluşturulduğu İçin Metraj Verisi Giremezsiniz. Hakediş kapağını temizlemek için
+            <h6 class="text-center">Hakediş Kapağı Oluşturulduğu İçin Metraj Verisi Giremezsiniz. Hakediş kapağını
+                temizlemek için
                 <a href="<?php echo base_url("payment/file_form/$payment->id/report"); ?>"> tıklayınız</a></h6>
             <hr>
             <a class="btn btn-outline-primary"
@@ -16,6 +18,18 @@
         </fieldset>
     </div>
 </div>
+<table class="table">
+    <thead>
+    <tr>
+        <th colspan="6" style="text-align: right">TOPLAM</th>
+        <th><?php if (!empty($old_boq)) {
+                echo $old_boq->total;
+            } ?><?php echo $boq->unit; ?>
+        </th>
+    </tr>
+    </thead>
+</table>
+
 <div class="row">
     <div class="container-fluid">
         <div class="row">

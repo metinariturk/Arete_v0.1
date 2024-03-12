@@ -70,14 +70,21 @@
 
 
                                     <div class="col-md-3" style="text-align: right">
-                                        <?php if ($next_report !== null): ?>
+                                        <?php if ($next_report !== null) { ?>
                                             <a href="<?php echo base_url("report/file_form/$next_report->id"); ?>"
                                                class="btn btn-pill btn-block btn-outline-primary btn-sm" type="button"
                                                title="Sonraki Rapor">
                                                 <?php echo dateFormat_dmy($next_report->report_date); ?> <i
                                                         class="fa fa-arrow-right"></i>
                                             </a>
-                                        <?php endif; ?>
+                                        <?php } else { ?>
+                                        <a href="<?php echo base_url("report/new_form/$item->site_id"); ?>"
+                                           class="btn btn-pill btn-block btn-outline-primary btn-sm" type="button"
+                                           title="Yeni Rapor">
+                                           Yeni Rapor Oluştur <i
+                                                    class="fa fa-plus-circle"></i>
+                                        </a>
+                                        <?php } ?>
                                     </div>
                                 </div>
                                 <div class="row">
