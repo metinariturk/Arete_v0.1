@@ -30,7 +30,7 @@
                     <tr>
                         <td> <?php echo $i++; ?></td>
                         <td> <?php echo $personel_data->name_surname; ?></td>
-                        <td> <?php echo group_name($personel_data->group); ?>a</td>
+                        <td> <?php echo group_name($personel_data->group); ?></td>
                         <?php
 
                         for ($j = 1; $j <= gun_sayisi(); $j++): ?>
