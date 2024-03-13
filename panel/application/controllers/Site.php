@@ -1613,7 +1613,7 @@ class Site extends CI_Controller
             $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
             $viewData->form_error = true;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
         } else {
             $alert = array(
                 "title" => "İşlem Başarısız",
@@ -1635,7 +1635,7 @@ class Site extends CI_Controller
             $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
             $viewData->form_error = true;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
         }
 
 
