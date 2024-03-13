@@ -400,6 +400,7 @@ class Site extends CI_Controller
     {
         $session_user = $this->session->userdata("user");
 
+
         if ($session_user->user_role != 2) {
             if (!isAdmin()) {
                 redirect(base_url("error"));
@@ -421,6 +422,8 @@ class Site extends CI_Controller
         ));
 
         $viewData = new stdClass();
+        $settings = $this->Settings_model->get();
+
 
         $reports = $this->Report_model->get_all(array("site_id" => $id), "report_date DESC");
 
@@ -470,6 +473,7 @@ class Site extends CI_Controller
         $viewData->reports = $reports;
         $viewData->site_stocks = $site_stocks;
         $viewData->active_tab = $active_tab;
+        $viewData->settings = $settings;
         $viewData->all_expenses = $all_expenses;
         $viewData->all_deposites = $all_deposites;
         $viewData->personel_datas = $personel_datas;
@@ -478,7 +482,7 @@ class Site extends CI_Controller
         $viewData->item = $item;
         $viewData->puantaj = $puantaj;
         if (!empty($puantaj->puantaj)) {
-            $viewData->puantaj_data = json_decode($puantaj->puantaj,true);
+            $viewData->puantaj_data = json_decode($puantaj->puantaj, true);
         }
         $viewData->contractor_sign = $contractor_sign;
         $viewData->contractor_staff = $contractor_staff;
@@ -1637,12 +1641,139 @@ class Site extends CI_Controller
 
     }
 
-
-    public function update_puantaj()
+    public function update_personel($worker_id, $site_id)
     {
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|callback_name_control');
+        $this->form_validation->set_rules('group', 'Meslek', 'required');
+        $this->form_validation->set_rules('social_id', 'TC Kimlik No', 'numeric');
+        $this->form_validation->set_rules('start_date', 'Giriş Tarihi', 'required');
+        $this->form_validation->set_rules('end_date', 'Çıkış Tarihi', 'callback_check_end_date');
+
+
+        $this->form_validation->set_message('name_control', 'İsim Soyisim Alanı sadece harf, boşluk ve Türkçe karakterler içerebilir.');
+
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            )
+        );
+
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            if ($this->input->post("start_date")) {
+                $start_date = dateFormat('Y-m-d', $this->input->post("start_date"));
+            } else {
+                $start_date = null;
+            }
+
+            if ($this->input->post("end_date")) {
+                $end_date = dateFormat('Y-m-d', $this->input->post("end_date"));
+            } else {
+                $end_date = null;
+            }
+
+            $update = $this->Workman_model->update(
+                array("id" => $worker_id),
+                array(
+                    "site_id" => $site_id,
+                    "name_surname" => $this->input->post("name_surname"),
+                    "group" => $this->input->post("group"),
+                    "bank" => $this->input->post("bank"),
+                    "IBAN" => $this->input->post("IBAN"),
+                    "social_id" => $this->input->post('social_id'),
+                    "start_date" => $start_date,
+                    "end_date" => $end_date,
+                    "isActive" => 1,
+                )
+            );
+
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde eklendi",
+                "type" => "success"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+
+            $viewData = new stdClass();
+            /** Tablodan Verilerin Getirilmesi.. */
+            $item = $this->Site_model->get(array("id" => $site_id));
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+            $viewData->form_error = true;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+
+            $viewData = new stdClass();
+            /** Tablodan Verilerin Getirilmesi.. */
+            $item = $this->Site_model->get(array("id" => $site_id));
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+            $viewData->form_error = true;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
+        }
+
+
+    }
+
+    public function update_personel_form()
+    {
+
+        $workerId = $this->input->post('workerId');
+
+        $worker = $this->Workman_model->get(array("id" => $workerId));
+        $settings = $this->Settings_model->get();
+
+        $viewData = new stdClass();
+        /** Tablodan Verilerin Getirilmesi.. */
+        $item = $this->Site_model->get(array("id" => $worker->site_id));
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->worker = $worker;
+        $viewData->settings = $settings;
+        $viewData->workgroups = json_decode($item->active_group, true);
+        $viewData->workmachines = json_decode($item->active_machine, true);
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_update", $viewData);
+
+    }
+
+
+    public function update_puantaj($site_id)
+    {
+
         $workerId = $this->input->post('workerId');
         $date = $this->input->post('date');
-        $site_id = $this->input->post('site');
         $is_checked = $this->input->post('isChecked');
 
         $this->load->model("Attendance_model");
@@ -1652,7 +1783,7 @@ class Site extends CI_Controller
 
         $old_puantaj = $this->Attendance_model->get(array("site_id" => 1, "year_month" => $year_month));
 
-        if (!empty($old_puantaj)){
+        if (!empty($old_puantaj)) {
             $old_puantaj_array = json_decode($old_puantaj->puantaj, true);
         }
 
@@ -1686,7 +1817,7 @@ class Site extends CI_Controller
             );
         } else {
             // Yeni bir puantaj oluştur
-            $contract_id = contract_id_module("site", "$site_id");
+            $contract_id = contract_id_module("site", $site_id);
             $new_puantaj = json_encode($old_puantaj_array);
 
             $this->Attendance_model->add(
@@ -1711,7 +1842,7 @@ class Site extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
-        $viewData->puantaj_data = json_decode($puantaj->puantaj,true);
+        $viewData->puantaj_data = json_decode($puantaj->puantaj, true);
         $viewData->personel_datas = $personel_datas;
         $viewData->form_error = true;
 
@@ -1740,10 +1871,9 @@ class Site extends CI_Controller
 
     public function name_control($user_name)
     {
-        if (preg_match('/^([-a-z üğışçöÜĞİŞÇÖ])+$/i', $user_name)) {
+        if (preg_match('/^([a-z üğışçöÜĞİŞÇÖ])*$/i', $user_name)) {
             return TRUE;
         } else {
-            $this->form_validation->set_message('custom_alpha_check', 'Alan sadece harf, boşluk, tire ve Türkçe karakterler içerebilir.');
             return FALSE;
         }
     }

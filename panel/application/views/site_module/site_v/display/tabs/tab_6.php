@@ -20,7 +20,8 @@
                                 <!-- Modal Header -->
                                 <div class="modal-header">
                                     <h4 class="modal-title">Kişisel Bilgi Formu</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
                                 <!-- Modal Body -->
                                 <div class="modal-body">
@@ -31,7 +32,8 @@
                                           autocomplete="off">
                                         <div class="mb-3">
                                             <label for="name_surname" class="form-label">Ad Soyad:</label>
-                                            <input type="text" class="form-control" name="name_surname" placeholder="Adınız ve Soyadınız">
+                                            <input type="text" class="form-control" name="name_surname"
+                                                   placeholder="Adınız ve Soyadınız">
                                         </div>
                                         <div class="mb-3">
                                             <label for="group" class="form-label">Meslek:</label>
@@ -42,7 +44,6 @@
                                                         <option value="<?php echo $workgroup; ?>"> <?php echo group_name($workgroup); ?></option>
                                                     <?php } ?>
                                                 <?php } ?>
-                                                <?php $active_workmachines = json_decode($item->active_machines, true); ?>
                                                 <?php foreach ($workmachines as $active_workmachines => $workmachines) {
                                                     foreach ($workmachines as $workmachine) { ?>
                                                         <option value="<?php echo $workmachine; ?>"> <?php echo machine_name($workmachine); ?></option>
@@ -57,11 +58,13 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="IBAN" class="form-label">Banka Hesap No:</label>
-                                            <input type="text" class="form-control" name="IBAN" placeholder="Banka Hesap Numaranız">
+                                            <input type="text" class="form-control" name="IBAN"
+                                                   placeholder="Banka Hesap Numaranız">
                                         </div>
                                         <div class="mb-3">
                                             <label for="social_id" class="form-label">TC Kimlik No:</label>
-                                            <input type="text" class="form-control" name="social_id" placeholder="TC Kimlik Numaranız">
+                                            <input type="text" class="form-control" name="social_id"
+                                                   placeholder="TC Kimlik Numaranız">
                                         </div>
                                         <div class="mb-3">
                                             <label for="start_date" class="form-label">Giriş Tarihi:</label>
@@ -87,8 +90,11 @@
 
                                 <!-- Modal Footer -->
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                    <button type="button" onclick="savePersonel(this)" data-bs-dismiss="modal" class="btn btn-primary">Kaydet</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat
+                                    </button>
+                                    <button type="button" onclick="savePersonel(this)" data-bs-dismiss="modal"
+                                            class="btn btn-primary">Kaydet
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -97,18 +103,25 @@
             </ul>
         </div>
 
-        <div class="card-body">
-            <div class="personel_list">
-                <form id="personel_form"
-                      action="<?php echo base_url("$this->Module_Name/update_personel/$item->id"); ?>" method="post"
-                      enctype="multipart/form-data" autocomplete="off">
+        <div class="row">
+            <div class="col-9">
+                <div class="personel_list">
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/personel_liste"); ?>
-                </form>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="personel_update_form">
+                    <form id="personel_form"
+                          action="<?php echo base_url("$this->Module_Name/update_personel/$item->id"); ?>"
+                          method="post"
+                          enctype="multipart/form-data" autocomplete="off">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/personel_update"); ?>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 
 
 <script>

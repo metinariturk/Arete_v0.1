@@ -212,33 +212,76 @@
     }
 </script>
 
+
 <script>
-    function save_puantaj(checkbox) {
+    function savePuantaj(checkbox) {
         // Checkbox'tan ilgili verileri al
-        var workerId = $(checkbox).attr('worker-id');
-        var site = $(checkbox).attr('site');
+        var workerId = $(checkbox).attr('workerid');
         var date = $(checkbox).attr('date');
         var isChecked = checkbox.checked ? 1 : 0; // CheckBox'ın durumuna göre 1 (checked) veya 0 (unchecked) değeri
 
         // AJAX isteği gönder
-        $.post({
-            url: '<?php echo base_url("$this->Module_Name/update_puantaj"); ?>', // Sunucunuzun POST isteğini alacağı adres
+        $.ajax({
+            type: 'POST',
+            url: "<?php echo base_url("$this->Module_Name/update_puantaj/$item->id"); ?>", // Sunucunuzun POST isteğini alacağı adres
             data: {
                 workerId: workerId,
-                site: site,
                 date: date,
                 isChecked: isChecked // CheckBox'ın durumu
             },
             success: function(response) {
                 // Başarılı yanıt aldığınızda yapılacak işlemler
-                $(".personel_list").html(response);
+                $(".puantaj_list").html(response);
             },
             error: function(xhr, status, error) {
-                // Hata durumunda yapılacak işlemler
-                console.error(xhr.responseText);
+                console.log(error);
             }
         });
     }
 </script>
 
+<script>
+    function updatePersonelForm(checkbox) {
+        // Checkbox'tan ilgili verileri al
+        var workerId = $(checkbox).attr('workerid');
 
+        // AJAX isteği gönder
+        $.ajax({
+            type: 'POST',
+            url: "<?php echo base_url("$this->Module_Name/update_personel_form/"); ?>", // Sunucunuzun POST isteğini alacağı adres
+            data: {
+                workerId: workerId,
+            },
+            success: function(response) {
+                // Başarılı yanıt aldığınızda yapılacak işlemler
+                $(".personel_update_form").html(response);
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+
+<script>
+    function updatePersonel(anchor) {
+        var formId = $(anchor).attr('form_id');
+        var form = $('#' + formId);
+        var formData = new FormData(form[0]);
+        var url = anchor.getAttribute('url');
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $(".personel_list").html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>

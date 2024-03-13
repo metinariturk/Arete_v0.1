@@ -17,28 +17,3 @@
 </div>
 
 
-<script>
-    function savePuantaj(btn) {
-        var formId = "puantaj_form"; // doğru form ID'si olduğundan emin olun
-        var formData = new FormData(document.getElementById(formId));
-        var url = document.getElementById(formId).getAttribute('action');
-
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                // Assuming the response contains the updated content
-                $(".puantaj_list").html(response);
-
-                // Clear input fields after successful submission
-                document.getElementById(formId).reset();
-            },
-            error: function (xhr, status, error) {
-                console.log(error);
-            }
-        });
-    }
-</script>

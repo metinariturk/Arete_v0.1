@@ -1,7 +1,3 @@
-<?php
-echo validation_errors();
-?>
-
 <div class="row">
     <div class="col-12">
         <div class="table-responsive">
@@ -41,16 +37,15 @@ echo validation_errors();
                             <?php $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT); ?>
                             <td>
                                 <div>
-                                    <input type="checkbox" onclick="savePuantaj(this)"
+                                    <input type="checkbox"
+                                           name="isChecked"
+                                           onclick="savePuantaj(this)"
                                            style="margin: 6px; padding: 6px;"
-                                        <?php if (isset($puantaj_data[$j_double_digit]) && in_array($personel_data->id, $puantaj_data[$j_double_digit])) {
-                                            echo "checked";
-                                        } else {
-                                            echo "";
-                                        } ?>
-                                           worker-id="<?php echo $personel_data->id; ?>"
-                                           site="<?php echo $item->id; ?>"
+                                           workerid="<?php echo $personel_data->id; ?>"
                                            date="<?php echo $year . "-" . $month . "-" . $j; ?>"
+                                        <?php if (isset($puantaj_data[$j_double_digit]) && in_array($personel_data->id, $puantaj_data[$j_double_digit])) {
+                                            echo "checked"; // Checkbox işaretlenmişse checked özniteliğini ekle
+                                        } ?>
                                     >
                                 </div>
                             </td>

@@ -22,7 +22,8 @@
                                                 <li><span url="<?php echo base_url("Site/delete_machine_group/$item->id/$subgroup"); ?>"
                                                           onclick="add_group_machine(this)"
                                                           onmouseover="this.style.cursor='pointer'">
-                                                        <?php echo machine_name($subgroup); ?></span>
+                                                        <?php echo machine_name($subgroup); ?>
+                                                    </span>
                                                 </li>
                                             <?php } ?>
                                         </ul>
