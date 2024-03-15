@@ -241,6 +241,56 @@
 </script>
 
 <script>
+    function puantajDate(element) {
+        var month = $('select[name="month"]').val();
+        var year = $('select[name="year"]').val();
+
+        var url = $('#puantajDate').attr('url');
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { month: month, year: year },
+            success: function(response) {
+                $(".puantaj_list").html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>
+
+<script>
+    function sendFormData() {
+        // Seçili ay ve yılı al
+        var month = $('#month').val();
+        var year = $('#year').val();
+
+        // Bağlantı URL'sini oluştur
+        var url = '<?php echo base_url("Site/puantaj_print/$item->id"); ?>/' + month + '/' + year;
+
+        // AJAX isteğini gönder
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { month: month, year: year },
+            success: function(response) {
+                // AJAX isteği başarılı olduğunda yapılacak işlemler
+                console.log("AJAX isteği başarıyla tamamlandı.");
+            },
+            error: function(xhr, status, error) {
+                // AJAX isteği başarısız olduğunda yapılacak işlemler
+                console.error("AJAX isteği sırasında bir hata oluştu:", error);
+            }
+        });
+
+        // Yeni sekme aç
+        window.open(url, '_blank');
+    }
+</script>
+
+<script>
     function updatePersonelForm(checkbox) {
         // Checkbox'tan ilgili verileri al
         var workerId = $(checkbox).attr('workerid');
