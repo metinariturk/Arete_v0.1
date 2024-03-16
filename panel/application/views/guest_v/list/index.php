@@ -10,7 +10,8 @@
         <?php $this->load->view("{$viewFolder}/{$subViewFolder}/content"); ?>
     </div>
     <?php $this->load->view("includes/include_script"); ?>
-</body>
+    </body>
+</div>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>
 

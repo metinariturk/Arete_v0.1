@@ -34,11 +34,11 @@
                                         <td class="d-none d-sm-table-cell" style="text-align: center"><?php echo $site->santiye_ad; ?></td>
                                         <td style="text-align: center">
                                             <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
-                                                <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>"
+                                                <a href="<?php echo base_url("guest/print_report/$report->id/1/1"); ?>"
                                                    class="btn btn-outline-success">
                                                     <i class="fa fa-download"></i>
                                                 </a>
-                                                <a href="<?php echo base_url("report/print_report/$report->id/1/0"); ?>"
+                                                <a href="<?php echo base_url("guest/print_report/$report->id/1/0"); ?>"
                                                    class="btn btn-outline-success">
                                                     <i class="fa fa-desktop"></i>
                                                 </a>
