@@ -106,7 +106,7 @@
 </script>
 
 <script>
-    document.getElementById('contract_id').addEventListener('submit', function(event) {
+    document.getElementById('contract_id').addEventListener('submit', function (event) {
         event.preventDefault(); // Formun varsayılan submit işlemini engeller
 
         // Form verilerini işleyebilir veya gönderebilirsiniz
@@ -117,7 +117,7 @@
         // AJAX ile form verilerini sunucuya göndermek için örnek bir XMLHttpRequest isteği
         var xhr = new XMLHttpRequest();
         xhr.open('POST', form.action, true);
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 // İstek başarılı olduğunda yapılacak işlemler
                 console.log('Form gönderildi!');
@@ -229,11 +229,11 @@
                 date: date,
                 isChecked: isChecked // CheckBox'ın durumu
             },
-            success: function(response) {
+            success: function (response) {
                 // Başarılı yanıt aldığınızda yapılacak işlemler
                 $(".puantaj_list").html(response);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log(error);
             }
         });
@@ -250,11 +250,11 @@
         $.ajax({
             url: url,
             type: 'POST',
-            data: { month: month, year: year },
-            success: function(response) {
+            data: {month: month, year: year},
+            success: function (response) {
                 $(".puantaj_list").html(response);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error(xhr.responseText);
             }
         });
@@ -274,12 +274,12 @@
         $.ajax({
             url: url,
             type: 'POST',
-            data: { month: month, year: year },
-            success: function(response) {
+            data: {month: month, year: year},
+            success: function (response) {
                 // AJAX isteği başarılı olduğunda yapılacak işlemler
                 console.log("AJAX isteği başarıyla tamamlandı.");
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 // AJAX isteği başarısız olduğunda yapılacak işlemler
                 console.error("AJAX isteği sırasında bir hata oluştu:", error);
             }
@@ -287,6 +287,33 @@
 
         // Yeni sekme aç
         window.open(url, '_blank');
+    }
+</script>
+
+<script>
+    function sendPersonelData(anchor) {
+
+        var is_active = anchor.getAttribute('isActive');
+
+        var url = '<?php echo base_url("Site/personel_print/$item->id"); ?>/' + is_active;
+
+        // AJAX isteğini gönder
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (response) {
+                // AJAX isteği başarılı olduğunda yapılacak işlemler
+                console.log("AJAX isteği başarıyla tamamlandı.");
+            },
+            error: function (xhr, status, error) {
+                // AJAX isteği başarısız olduğunda yapılacak işlemler
+                console.error("AJAX isteği sırasında bir hata oluştu:", error);
+            }
+        });
+
+        // Yeni sekme aç
+        window.open(url, '_blank');
+
     }
 </script>
 
@@ -302,11 +329,11 @@
             data: {
                 workerId: workerId,
             },
-            success: function(response) {
+            success: function (response) {
                 // Başarılı yanıt aldığınızda yapılacak işlemler
                 $(".personel_update_form").html(response);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log(error);
             }
         });
@@ -326,10 +353,10 @@
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
+            success: function (response) {
                 $(".personel_list").html(response);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error(xhr.responseText);
             }
         });

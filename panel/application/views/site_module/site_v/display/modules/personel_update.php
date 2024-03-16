@@ -1,6 +1,7 @@
-<?php print_r(validation_errors()); ?>
 <h3 class="text-center">
     Personel Güncelle
+
+
 </h3>
 <?php if (isset($worker)) { ?>
     <form id="update_form"

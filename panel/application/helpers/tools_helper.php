@@ -163,31 +163,44 @@ function ay_isimleri($ay)
     return $key;
 }
 
-function tr_gun($gun)
-{
-    switch ($gun) {
-        case 'Monday':
-            return "Pazartesi";
-            break;
-        case 'Tuesday':
-            return "Salı";
-            break;
-        case 'Wednesday':
-            return "Çarşamba";
-            break;
-        case 'Thursday':
-            return "Perşembe";
-            break;
-        case 'Friday':
-            return "Cuma";
-            break;
-        case 'Saturday':
-            return "Cumartesi";
-            break;
-        case 'Sunday':
-            return "Pazar";
-            break;
-    }
+function tarihFormatla($tarih) {
+    // Türkçe ay ve gün adlarını içeren bir dizi
+    $turkce_aylar = array(
+        "January"   => "Ocak",
+        "February"  => "Şubat",
+        "March"     => "Mart",
+        "April"     => "Nisan",
+        "May"       => "Mayıs",
+        "June"      => "Haziran",
+        "July"      => "Temmuz",
+        "August"    => "Ağustos",
+        "September" => "Eylül",
+        "October"   => "Ekim",
+        "November"  => "Kasım",
+        "December"  => "Aralık"
+    );
+
+    $turkce_gunler = array(
+        "Sunday"    => "Pazar",
+        "Monday"    => "Pazartesi",
+        "Tuesday"   => "Salı",
+        "Wednesday" => "Çarşamba",
+        "Thursday"  => "Perşembe",
+        "Friday"    => "Cuma",
+        "Saturday"  => "Cumartesi"
+    );
+
+    // Verilen tarihin ay ve gün adlarını İngilizce'den Türkçe'ye çevirme
+    $ingilizce_ay = date("F", strtotime($tarih));
+    $ingilizce_gun = date("l", strtotime($tarih));
+
+    $turkce_ay = $turkce_aylar[$ingilizce_ay];
+    $turkce_gun = $turkce_gunler[$ingilizce_gun];
+
+    // Türkçe tarih formatını oluşturma
+    $turkce_tarih = date("d", strtotime($tarih)) . ' ' . $turkce_ay . ' ' . date("Y", strtotime($tarih)) . ' ' . $turkce_gun;
+
+    return $turkce_tarih;
 }
 
 function fark_tarih($date)

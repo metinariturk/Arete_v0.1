@@ -1,35 +1,41 @@
+<div class="row" id="puantajDate" url="<?php echo base_url("Site/puantaj_date/$item->id"); ?>">
+    <div class="col-2"><select class="form-control" onchange="puantajDate(this)" id="month" name="month">
+            <option selected value="<?php echo $month; ?>"><?php echo ay_isimleri($month); ?></option>
+            <option value="01">Ocak</option>
+            <option value="02">Şubat</option>
+            <option value="03">Mart</option>
+            <option value="04">Nisan</option>
+            <option value="05">Mayıs</option>
+            <option value="06">Haziran</option>
+            <option value="07">Temmuz</option>
+            <option value="08">Ağustos</option>
+            <option value="09">Eylül</option>
+            <option value="10">Ekim</option>
+            <option value="11">Kasım</option>
+            <option value="12">Aralık</option>
+        </select>
+    </div>
+    <div class="col-2"><select class="form-control" onchange="puantajDate(this)" name="year" id="year">
+            <?php if ($year < date('Y')) { ?>
+                <option><?php echo date('Y'); ?></option>
+            <?php } ?>
+            <option selected><?php echo $year; ?></option>
+            <option><?php echo $year - 1; ?></option>
+            <option><?php echo $year - 2; ?></option>
+            <option><?php echo $year - 3; ?></option>
+            <option><?php echo $year - 4; ?></option>
+            <option><?php echo $year - 5; ?></option>
+        </select>
+    </div>
+    <div class="col-2"><a class="btn btn-outline-success" href="#" onclick="sendFormData(this)"><i
+                    class="fa fa-print"></i> Yazdır</a>
+    </div>
+</div>
 <div class="row">
     <div class="col-12">
         <div class="table-responsive">
-            <h3 class="text-center">
-                <div id="puantajDate" url="<?php echo base_url("Site/puantaj_date/$item->id"); ?>">
-                    <select onchange="puantajDate(this)" id="month" name="month">
-                        <option  selected value="<?php echo $month; ?>"><?php echo ay_isimleri($month); ?></option>
-                        <option  value="01">Ocak</option>
-                        <option  value="02">Şubat</option>
-                        <option  value="03">Mart</option>
-                        <option  value="04">Nisan</option>
-                        <option  value="05">Mayıs</option>
-                        <option  value="06">Haziran</option>
-                        <option  value="07">Temmuz</option>
-                        <option  value="08">Ağustos</option>
-                        <option  value="09">Eylül</option>
-                        <option  value="10">Ekim</option>
-                        <option  value="11">Kasım</option>
-                        <option  value="12">Aralık</option>
-                    </select>
-                    <select onchange="puantajDate(this)" name="year" id="year">
-                        <option  selected><?php echo $year; ?></option>
-                        <option  ><?php echo $year-1; ?></option>
-                        <option  ><?php echo $year-2; ?></option>
-                        <option  ><?php echo $year-3; ?></option>
-                        <option  ><?php echo $year-4; ?></option>
-                        <option  ><?php echo $year-5; ?></option>
-                    </select>
-                </div>
-                <a href="#" onclick="sendFormData(this)">Form Verilerini Gönder</a>
-            </h3>
-            <table class="table-bordered">
+
+            <table class="table-bordered" style="text-align: center; width: 100%">
                 <thead>
                 <tr>
                     <th>#</th>

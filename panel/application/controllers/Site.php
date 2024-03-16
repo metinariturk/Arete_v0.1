@@ -2004,7 +2004,7 @@ class Site extends CI_Controller
             $pdf->Ln(); // Bir sonraki satıra geç
         }
 
-        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->SetFont('dejavusans', 'B', 10);
         $pdf->Cell(77, 10, 'Toplam', 1, 0, 'C');
         for ($j = 1; $j <= gun_sayisi(); $j++) {
             $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
@@ -2022,6 +2022,83 @@ class Site extends CI_Controller
 
         // PDF'yi görüntüleme veya indirme
         $pdf->Output("$site->santiye_ad"."-".$month_name." ".$year.".pdf");
+
+    }
+    public function personel_print($site_id,$is_active)
+    {
+        $viewData = new stdClass();
+
+        $this->load->model("Attendance_model");
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $puantaj = $this->Workman_model->get(array("site_id" => $site->id, "end_date" => NULL));
+
+
+        if (isset($puantaj)) {
+            $puantaj_data = json_decode($puantaj->puantaj, true);
+        } else {
+            $puantaj_data = null;
+        }
+
+        $this->load->library('pdf_creator');
+
+        // Yeni bir TCPDF nesnesi oluşturun
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+
+        $pdf->SetPageOrientation('L');
+
+
+        $pdf->headerSubText = "Şantiye Adı : $site->santiye_ad" ;
+
+        $pdf->headerText = "Personel Tablosu";
+
+        if ($is_active == 1){
+            $pdf->headerPaymentNo = "Aktif Çalışanlar Listesi";
+        } elseif ($is_active == 0){
+            $pdf->headerPaymentNo = "Tüm Çalışanlar Listesi";
+        }
+
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+
+        if ($is_active == 1){
+            $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id,  "end_date" => NULL));
+        } elseif ($is_active == 0){
+            $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id));
+        }
+        $pdf->SetFont('dejavusans', '', 8);
+
+        $pdf->Cell(10, 7, '#', 1, 0, 'C');
+        $pdf->Cell(40, 7, 'Adı Soyadı', 1, 0, 'C');
+        $pdf->Cell(28, 7, 'TC Kimlik No', 1, 0, 'C');
+        $pdf->Cell(30, 7, 'Branş', 1, 0, 'C');
+        $pdf->Cell(25, 7, 'İşe Giriş', 1, 0, 'C');
+        if ($is_active == 0){
+            $pdf->Cell(25, 7, 'İşten Çıkış', 1, 0, 'C');
+        }
+
+        $pdf->Cell(60, 7, 'Hesap No', 1, 0, 'C');
+        $pdf->Cell(60, 7, 'Banka', 1, 0, 'C');
+        $pdf->Ln();
+
+// Table data
+        $i = 1;
+        foreach ($personel_datas as $personel_data) {
+            $pdf->Cell(10, 7, $i++, 1, 0, 'C');
+            $pdf->Cell(40, 7, $personel_data->name_surname, 1, 0, 'L');
+            $pdf->Cell(28, 7, $personel_data->social_id, 1, 0, 'C');
+            $pdf->Cell(30, 7, group_name($personel_data->group), 1, 0, 'C');
+            $pdf->Cell(25, 7, dateFormat_dmy($personel_data->start_date), 1, 0, 'C');
+            if ($is_active == 0){
+                $pdf->Cell(25, 7, (!empty($personel_data->end_date) ? dateFormat_dmy($personel_data->end_date) : 'Çalışıyor'), 1, 0, 'C');
+            }
+            $pdf->Cell(60, 7, $personel_data->IBAN, 1, 0, 'C');
+            $pdf->Cell(60, 7, $personel_data->bank, 1, 0, 'C');
+            $pdf->Ln();
+        }
+
+        $name = $site->santiye_ad."-"."-Personel Listesi.pdf";
+        // PDF'yi görüntüleme veya indirme
+        $pdf->Output($name);
 
     }
 }
