@@ -22,7 +22,7 @@ class Pdf_creator extends TCPDF
 
     public function Footer()
     {
-        $this->SetY(-20);
+        $this->SetY($this->getPageHeight()-40);
         $this->SetFont('dejavusans', 'I', 8);
         $this->SetFooterMargin(20);
         $tableWidth = $this->getPageWidth() - $this->getMargins()['left'] - $this->getMargins()['right'];
@@ -38,7 +38,10 @@ class Pdf_creator extends TCPDF
         foreach ($this->custom_footer as $rowLabel => $key) {
             $this->Cell($cellWidth, $cellHeight, $key, 0, 0, 'C');
         }
+
     }
+
+
 
     public function Header()
     {

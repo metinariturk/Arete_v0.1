@@ -9,7 +9,7 @@
         <table style="width: 100%;">
             <thead>
             <tr>
-                <td colspan="4" class="total-group-header-center">Grup İcmali İmzaları</td>
+                <td colspan="4" class="total-group-header-center">Yapılan İşler Grup İcmali İmzaları</td>
             </tr>
             <tr>
                 <td class="total-group-header-center">#</td>

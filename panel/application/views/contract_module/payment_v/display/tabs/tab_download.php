@@ -145,7 +145,7 @@
             </div>
             <div class="col-xl-4 col-md-6" style="height: 200px;">
                 <div class="h-100 checkbox-checked">
-                    <h6 class="sub-title">03 - Yapılan İşler Grup İcmalleri</h6>
+                    <h6 class="sub-title">03 - Yapılan İşler Genel İcmal</h6>
                     <div style="height: 50px;">
                         <div class="form-check radio radio-success">
                             <input class="form-check-input" id="mt9"
