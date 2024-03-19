@@ -22,9 +22,17 @@ class Pdf_creator extends TCPDF
 
     public function Footer()
     {
-        $this->SetY($this->getPageHeight()-40);
+        $orientation = $this->CurOrientation;
+        if ($orientation === 'L') {
+            $this->SetAutoPageBreak(true, 1); // Son 3 cm'yi kullanmak için alt kenar boşluğunu 30 mm olarak ayarla
+            $this->SetY(180);
+        }
+        else {
+            $this->SetAutoPageBreak(true, 1); // Son 3 cm'yi kullanmak için alt kenar boşluğunu 30 mm olarak ayarla
+            $this->SetY(270);
+        }
+
         $this->SetFont('dejavusans', 'I', 8);
-        $this->SetFooterMargin(20);
         $tableWidth = $this->getPageWidth() - $this->getMargins()['left'] - $this->getMargins()['right'];
         $cellHeight = 10;
         $total_key = count(array_keys($this->custom_footer));
@@ -33,7 +41,6 @@ class Pdf_creator extends TCPDF
             $this->Cell($cellWidth, $cellHeight, $rowLabel, 0, 0, 'C');
         }
         $this->Ln();
-        $this->SetY($this->GetY() - $this->getFontSize()); // Hücrenin başlangıç yüksekliğini sıfıra ayarla
 
         foreach ($this->custom_footer as $rowLabel => $key) {
             $this->Cell($cellWidth, $cellHeight, $key, 0, 0, 'C');
