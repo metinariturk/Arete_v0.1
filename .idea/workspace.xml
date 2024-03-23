@@ -55,18 +55,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/panel/application/libraries" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/libraries",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\libraries" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\signs" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
@@ -148,7 +149,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>2617</line>
+          <line>2794</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="sign_rankSetter" />
@@ -178,6 +179,11 @@
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/display/tabs/02_tab_green.php</url>
           <line>29</line>
           <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
+          <line>4149</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

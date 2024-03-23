@@ -141,12 +141,6 @@
                                     <label class="form-check-label" for="radio22">Tüm Metrajlar</label>
                                 </div>
                                 <div class="form-check radio radio-success">
-                                    <input class="form-check-input" id="radio55"
-                                           data-url="<?php echo base_url("payment/print_calculate/$item->id/1"); ?>"
-                                           type="radio" name="calculate" value="option1">
-                                    <label class="form-check-label" for="radio55">Ana Gruplardan Ayır</label>
-                                </div>
-                                <div class="form-check radio radio-success">
                                     <input class="form-check-input" id="radio33"
                                            data-url="<?php echo base_url("payment/print_calculate/$item->id/2"); ?>"
                                            type="radio" name="calculate" value="option2">
