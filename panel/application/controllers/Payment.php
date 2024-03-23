@@ -3734,20 +3734,9 @@ class Payment extends CI_Controller
                         }
                         $pdf->Cell(265, 2, '', 0, 1); // 0 genişlik, 10 yükseklik, boş içerik
                     }
-                    $last_cell = $i + $say;
-                    $pdf->Header(); // Yeni bir sayfa ekleyin
-
-                    if ($last_cell > 17) {
-
-                        $pdf->Footer(); // Footer'ı önce çağır
-                        $pdf->AddPage(); // Yeni bir sayfa ekleyin
-                        $i = 1;
-                    }
+                    $pdf->Footer(); // Footer'ı önce çağır
                 }
-
             }
-
-            $pdf->Footer();
         }
         //Yapılan İşler Listesi Sıfırları Gizleyerek Yazdır Baskı Kontrolü
 
@@ -4140,6 +4129,7 @@ class Payment extends CI_Controller
                         $k = 1;
 
                     }
+                    $pdf->Footer();
 
                 }
             }
@@ -4154,8 +4144,7 @@ class Payment extends CI_Controller
 
             $pdf->headerSubText = "İşin Adı : " . contract_name($payment->contract_id);
             $pdf->headerPaymentNo = "Hakediş No : " . $payment->hakedis_no;
-            $pdf->headerText = "METRAJ CETVELİ (Ana Gruplardan Ayır)";
-
+            $pdf->headerText = "METRAJ CETVELİ";
             $pdf->Header();
 
             $signs = array_merge([$contractor_sign], $calculate_signs);
