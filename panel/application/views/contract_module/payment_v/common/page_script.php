@@ -52,7 +52,6 @@
             })
     }
 </script>
-
 <script>
     function handleButtonClick(action) {
         // Get the button element
@@ -71,24 +70,5 @@
         url = url + '/' + action;
 
         window.open(url, '_blank');
-    }
-</script>
-<script>
-    function asd(action) {
-        // Get the button element
-        var form = document.forms["print_all"];
-        form.action = "<?php echo base_url("payment/print_all/$item->id") ?>/" + action;
-        form.submit();
-    }
-</script>
-
-<script>
-    function toggleCheckbox(checkbox) {
-        var otherCheckboxName = checkbox.name === "wd_hide_zero" ? "wd_all" : "wd_hide_zero";
-        var otherCheckbox = document.querySelector('input[name="' + otherCheckboxName + '"]');
-
-        if (checkbox.checked) {
-            otherCheckbox.checked = false;
-        }
     }
 </script>
