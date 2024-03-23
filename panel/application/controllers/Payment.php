@@ -2365,7 +2365,7 @@ class Payment extends CI_Controller
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetX(20);
         $pdf->SetFont('dejavusans', 'N', 9);
-        $pdf->Cell(170, 7, dateFormat_dmy($payment->imalat_tarihi) . " TARİHİNE KADR YAPILAN İŞİN", 1, 0, "C", 0);
+        $pdf->Cell(170, 7, dateFormat_dmy($payment->imalat_tarihi) . " TARİHİNE KADAR YAPILAN İŞİN", 1, 0, "C", 0);
         $pdf->Ln(); // Yeni satıra geç
 
         $cells = array(
@@ -2954,7 +2954,7 @@ class Payment extends CI_Controller
             $pdf->Cell(72, 6, "Tarih", 0, 0, "R", 0);
             $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
             $pdf->SetFont('dejavusans', 'N', 9);
-            $pdf->Cell(72, 6, "$payment->imalat_tarihi", 0, 0, "L", 0);
+            $pdf->Cell(72, 6, dateFormat_dmy($payment->imalat_tarihi), 0, 0, "L", 0);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetX($xPosition);
             $pdf->SetFont('dejavusans', 'B', 9);
@@ -3074,7 +3074,7 @@ class Payment extends CI_Controller
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetX(20);
             $pdf->SetFont('dejavusans', 'N', 9);
-            $pdf->Cell(170, 7, dateFormat_dmy($payment->imalat_tarihi) . " TARİHİNE KADR YAPILAN İŞİN", 1, 0, "C", 0);
+            $pdf->Cell(170, 7, dateFormat_dmy($payment->imalat_tarihi) . " TARİHİNE KADAR YAPILAN İŞİN", 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
 
             $cells = array(
