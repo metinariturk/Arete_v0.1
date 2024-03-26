@@ -9,3 +9,12 @@
         icon.classList.toggle('fa-star-o');
     }
 </script>
+
+<script>
+    $(document).ready(function() {
+        $('#example tbody').on('click', 'tr.parent', function () {
+            var parentId = $(this).data('parent');
+            $('.parent-' + parentId).toggle();
+        });
+    });
+</script>

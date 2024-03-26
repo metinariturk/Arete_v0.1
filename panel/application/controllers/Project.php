@@ -37,7 +37,6 @@ class Project extends CI_Controller
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
 
-        $this->moduleFolder = "contract_module";
         $this->viewFolder = "project_v";
         $this->Module_Name = "project";
         $this->Module_Title = "Proje";
