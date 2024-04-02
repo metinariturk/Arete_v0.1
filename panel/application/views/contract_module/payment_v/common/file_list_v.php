@@ -14,8 +14,13 @@
                 </td>
                 <td>
                     <a href="<?php echo base_url("$this->Module_Name/file_download/$file->id"); ?>">
+                    <?php echo file_size($file->size) ?>
+                    </a>
+                </td>
+                <td>
+                    <a href="<?php echo base_url("$this->Module_Name/file_download/$file->id"); ?>">
                         <?php echo ext_img($file->img_url); ?>
-                        <?php echo yazim_duzeni($file->img_url); ?> / <?php echo file_size($file->size) ?>
+                        <?php echo filenamedisplay_long($file->img_url); ?>
                     </a>
                 </td>
                 <td class="col-1"><a onclick="deleteConfirmationFile(this)"

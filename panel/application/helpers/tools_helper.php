@@ -70,6 +70,17 @@ function filenamedisplay($text)
     return $case_url;
 }
 
+function filenamedisplay_long($text)
+{
+    $turkce = array("-");
+    $convert = array(" ");
+
+    $bring_spaces = str_replace($turkce, $convert, $text);
+    $case_url = mb_convert_case($bring_spaces, MB_CASE_TITLE);
+
+    return $case_url;
+}
+
 function file_size($file_size)
 {
 
