@@ -30,11 +30,11 @@
         <?php $advance_given = sum_from_table("advance", "avans_miktar", $item->contract_id); ?>
         <div class="refresh_payment">
             <?php if (empty($item->A)) { ?>
-                <div class="col-sm-8 offset-2">
+                <div class="col-sm-8 offset-sm-2" style="overflow-x: auto; white-space: nowrap;">
                     <form id="save_payment"
                           action="<?php echo base_url("$this->Module_Name/save/$item->id"); ?>" method="post"
                           enctype="multipart/form-data" autocomplete="off">
-                        <table style="width: 18cm">
+                        <table>
                             <thead>
                             <tr>
                                 <th colspan="3" class="text-center">
@@ -58,8 +58,7 @@
                             </tr>
                             <tr>
                                 <td class="w-5 total-group-row-center">A</td>
-                                <td class="total-group-row-left">Bu Hakediş Sözleşme Fiyatları İle Yapılan İşin Tutarı
-                                </td>
+                                <td class="total-group-row-left">Bu Hakediş Sözleşme Fiyatları İle Yapılan İşin Tutarı</td>
                                 <td class="total-group-row-left">
                                     <input type="number" step=".01" id="A" name="A"
                                            value="<?php echo isset($item->A) ? $item->A : $this_payment_calculation_price; ?>"
@@ -169,7 +168,7 @@
                             <tr>
                                 <td rowspan="9"
                                     style="-webkit-transform:rotate(180deg);text-align:center; writing-mode:tb-rl; border: 1px solid #a8b5cf;">
-                                    <p style="width: 20px; padding-left: 40px "><strong>KESİNTİLER VE MAHSUPLAR</strong>
+                                    <p><strong>KESİNTİLER VE MAHSUPLAR</strong>
                                     </p>
                                 </td>
                                 <td class="total-group-row-left">a)Gelir / Kurumlar Vergisi (E x
@@ -391,7 +390,7 @@
 
                 </div>
             <?php } else { ?>
-                <div class="col-sm-8 offset-2" style="overflow-x: auto; white-space: nowrap;">
+                <div class="col-sm-8 offset-sm-2 offset-2" style="overflow-x: auto; white-space: nowrap;">
                     <form id="save_payment"
                           action="<?php echo base_url("$this->Module_Name/empty_report/$item->id"); ?>" method="post"
                           enctype="multipart/form-data" autocomplete="off">
@@ -495,7 +494,7 @@
                             <tr>
                                 <td rowspan="9"
                                     style="-webkit-transform:rotate(180deg);text-align:center; writing-mode:tb-rl; border: 1px solid #a8b5cf;">
-                                    <p style="width: 20px; padding-left: 40px "><strong>KESİNTİLER VE MAHSUPLAR</strong>
+                                    <p><strong>KESİNTİLER VE MAHSUPLAR</strong>
                                     </p>
                                 </td>
                                 <td class="total-group-row-left">a)Gelir / Kurumlar Vergisi (E
@@ -624,10 +623,10 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
+                <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3">
                     <div class="h-100 checkbox-checked">
                         <h6 class="sub-title">06 - Hakediş Raporu (Hesap Cetveli)</h6>
-                        <div style="height: 50px;" hidden>
+                        <div hidden>
                             <div class="form-check radio radio-success">
                                 <input class="form-check-input" id="rep1"
                                        data-url="<?php echo base_url("payment/print_report/$item->id"); ?>"

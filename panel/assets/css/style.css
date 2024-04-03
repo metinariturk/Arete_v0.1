@@ -40534,6 +40534,11 @@ html[dir="rtl"] body.dark-only .page-wrapper .page-body-wrapper .page-body .card
     text-align: center;
 }
 
+.w5l {
+    width: 5%;
+    text-align: left;
+}
+
 .w10c {
     width: 10%;
     text-align: center;
