@@ -294,7 +294,8 @@ class Collection extends CI_Controller
             // İşlemin Sonucunu Session'a yazma işlemi...
             $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
-            //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
+            //kaydedilen elemanın id nosunu döküman ekleme
+            // sına post ediyoruz
         } else {
 
             $viewData = new stdClass();
@@ -792,6 +793,108 @@ class Collection extends CI_Controller
             return FALSE;
         } else {
             return TRUE;
+        }
+    }
+
+    function print($collection_id, $P_or_D = null)
+    {
+        $this->load->model("Company_model");
+
+        $collection = $this->Collection_model->get(array("id" => $collection_id));
+
+        $viewData = new stdClass();
+
+        $contract = $this->Contract_model->get(array("id" => $collection->contract_id));
+
+        $viewData->contract = $contract;
+
+        $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
+
+
+        $this->load->library('pdf_creator');
+
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->addTOCPage('L',"A5");
+
+// Çerçeve için boşlukları belirleme
+        $topMargin = 30;  // 4 cm yukarıdan
+        $bottomMargin = 10;  // 4 cm aşağıdan
+        $rightMargin = 10;  // 2 cm sağdan
+        $leftMargin = 10;  // 2 cm soldan
+
+// Çerçeve renk ve kalınlığını ayarla
+        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
+        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
+
+// Çerçeve çizme
+        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
+
+// Metin eklemek (örnek olarak ilk satır)
+        $pdf->SetY(19);
+        $pdf->SetFont('dejavusans', 'B', 17);
+
+        $pdf->Cell(0, 10, 'Tahsilat Makbuzu', 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetY(32);
+
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(160, 6, "Tahsilat Tarihi", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(20, 6, dateFormat_dmy($collection->tahsilat_tarih), 0, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(160, 6, "Tahsilat No", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(20, 6, "$collection->dosya_no", 0, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(160, 6, "Ödeme Türü", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(20, 6, "$collection->tahsilat_turu", 0, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetXY(7,30); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(35, 6, "Ödeyen Firma", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(15);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(80, 6,company_name($contract->isveren), 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(35, 6, "Tahsilatı Yapan", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(15);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(80, 6,company_name($contract->yuklenici), 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+
+
+
+        $pdf->Cell("", 8, "", 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+        $pdf->SetFont('dejavusans', 'B', 8);
+        $pdf->MultiCell(41, 10, "Sözleşme Bedeli", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 10, "Sözleşme Artış \n Onayının Tarih ve Nosu", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 10, "Ek Sözleşme \n Bedeli", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 10, "Toplam Sözleşme \n Bedeli", 1, "C", 0, 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $file_name = "Tahsilat Makbuzu";
+
+        if ($P_or_D == 0) {
+            $pdf->Output("$file_name.pdf");
+        } else {
+            $pdf->Output("$file_name.pdf", "D");
         }
     }
 

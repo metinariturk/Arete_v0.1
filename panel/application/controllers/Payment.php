@@ -3979,7 +3979,7 @@ class Payment extends CI_Controller
 
             $pdf->headerSubText = "İşin Adı : " . contract_name($payment->contract_id);
             $pdf->headerPaymentNo = "Hakediş No : " . $payment->hakedis_no;
-            $pdf->headerText = "METRAJ CETVELİ (Ana Gruplardan Ayır)";
+            $pdf->headerText = "METRAJ CETVELİ";
 
             $pdf->Header();
 

@@ -7,7 +7,7 @@
     <tr>
         <td style="width: 150px"><strong>Sözleşme Tutar</strong></td>
         <td style="width: 20px"><strong>:</strong></td>
-        <td><?php echo money_format(get_from_id("contract","sozlesme_bedel",get_from_id("collection", "contract_id",$item->id)))." ".get_currency(get_from_id("collection", "contract_id",$item->id)); ?></td>
+        <td><?php echo money_format(get_from_id("contract", "sozlesme_bedel", get_from_id("collection", "contract_id", $item->id))) . " " . get_currency(get_from_id("collection", "contract_id", $item->id)); ?></td>
     </tr>
     <tr style="padding-bottom: 10px;">
         <td style="width: 150px"><strong>Tahsilat Tarihi</strong></td>
@@ -33,6 +33,13 @@
         <td><strong>Tahsilat Açıklama</strong></td>
         <td><strong>:</strong></td>
         <td><?php echo $item->aciklama; ?></td>
+    </tr>
+    <tr>
+        <td><strong>Makbuz</strong></td>
+        <td><strong>:</strong></td>
+        <td>
+            <a class="button" href="<?php echo base_url("collection/print/$item->id"); ?>"> Makbuz İndir</a>
+        </td>
     </tr>
 </table>
 

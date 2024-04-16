@@ -810,7 +810,7 @@ function company_name($id)
         $q = $ci->db->query($sql);
         if ($q->num_rows() > 0) {
             foreach ($q->result() as $data) {
-                echo $data->company_name;
+                return $data->company_name;
             }
         }
     } else {
