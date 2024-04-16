@@ -615,8 +615,23 @@ class Boq extends CI_Controller
             )
         );
 
+
+
+        // BOQ hesaplama verilerini al
+        if (isset($old_boq)) {
+            $dataArray = json_decode($old_boq->calculation, true);
+        } else {
+            $dataArray = array();
+        }
+
+
+        $dataArrayCount = count($dataArray);
+        $nearestValues = array(100, 200, 300, 400, 500, 600, 750, 1000, 1500, 2000);
+        $roundedCount = roundToNearest($dataArrayCount, $nearestValues);
+
+
         // Excel şablonunu yükle
-        $templatePath = 'uploads/Excel_Template_Rebar.xlsx';
+        $templatePath = "uploads/Excel_Template_Rebar_$roundedCount.xlsx";
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -625,12 +640,6 @@ class Boq extends CI_Controller
         $sheet->setCellValue('A4', "$boq->name" );
         $sheet->setCellValue('H4', "$boq->unit" );
 
-        // BOQ hesaplama verilerini al
-        if (isset($old_boq)) {
-            $dataArray = json_decode($old_boq->calculation, true);
-        } else {
-            $dataArray = array();
-        }
         // Hücrelere veriyi yaz
         $row = 7;
         foreach ($dataArray as $data) {
