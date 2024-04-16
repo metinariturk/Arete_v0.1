@@ -852,10 +852,6 @@ class Collection extends CI_Controller
         $pdf->Cell(20, 6, "$collection->dosya_no", 0, 0, "R", 0);
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetFont('dejavusans', 'B', 9);
-        $pdf->Cell(160, 6, "Ödeme Türü", 0, 0, "R", 0);
-        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
-        $pdf->SetFont('dejavusans', 'N', 9);
-        $pdf->Cell(20, 6, "$collection->tahsilat_turu", 0, 0, "R", 0);
         $pdf->Ln(); // Yeni satıra geç
 
 
@@ -872,6 +868,7 @@ class Collection extends CI_Controller
 
         $pdf->SetY(60);
         $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+        $pdf->SetFont('dejavusans', 'B', 8);
         $pdf->MultiCell(10, 8, "", 0, "C", 0, 0);
         $pdf->MultiCell(30, 8, "Ödeme Türü", 1, "C", 0, 0);
         $pdf->MultiCell(30, 8, "Tahsilat Miktar", 1, "C", 0, 0);
@@ -892,12 +889,17 @@ class Collection extends CI_Controller
         $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
         $pdf->SetFont('dejavusans', "", 8);
         $pdf->MultiCell(10, 5, "", 0, "C", 0, 0);
-        $pdf->MultiCell(170, 5, "Yazıyla : ".yaziyla_para($collection->tahsilat_miktar), 0, "L", 0, 0);
+        $pdf->SetFont('dejavusans', 'B', 8);
+        $pdf->MultiCell(17, 5, "Yazıyla :", 0, "L", 0, 0);
+        $pdf->SetFont('dejavusans', 'N', 8);
+        $pdf->MultiCell(140, 5, yaziyla_para($collection->tahsilat_miktar), 0, "L", 0, 0);
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetY(90);
         $pdf->MultiCell(110, 5, "", 0, "C", 0, 0);
+        $pdf->SetFont('dejavusans', 'B', 9);
         $pdf->MultiCell(70, 5, "Ödeme Alan", 0, "C", 0, 0);
         $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'N', 9);
         $pdf->SetY(100);
         $pdf->MultiCell(110, 5, "", 0, "C", 0, 0);
         $pdf->MultiCell(70, 5, company_name($contract->yuklenici), 0, "C", 0, 0);
