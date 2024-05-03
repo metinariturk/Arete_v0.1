@@ -44,6 +44,48 @@
         });
     </script>
 <?php } ?>
+<script>
+    // Sürükleyici öğeleri seç
+    var dragSources = document.querySelectorAll('#dragSource');
+    // Hedef alanları seç
+    var dropTargets = document.querySelectorAll('.dropTarget');
+
+    // Her bir sürükleyici öğe için sürükleme başlatma olayını ekle
+    dragSources.forEach(function(dragSource) {
+        dragSource.addEventListener('dragstart', function(event) {
+            // Veri aktarımı sırasında taşınacak veriyi belirt
+            event.dataTransfer.setData('text/plain', event.target.dataset.info);
+        });
+    });
+
+    // Her bir hedef alanı için bırakma olayını ekle
+    dropTargets.forEach(function(dropTarget) {
+        dropTarget.addEventListener('drop', function(event) {
+            // Varsayılan davranışı engelle (örneğin, bağlantıyı açmayı engelle)
+            event.preventDefault();
+            // Sürüklenen öğenin veri bilgisini al
+            var draggedItemData = event.dataTransfer.getData('text/plain');
+            // Hedef alanın veri bilgisini al
+            var dropTargetData = dropTarget.dataset.info;
+            // Alert ile bilgileri ekrana bastır
+
+            var formAction = '<?php echo base_url("contract/drag_drop_price/$item->id/"); ?>' + draggedItemData + "/" + dropTargetData;
+
+            $.post(formAction, function (response) {
+                $(".price_update").html(response);
+                hesaplaT();
+                addInputListeners("q");
+                addInputListeners("p");
+            });
+
+        });
+
+        // Bırakma olayının varsayılan davranışını engelle
+        dropTarget.addEventListener('dragover', function(event) {
+            event.preventDefault();
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -165,12 +165,7 @@ class Contract extends CI_Controller
         $settings = $this->Settings_model->get();
         $master_catalog = $this->Catalog_model->get(array('contract_id' => $id, "master" => 1));
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
-        $book_items = $this->Books_model->get_all(array());
-        $criteria = array(
-            'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
-        );
-
-        $sortedBooks = sortArrayByCriteria($book_items, $criteria);
+        $book_items = $this->Contract_price_model->get_all(array('contract_id' => $id, 'book_id !=' => null));
 
         // View'e gönderilecek Değişkenlerin Set Edilmesi
         $viewData->viewModule = $this->moduleFolder;
@@ -180,7 +175,7 @@ class Contract extends CI_Controller
         $viewData->advances = $advances;
         $viewData->collections = $collections;
         $viewData->bonds = $bonds;
-        $viewData->books = $books;
+        $viewData->book_items = $book_items;
         $viewData->catalogs = $catalogs;
         $viewData->costincs = $costincs;
         $viewData->drawings = $drawings;
@@ -195,7 +190,6 @@ class Contract extends CI_Controller
         $viewData->prices_main_groups = $prices_main_groups;
         $viewData->settings = $settings;
         $viewData->sites = $sites;
-        $viewData->sortedBooks = $sortedBooks;
 
         $form_errors = $this->session->flashdata('form_errors');
 
@@ -2652,7 +2646,7 @@ class Contract extends CI_Controller
 
     public function delete_group($group_id)
     {
-        $group =  $this->Contract_price_model->get(array("id" => $group_id));
+        $group = $this->Contract_price_model->get(array("id" => $group_id));
 
         $delete = $this->Contract_price_model->delete(
             array(
@@ -2813,6 +2807,63 @@ class Contract extends CI_Controller
 
 
         $viewData = new stdClass();
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/price_update", $viewData, true);
+
+        echo $render_html;
+
+    }
+
+    public
+    function drag_drop_price($contract_id, $book_id , $sub_id )
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $boq = $this->Contract_price_model->get(array("id" => $book_id));
+        $sub = $this->Contract_price_model->get(array("id" => $sub_id));
+
+
+        $insert = $this->Contract_price_model->add(
+            array(
+                "contract_id" => $contract_id,
+                "sub_id" => $sub_id,
+                "main_id" => $sub->parent,
+                "name" => $boq->name,
+                "unit" => $boq->unit,
+            ));
+
+        // TODO Alert sistemi eklenecek...
+        if ($insert) {
+            $alert = array(
+                "title" => "İşlem Başarılı",
+                "text" => "Kayıt başarılı bir şekilde güncellendi",
+                "type" => "success"
+            );
+        } else {
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Güncelleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+        }
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
+        $book_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'book_id !=' => null));
+
+
+        $viewData = new stdClass();
+
+        $viewData->book_items = $book_items;
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
@@ -3424,7 +3475,7 @@ class Contract extends CI_Controller
             $pdf->Cell(25, 5, money_format($payment->B) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(25, 5, money_format($payment->G) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(25, 5, money_format($payment->Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 5, money_format($payment->H-$payment->Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(25, 5, money_format($payment->H - $payment->Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(25, 5, money_format($payment->I) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(29, 5, money_format($payment->balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Ln(); // Yeni satıra geç
@@ -3437,7 +3488,7 @@ class Contract extends CI_Controller
         $pdf->Cell(25, 5, money_format($total_payment_B) . " " . $contract->para_birimi, 1, 0, "R", 0);
         $pdf->Cell(25, 5, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "R", 0);
         $pdf->Cell(25, 5, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        $pdf->Cell(25, 5, money_format($total_payment_H-$total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        $pdf->Cell(25, 5, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
         $pdf->Cell(25, 5, money_format($total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
         $pdf->Cell(29, 5, money_format($total_payment_balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
         $pdf->Ln(); // Yeni satıra geç
@@ -3575,8 +3626,8 @@ class Contract extends CI_Controller
 
             $i = 1;
             foreach ($collections as $collection) {
-                if ($collection->tahsilat_turu == "Çek"){
-                    $notice_date = "/ ".dateFormat_dmy($collection->vade_tarih);
+                if ($collection->tahsilat_turu == "Çek") {
+                    $notice_date = "/ " . dateFormat_dmy($collection->vade_tarih);
                 } else {
                     $notice_date = "";
                 }
@@ -3584,7 +3635,7 @@ class Contract extends CI_Controller
                 $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
                 $pdf->Cell(15, 6, dateFormat_dmy($collection->tahsilat_tarih), 1, 0, "C", 0);
                 $pdf->Cell(25, 6, money_format($collection->tahsilat_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
-                $pdf->Cell(35, 6, $collection->tahsilat_turu.$notice_date, 1, 0, "C", 0);
+                $pdf->Cell(35, 6, $collection->tahsilat_turu . $notice_date, 1, 0, "C", 0);
                 $pdf->Cell(90, 6, $collection->aciklama, 1, 0, "L", 0);
                 $pdf->Cell(4, 6, "", 0, 0, "C", 0);
                 $pdf->Ln(); // Yeni satıra geç
@@ -3611,11 +3662,10 @@ class Contract extends CI_Controller
             $pdf->Cell(25, 6, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(25, 6, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(25, 6, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 6, money_format($total_payment_H-$total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(25, 6, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Cell(25, 6, money_format($total_payment_Kes_e + $total_payment_balance - $total_collections - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
             $pdf->Ln(); // Yeni satıra geç
         }
-
 
 
         $file_name = contract_name($contract->id) . "-İlerlerme Raporu";
