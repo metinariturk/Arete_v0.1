@@ -34,6 +34,17 @@
                         </a>
                     </li>
                     <li>
+                        <a class="show"
+                           id="leader-tab"
+                           data-bs-toggle="pill"
+                           href="#leader"
+                           role="tab"
+                           aria-controls="leader"
+                           aria-selected="false">
+                            <span class="title">03/A - Pozlar İcmali</span>
+                        </a>
+                    </li>
+                    <li>
                         <a id="works_done-tab"
                            data-bs-toggle="pill"
                            href="#works_done"

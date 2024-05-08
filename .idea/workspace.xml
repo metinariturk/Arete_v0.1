@@ -10,6 +10,12 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ComposerConfigs">
+    <option name="configs">
+      <option value="$PROJECT_DIR$/site/assets/phpmailer/composer.json" />
+      <option value="$PROJECT_DIR$/panel/application/helpers/tcpdf/composer.json" />
+    </option>
+  </component>
   <component name="ComposerSettings">
     <pharConfigPath>$PROJECT_DIR$/panel/composer.json</pharConfigPath>
     <execution />
@@ -48,8 +54,13 @@
       <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-intl-normalizer" />
       <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/panel/vendor/symfony/polyfill-php72" />
+      <path value="$PROJECT_DIR$/site/assets/phpmailer/vendor/composer" />
+      <path value="$PROJECT_DIR$/site/assets/phpmailer/vendor/phpmailer/phpmailer" />
     </include_path>
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2WCsf1FIyj311z3OrPJTXMudnx6" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -57,14 +68,19 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/libraries",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/payment_v/display/tabs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\libraries" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\libraries" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\models" />
@@ -76,6 +92,13 @@
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\tabs" />
     </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-php-predefined-ba97393d7c68-6f8e3395a2b4-com.jetbrains.php.sharedIndexes-PS-233.14808.18" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -129,6 +152,9 @@
       <workItem from="1701199638091" duration="11429000" />
       <workItem from="1702129679779" duration="6199000" />
       <workItem from="1707329475751" duration="8213000" />
+      <workItem from="1714759363198" duration="6556000" />
+      <workItem from="1714852389898" duration="2327000" />
+      <workItem from="1715197403350" duration="9356000" />
     </task>
     <servers />
   </component>
@@ -140,7 +166,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>305</line>
+          <line>307</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="save" />
@@ -149,7 +175,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>2794</line>
+          <line>2796</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="sign_rankSetter" />
@@ -182,7 +208,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>4149</line>
+          <line>4151</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>

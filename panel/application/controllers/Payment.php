@@ -105,6 +105,7 @@ class Payment extends CI_Controller
     {
 
         $contract_id = contract_id_module("payment", $id);
+        $leaders = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "leader" => 1), "code ASC");
         $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
         $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => null, "sub_group" => null,), "rank ASC");
         $settings = $this->Settings_model->get();
@@ -123,6 +124,7 @@ class Payment extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->contract = $contract;
         $viewData->main_groups = $main_groups;
+        $viewData->leaders = $leaders;
         $viewData->active_boqs = $active_boqs;
         $viewData->project_id = $project_id;
         $viewData->active_tab = $active_tab;

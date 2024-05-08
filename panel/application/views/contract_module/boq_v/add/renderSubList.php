@@ -23,7 +23,7 @@
     <?php foreach ($sub_cont_items as $sub_cont_item) { ?>
         <tr>
             <td>
-                <?php echo $sub_cont_item->item_id; ?>
+                <?php echo $sub_cont_item->code; ?>
             </td>
             <td>
                 <a onclick="renderCalculate(this)"

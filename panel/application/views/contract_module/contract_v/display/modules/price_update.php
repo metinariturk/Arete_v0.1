@@ -1,32 +1,16 @@
 <form id="save_boq"
       action="<?php echo base_url("contract/save_price/$item->id"); ?>" method="post"
       enctype="multipart/form-data" autocomplete="off">
-    <div class="row">
+    <div class="row price_update">
         <div class="col-8">
-            <div class="card-body price_update">
-
-
-                <table>
-                    <tr>
-                        <td><strong>Sözleşme Bedeli</strong></td>
-                        <td>:</td>
-                        <td style="text-align: right"><?php echo money_format($item->sozlesme_bedel); ?><?php echo $item->para_birimi; ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Pozlar Toplam Bedeli</strong></td>
-                        <td>:</td>
-                        <td style="text-align: right">
-
-                            <?php $total_boqs = $this->Contract_price_model->sum_all(array("contract_id" => $item->id, "sub_group" => null, "main_group" => null),"total"); ?>
-                            <?php echo money_format($total_boqs); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Fark</strong></td>
-                        <td>:</td>
-                        <td style="text-align: right"><?php echo money_format($total_boqs - $item->sozlesme_bedel); ?><?php echo $item->para_birimi; ?></td>
-                    </tr>
-                </table>
+            <div class="card-body ">
+                <div class="content">
+                    <div class="text-start">
+                        <a class="btn btn-success" onclick="update_price(this)" form-id="save_boq">
+                            <i class="menu-icon fa fa-floppy-o fa-lg" aria-hidden="true"></i> Birim Fiyatları Kaydet
+                        </a>
+                    </div>
+                </div>
                 <hr>
                 <?php foreach ($prices_main_groups as $prices_main_group) { ?>
                     <strong style="font-size: 14pt"><?php echo upper_tr($prices_main_group->name); ?></strong>
@@ -37,7 +21,8 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    <div class="dropTarget" data-info="<?php echo $sub_group->id; ?>"><?php echo upper_tr($sub_group->name); ?></div>
+                                    <div class="dropTarget"
+                                         data-info="<?php echo $sub_group->id; ?>"><?php echo upper_tr($sub_group->name); ?></div>
                                 </td>
                             </tr>
                             <tr>
@@ -110,48 +95,12 @@
                                     </td>
                                     <td class="table-cell w5">
                                         <a onclick="delete_price_item(this)" id="<?php echo $boq_item->id; ?>">
-                                            <i style="color: tomato" class="fa fa-minus-circle fa-2x" aria-hidden="true"></i>
+                                            <i style="color: tomato" class="fa fa-minus-circle fa-2x"
+                                               aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>
                             <?php } ?>
-                            <tr>
-                                <td hidden class="table-cell" >
-                                    <input  style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][id]">
-                                </td>
-                                <td class="table-cell" delete_group>
-                                    <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][code]"
-                                           placeholder="Poz No">
-                                </td>
-                                <td class="table-cell">
-                                    <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][name]"
-                                           placeholder="Tanımı">
-                                </td>
-                                <td class="table-cell">
-                                    <input style="width: 100%" name="boq[<?php echo $sub_group->id; ?>][unit]"
-                                           placeholder="Birim">
-                                </td>
-                                <td class="table-cell w10">
-                                    <input name="boq[<?php echo $sub_group->id; ?>][qty]" onclick="hesaplaT"
-                                           id="q-<?php echo $sub_group->id; ?>" style="width: 100%" type="number"
-                                           placeholder="Miktar">
-                                </td>
-                                <td class="table-cell w10">
-                                    <input name="boq[<?php echo $sub_group->id; ?>][price]" onclick="hesaplaT"
-                                           placeholder="Birim Fiyat" id="p-<?php echo $sub_group->id; ?>" style="width: 100%"
-                                           type="number"">
-                                </td>
-                                <td class="table-cell w10">
-                                    <input name="boq[<?php echo $sub_group->id; ?>][total]" onclick="hesaplaT"
-                                           placeholder="Toplam" id="t-<?php echo $sub_group->id; ?>" style="width: 100%"
-                                           type="number">
-                                </td>
-                                <td class="table-cell w10">
-                                    <a onclick="update_price(this)" form-id="save_boq">
-                                        <i style="color: green" class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
                             <tr>
                                 <td colspan="5" style="text-align: right">
                                     TOPLAM
@@ -167,19 +116,55 @@
                 <?php } ?>
             </div>
         </div>
-
         <div class="col-4">
             <h5>Poz Listesi</h5>
-            <?php foreach ($book_items as $book_item) { ?>
-                <div id="dragSource" draggable="true" data-info="<?php echo $book_item->id; ?>"><?php echo $book_item->name; ?> - <?php echo $book_item->unit; ?></div>
-            <?php }; ?>
-        </div>
-    </div>
-    <div class="content">
-        <div class="text-end">
-            <a class="btn btn-success" onclick="update_price(this)" form-id="save_boq">
-                <i class="menu-icon fa fa-floppy-o fa-lg" aria-hidden="true"></i> Birim Fiyatları Kaydet
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Poz Adı</th>
+                    <th>Birimi</th>
+                    <th>İşlem</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php foreach ($leaders as $leader) { ?>
+                    <tr>
+                        <td id="dragSource" draggable="true" data-info="<?php echo $leader->id; ?>"><?php echo $leader->code; ?></td>
+                        <td id="dragSource" draggable="true" data-info="<?php echo $leader->id; ?>"><?php echo $leader->name; ?> </td>
+                        <td id="dragSource" draggable="true" data-info="<?php echo $leader->id; ?>"><?php echo $leader->unit; ?></td>
+                        <td>
+                            <a onclick="delete_price_item(this)" id="<?php echo $leader->id; ?>">
+                                <i style="color: tomato" class="fa fa-minus-circle fa-2x"
+                                   aria-hidden="true"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+                <?php }; ?>
+                </tbody>
+            </table>
+            <div class="form-control">
+                <input name="leader_code" id="leader_code" onclick="hesaplaT"
+                       style="width: 100%" type="number"
+                       placeholder="Kodu">
+            </div>
+            <div class="form-control">
+                <input name="leader_name" id="leader_name" onclick="hesaplaT"
+                       style="width: 100%"
+                       placeholder="Poz Adı">
+            </div>
+            <div class="form-control">
+                <input name="leader_unit" id="leader_unit" onclick="hesaplaT"
+                       placeholder="Birimi" style="width: 100%"
+                       type="Birimi">
+            </div>
+            <a href="#" id="add_leader_btn">
+                <i style="color: green" class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
             </a>
         </div>
     </div>
+
 </form>
