@@ -718,6 +718,7 @@ $payments_array = json_encode((array_column($payments, 'E')));
                     $(".price_update").html(response);
                     hesaplaT();
                     activateDragAndDrop();
+                    addLeader();
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
@@ -726,6 +727,7 @@ $payments_array = json_encode((array_column($payments, 'E')));
         });
         hesaplaT();
         activateDragAndDrop();
+        addLeader()
     }
 
     // Fonksiyonu çağırarak çalıştırabilirsiniz
