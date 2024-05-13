@@ -152,6 +152,7 @@ class Contract extends CI_Controller
         $collections = $this->Collection_model->get_all(array('contract_id' => $id), "tahsilat_tarih ASC");
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
+        $books = $this->Books_model->get_all(array('isActive' => 1));
         $catalogs = $this->Catalog_model->get_all(array('contract_id' => $id));
         $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
         $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
@@ -2480,9 +2481,11 @@ class Contract extends CI_Controller
 
             $item = $this->Contract_model->get(array("id" => $contract_id));
 
+            $book_items = $this->Books_model->get_all(array());
             $criteria = array(
                 'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
             );
+            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
 
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
             $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
@@ -2493,6 +2496,7 @@ class Contract extends CI_Controller
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->item = $item;
+            $viewData->sortedBooks = $sortedBooks;
 
             $viewData->main_groups = $main_groups;
             $viewData->sub_groups = $sub_groups;
@@ -2500,10 +2504,12 @@ class Contract extends CI_Controller
         } else {
 
             $item = $this->Contract_model->get(array("id" => $contract_id));
+            $book_items = $this->Books_model->get_all(array());
             $criteria = array(
                 'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
             );
 
+            $sortedBooks = sortArrayByCriteria($book_items, $criteria);
 
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
             $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
@@ -2516,6 +2522,7 @@ class Contract extends CI_Controller
             $viewData->item = $item;
             $viewData->main_groups = $main_groups;
             $viewData->sub_groups = $sub_groups;
+            $viewData->sortedBooks = $sortedBooks;
             $viewData->form_error = true;
 
         }
@@ -2659,6 +2666,7 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
 
 
+        $main_categories = $this->Books_model->get_all(array('main_category' => 1));
 
 
         $item = $this->Contract_model->get(
@@ -2667,6 +2675,8 @@ class Contract extends CI_Controller
             )
         );
         $viewData->item = $item;
+
+        $viewData->main_categories = $main_categories;
 
         $viewData->item_files = $this->Contract_file_model->get_all(
             array(
