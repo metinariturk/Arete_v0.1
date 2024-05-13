@@ -2810,6 +2810,7 @@ class Contract extends CI_Controller
         $leader_code = $this->input->post('leader_code');
         $leader_name = $this->input->post('leader_name');
         $leader_unit = $this->input->post('leader_unit');
+        $leader_price = $this->input->post('leader_price');
 
         // Lider bilgilerini ekleyin
         $update = $this->Contract_price_model->add(
@@ -2818,6 +2819,7 @@ class Contract extends CI_Controller
                 "code" => $leader_code,
                 "name" => $leader_name,
                 "unit" => $leader_unit,
+                "price" => $leader_price,
                 "leader" => 1,
             )
         );
@@ -2865,6 +2867,7 @@ class Contract extends CI_Controller
                     "leader_id" => $leader_id,
                     "name" => $leader->name,
                     "unit" => $leader->unit,
+                    "price" => $leader->price,
                 ));
         }
 

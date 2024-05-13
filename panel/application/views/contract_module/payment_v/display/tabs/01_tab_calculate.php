@@ -55,7 +55,7 @@
                                                 <tr>
                                                     <td colspan="7">
 
-                                                        <?php echo $main_group->code . "." . $sub_group->code . "." . $contract_item->code . " - " . $contract_item->name . " - " . $contract_item->unit; ?>
+                                                        <?php echo $contract_item->code . " - " . $contract_item->name . " - " . $contract_item->unit; ?>
 
                                                     </td>
                                                 </tr>

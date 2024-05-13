@@ -702,6 +702,7 @@ $payments_array = json_encode((array_column($payments, 'E')));
             var leader_code = $("#leader_code").val();
             var leader_name = $("#leader_name").val();
             var leader_unit = $("#leader_unit").val();
+            var leader_price = $("#leader_price").val();
 
             $.ajax({
                 type: "POST",
@@ -709,7 +710,8 @@ $payments_array = json_encode((array_column($payments, 'E')));
                 data: {
                     leader_code: leader_code,
                     leader_name: leader_name,
-                    leader_unit: leader_unit
+                    leader_unit: leader_unit,
+                    leader_price: leader_price
                 },
                 success: function (response) {
                     // Sunucudan gelen yanıtı alarak price_update div'ini güncelle

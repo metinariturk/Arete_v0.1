@@ -56,25 +56,25 @@
                                 <tr>
                                     <td hidden class="table-cell">
                                         <input name="boq[<?php echo $boq_item->id; ?>][id]" onclick="hesaplaT"
-                                               style="width: 100%"
+                                               style="width: 100%" disabled
                                                value="<?php echo $boq_item->sub_id; ?>">
 
                                     </td>
                                     <td class="table-cell w10">
                                         <input name="boq[<?php echo $boq_item->id; ?>][code]" onclick="hesaplaT"
-                                               style="width: 100%"
+                                               style="width: 100%" disabled
                                                value="<?php echo $boq_item->code; ?>">
 
                                     </td>
                                     <td class="table-cell w50">
                                         <input name="boq[<?php echo $boq_item->id; ?>][name]" onclick="hesaplaT"
-                                               style="width: 100%"
+                                               style="width: 100%" disabled
                                                value="<?php echo $boq_item->name; ?>">
 
                                     </td>
                                     <td class="table-cell w5">
                                         <input name="boq[<?php echo $boq_item->id; ?>][unit]" onclick="hesaplaT"
-                                               style="width: 100%"
+                                               style="width: 100%" disabled
                                                value="<?php echo $boq_item->unit; ?>">
 
                                     </td>
@@ -84,7 +84,7 @@
                                                value="<?php echo $boq_item->qty; ?>">
                                     </td>
                                     <td class="table-cell w10">
-                                        <input name="boq[<?php echo $boq_item->id; ?>][price]" onclick="hesaplaT"
+                                        <input name="boq[<?php echo $boq_item->id; ?>][price]" onclick="hesaplaT" disabled
                                                id="p-<?php echo $boq_item->id; ?>" style="width: 100%" type="number"
                                                value="<?php echo $boq_item->price; ?>">
                                     </td>
@@ -125,6 +125,7 @@
                     <th>#</th>
                     <th>Poz Adı</th>
                     <th>Birimi</th>
+                    <th>Fiyat</th>
                     <th>İşlem</th>
                 </tr>
                 </thead>
@@ -135,6 +136,7 @@
                         <td id="dragSource" draggable="true" data-info="<?php echo $leader->id; ?>"><?php echo $leader->code; ?></td>
                         <td id="dragSource" draggable="true" data-info="<?php echo $leader->id; ?>"><?php echo $leader->name; ?> </td>
                         <td id="dragSource" draggable="true" data-info="<?php echo $leader->id; ?>"><?php echo $leader->unit; ?></td>
+                        <td id="dragSource" draggable="true" data-info="<?php echo $leader->id; ?>"><?php echo $leader->price; ?></td>
                         <td>
                             <a onclick="delete_price_item(this)" id="<?php echo $leader->id; ?>">
                                 <i style="color: tomato" class="fa fa-minus-circle fa-2x"
@@ -156,10 +158,16 @@
                        style="width: 100%"
                        placeholder="Poz Adı">
             </div>
+
             <div class="form-control">
                 <input name="leader_unit" id="leader_unit" onclick="hesaplaT"
                        placeholder="Birimi" style="width: 100%"
                        type="Birimi">
+            </div>
+            <div class="form-control">
+                <input name="leader_price" id="leader_price" onclick="hesaplaT"
+                       placeholder="Fiyat" style="width: 100%" type="number"
+                       type="Fiyat">
             </div>
             <a href="#" id="add_leader_btn">
                 <i style="color: green" class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
