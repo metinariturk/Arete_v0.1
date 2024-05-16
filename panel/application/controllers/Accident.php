@@ -20,6 +20,8 @@ class Accident extends CI_Controller
 
         $this->moduleFolder = "safety_module";
         $this->viewFolder = "accident_v";
+        $this->viewFolder = "accident_v";
+
         $this->load->model("Accident_model");
         $this->load->model("Accident_file_model");
         $this->load->model("Auction_model");
