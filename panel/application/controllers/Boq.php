@@ -418,9 +418,6 @@ class Boq extends CI_Controller
         }
         $viewData->contract_id = $contract_id;
 
-        $group_id = get_from_id("book", "parent", "$boq_id");
-        $viewData->group_id = $group_id;
-
         if ($contract_item->type == "rebar"){
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/rebar", $viewData, true);
         } else {
