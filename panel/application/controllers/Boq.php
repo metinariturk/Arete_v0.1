@@ -157,10 +157,6 @@ class Boq extends CI_Controller
         }
         $viewData->contract_id = $contract_id;
 
-        $group_id = get_from_id("book", "parent", "$boq_id");
-        $viewData->group_id = $group_id;
-
-
         if (empty($payment->A)){
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
         } else {
@@ -215,9 +211,6 @@ class Boq extends CI_Controller
             $viewData->old_boq = $old_boq;
         }
         $viewData->contract_id = $contract_id;
-
-        $group_id = get_from_id("book", "parent", "$boq_id");
-        $viewData->group_id = $group_id;
 
 
         if (empty($payment->A)){
