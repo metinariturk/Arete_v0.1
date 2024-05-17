@@ -16,9 +16,6 @@
                 <i class="fa fa-file-excel-o"></i> Metrajı Excel Olarak İndir
             </a>
         </fieldset>
-        <p>Metraj ID : <?php echo $old_boq->id; ?></p>
-        <p>Boq ID : <?php echo $old_boq->boq_id; ?></p>
-        <p>Leader ID : <?php echo $old_boq->leader_id; ?></p>
     </div>
 </div>
 <table class="table">

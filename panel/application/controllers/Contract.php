@@ -2643,17 +2643,11 @@ class Contract extends CI_Controller
     function delete_boq($contract_id, $boq_id)
     {
 
-        $get_main_group = get_from_any("book", "parent", "id", $boq_id);
-
-
         $viewData = new stdClass();
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-
-
-
 
         $item = $this->Contract_model->get(
             array(
