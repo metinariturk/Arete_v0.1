@@ -15,6 +15,9 @@
                    href="<?php echo base_url("$this->Module_Name/template_download_rebar/$contract_id/$payment->id/$income"); ?>">
                     <i class="fa fa-file-excel-o"></i> Metrajı Excel Olarak İndir
                 </a>
+                <p>Metraj ID : <?php echo $old_boq->id; ?></p>
+                <p>Boq ID : <?php echo $old_boq->boq_id; ?></p>
+                <p>Leader ID : <?php echo $old_boq->leader_id; ?></p>
             </fieldset>
         </div>
     </div>
