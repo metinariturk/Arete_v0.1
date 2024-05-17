@@ -230,28 +230,6 @@ $sidebarList = array(
     ),
 
     array(
-        "title" => "Poz Kitapları",
-        "icon" => "book",
-        "url" => "#",
-
-        "submodules" => array(
-            array(
-                "title" => "Hızlı Bakış",
-                "url" => base_url("book")
-            ),
-            array(
-                "title" => "Yeni Kitap",
-                "url" => base_url("book/new_book")
-            ),
-
-            array(
-                "title" => "Poz Ekleme",
-                "url" => base_url("book/new_item")
-            ),
-        )
-    ),
-
-    array(
         "title" => "Ayarlar",
         "icon" => "settings",
         "url" => "#",

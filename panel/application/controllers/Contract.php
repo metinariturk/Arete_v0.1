@@ -28,12 +28,6 @@ class Contract extends CI_Controller
         // Modelleri yükleme
         $this->load->model("Advance_model");
         $this->load->model("Bond_model");
-        $this->load->model("Books_model");
-        $this->load->model("Books_main_model");
-        $this->load->model("Books_sub_model");
-        $this->load->model("Books_item_model");
-        $this->load->model("Books_title_model");
-        $this->load->model("Books_item_model");
         $this->load->model("Catalog_model");
         $this->load->model("City_model");
         $this->load->model("Company_model");
