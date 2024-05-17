@@ -173,8 +173,6 @@ class Boq extends CI_Controller
             redirect(base_url("error"));
         }
 
-
-
         $update = $this->Contract_price_model->update(
             array(
                 "id" => $boq_id
@@ -183,8 +181,6 @@ class Boq extends CI_Controller
                 "type" => "rebar",
             )
         );
-
-
 
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
@@ -212,13 +208,11 @@ class Boq extends CI_Controller
         }
         $viewData->contract_id = $contract_id;
 
-
         if (empty($payment->A)){
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/rebar", $viewData, true);
         } else {
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/show_rebar", $viewData, true);
         }
-
 
         echo $render_calculate;
     }
