@@ -29,7 +29,6 @@ class Payment extends CI_Controller
         $this->load->model("Contract_model");
         $this->load->model("Company_model");
         $this->load->model("Contract_price_model");
-        $this->load->model("Books_main_model");
         $this->load->model("Project_model");
         $this->load->model("Boq_model");
         $this->load->model("Settings_model");
