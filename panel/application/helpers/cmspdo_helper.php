@@ -36,7 +36,7 @@ function get_all_book()
     return $ci->db->where(array("isActive" => 1))->get("books")->result();
 }
 
-function rank_group($table, $where = array(),$data=array())
+function rank_group($table, $where = array(), $data = array())
 {
     $ci =& get_instance();
     $ci->load->database();
@@ -356,7 +356,6 @@ function auction_id_module($module, $id)
 
     return $module->auction_id;
 }
-
 
 
 function project_code_auc($id)
@@ -1108,23 +1107,6 @@ function boq_name($id)
         if ($q->num_rows() > 0) {
             foreach ($q->result() as $data) {
                 return $data->name;
-            }
-        }
-    } else {
-        return null;
-    }
-}
-
-function boq_unit($id)
-{
-    if (!empty($id)) {
-        $ci =& get_instance();
-        $ci->load->database();
-        $sql = "SELECT * FROM `book` where `id` =" . $id;
-        $q = $ci->db->query($sql);
-        if ($q->num_rows() > 0) {
-            foreach ($q->result() as $data) {
-                return mb_strtoupper($data->unit);
             }
         }
     } else {

@@ -42,6 +42,8 @@
                     </a>
                 </th>
                 <td><?php
+                    $contract_price = $this->Contract_price_model->get(array("id" => $boq_id));
+
                     $old_payments = $this->Boq_model->get_all(
                         array(
                             "contract_id" => $contract->id,
@@ -54,7 +56,7 @@
                         foreach ($old_payments as $item) {
                             $old_total += $item->total;
                         }
-                        echo money_format($old_total); ?><?php echo boq_unit($boq_id);
+                        echo money_format($old_total); ?><?php echo $contract_price->unit;
                     } ?></td>
                 <td>  <?php
                     $old_record = $this->Boq_model->get(
@@ -69,10 +71,10 @@
                     } else {
                         $this_total = 0;
                     }
-                    ?><?php echo money_format($this_total) . " " . boq_unit($boq_id); ?></td>
+                    ?><?php echo money_format($this_total) . " " . $contract_price->unit; ?></td>
                 <td><?php
                     echo money_format($this_total + $old_total);
-                    ?><?php echo boq_unit($boq_id); ?></td>
+                    ?><?php echo $contract_price->unit; ?></td>
             </tr>
 
         <?php } ?>

@@ -1,5 +1,6 @@
 <?php if (isset($income)) { ?>
 <?php $boq = $this->Contract_price_model->get(array("id" => $income)); ?>
+<?php $income_contract_price = $this->Contract_price_model->get(array("id"=>$income)); ?>
 
 <div class="card">
     <div class="card-body">
@@ -30,7 +31,7 @@
                                    echo $old_boq->total;
                                } ?>"
                                class="form-control btn-square" type="text" placeholder=""><span
-                                class="input-group-text"><?php echo boq_unit($income); ?></span>
+                                class="input-group-text"><?php echo $income_contract_price->unit; ?></span>
                         <input name="boq_id" id="dont_delete" hidden value="<?php echo $income; ?>">
                     </div>
                 </div>
