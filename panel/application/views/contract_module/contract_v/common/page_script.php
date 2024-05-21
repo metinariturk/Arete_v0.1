@@ -743,6 +743,7 @@ $payments_array = json_encode((array_column($payments, 'E')));
             activateDragAndDrop();
             addInputListeners("q");
             addInputListeners("p");
+            addLeader()
         })
             .fail(function (error) {
                 // Hata durumunda bu fonksiyon çalışır
@@ -751,7 +752,9 @@ $payments_array = json_encode((array_column($payments, 'E')));
                 activateDragAndDrop();
                 addInputListeners("q");
                 addInputListeners("p");
+                addLeader();
             });
+
     }
 </script>
 
@@ -786,6 +789,7 @@ $payments_array = json_encode((array_column($payments, 'E')));
                 $.post(formAction, function (response) {
                     $(".price_update").html(response);
                     hesaplaT();
+                    addLeader();
                     activateDragAndDrop();
                     addInputListeners("q");
                     addInputListeners("p");
@@ -800,7 +804,6 @@ $payments_array = json_encode((array_column($payments, 'E')));
             });
         });
     }
-
     // Sürükleyici ve bırakma işlevselliğini etkinleştir
     activateDragAndDrop();
 </script>

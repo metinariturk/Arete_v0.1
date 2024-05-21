@@ -25,12 +25,10 @@
                             </div>
                             <div class="col-md-3">
                                 <?php $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->id, "sub_group" => 1, "parent" => $main_group->id)); ?>
-                                <?php if (empty($sub_groups)) { ?>
-                                    <a onclick="delete_group(this)" id="<?php echo $main_group->id; ?>">
-                                        <i style="color: tomato" class="fa fa-minus-circle fa-2x"
-                                           aria-hidden="true"></i>
-                                    </a>
-                                <?php } ?>
+                                <a onclick="delete_group(this)" id="<?php echo $main_group->id; ?>">
+                                    <i style="color: tomato" class="fa fa-minus-circle fa-2x"
+                                       aria-hidden="true"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -53,18 +51,16 @@
                                            class="form-control"
                                            value="<?php echo $sub_group->code; ?>">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <input type="text" name="groups[<?php echo $sub_group->id; ?>][name]"
                                            class="form-control" value="<?php echo $sub_group->name; ?>">
                                 </div>
                                 <div class="col-md-3">
                                     <?php $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->id, "sub_group" => 1, "parent" => $main_group->id)); ?>
-                                    <?php if (empty($sub_groups)) { ?>
                                         <a onclick="delete_group(this)" id="<?php echo $sub_group->id; ?>">
                                             <i style="color: tomato" class="fa fa-minus-circle fa-2x"
                                                aria-hidden="true"></i>
                                         </a>
-                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -85,7 +81,7 @@
                                 <input type="text" name="groups[<?php echo $main_group->id; ?>][new_sub][code]"
                                        class="form-control" placeholder="Alt Grup Kodu">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <input type="text" name="groups[<?php echo $main_group->id; ?>][new_sub][name]"
                                        class="form-control" placeholder="Alt Grup Adı">
                             </div>
