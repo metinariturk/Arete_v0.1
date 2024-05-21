@@ -727,7 +727,6 @@ $payments_array = json_encode((array_column($payments, 'E')));
         });
         hesaplaT();
         activateDragAndDrop();
-        addLeader()
     }
 
     // Fonksiyonu çağırarak çalıştırabilirsiniz
