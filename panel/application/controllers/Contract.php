@@ -2677,86 +2677,35 @@ class Contract extends CI_Controller
 
         $boqs = $this->input->post("boq[]");
 
-        $filtered_boqs = array_filter($boqs, function ($value) {
-            return !empty($value['id']) || !empty($value['code']) || !empty($value['name']);
-        });
+        foreach ($boqs as $id => $data) {
+            $update = $this->Contract_price_model->update(
+                array(
+                    "id" => $id
+                ),
+                array(
+                    "qty" => $data['qty'],
+                    "total" => $data['total']
+                )
+            );
 
-        foreach ($filtered_boqs as $boq_id => $values) {
-            if (!empty($values['id'])) {
-                $update = $this->Contract_price_model->update(
-                    array(
-                        "id" => $boq_id
-                    ),
-                    array(
-                        "code" => $values['code'],
-                        "name" => $values['name'],
-                        "unit" => $values['unit'],
-                        "qty" => $values['qty'],
-                        "price" => $values['price'],
-                        "total" => $values['total']
-                    ));
+            // Hata kontrolü yapmak isterseniz
+            if ($update) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Kayıt başarılı bir şekilde güncellendi",
+                    "type" => "success"
+                );
             } else {
-                $sub = $this->Contract_price_model->get(array("id" => $boq_id));
-                $insert = $this->Contract_price_model->add(
-                    array(
-                        "contract_id" => $contract_id,
-                        "main_id" => $sub->parent,
-                        "sub_id" => $sub->id,
-                        "code" => $values['code'],
-                        "name" => $values['name'],
-                        "unit" => $values['unit'],
-                        "qty" => $values['qty'],
-                        "price" => $values['price'],
-                        "total" => $values['total']
-                    )
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Güncelleme sırasında bir problem oluştu",
+                    "type" => "danger"
                 );
             }
         }
 
-
-        $sub_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_group" => 1));
-        foreach ($sub_groups as $sub_group) {
-            $group_total = $this->Contract_price_model->sum_all(array("sub_id" => $sub_group->id, "contract_id" => $contract_id), "total");
-            $update = $this->Contract_price_model->update(
-                array(
-                    "id" => $sub_group->id
-                ),
-                array(
-                    "qty" => null,
-                    "price" => null,
-                    "total" => $group_total
-                ));
-        }
-
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1));
-        foreach ($main_groups as $main_group) {
-            $sub_group_total = $this->Contract_price_model->sum_all(array("parent" => $main_group->id, "contract_id" => $contract_id, "sub_group" => 1), "total");
-            $update = $this->Contract_price_model->update(
-                array(
-                    "id" => $main_group->id
-                ),
-                array(
-                    "qty" => null,
-                    "price" => null,
-                    "total" => $sub_group_total
-                ));
-        }
-
-
         // TODO Alert sistemi eklenecek...
-        if ($update) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde güncellendi",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Güncelleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-        }
+
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
