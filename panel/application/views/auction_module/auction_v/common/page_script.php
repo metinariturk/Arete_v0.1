@@ -1,4 +1,15 @@
 <script>
+    $(document).ready(function() {
+
+        // enable fileuploader plugin
+        $('input[name="files"]').fileuploader({
+            addMore: true
+        });
+
+    });
+</script>
+
+<script>
     $(document).ready(function () {
         $('#cost').DataTable({
             dom: 'Bfrtip',

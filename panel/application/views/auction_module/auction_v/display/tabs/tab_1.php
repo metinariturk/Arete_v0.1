@@ -90,7 +90,12 @@
             <div class="card">
                 <div class="file-content">
                     <div class="card-header">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
+                        <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>" method="post" enctype="multipart/form-data">
+                            <!-- file input -->
+                            <input type="file" name="files">
+
+                            <input type="submit">
+                        </form>
                     </div>
                     <div class="image_list_container">
                         <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>

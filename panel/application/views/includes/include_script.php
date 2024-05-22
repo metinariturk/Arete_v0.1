@@ -23,6 +23,7 @@
 <script src="<?php echo base_url("assets"); ?>/js/typeahead/typeahead.bundle.js"></script><!--SearchBar-->
 <?php $this->load->view("includes/typeahead"); ?><!--SearchBar-->
 
+<script src="<?php echo base_url("assets"); ?>/js/fileuploader/jquery.fileuploader.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/dropzone/dropzone.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/dropzone/dropzone-script.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/sweet-alert/app.js"></script><!--General Page Script -->

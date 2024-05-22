@@ -43,12 +43,17 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/responsive.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/date-picker.css">
 
-<link rel="stylesheet" type="text/css"href="<?php echo base_url("assets"); ?>/css/vendors/tree.css">
+<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/tree.css">
 
-<link rel="stylesheet" type="text/css"href="<?php echo base_url("assets"); ?>/css/custom.css">
+<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/custom.css">
 
 <link
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css"
         rel="stylesheet"
 />
 
+<!-- INNO FILE UPLAOD -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+<link  href="<?php echo base_url("assets"); ?>/fonts/fileuploader/font-fileuploader.css" rel="stylesheet">
+
+<link href="<?php echo base_url("assets"); ?>/css/fileuploader.min.css" media="all" rel="stylesheet">
