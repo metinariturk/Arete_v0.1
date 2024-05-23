@@ -808,62 +808,52 @@ class Auction extends CI_Controller
 
     public function file_upload($id, $type = null)
     {
-
-        $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-        $size = $_FILES["file"]["size"];
-
         $auction_id = $id;
         $auction_code = auction_code($auction_id);
         $project_id = project_id_auc($auction_id);
         $project_code = project_code($project_id);
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$auction_code/$type/";
 
-        $config["allowed_types"] = "*";
-
-        $config["upload_path"] = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$auction_code/$type";
-        if (!is_dir($config["upload_path"])) {
-            mkdir($config["upload_path"], 0777, TRUE);
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
         }
 
-        $config["file_name"] = $file_name;
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
 
-        $this->load->library("upload", $config);
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
 
-        $upload = $this->upload->do_upload("file");
+        // call to upload the files
 
-        if ($upload) {
+        $uploadedFiles = $FileUploader->upload();
 
-            $uploaded_file = $this->upload->data("file_name");
+        $files = ($uploadedFiles['files']);
 
-            if (empty($type)) {
-                $this->Auction_file_model->add(
-                    array(
-                        "img_url" => $uploaded_file,
-                        "type" => "auction",
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "createdBy" => active_user_id(),
-                        "size" => $size,
-                        "$this->Dependet_id_key" => $id
-                    )
-                );
-            } else {
-                $this->Auction_file_model->add(
-                    array(
-                        "img_url" => $uploaded_file,
-                        "type" => "$type",
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "createdBy" => active_user_id(),
-                        "size" => $size,
-                        "$this->Dependet_id_key" => $id
-                    )
-                );
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
+
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth,$newHeight,$destination = null, $crop = false, $quality = 75);
+                }
             }
-
-
-        } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
         }
 
+
+        echo "<pre>";
+        print_r($files);
+        echo "</pre>";
     }
 
     public function file_download($auction_file_id, $where = null)

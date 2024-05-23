@@ -90,7 +90,7 @@
             <div class="card">
                 <div class="file-content">
                     <div class="card-header">
-                        <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id/Main"); ?>" method="post" enctype="multipart/form-data">
                             <!-- file input -->
                             <input type="file" name="files">
 
