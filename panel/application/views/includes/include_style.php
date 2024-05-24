@@ -57,3 +57,4 @@
 <link  href="<?php echo base_url("assets"); ?>/fonts/fileuploader/font-fileuploader.css" rel="stylesheet">
 
 <link href="<?php echo base_url("assets"); ?>/css/fileuploader.min.css" media="all" rel="stylesheet">
+<link href="<?php echo base_url("assets"); ?>/css/jquery.fileuploader-theme-dragdrop.css" media="all" rel="stylesheet">

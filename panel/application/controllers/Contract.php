@@ -1718,70 +1718,7 @@ class Contract extends CI_Controller
     }
 
 
-    public function fileDelete($id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Contract_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $contract_id = get_from_id("contract_files", "contract_id", $id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $dosya_no = contract_code($contract_id);
-        $delete = $this->Contract_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-        if ($delete) {
-
-            $alert = array(
-                "title" => "Dosya Sil",
-                "text" => "Dosyayı Başarılı Bir Şekilde Sildiniz",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Contract_model->get(
-                array(
-                    "id" => $contract_id
-                )
-            );
-            $viewData->item_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $contract_id,
-                    "type" => "contract"
-                )
-            );
-
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$dosya_no/Contract/$fileName->img_url";
-            unlink($path);
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-
-        } else {
-            $alert = array(
-                "title" => "Dosya Silinemedi",
-                "text" => " $fileName->img_url Dosyası Silme Başarısz",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-        }
-    }
+   c
 
     public function SitefileDelete($id)
     {

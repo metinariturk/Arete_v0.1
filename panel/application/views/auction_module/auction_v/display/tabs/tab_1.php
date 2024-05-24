@@ -90,8 +90,8 @@
             <div class="card">
                 <div class="file-content">
                     <div class="card-header">
-                        <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id/Main"); ?>" method="post" enctype="multipart/form-data">
-
+                        <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id/Main"); ?>"
+                              method="post" enctype="multipart/form-data">
                             <?php
 
                             // define uploads path
@@ -107,19 +107,20 @@
 
                             // add files to our array with
                             // made to use the correct structure of a file
-                            foreach($uploadsFiles as $file) {
+                            foreach ($uploadsFiles as $file) {
                                 // skip if directory
-                                if(is_dir($uploadDir . $file))
+                                if (is_dir($uploadDir . $file))
                                     continue;
 
                                 // add file to our array
                                 // !important please follow the structure below
                                 $preloadedFiles[] = array(
                                     "name" => $file,
+                                    "auc_id" => $item->id,
                                     "type" => FileUploader::mime_content_type($uploadDir . $file),
                                     "size" => filesize($uploadDir . $file),
                                     "file" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Main/") . $file,
-                                    "local" => '../' . $uploadDir . $file, // same as in form_upload.php
+                                    "local" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Main/") . $file,
                                     "data" => array(
                                         "url" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Main/") . $file, // (optional)
                                         "thumbnail" => file_exists($uploadDir . 'thumbs/' . $file) ? $uploadDir . 'thumbs/' . $file : null, // (optional)
@@ -132,11 +133,10 @@
                             $preloadedFiles = json_encode($preloadedFiles);
                             ?>
                             <!-- file input -->
-                            <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles;?>'>
-
-                            <input type="submit">
+                            <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
                         </form>
                     </div>
+
                     <div class="image_list_container">
                         <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
                     </div>
@@ -145,6 +145,34 @@
         </div>
     </div>
 </div>
+<script>
+    $('#fileuploader').fileuploader({
+        onRemove: function(item, listEl, parentEl, newInputEl, inputEl) {
+            // AJAX isteği ile dosyanın sunucudan silinmesi
+            $.ajax({
+                url: '/delete-file', // Silme işlemini gerçekleştirecek endpoint
+                type: 'POST',
+                data: { id: item.id }, // Dosyanın ID'si veya tanımlayıcı bilgisi
+                success: function(response) {
+                    if (response.success) {
+                        // Sunucu silme işlemini başarılı bir şekilde tamamladı
+                        console.log('Dosya başarıyla silindi:', item.name);
+                    } else {
+                        // Sunucu bir hata mesajı döndü
+                        console.error('Dosya silinemedi:', response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // AJAX isteği başarısız oldu
+                    console.error('Bir hata oluştu:', error);
+                }
+            });
 
+            // Dosyanın listeden kaldırılmasını önlemek için false döndürün
+            // AJAX isteği başarılı olduktan sonra true döndürmek daha güvenli olabilir
+            return false;
+        }
+    });
+</script>
 
 
