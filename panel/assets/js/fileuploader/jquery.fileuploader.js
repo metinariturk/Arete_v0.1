@@ -4500,7 +4500,7 @@
             remove: 'Delete',
             drop: 'Drop the files here to upload',
             paste: '<div class="fileuploader-pending-loader"></div> Pasting a file, click here to cancel',
-            removeConfirmation: 'Are you sure you want to delete this file?',
+            removeConfirmation: 'Bu Dosyayı Silmek İstediğinize Emin Misiniz?',
             errors: {
                 filesLimit: function(options) {
                     return 'Only ${limit} ' + (options.limit == 1 ? 'file' : 'files') + ' can be uploaded.'

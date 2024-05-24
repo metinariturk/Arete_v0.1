@@ -11,6 +11,9 @@ class Auction extends CI_Controller
 
         parent::__construct();
 
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
+
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
@@ -154,9 +157,12 @@ class Auction extends CI_Controller
         }
 
         $viewData = new stdClass();
-        $settings = $this->Settings_model->get();
 
-        $project_id = get_from_id("auction", "proje_id", "$id");
+        $auction = $this->Auction_model->get(array("id"=>$id));
+        $project = $this->Project_model->get(array("id"=>$auction->proje_id));
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$auction->dosya_no/Main/";
+
+        $settings = $this->Settings_model->get();
 
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
@@ -206,7 +212,6 @@ class Auction extends CI_Controller
         $metrajlar = $this->Compute_model->get_all(array('auction_id' => $id));
         $ihale_ilan = $this->Notice_model->get(array('auction_id' => $id, 'original_notice' => null));
         $ilanlar = $this->Notice_model->get_all(array('auction_id' => $id));
-        $project = $this->Project_model->get(array('id' => $project_id));
         $viewData->settings = $settings;
         $viewData->fav = $fav;
 
@@ -218,6 +223,7 @@ class Auction extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->path = $path;
         $viewData->idari = $idari_sart;
         $viewData->ymler = $ymler;
         $viewData->tesvikler = $tesvikler;
@@ -230,7 +236,6 @@ class Auction extends CI_Controller
         $viewData->yukleniciler = $yukleniciler;
         $viewData->istekliler = $istekliler;
         $viewData->active_tab = $active_tab;
-
 
         $this->load->helper('array');
 
@@ -818,8 +823,6 @@ class Auction extends CI_Controller
             mkdir($path, 0777, TRUE);
         }
 
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
 
         $FileUploader = new FileUploader('files', array(
             'limit' => null,

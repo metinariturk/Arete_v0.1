@@ -91,8 +91,48 @@
                 <div class="file-content">
                     <div class="card-header">
                         <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id/Main"); ?>" method="post" enctype="multipart/form-data">
+
+                            <?php
+
+                            // define uploads path
+                            $uploadDir = $path;
+
+                            // create an empty array
+                            // we will add to this array the files from directory below
+                            // here you can also add files from MySQL database
+                            $preloadedFiles = array();
+
+                            // scan uploads directory
+                            $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
+
+                            // add files to our array with
+                            // made to use the correct structure of a file
+                            foreach($uploadsFiles as $file) {
+                                // skip if directory
+                                if(is_dir($uploadDir . $file))
+                                    continue;
+
+                                // add file to our array
+                                // !important please follow the structure below
+                                $preloadedFiles[] = array(
+                                    "name" => $file,
+                                    "type" => FileUploader::mime_content_type($uploadDir . $file),
+                                    "size" => filesize($uploadDir . $file),
+                                    "file" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Main/") . $file,
+                                    "local" => '../' . $uploadDir . $file, // same as in form_upload.php
+                                    "data" => array(
+                                        "url" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Main/") . $file, // (optional)
+                                        "thumbnail" => file_exists($uploadDir . 'thumbs/' . $file) ? $uploadDir . 'thumbs/' . $file : null, // (optional)
+                                        "readerForce" => true // (optional) prevent browser cache
+                                    ),
+                                );
+                            }
+
+                            // convert our array into json string
+                            $preloadedFiles = json_encode($preloadedFiles);
+                            ?>
                             <!-- file input -->
-                            <input type="file" name="files">
+                            <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles;?>'>
 
                             <input type="submit">
                         </form>
