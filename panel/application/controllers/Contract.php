@@ -1718,7 +1718,7 @@ class Contract extends CI_Controller
     }
 
 
-   c
+
 
     public function SitefileDelete($id)
     {
