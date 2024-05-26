@@ -47,7 +47,6 @@ class Contract extends CI_Controller
         $this->load->model("Order_model");
         $this->load->model("Payment_model");
         $this->load->model("Project_model");
-        $this->load->model("Safety_model");
         $this->load->model("Settings_model");
         $this->load->model("Site_model");
         $this->load->model("User_model");

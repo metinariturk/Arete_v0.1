@@ -138,91 +138,11 @@ $sidebarList = array(
     ),
 
     array(
-        "title" => "İSG",
-        "url" => "#",
-        "icon" => "shield",
-        "submodules" => array(
-            array(
-                "title" => "İş Yerleri",
-                "url" => base_url("Safety")
-            ),
-            array(
-                "title" => "Personel İşlemleri",
-                "url" => base_url("Workman")
-            ),
-            array(
-                "title" => "Eğitimler",
-                "url" => base_url("Education")
-            ),
-            array(
-                "title" => "Zimmetler",
-                "url" => base_url("Debit")
-            ),
-            array(
-                "title" => "İş Kazaları",
-                "url" => base_url("Accident")
-            ),
-            array(
-                "title" => "Sağlık Raporları",
-                "url" => base_url("Checkup")
-            ),
-            array(
-                "title" => "Puantaj",
-                "url" => base_url("Report")
-            ),
-            array(
-                "title" => "İşe Giriş-Çıkış",
-                "url" => base_url("Workgroup")
-            ),
-            array(
-                "title" => "İSG Eğitim",
-                "url" => base_url("Workmachine")
-            ),
-            array(
-                "title" => "Zimmet Takip",
-                "url" => base_url("Sitestock")
-            ),
-            array(
-                "title" => "Saha Gözlem Raporu",
-                "url" => base_url("Sitestock")
-            ),
-            array(
-                "title" => "Kaza İşlemleri",
-                "url" => base_url("Sitestock")
-            )
-        )
-    ),
-
-    array(
         "title" => "Personel Yönetimi",
         "icon" => "users",
         "url" => base_url("user")
     ),
 
-    array(
-        "title" => "Araç/Filo Yönetimi",
-        "icon" => "target",
-        "url" => "#",
-
-        "submodules" => array(
-            array(
-                "title" => "Araç Yönetimi",
-                "url" => base_url("vehicle")
-            ),
-            array(
-                "title" => "Sigorta/Kasko Yönetimi",
-                "url" => base_url("insurance")
-            ),
-            array(
-                "title" => "Yakıt Yönetimi",
-                "url" => base_url("fuel")
-            ),
-            array(
-                "title" => "Kiralama Yönetimi",
-                "url" => base_url("rent")
-            )
-        )
-    ),
     array(
         "title" => "Firma Yönetimi",
         "icon" => "trello",

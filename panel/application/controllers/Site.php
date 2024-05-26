@@ -28,7 +28,6 @@ class Site extends CI_Controller
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
         $this->load->model("User_model");
-        $this->load->model("Vehicle_model");
         $this->load->model("Auction_model");
         $this->load->model("Condition_model");
         $this->load->model("Report_model");
@@ -36,7 +35,6 @@ class Site extends CI_Controller
         $this->load->model("Sitestock_model");
         $this->load->model("Sitewallet_model");
         $this->load->model("Extime_model");
-        $this->load->model("Safety_model");
         $this->load->model("Costinc_model");
         $this->load->model("Workman_model");
         $this->load->model("Workgroup_model");
@@ -445,10 +443,6 @@ class Site extends CI_Controller
         $all_deposites = $this->Sitewallet_model->get_all(array(
             "site_id" => $id,
             "type" => 0
-        ));
-
-        $conn_safety = $this->Safety_model->get(array(
-            "site_id" => $id
         ));
 
         $main_categories = $this->Workgroup_model->get_all(array(

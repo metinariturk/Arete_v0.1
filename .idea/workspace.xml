@@ -194,11 +194,6 @@
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/panel/application/views/includes/aside_array.php</url>
-          <line>194</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>
           <line>5</line>
           <option name="timeStamp" value="7" />

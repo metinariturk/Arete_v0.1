@@ -1069,16 +1069,6 @@ function sum_from_table($table, $spect, $id)
     }
 }
 
-function get_last_fuel($vehicle_id, $spect)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-
-    $query = $ci->db->select($spect)->where("vehicle_id", $vehicle_id)->order_by("id", "desc")->limit(1)->get("fuel");
-    foreach ($query->result() as $data) {
-        return $data->$spect;
-    }
-}
 
 function group_name($id)
 {

@@ -271,12 +271,6 @@ class Settings extends CI_Controller
                 "harcama_tur" => $this->input->post("harcama_tur"), //30
                 "odeme_tur" => $this->input->post("odeme_tur"), //30
                 "belge_tur" => $this->input->post("belge_tur"), //30
-                "isg_main" => $this->input->post("isg_main"), //28
-                "isg_education" => $this->input->post("isg_education"), //28
-                "isg_debit" => $this->input->post("isg_debit"), //28
-                "isg_accident" => $this->input->post("isg_accident"), //28
-                "isg_checkup" => $this->input->post("isg_checkup"), //28
-                "tckn_control" => $this->input->post("tckn_control"), //28
                 "theme_colour" => $this->input->post("theme_colour"), //28
                 "theme_panelfold" => $this->input->post("theme_panelfold"), //28
 
