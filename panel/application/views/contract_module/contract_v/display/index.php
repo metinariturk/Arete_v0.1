@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/photoswipe.css">
+    <?php $this->load->view("includes/drag_drop_style"); ?>
+
     <?php $this->load->view("includes/head"); ?>
 </head>
 <body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">

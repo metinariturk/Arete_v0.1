@@ -1,7 +1,7 @@
 <div class="fade tab-pane <?php if ($active_tab == "price") {
     echo "active show";
 } ?>" id="price" role="tabpanel"
-     aria-labelledby="payment-tab">
+     aria-labelledby="price-tab">
     <div class="card mb-0">
         <div class="card-body">
             <div class="price_update">

@@ -3,7 +3,6 @@
 } ?>"
      id="payment" role="tabpanel"
      aria-labelledby="payment-tab">
-
     <div class="card mb-0">
         <div class="card-header d-flex">
             <h6>Hakediş</h6>

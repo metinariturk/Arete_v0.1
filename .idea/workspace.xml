@@ -69,7 +69,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/includes",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -79,18 +79,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\includes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\libraries" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\common" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0001\SOZ-0027\Offer\Drawing" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\js" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\documents" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -192,6 +192,24 @@
             <option name="methodName" value="template_download" />
           </properties>
           <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
+          <line>1763</line>
+          <properties>
+            <option name="className" value="\Contract" />
+            <option name="methodName" value="ProvisionfileDelete" />
+          </properties>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
+          <line>1844</line>
+          <properties>
+            <option name="className" value="\Contract" />
+            <option name="methodName" value="get_district" />
+          </properties>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

@@ -122,8 +122,7 @@
             <div class="col-xl-5 col-lg-12 col-md-12 box-col-10">
                 <div class="file-content">
                     <div class="fileuploader fileuploader-theme-dragdrop">
-                        <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id/asd"); ?>"
-                              method="post" enctype="multipart/form-data">
+                        <form method="post" enctype="multipart/form-data">
                             <?php
                             $uploadDir = $path;
                             $preloadedFiles = array();

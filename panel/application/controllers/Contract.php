@@ -240,6 +240,9 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/Offer/";
+        $draw_path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/Offer/Drawing/";
+        !is_dir($path) && mkdir($path, 0777, TRUE);
+        !is_dir($draw_path) && mkdir($draw_path, 0777, TRUE);
 
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
@@ -254,21 +257,23 @@ class Contract extends CI_Controller
         $settings = $this->Settings_model->get();
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $id, 'leader' => 1));
+        $form_errors = $this->session->flashdata('form_errors');
 
         // View'e gönderilecek Değişkenlerin Set Edilmesi
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display_offer";
         $viewData->active_tab = $active_tab;
+        $viewData->form_errors = $form_errors;
         $viewData->project = $project;
         $viewData->path = $path;
+        $viewData->draw_path = $draw_path;
         $viewData->leaders = $leaders;
         $viewData->fav = $fav;
         $viewData->main_groups = $main_groups;
         $viewData->prices_main_groups = $prices_main_groups;
         $viewData->settings = $settings;
 
-        $form_errors = $this->session->flashdata('form_errors');
 
         $viewData->item = $this->Contract_model->get(array("id" => $id));
 
@@ -1422,8 +1427,6 @@ class Contract extends CI_Controller
             redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
         }
     }
-
-
     public function hard_delete($id)
     {
         if (!isAdmin()) {
@@ -1492,7 +1495,7 @@ class Contract extends CI_Controller
         redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
     }
 
-    public function file_upload($id, $type = null)
+    public function file_upload($id, $type = null, $sub_folder=null)
     {
         $contract = $this->Contract_model->get(array("id"=>$id));
         $project_code = project_code($contract->proje_id);
@@ -1500,7 +1503,6 @@ class Contract extends CI_Controller
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }
-
 
         $FileUploader = new FileUploader('files', array(
             'limit' => null,
@@ -1536,41 +1538,51 @@ class Contract extends CI_Controller
         exit;
     }
 
-    public function file_download($contract_file_id, $where = null)
+    public function file_upload_sub($id, $type = null, $sub_folder=null)
     {
-        $fileName = $this->Contract_file_model->get(array("id" => $contract_file_id));
-        $contract_id = contract_id_module("contract_file", $contract_file_id);
-        $contract_code = contract_code($contract_id);
-        $project_id = project_id_cont($contract_id);
-
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        $contract = $this->Contract_model->get(array("id"=>$id));
+        $project_code = project_code($contract->proje_id);
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract->dosya_no/$type/";
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
+        }
+        $sub_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract->dosya_no/$type/$sub_folder/";
+        if (!is_dir($sub_path)) {
+            mkdir($sub_path, 0777, TRUE);
         }
 
-        $project_code = project_code($project_id);
-        $file_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/Contract/$fileName->img_url";
+        $FileUploader = new FileUploader('draw_files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $sub_path,
+            'title' => 'name'
+        ));
 
-        if (file_exists($file_path)) {
-            // Dosya içeriğini al
-            $data = file_get_contents($file_path);
-            // İndirme işlemini başlat
-            force_download($fileName->img_url, $data);
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Dosya indirildi",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$contract_id"));
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$contract_id"));
+        // call to upload the files
+
+        $uploadedFiles = $FileUploader->upload();
+
+        $files = ($uploadedFiles['files']);
+
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
+
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($sub_path . $file['name'], $newWidth,$newHeight,$destination = null, $crop = false, $quality = 75);
+                }
+            }
         }
+
+        echo json_encode($uploadedFiles);
+        exit;
+
     }
 
     public function download_all($cont_id, $where = null)
@@ -1609,159 +1621,6 @@ class Contract extends CI_Controller
         $this->zip->download("$zip_name");
 
     }
-
-
-    public function refresh_file_list($id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $viewData->item = $this->Contract_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->item_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id,
-                "type" => "Contract"
-
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-        echo $render_html;
-    }
-
-    public function refresh_site_list($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $viewData->item = $this->Contract_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->sitedel_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id,
-                "type" => "sitedel"
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/sitedel_list_v", $viewData, true);
-
-        echo $render_html;
-
-    }
-
-    public function refresh_provision_list($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $viewData->item = $this->Contract_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->provision_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id,
-                "type" => "provision"
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/provision_list_v", $viewData, true);
-
-        echo $render_html;
-
-    }
-
-    public function refresh_final_list($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $viewData->item = $this->Contract_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->final_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id,
-                "type" => "final"
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/final_list_v", $viewData, true);
-
-        echo $render_html;
-
-    }
-
-    public function refresh_workplan_list($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $viewData->item = $this->Contract_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->workplan_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id,
-                "type" => "workplan"
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/workplan_list_v", $viewData, true);
-
-        echo $render_html;
-
-    }
-
     public function SitefileDelete($id)
     {
         $viewData = new stdClass();
@@ -1972,368 +1831,15 @@ class Contract extends CI_Controller
 
     }
 
-    public function FinalfileDelete($id)
+    public function fileDelete_java($id, $type = null)
     {
-        $viewData = new stdClass();
+        $fileName = $this->input->post('fileName');
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+        $contract= $this->Contract_model->get(array("id"=>$id));
+        $project = $this->Project_model->get(array("id"=>$contract->proje_id));
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/$type/";
 
-
-        $fileName = $this->Contract_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $contract_id = get_from_id("contract_files", "contract_id", $id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $dosya_no = get_from_id("contract", "dosya_no", ($contract_id));
-
-        $delete = $this->Contract_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        if ($delete) {
-
-            $alert = array(
-                "title" => "Dosya Sil",
-                "text" => "Dosyayı Başarılı Bir Şekilde Sildiniz",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Contract_model->get(
-                array(
-                    "id" => $contract_id
-                )
-            );
-
-            $viewData->final_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $contract_id,
-                    "type" => "final"
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/final_list_v", $viewData, true);
-
-            echo $render_html;
-
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$dosya_no/final/$fileName->img_url";
-            unlink($path);
-        } else {
-            $alert = array(
-                "title" => "Dosya Silinemedi",
-                "text" => " $fileName->img_url Dosyası Silme Başarısz",
-                "type" => "danger"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-        }
-
-    }
-
-
-    public function fileDelete_all($contract_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = get_from_id("contract", "dosya_no", $contract_id);
-
-        $delete = $this->Contract_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $contract_id,
-                "type" => "contract"
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/Contract");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/Contract/$dir_file");
-            }
-
-            $alert = array(
-                "title" => "Tüm Dosyalar Silindi",
-                "text" => " Tüm Dosyaları Silme Başarılı",
-                "type" => "success"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Contract_model->get(
-                array(
-                    "id" => $contract_id
-                )
-            );
-
-            $viewData->item_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $contract_id,
-                    "type" => "contract"
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/file_list_v", $viewData, true);
-
-            echo $render_html;
-
-        }
-    }
-
-    public function fileDelete_all_sitedel($contract_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = get_from_id("contract", "dosya_no", $contract_id);
-
-        $delete = $this->Contract_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $contract_id,
-                "type" => "sitedel"
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/sitedel");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/sitedel/$dir_file");
-            }
-
-            $alert = array(
-                "title" => "Tüm Dosyalar Silindi",
-                "text" => " Tüm Dosyaları Silme Başarılı",
-                "type" => "success"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Contract_model->get(
-                array(
-                    "id" => $contract_id
-                )
-            );
-
-            $viewData->sitedel_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $contract_id,
-                    "type" => "sitedel"
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/sitedel_list_v", $viewData, true);
-
-            echo $render_html;
-
-        }
-    }
-
-    public function fileDelete_all_workplan($contract_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = get_from_id("contract", "dosya_no", $contract_id);
-
-        $delete = $this->Contract_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $contract_id,
-                "type" => "workplan"
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/workplan");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/workplan/$dir_file");
-            }
-
-            $alert = array(
-                "title" => "Tüm Dosyalar Silindi",
-                "text" => " Tüm Dosyaları Silme Başarılı",
-                "type" => "success"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Contract_model->get(
-                array(
-                    "id" => $contract_id
-                )
-            );
-
-            $viewData->sitedel_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $contract_id,
-                    "type" => "workplan"
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/workplan_list_v", $viewData, true);
-
-            echo $render_html;
-
-        }
-    }
-
-    public function fileDelete_all_provision($contract_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = get_from_id("contract", "dosya_no", $contract_id);
-
-        $delete = $this->Contract_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $contract_id,
-                "type" => "provision"
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/provision");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/provision/$dir_file");
-            }
-
-            $alert = array(
-                "title" => "Tüm Dosyalar Silindi",
-                "text" => " Tüm Dosyaları Silme Başarılı",
-                "type" => "success"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Contract_model->get(
-                array(
-                    "id" => $contract_id
-                )
-            );
-
-            $viewData->sitedel_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $contract_id,
-                    "type" => "provision"
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/provision_list_v", $viewData, true);
-
-            echo $render_html;
-
-        }
-    }
-
-    public function fileDelete_all_final($contract_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = get_from_id("contract", "dosya_no", $contract_id);
-
-        $delete = $this->Contract_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $contract_id,
-                "type" => "final"
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/final");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/final/$dir_file");
-            }
-
-            $alert = array(
-                "title" => "Tüm Dosyalar Silindi",
-                "text" => " Tüm Dosyaları Silme Başarılı",
-                "type" => "success"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Contract_model->get(
-                array(
-                    "id" => $contract_id
-                )
-            );
-
-            $viewData->sitedel_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $contract_id,
-                    "type" => "final"
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/final_list_v", $viewData, true);
-
-            echo $render_html;
-
-        }
+        unlink("$path/$fileName");
     }
 
     public function get_district($id)
@@ -2353,7 +1859,6 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
-
     public function sitedel_contractday($sitedal_day, $contract_day)
     {
         $date_diff = date_minus($sitedal_day, $contract_day);
@@ -2363,7 +1868,6 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
-
     public function workplan_contractday($workplan_date, $contract_day)
     {
         $date_diff = date_minus($workplan_date, $contract_day);
@@ -2373,7 +1877,6 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
-
     public function provision_contractday($provision_date, $contract_day)
     {
         $date_diff = date_minus($provision_date, $contract_day);
@@ -2383,7 +1886,6 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
-
     public function final_contractday($final_date, $contract_day)
     {
         $date_diff = date_minus($final_date, $contract_day);
@@ -2393,7 +1895,6 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
-
     public function favorite($id)
     {
         $fav_id = get_from_any_and_and("favorite", "module", "contract", "user_id", active_user_id(), "module_id", "$id");
@@ -2418,7 +1919,6 @@ class Contract extends CI_Controller
             echo "favoriye eklendi";
         }
     }
-
     public function add_main_group($contract_id)
     {
         $group_name = $this->input->post('main_group');
@@ -2496,7 +1996,6 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
-
     public function back_main($contract_id)
     {
 
@@ -2519,7 +2018,6 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
-
     public function update_sub_group($contract_id)
     {
 
@@ -2587,7 +2085,6 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
-
     public function delete_group($group_id)
     {
         $group = $this->Contract_price_model->get(array("id" => $group_id));
@@ -2617,7 +2114,6 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
-
     public
     function delete_boq($contract_id, $boq_id)
     {
@@ -2646,7 +2142,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
     public
     function save_price($contract_id)
     {
@@ -2705,7 +2200,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
     public function add_leader($contract_id)
     {
         if (!isAdmin()) {
@@ -2749,8 +2243,6 @@ class Contract extends CI_Controller
 
         echo $render_html;
     }
-
-
     public
     function drag_drop_price($contract_id, $leader_id, $sub_id)
     {
@@ -2798,7 +2290,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
     public
     function delete_contract_price($item_id)
     {
@@ -2848,7 +2339,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
     public
     function open_sub($contract_id, $sub_id)
     {
@@ -2876,7 +2366,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
     public
     function delete_item($contract_id, $item_id)
     {
@@ -2909,8 +2398,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
-
     public
     function delete_sub($contract_id, $sub_id)
     {
@@ -2948,7 +2435,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
     public
     function delete_main($contract_id, $main_id)
     {
@@ -3454,7 +2940,6 @@ class Contract extends CI_Controller
             $pdf->Output("$file_name.pdf", "D");
         }
     }
-
 
 }
 

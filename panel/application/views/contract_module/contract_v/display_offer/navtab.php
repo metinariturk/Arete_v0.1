@@ -33,18 +33,22 @@
                         </a>
                     </li>
 
-
-                    <li><a cdata-bs-toggle="pill"
-                           href="<?php echo base_url("contract/file_form/$item->id/price"); ?>" role="tab"
+                    <li><a class="show" id="price-tab" data-bs-toggle="pill"
+                           href="#price" role="tab" aria-controls="price"
                            aria-selected="false">
                             <span class="title">
                                 Birim Fiyatlar
                             </span>
                         </a>
                     </li>
-
-
-
+                    <li><a class="show" id="drawings-tab" data-bs-toggle="pill"
+                           href="#drawings" role="tab" aria-controls="drawings"
+                           aria-selected="false">
+                            <span class="title">
+                                Projeler
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
