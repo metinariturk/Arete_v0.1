@@ -1,28 +1,9 @@
-<?php
-require 'vendor/autoload.php';
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
-// Yeni bir Spreadsheet oluştur
-$spreadsheet = new Spreadsheet();
-
-// Aktif çalışma sayfasını al
-$sheet = $spreadsheet->getActiveSheet();
-
-// Hücreye değer ekle
-$sheet->setCellValue('A1', 'Hello World !');
-
-// Excel dosyasını kaydet
-$writer = new Xlsx($spreadsheet);
-$writer->save('ahmet.xlsx');
-?>
-<div class="row">
+<div class="row" style="color: #ffffff !important;">
     <div class="col-xl-3 xl-100 box-col-12">
         <div class="card">
             <p style="text-align: center; font-size: 15pt; font-weight: bold">Favoriler</p>
             <div class="categories pt-1">
-                <div class="learning-header"><span class="f-w-600">Projeler</span></div>
+                <div class="learning-header">Projeler</div>
                 <ul>
                     <?php foreach ($favorites as $favorite) { ?>
                         <?php if ($favorite->module == "project") { ?>
@@ -108,16 +89,7 @@ $writer->save('ahmet.xlsx');
             </div>
         </div>
     </div>
-    <div class="col-xl-3 xl-100 box-col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Not Defteri</h5>
-            </div>
-            <div class="card-body">
-                <div class="todo">
-                    <?php $this->load->view("{$viewFolder}/list/todo"); ?>
-                </div>
-            </div>
-        </div>
+    <div class="col-xl-3 xl-100 box-col-12 todo">
+        <?php $this->load->view("{$viewFolder}/list/todo"); ?>
     </div>
 </div>

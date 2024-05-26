@@ -1,32 +1,3 @@
-<?php
-$projects = all_projects();
-$project_type_name_id = array();
-foreach ($projects as $project) {
-    $project_type_name_id[] = $project->id . " - " . $project->proje_ad . " - Proje";
-}
-
-$contracts = all_contracts();
-$contract_type_name_id = array();
-foreach ($contracts as $contract) {
-    $contract_type_name_id[] = $contract->id . " - " . $contract->sozlesme_ad . " - Sözleşme";
-}
-
-$subcontracts = all_contracts();
-$subcontract_type_name_id = array();
-foreach ($subcontracts as $subcontract) {
-    $subcontract_type_name_id[] = $subcontract->id . " - " . $subcontract->sozlesme_ad . " - Alt Sözleşme";
-}
-
-$sites = all_sites();
-$site_type_name_id = array();
-foreach ($sites as $site) {
-    $site_type_name_id[] = $site->id . " - " . $site->santiye_ad . " - Şantiye";
-}
-
-$all_data = array_merge($project_type_name_id, $contract_type_name_id, $subcontract_type_name_id, $site_type_name_id);
-print_r($all_data);
-?>
-
 <div class="image_list_container">
     <div class="widget">
         <div class="widget-body">

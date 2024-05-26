@@ -15,6 +15,9 @@ class Contract extends CI_Controller
             redirect(base_url("login"));
         }
         $this->Theme_mode = get_active_user()->mode;
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
+
 
         // Geçici şifre kontrolü
         if (temp_pass_control()) {
@@ -66,11 +69,14 @@ class Contract extends CI_Controller
         // Klasör yapıları
         $this->Add_Folder = "add";
         $this->Display_Folder = "display";
+        $this->Display_Folder = "display_offer";
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
         $this->File_List = "file_list_v";
         $this->Common_Files = "common";
+
+        $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
 
         // Ayarları al
         $this->Settings = get_settings();
@@ -122,6 +128,16 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
+
+        $item = $this->Contract_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no";
+
+
+        if ($item->offer == 1){
+            redirect(base_url("contract/file_form_offer/$id"));
+        }
+
         if (empty($id)) {
             $id = $this->input->post("contract_id");
             $active_tab = "payment";
@@ -164,6 +180,8 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->active_tab = $active_tab;
+        $viewData->project = $project;
+        $viewData->path = $path;
         $viewData->advances = $advances;
         $viewData->collections = $collections;
         $viewData->bonds = $bonds;
@@ -209,6 +227,53 @@ class Contract extends CI_Controller
         $viewData->workplan_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "workplan"));
         $viewData->provision_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "provision"));
         $viewData->final_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "final"));
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+    }
+
+    public function file_form_offer($id = null, $active_tab = null)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $item = $this->Contract_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/Offer/";
+
+        $fav = $this->Favorite_model->get(array(
+            "user_id" => active_user_id(),
+            "module" => "contract",
+            "view" => "file_form",
+            "module_id" => $id,
+        ));
+
+
+        $viewData = new stdClass();
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "rank ASC");
+        $settings = $this->Settings_model->get();
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
+        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $id, 'leader' => 1));
+
+        // View'e gönderilecek Değişkenlerin Set Edilmesi
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display_offer";
+        $viewData->active_tab = $active_tab;
+        $viewData->project = $project;
+        $viewData->path = $path;
+        $viewData->leaders = $leaders;
+        $viewData->fav = $fav;
+        $viewData->main_groups = $main_groups;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->settings = $settings;
+
+        $form_errors = $this->session->flashdata('form_errors');
+
+        $viewData->item = $this->Contract_model->get(array("id" => $id));
+
+        // İlgili dosya verilerini al
+        $viewData->item_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "offer"));
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -1429,65 +1494,46 @@ class Contract extends CI_Controller
 
     public function file_upload($id, $type = null)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        $contract = $this->Contract_model->get(array("id"=>$id));
+        $project_code = project_code($contract->proje_id);
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract->dosya_no/$type/";
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
         }
 
-        $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-        $size = $_FILES["file"]["size"];
 
-        $contract_id = $id;
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = get_from_id("contract", "dosya_no", $id);
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
 
-        $config["allowed_types"] = "*";
+        // call to upload the files
 
-        $config["upload_path"] = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/$type";
-        if (!is_dir($config["upload_path"])) {
-            mkdir($config["upload_path"], 0777, TRUE);
-        }
+        $uploadedFiles = $FileUploader->upload();
 
-        $config["file_name"] = $file_name;
+        $files = ($uploadedFiles['files']);
 
-        $this->load->library("upload", $config);
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
 
-        $upload = $this->upload->do_upload("file");
-
-        if ($upload) {
-
-            $uploaded_file = $this->upload->data("file_name");
-
-            if (empty($type)) {
-                $this->Contract_file_model->add(
-                    array(
-                        "img_url" => $uploaded_file,
-                        "type" => "contract",
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "createdBy" => active_user_id(),
-                        "$this->Dependet_id_key" => $id,
-                        "size" => $size
-                    )
-                );
-            } else {
-                $this->Contract_file_model->add(
-                    array(
-                        "img_url" => $uploaded_file,
-                        "type" => "$type",
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "createdBy" => active_user_id(),
-                        "$this->Dependet_id_key" => $id,
-                        "size" => $size
-                    )
-                );
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth,$newHeight,$destination = null, $crop = false, $quality = 75);
+                }
             }
-
-
-        } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
         }
 
+        header('Content-Type: application/json');
+        echo json_encode($uploadedFiles);
+        exit;
     }
 
     public function file_download($contract_file_id, $where = null)
@@ -1715,9 +1761,6 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
-
-
-
 
     public function SitefileDelete($id)
     {

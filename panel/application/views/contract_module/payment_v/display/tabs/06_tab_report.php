@@ -338,15 +338,15 @@
                                         </tr>
                                         <tr>
                                             <td>Toplam Verilen Avans</td>
-                                            <td><?php echo money_format($advance_given) . " " . get_currency($item->contract_id); ?></td>
+                                            <td><?php echo money_format($advance_given) . " " . $contract->para_birimi; ?></td>
                                         </tr>
                                         <tr>
                                             <td>Önceki Hakediş Mahsup Edilen</td>
-                                            <td><?php echo money_format($sum_old_advance) . " " . get_currency($item->contract_id); ?></td>
+                                            <td><?php echo money_format($sum_old_advance) . " " . $contract->para_birimi; ?></td>
                                         </tr>
                                         <tr>
                                             <td>Kalan Avans</td>
-                                            <td><?php echo money_format($advance_given - $sum_old_advance) . " " . get_currency($item->contract_id); ?></td>
+                                            <td><?php echo money_format($advance_given - $sum_old_advance) . " " . $contract->para_birimi; ?></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -421,7 +421,7 @@
                                 <td class="total-group-row-left">Bu Hakediş Sözleşme Fiyatları İle Yapılan İşin Tutarı
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->A); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->A); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -430,14 +430,14 @@
                                     Tutarı
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->A1); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->A1); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="w-5 total-group-row-center">B</td>
                                 <td class="total-group-row-left">Bu Hakediş Fiyat Farkı Tutarı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->B); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->B); ?> <?php echo $contract->para_birimi; ?></span>
 
                                 </td>
                             </tr>
@@ -445,7 +445,7 @@
                                 <td class="w-5 total-group-row-center">B1</td>
                                 <td class="total-group-row-left">Önceki Hakediş Fiyat Farkı Toplamı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->B1); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->B1); ?> <?php echo $contract->para_birimi; ?></span>
 
                                 </td>
                             </tr>
@@ -453,7 +453,7 @@
                                 <td class="w-5 total-group-row-center">C</td>
                                 <td class="total-group-row-left" style="font-weight: bold">Toplam Tutar (A+A1+B+B1)</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->C); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->C); ?> <?php echo $contract->para_birimi; ?></span>
 
                                 </td>
                             </tr>
@@ -464,7 +464,7 @@
                                 <td class="w-5 total-group-row-center">D</td>
                                 <td class="total-group-row-left">Bir Önceki Hakedişin Toplam Tutarı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->D); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->D); ?> <?php echo $contract->para_birimi; ?></span>
 
                                 </td>
                             </tr>
@@ -472,7 +472,7 @@
                                 <td class="w-5 total-group-row-center">E</td>
                                 <td class="total-group-row-left">Bu Hakedişin Tutarı (C-D)</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->E); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->E); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -481,14 +481,14 @@
 
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->F); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->F); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="w-5 total-group-row-center">G</td>
                                 <td class="total-group-row-left" style="font-weight: bold">Tahakkuk Tutarı</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->G); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->G); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -501,7 +501,7 @@
                                     x<span>%<?php echo $item->Kes_a_s; ?></span>)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_a); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_a); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -509,7 +509,7 @@
                                     x<span>%<?php echo $item->Kes_b_s; ?></span>)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_b); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_b); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -517,13 +517,13 @@
                                     x<span><?php echo $item->Kes_c_s * 10; ?></span>/10)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_c); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_c); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">d)Sosyal Sigortalar Kurumu Kesintisi</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_d); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_d); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -531,31 +531,31 @@
                                     <span><?php echo $item->Kes_e_s; ?></span>
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_e); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_e); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">f)İş Makinesi Kiraları</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_f); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_f); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">g)Gecikme Cezası</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_g); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_g); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr
                             <tr>
                                 <td class="total-group-row-left">h)İş Sağlığı ve Güvenliği Cezası</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_h); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_h); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="total-group-row-left">i)Diğer</td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->Kes_i); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->Kes_i); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
 
@@ -564,7 +564,7 @@
                                 <td class="total-group-row-left" style="font-weight: bold">Kesinti ve Mahsuplar Toplamı
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->H); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->H); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -579,21 +579,21 @@
                                         </tr>
                                         <tr>
                                             <td>Toplam Verilen Avans</td>
-                                            <td><?php echo money_format($advance_given) . " " . get_currency($item->contract_id); ?></td>
+                                            <td><?php echo money_format($advance_given) . " " . $contract->para_birimi; ?></td>
                                         </tr>
                                         <tr>
                                             <td>Önceki Hakediş Mahsup Edilen</td>
-                                            <td><?php echo money_format($sum_old_advance) . " " . get_currency($item->contract_id); ?></td>
+                                            <td><?php echo money_format($sum_old_advance) . " " . $contract->para_birimi; ?></td>
                                         </tr>
                                         <tr>
                                             <td>Kalan Avans</td>
-                                            <td><?php echo money_format($advance_given - $sum_old_advance) . " " . get_currency($item->contract_id); ?></td>
+                                            <td><?php echo money_format($advance_given - $sum_old_advance) . " " . $contract->para_birimi; ?></td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->I); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->I); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -602,7 +602,7 @@
                                     (G-H-I)
                                 </td>
                                 <td class="total-group-row-right">
-                                    <span><?php echo money_format($item->balance); ?><?php echo get_currency($item->contract_id); ?></span>
+                                    <span><?php echo money_format($item->balance); ?> <?php echo $contract->para_birimi; ?></span>
                                 </td>
                             </tr>
                             <tr>

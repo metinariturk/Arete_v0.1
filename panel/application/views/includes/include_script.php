@@ -20,8 +20,6 @@
 
 <script src="<?php echo base_url("assets"); ?>/js/sidebar-menu.js"></script><!--Sidebar Dropdown-->
 <script src="<?php echo base_url("assets"); ?>/js/dashboard/default.js"></script><!--Ana Sayfa Özel Script-->
-<script src="<?php echo base_url("assets"); ?>/js/typeahead/typeahead.bundle.js"></script><!--SearchBar-->
-<?php $this->load->view("includes/typeahead"); ?><!--SearchBar-->
 
 <script src="<?php echo base_url("assets"); ?>/js/fileuploader/jquery.fileuploader.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/dropzone/dropzone.js"></script><!--General Page Script -->

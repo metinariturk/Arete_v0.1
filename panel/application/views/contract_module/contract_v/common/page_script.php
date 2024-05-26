@@ -1,339 +1,154 @@
-<script src="<?php echo base_url("assets"); ?>/js/chart/apex-chart/apex-chart.js"></script>
-
-<?php
-$bugun = date("Y-m-d");
-$time_elapsed = date_minus_day($bugun, $item->sitedel_date);
-if (!empty($extimes)) {
-    $total_day = $item->isin_suresi + sum_anything("extime", "uzatim_miktar", "contract_id", "$item->id");
-    if ($time_elapsed > $total_day) {
-        echo $sozlesme_yuzde = 100;
-    } elseif ($time_elapsed < $total_day) {
-        echo $sozlesme_yuzde = round($time_elapsed / $total_day * 100);
-    }
-} else {
-    $total_day = $item->isin_suresi;
-    if ($time_elapsed > $total_day) {
-        echo $sozlesme_yuzde = 100;
-    } elseif ($time_elapsed < $total_day) {
-        echo $sozlesme_yuzde = round($time_elapsed / $total_day * 100);
-    }
-}
-?>
-
 <script>
-    var options11 = {
-        chart: {
-            height: 350,
-            type: 'radialBar',
-        },
-        plotOptions: {
-            radialBar: {
-                dataLabels: {
-                    name: {
-                        fontSize: '22px',
+    $(document).ready(function() {
+
+        // enable fileuploader plugin
+        $('input[name="files"]').fileuploader({
+            changeInput: '<div class="fileuploader-input">' +
+                '<div class="fileuploader-input-inner">' +
+                '<div class="fileuploader-icon-main"></div>' +
+                '<h3 class="fileuploader-input-caption"><span>${captions.feedback}</span></h3>' +
+                '<p>${captions.or}</p>' +
+                '<button type="button" class="fileuploader-input-button"><span>${captions.button}</span></button>' +
+                '</div>' +
+                '</div>',
+            theme: 'dragdrop',
+            upload: {
+                url: "<?php echo base_url("$this->Module_Name/file_upload/$item->id/Offer"); ?>",
+                data: null,
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                start: true,
+                synchron: true,
+                beforeSend: null,
+                onSuccess: function(result, item) {
+                    var data = {};
+
+                    // get data
+                    if (result && result.files)
+                        data = result;
+                    else
+                        data.hasWarnings = true;
+
+                    // if success
+                    if (data.isSuccess && data.files[0]) {
+                        item.name = data.files[0].name;
+                        item.html.find('.column-title > div:first-child').text(data.files[0].name).attr('title', data.files[0].name);
+                    }
+
+                    // if warnings
+                    if (data.hasWarnings) {
+                        for (var warning in data.warnings) {
+                            alert(data.warnings[warning]);
+                        }
+
+                        item.html.removeClass('upload-successful').addClass('upload-failed');
+                        // go out from success function by calling onError function
+                        // in this case we have a animation there
+                        // you can also response in PHP with 404
+                        return this.onError ? this.onError(item) : null;
+                    }
+
+                    item.html.find('.fileuploader-action-remove').addClass('fileuploader-action-success');
+                    setTimeout(function() {
+                        item.html.find('.progress-bar2').fadeOut(400);
+                    }, 400);
+                },
+                onError: function(item) {
+                    var progressBar = item.html.find('.progress-bar2');
+
+                    if(progressBar.length) {
+                        progressBar.find('span').html(0 + "%");
+                        progressBar.find('.fileuploader-progressbar .bar').width(0 + "%");
+                        item.html.find('.progress-bar2').fadeOut(400);
+                    }
+
+                    item.upload.status != 'cancelled' && item.html.find('.fileuploader-action-retry').length == 0 ? item.html.find('.column-actions').prepend(
+                        '<button type="button" class="fileuploader-action fileuploader-action-retry" title="Retry"><i class="fileuploader-icon-retry"></i></button>'
+                    ) : null;
+                },
+                onProgress: function(data, item) {
+                    var progressBar = item.html.find('.progress-bar2');
+
+                    if(progressBar.length > 0) {
+                        progressBar.show();
+                        progressBar.find('span').html(data.percentage + "%");
+                        progressBar.find('.fileuploader-progressbar .bar').width(data.percentage + "%");
+                    }
+                },
+                onComplete: null,
+            },
+            onRemove: function(item, listEl, parentEl, newInputEl, inputEl) {
+                // AJAX isteği ile dosyanın sunucudan silinmesi
+                $.ajax({
+                    url: "<?php echo base_url("auction/filedelete_java/$item->id/"); ?>", // Silme işlemini gerçekleştirecek endpoint
+                    type: 'POST',
+                    data: {
+                        fileName: item.name // Dosyanın adı
                     },
-                    value: {
-                        fontSize: '23px',
+                    success: function(response) {
+                        if (response.success) {
+                            // Sunucu silme işlemini başarıyla tamamladı
+                            console.log('Dosya başarıyla silindi:', item.name);
+                        } else {
+                            // Sunucu bir hata mesajı döndürdü
+                            console.error(item.id, response.message);
+                        }
                     },
-                    total: {
-                        show: true,
-                        label: '%',
-                        formatter: function (w) {
-                            return <?php echo round($sozlesme_yuzde); ?>
-                        }
+                    error: function(xhr, status, error) {
+                        // AJAX isteği başarısız oldu
+                        console.error('Bir hata oluştu:', error);
                     }
-                }
-            }
-        },
-        series: ['<?php echo round($sozlesme_yuzde); ?>'],
-        labels: ['<?php echo $item->dosya_no; ?>'],
-        colors: ['<?php echo "#" . random_color(); ?>']
+                });
 
+                // Dosyanın listeden hemen kaldırılmasını önlemek için false döndürün
+                return true;
+            },
+            captions: $.extend(true, {}, $.fn.fileuploader.languages['en'], {
+                feedback: 'Drag and drop files here',
+                feedback2: 'Drag and drop files here',
+                drop: 'Drag and drop files here',
+                or: 'or',
+                button: 'Browse files',
+            }),
+        });
 
-    }
-
-    var chart11 = new ApexCharts(
-        document.querySelector("#circlechart"),
-        options11
-    );
-
-    chart11.render();
+    });
 </script>
-
-
-<?php if (!empty($costincs)) {
-    $top_limit = $item->sozlesme_bedel + sum_anything("costinc", "artis_miktar", "contract_id", "$item->id");
-} else {
-    $top_limit = $item->sozlesme_bedel;
-    ?>
-
-    <?php $sub_limit = 0; ?>
-    <?php $amount_payed = sum_anything("payment", "A", "contract_id", "$item->id"); ?>
-    <?php if ($amount_payed >= $top_limit) {
-        $finance_perc = $amount_payed / $top_limit * 100;
-    } elseif ($amount_payed < $top_limit and $amount_payed > $sub_limit) {
-        $finance_perc = $amount_payed / $top_limit * 100;
-    } elseif ($amount_payed <= $sub_limit) {
-        $finance_perc = 0;
-    } ?>
-
-    <?php echo "nerede"; ?>
-    <script>
-        var options11 = {
-            chart: {
-                height: 350,
-                type: 'radialBar',
-            },
-            plotOptions: {
-                radialBar: {
-                    dataLabels: {
-                        name: {
-                            fontSize: '22px',
-                        },
-                        value: {
-                            fontSize: '23px',
-                        },
-                        total: {
-                            show: true,
-                            label: '%',
-                            formatter: function (w) {
-                                return <?php echo round($finance_perc); ?>
-                            }
-                        }
-                    }
-                }
-            },
-            series: ['<?php echo round($finance_perc); ?>'],
-            labels: ['<?php echo $item->dosya_no; ?>'],
-            colors: ['<?php echo "#" . random_color(); ?>']
-        }
-        var chart11 = new ApexCharts(
-            document.querySelector("#financechart"),
-            options11
-        );
-        chart11.render();
-    </script>
-<?php } ?>
-
-
-<?php $contract_price = $item->sozlesme_bedel;
-$amount_payed = sum_anything("payment", "E", "contract_id", "$item->id");
-$price_perc = round($amount_payed / $contract_price * 100);
-if ($price_perc > 100) {
-    $price_perc = 100;
-}
-?>
-
-<?php $total_advance = sum_anything("advance", "avans_miktar", "contract_id", "$item->id"); ?>
-<?php if ($total_advance > 0) { ?>
-    <?php $advance_payback = sum_anything("payment", "I", "contract_id", "$item->id"); ?>
-
-    <script>
-        var options11 = {
-            chart: {
-                height: 350,
-                type: 'radialBar',
-            },
-            plotOptions: {
-                radialBar: {
-                    dataLabels: {
-                        name: {
-                            fontSize: '22px',
-                        },
-                        value: {
-                            fontSize: '23px',
-                        },
-                        total: {
-                            show: true,
-                            label: '%',
-                            formatter: function (w) {
-                                return <?php echo round($advance_payback / $total_advance * 100, 2); ?>
-                            }
-                        }
-                    }
-                }
-            },
-            series: ['<?php echo round($advance_payback / $total_advance * 100, 2); ?>'],
-            labels: ['<?php echo round($advance_payback / $total_advance * 100, 2); ?>'],
-            colors: ['<?php echo "#" . random_color(); ?>']
-
-
-        }
-
-        var chart11 = new ApexCharts(
-            document.querySelector("#advancechart"),
-            options11
-        );
-
-        chart11.render();
-    </script>
-<?php } ?>
-
-<?php
-$total_bond = sum_anything("bond", "teminat_miktar", "contract_id", "$item->id"); ?>
-<?php if ($total_bond > 0) { ?>
-    <?php $total_payback = sum_anything_and("bond", "teminat_miktar", "contract_id", "$item->id", "teminat_durumu", "1");
-    ?>
-
-    <script>
-        var options11 = {
-            chart: {
-                height: 350,
-                type: 'radialBar',
-            },
-            plotOptions: {
-                radialBar: {
-                    dataLabels: {
-                        name: {
-                            fontSize: '22px',
-                        },
-                        value: {
-                            fontSize: '23px',
-                        },
-                        total: {
-                            show: true,
-                            label: '%',
-                            formatter: function (w) {
-                                return <?php echo round($total_payback / $total_bond * 100, 2); ?>
-                            }
-                        }
-                    }
-                }
-            },
-            series: ['<?php echo round($total_payback / $total_bond * 100, 2); ?>'],
-            labels: ['<?php echo round($total_payback / $total_bond * 100, 2); ?>'],
-            colors: ['<?php echo "#" . random_color(); ?>']
-
-
-        }
-
-        var chart11 = new ApexCharts(
-            document.querySelector("#bondchart"),
-            options11
-        );
-
-        chart11.render();
-    </script>
-
-<?php } ?>
-<?php
-$payments_array = json_encode((array_column($payments, 'E')));
-$payments_name_array = json_encode((array_column($payments, 'hakedis_no')));
-
-if (!empty($item->workplan_payment)) {
-    $number = json_encode(range(1, count(json_decode($item->workplan_payment))));
-    $workplan_payment = $item->workplan_payment;
-} else {
-    $number = json_encode(range(1, count($payments)));
-    $workplan_payment = json_encode(array_fill(0, count(array_column($payments, 'E')), 0));
-}
-?>
-
 <script>
-    var options1 = {
-        chart: {
-            height: 350,
-            type: 'area',
-            toolbar: {
-                show: false
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            curve: 'smooth'
-        },
-        series: [{
-            name: 'Hakedişler',
-            data: <?php echo $payments_array; ?>
-        }, {
-            name: 'İş Programı',
-            data: <?php echo $workplan_payment; ?>
-        }],
+    $(document).ready(function() {
+        // FileUploader eklentisini etkinleştir
+        $('input[name="files"]').fileuploader({
+            addMore: true,
+            onRemove: function(item, listEl, parentEl, newInputEl, inputEl) {
+                // AJAX isteği ile dosyanın sunucudan silinmesi
+                $.ajax({
+                    url: "<?php echo base_url("auction/filedelete_java/$item->id/"); ?>", // Silme işlemini gerçekleştirecek endpoint
+                    type: 'POST',
+                    data: {
+                        fileName: item.name // Dosyanın adı
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Sunucu silme işlemini başarıyla tamamladı
+                            console.log('Dosya başarıyla silindi:', item.name);
+                        } else {
+                            // Sunucu bir hata mesajı döndürdü
+                            console.error(item.id, response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // AJAX isteği başarısız oldu
+                        console.error('Bir hata oluştu:', error);
+                    }
+                });
 
-        xaxis: {
-            type: 'text',
-            categories:  <?php echo $number; ?>
-        },
+                // Dosyanın listeden hemen kaldırılmasını önlemek için false döndürün
+                return true;
+            },
+        });
+    });
 
-        colors: ['#0b23c2', '#f73164']
-    }
-
-    var chart1 = new ApexCharts(
-        document.querySelector("#area-spaline"),
-        options1
-    );
-
-    chart1.render();
 </script>
-
-<?php if (!empty($item->workplan_payment)) {
-
-    $workplan_payments = json_decode($item->workplan_payment);
-    $total_workplan = array();
-    $runningSum = 0;
-    foreach ($workplan_payments as $workplan_payment) {
-        $runningSum += $workplan_payment;
-        $total_workplan[] = $runningSum;
-    }
-} else {
-    $number = json_encode(range(1, count($payments)));
-    $total_workplan = array_fill(0, count(array_column($payments, 'E')), 0);
-}
-
-$payments_array = array_column($payments, 'E');
-
-$total_payments = array();
-$runningSum_payments = 0;
-foreach ($payments_array as $payment) {
-    $runningSum_payments += $payment;
-    $total_payments[] = $runningSum_payments;
-}
-
-$payments_array = json_encode((array_column($payments, 'E')));
-
-?>
-
-<script>
-    var options1 = {
-        chart: {
-            height: 350,
-            type: 'area',
-            toolbar: {
-                show: false
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            curve: 'smooth'
-        },
-        series: [{
-            name: 'Hakedişler',
-            data: <?php echo json_encode($total_payments); ?>
-        }, {
-            name: 'İş Programı',
-            data: <?php echo json_encode($total_workplan); ?>
-        }],
-
-        xaxis: {
-            type: 'text',
-            categories:  <?php echo $number; ?>
-        },
-
-        colors: ['#0b23c2', '#f73164']
-    }
-
-    var chart1 = new ApexCharts(
-        document.querySelector("#area-cumulative"),
-        options1
-    );
-
-    chart1.render();
-</script>
-
 
 <script src="<?php echo base_url("assets"); ?>/js/jquery.repeater.js"></script><!--Form Inputs-->
 
@@ -341,16 +156,12 @@ $payments_array = json_encode((array_column($payments, 'E')));
 <script src="<?php echo base_url("assets"); ?>/js/datepicker/date-picker/datepicker.en.js"></script><!--Form Inputs-->
 <script src="<?php echo base_url("assets"); ?>/js/datepicker/date-picker/datepicker.custom.js"></script><!--Form Inputs-->
 <!-- Plugins JS start-->
-<script src="<?php echo base_url("assets"); ?>/js/photoswipe/photoswipe.min.js"></script>
-<script src="<?php echo base_url("assets"); ?>/js/photoswipe/photoswipe-ui-default.min.js"></script>
-<script src="<?php echo base_url("assets"); ?>/js/photoswipe/photoswipe.js"></script>
+
 <script src="<?php echo base_url("assets"); ?>/js/tooltip-init.js"></script>
 <!-- Plugins JS Ends-->
 <!-- scrollbar js-->
 <script src="<?php echo base_url("assets"); ?>/js/scrollbar/simplebar.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/scrollbar/custom.js"></script>
-
-<script src="<?php echo base_url("assets"); ?>/js/xlsx.full.min.js"></script> <!--Excel Olaraa Tablo İndirtme-->
 
 <script src="<?php echo base_url("assets"); ?>/js/editor/ckeditor/ckeditor.js"></script>
 
@@ -366,130 +177,7 @@ $payments_array = json_encode((array_column($payments, 'E')));
     }
 </script>
 
-<script> function enable_workplan() {
-        document.getElementById("wpchange").disabled = false;
-        var x = document.getElementById("save_wpbutton");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
 
-<script> function enable_provision() {
-        document.getElementById("prochange").disabled = false;
-        var x = document.getElementById("save_probutton");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
-
-<script> function enable_final() {
-        document.getElementById("finalchange").disabled = false;
-        var x = document.getElementById("save_finalbutton");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
-
-<script>
-    function printDiv(divName) {
-        var printContents = document.getElementById(divName).innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = printContents;
-
-        window.print();
-
-        document.body.innerHTML = originalContents;
-    }
-</script>
-
-
-<script>
-    $(document).ready(function () {
-        $('.repeater').repeater({
-            // (Required if there is a nested repeater)
-            // Specify the configuration of the nested repeaters.
-            // Nested configuration follows the same format as the base configuration,
-            // supporting options "defaultValues", "show", "hide", etc.
-            // Nested repeaters additionally require a "selector" field.
-            repeaters: [{
-                // (Required)
-                // Specify the jQuery selector for this nested repeater
-                selector: '.inner-repeater'
-            }],
-            hide: function (deleteElement) {
-                if (confirm('Bu satırı Silmek İstediğinize Emin Misiniz?')) {
-                    $(this).slideUp(deleteElement);
-                }
-            },
-        });
-    });
-</script>
-
-<script>
-    function myFunction(btn) {
-        // Get the checkbox
-        var $data_id = btn.getAttribute('data-id');
-        const element = document.getElementById($data_id);
-
-        var $a = (getComputedStyle(element).display);
-
-        if ($a == "block") {
-            element.style.display = "none";
-            element.style.pageBreakAfter = "";
-            btn.innerHTML = "Sayfayı Ayır";
-        } else if ($a == "none") {
-            element.style.display = "block";
-            element.style.pageBreakAfter = "always";
-            btn.innerHTML = "Sayfayı Ayırma";
-        }
-    }
-
-</script>
-
-<script>
-    function hideGroup(btn) {
-        // Get the checkbox
-        var $data_id = btn.getAttribute('data-id');
-        const element = document.getElementById($data_id);
-
-        var $a = (getComputedStyle(element).display);
-
-        if ($a == "block") {
-            element.style.display = "none";
-            element.style.pageBreakAfter = "";
-            btn.innerHTML = "Açıklama Ekle";
-        } else if ($a == "none") {
-            element.style.display = "block";
-            element.style.pageBreakAfter = "always";
-            btn.innerHTML = "Açıklama Gizle";
-        }
-    }
-
-</script>
-
-<script>
-    function toggle() {
-        var spolier = document.getElementById('spoiler');
-
-        if (spolier.style.display == "none") {
-            spolier.style.display = "";
-            date.innerHTML = "Tarihi Gizle";
-        } else {
-            spolier.style.display = "none";
-            date.innerHTML = "Tarihi Göster";
-        }
-    }
-</script>
 
 <script>
     function changeIcon(anchor) {
@@ -502,29 +190,6 @@ $payments_array = json_encode((array_column($payments, 'E')));
         icon.classList.toggle('fa-star-o');
     }
 </script>
-
-<script>
-    function ConfirmationBoq(btn) {
-        var url = btn.getAttribute('url');
-
-        swal({
-            title: "Sözleşme Miktar ve Fiyatlarını Kontrol Ediniz",
-            text: "Emin Misiniz!",
-            icon: "warning",
-            buttons: ["Kaydet", "Değişiklikleri Uygulamadan Çık"],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    swal("Kayıt Yapılmadı", {
-                        icon: "success",
-                    });
-                    window.location.href = url;
-                }
-            })
-    }
-</script>
-
 
 <script>
 

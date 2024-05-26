@@ -5,7 +5,7 @@
                     url="<?php echo base_url("dashboard/delete_all"); ?>"
                     class="btn btn-pill btn-outline-danger btn-air-danger btn-xs"
                     type="button">
-                <i class="fa fa-times"></i>
+                <i class="fa fa-trash"></i>&nbsp;Notları Sil
             </button>
         </div>
         <div class="todo-list-body">
@@ -20,7 +20,7 @@
                                         onclick="todoCheck(this)"
                                         class="btn btn-pill btn-outline-danger btn-air-danger btn-xs"
                                         type="button">
-                                    <i class="fa fa-times"></i>
+                                    <i class="fa fa-trash"></i> Sil
                                 </button>
                             </span>
                         </div>
@@ -36,7 +36,3 @@
         <button form-id="task_form" onclick="add_note(this)" class="btn btn-primary">Notu Ekle</button>
     </div>
 </div>
-
-
-
-

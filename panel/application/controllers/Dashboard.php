@@ -87,35 +87,6 @@ class Dashboard extends CI_Controller
 
     }
 
-    public function distributor()
-    {
-        $data = $this->input->post("search");
-        $gelen_dizin = explode(" - ", $data);
-        echo $gelen_dizin[0];
-        echo $gelen_dizin[2];
-
-        if ($gelen_dizin[2] == "Proje") {
-            redirect(base_url("project/file_form/$gelen_dizin[0]"));
-        }
-
-        if ($gelen_dizin[2] == "Sözleşme") {
-            redirect(base_url("contract/file_form/$gelen_dizin[0]"));
-        }
-
-        if ($gelen_dizin[2] == "Alt Sözleşme") {
-            redirect(base_url("contract/file_form/$gelen_dizin[0]"));
-        }
-
-        if ($gelen_dizin[2] == "Şantiye") {
-            redirect(base_url("site/file_form/$gelen_dizin[0]"));
-        }
-
-        if ($gelen_dizin[2] == "Teklif") {
-            redirect(base_url("auction/file_form/$gelen_dizin[0]"));
-        }
-
-    }
-
     public function delete($id)
     {
         $delete = $this->Notes_model->delete(

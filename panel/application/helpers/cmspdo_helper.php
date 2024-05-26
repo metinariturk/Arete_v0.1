@@ -29,42 +29,6 @@ function get_last_fn($module)
     }
 }
 
-function get_all_book()
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    return $ci->db->where(array("isActive" => 1))->get("books")->result();
-}
-
-function rank_group($table, $where = array(), $data = array())
-{
-    $ci =& get_instance();
-    $ci->load->database();
-
-
-    return $ci->db->where($where)->update($table, $data);
-}
-
-function get_main_categories($table)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    return $ci->db->where(array("main_category" => 1))->order_by("sort ASC")->get($table)->result();
-}
-
-function sub_item($table, $parent_id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    return $ci->db->where(array("parent" => $parent_id))->order_by("sort ASC")->get($table)->result();
-}
-
-function item_explain($table, $item_id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    return $ci->db->where(array("id" => $item_id))->get($table)->row();
-}
 
 function get_from_id($table, $column, $id)
 {
@@ -116,17 +80,6 @@ function get_from_any_and_and($table, $where_first, $equal_first, $where_second,
     }
 }
 
-function get_from_contract_id_array($table, $id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $sql = "SELECT * FROM " . $table . " where `contract_id` =" . $id;
-    $array = $ci->db->query($sql);
-    if ($array->num_rows() > 0) {
-        return $array->result();
-    }
-}
-
 function get_module_files($table, $dependet_id_name, $dependet_id)
 {
 
@@ -150,15 +103,6 @@ function get_from_any_array($table, $column, $id)
     }
 }
 
-function get_from_any_array_select_sql($select, $table, $column, $id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-
-    $sql = "SELECT $select FROM $table where $column in ($id)";
-    $query = $ci->db->query($sql)->result_array();
-    return array_column($query, 'id');
-}
 
 function get_from_any_array_select_ci($select, $table, $column, $id)
 {
@@ -170,40 +114,6 @@ function get_from_any_array_select_ci($select, $table, $column, $id)
     return array_column($query, 'id');
 }
 
-function get_from_any_and_array($table, $column1, $value1, $column2, $value2)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $ci->db->where($column1, $value1);
-    $ci->db->where($column2, $value2);
-    $query = $ci->db->get($table)->result_array();
-    return array($query);
-}
-
-function get_from_any_and_array_fe($table, $column1, $value1, $column2, $value2)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $ci->db->where($column1, $value1);
-    $ci->db->where($column2, $value2);
-    $query = $ci->db->get($table)->result_array();
-    foreach (array($query) as $data) {
-        return $data;
-    }
-}
-
-function sum_connected_contract_payments_ci($ids, $currency)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $ci->db->select_sum('E');
-    $ci->db->where_in('contract_id', $ids);
-    $ci->db->where_in('currency', $currency);
-    $query = $ci->db->get('payment');
-    foreach ($query->result() as $data) {
-        return $data->bu_imalat_ihzarat;
-    }
-}
 
 function get_settings()
 {
@@ -549,22 +459,10 @@ function work_groups()
     }
 }
 
-function tckn_control()
-{
-    $t = get_instance();
-    $t->load->model("Settings_model");
-    $settings = $t->Settings_model->get();
-
-    $tckn_control = $settings->tckn_control;
-    return $tckn_control;
-}
-
 function file_name_digits()
 {
-
     return "4";
 }
-
 
 function match_value($surec_durum)
 {
@@ -768,36 +666,6 @@ function company_avatar_isset($id)
     }
 }
 
-function get_side_avatar($id)
-{
-    if (!empty($id)) {
-        $avatars = (directory_map("uploads/users_v/system_users/$id"));
-        if (!empty($avatars)) {
-            return base_url("uploads/users_v/system_users/$id/$avatars[0]");
-        } else {
-            return base_url("assets/assets/images/empty.png");
-        }
-    }
-}
-
-function company_role_name($role_code)
-{
-    {
-        if ($role_code == "1") {
-            echo "Yüklenici";
-        } elseif ($role_code == "2") {
-            echo "Taşeron";
-        } elseif ($role_code == "3") {
-            echo "Tedarikçi";
-        } elseif ($role_code == "4") {
-            echo "İdare";
-        } elseif ($role_code == "5") {
-            echo "Diğer";
-        } else {
-            echo null;
-        }
-    }
-}
 
 function company_name($id)
 {
@@ -889,18 +757,6 @@ function limit_cost($contract_id)
     return $costinc + $contract;
 }
 
-function limit_advance($contract_id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $ci->db->select_sum('avans_miktar');
-    $ci->db->where('contract_id', $contract_id);
-    $query = $ci->db->get('advance');
-    foreach ($query->result() as $data) {
-        $total_advance = $data->avans_miktar;
-    }
-    return $total_advance;
-}
 
 function count_payments($contract_id)
 {
@@ -986,60 +842,6 @@ function sum_anything_and_and_or($tablo, $toplanacak_veri, $cond1, $conn1, $cond
         return $data->$toplanacak_veri;
     }
 }
-
-function sum_anything_and_and_and($tablo, $toplanacak_veri, $cond1, $conn1, $cond2, $conn2, $cond3, $conn3)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $ci->db->select_sum($toplanacak_veri);
-    $ci->db->where($cond1, $conn1);
-    $ci->db->where($cond2, $conn2);
-    $ci->db->group_start();
-    $ci->db->where($cond3, $conn3);
-    $ci->db->group_end();
-    $query = $ci->db->get("$tablo");
-    foreach ($query->result() as $data) {
-        return $data->$toplanacak_veri;
-    }
-}
-
-
-function sum_anything_and_and_and_or($tablo, $toplanacak_veri, $cond1, $conn1, $cond2, $conn2, $cond3, $conn3, $conn4)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $ci->db->select_sum($toplanacak_veri);
-    $ci->db->where($cond1, $conn1);
-    $ci->db->where($cond2, $conn2);
-    $ci->db->group_start();
-    $ci->db->where($cond3, $conn3);
-    $ci->db->or_where($cond3, $conn4);
-    $ci->db->group_end();
-    $query = $ci->db->get("$tablo");
-    foreach ($query->result() as $data) {
-        return $data->$toplanacak_veri;
-    }
-}
-
-function sum_anything_and_and_and_and($tablo, $toplanacak_veri, $cond1, $conn1, $cond2, $conn2, $cond3, $conn3, $cond4, $conn4)
-{
-    $ci = get_instance();
-    $ci->load->database();
-
-    $query = $ci->db
-        ->select_sum($toplanacak_veri)
-        ->where($cond1, $conn1)
-        ->where($cond2, $conn2)
-        ->where($cond3, $conn3)
-        ->where($cond4, $conn4)
-        ->group_start()
-        ->group_end()
-        ->get($tablo);
-
-    $data = $query->row();
-    return $data->$toplanacak_veri;
-}
-
 
 function sum_anything_and_or($tablo, $toplanacak_veri, $cond1, $conn1, $cond2, $conn2, $conn3)
 {
@@ -1140,22 +942,6 @@ function theme_settings()
 
     echo $colour_set . " " . $fold_set;
 
-}
-
-function nav_theme_settings()
-{
-    $t = get_instance();
-    $t->load->model("Settings_model");
-    $settings = $t->Settings_model->get();
-    $colour = $settings->theme_colour;
-
-    if ($colour == 1) {
-        $nav_set = "light";
-    } else {
-        $nav_set = "dark";
-    }
-
-    echo $nav_set;
 }
 
 

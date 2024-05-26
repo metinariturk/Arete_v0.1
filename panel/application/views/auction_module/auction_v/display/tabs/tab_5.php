@@ -14,7 +14,6 @@
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/technical"); ?>
                 </div>
                 <div class="col-xl-4 col-lg-12 col-md-12 box-col-10">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/safety"); ?>
                 </div>
             </div>
         </div>
