@@ -86,6 +86,30 @@ if ($subViewFolder == "list") { ?>
             </div>
         </div>
     </div>
+<?php } elseif ($subViewFolder == "add_offer") { ?>
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>
+                        <?php echo "Yeni $this->Module_Title Oluştur"; ?>
+                    </h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li>
+                            <button type="submit" form="save_offer" class="btn btn-success">
+                                <i class="fa fa-floppy-o fa-lg"></i> Kaydet
+                            </button>
+                            <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">
+                                <i class="fa fa-times"></i> İptal
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php } elseif ($subViewFolder == "add_sub") { ?>
     <div class="container-fluid">
         <div class="page-title">
@@ -191,7 +215,7 @@ if ($subViewFolder == "list") { ?>
             </div>
         </div>
     </div>
-<?php }  elseif ($subViewFolder == "delete_form") { ?>
+<?php } elseif ($subViewFolder == "delete_form") { ?>
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
@@ -206,7 +230,7 @@ if ($subViewFolder == "list") { ?>
 
                             <button class="btn btn-danger" type="button"
                                     onclick="window.history.go(-1); return false;"
-                                <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Geri
+                            <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Geri
                             </button>
 
                         </li>

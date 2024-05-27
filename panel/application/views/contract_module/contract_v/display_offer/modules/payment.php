@@ -1,8 +1,3 @@
-<button class="btn btn-pill btn-outline-success" onclick="paymentToExcel('xlsx')"
-        type="button"><i class="fa fa-share-square-o"></i> EXCEL
-</button>
-
-
 <table class="table" id="payment_table">
     <thead>
     <tr>
@@ -84,13 +79,3 @@
     </tr>
     </tfoot>
 </table>
-
-<script>
-    function paymentToExcel(type, fn, dl) {
-        var elt = document.getElementById('payment_table');
-        var wb = XLSX.utils.table_to_book(elt, {sheet: "Sayfa1"});
-        return dl ?
-            XLSX.write(wb, {bookType: type, bookSST: true, type: 'base64'}) :
-            XLSX.writeFile(wb, fn || ('<?php echo $item->sozlesme_ad; ?> Hakediş.' + (type || 'xlsx')));
-    }
-</script>

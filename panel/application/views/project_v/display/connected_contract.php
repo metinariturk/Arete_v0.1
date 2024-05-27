@@ -1,6 +1,6 @@
 <div class="row content-container">
     <div class="table-responsive">
-        <table class="display" id="basic-1">
+        <table class="display">
             <thead>
             <tr>
                 <th>#</th>

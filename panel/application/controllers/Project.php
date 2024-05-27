@@ -101,8 +101,8 @@ class Project extends CI_Controller
             "module_id" => $id,
         ));
 
-        $prep_auctions = $this->Auction_model->get_all(array(
-                "proje_id" => $id
+        $offers = $this->Contract_model->get_all(array(
+                "proje_id" => $id, "offer"=>1
             )
         );
         $sites = $this->Site_model->get_all(array('proje_id' => $id));
@@ -117,7 +117,7 @@ class Project extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->users = $users;
-        $viewData->prep_auctions = $prep_auctions;
+        $viewData->offers = $offers;
         $viewData->sites = $sites;
         $viewData->contracts = $contracts;
         $viewData->fav = $fav;
@@ -139,6 +139,7 @@ class Project extends CI_Controller
 
 
         $alert = null;
+
         $this->session->set_flashdata("alert", $alert);
 
     }

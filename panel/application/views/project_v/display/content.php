@@ -79,7 +79,7 @@
                                             <ul>
                                                 <li>
                                                     <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("auction/new_form/$item->id"); ?>">
+                                                       href="<?php echo base_url("contract/new_form_offer/$item->id"); ?>">
                                                         <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
                                                         Teklif Ekle
                                                     </a>
@@ -87,8 +87,8 @@
                                             </ul>
                                         </div>
                                         <div class="card-body">
-                                            <?php if (!empty($prep_auctions)) { ?>
-                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_auction"); ?>
+                                            <?php if (!empty($offers)) { ?>
+                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_offer"); ?>
                                             <?php } ?>
                                         </div>
                                     </div>
