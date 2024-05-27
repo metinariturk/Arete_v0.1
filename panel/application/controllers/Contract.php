@@ -69,7 +69,7 @@ class Contract extends CI_Controller
         // Klasör yapıları
         $this->Add_Folder = "add";
         $this->Display_Folder = "display";
-        $this->Display_Folder = "display_offer";
+        $this->Display_offer_Folder = "display_offer";
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
@@ -128,10 +128,10 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
-
         $item = $this->Contract_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
-        $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no";
+        $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/Offer/";
+        !is_dir($path) && mkdir($path, 0777, TRUE);
 
 
         if ($item->offer == 1){
