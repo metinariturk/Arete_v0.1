@@ -5,7 +5,7 @@
                 <ul class="nav main-menu" role="tablist">
 
                         <li>
-                            <a target="_blank"
+                            <a
                                href="<?php echo base_url("boq/new_form/$contract->id/$item->hakedis_no"); ?>">
                                 <span class="title">01 - Metraj İşlemleri</span>
                             </a>

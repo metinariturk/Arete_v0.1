@@ -19,6 +19,9 @@ class Payment extends CI_Controller
             redirect(base_url("sifre-yenile"));
         }
 
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
+
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "payment_v";
         $this->load->model("Payment_model");
@@ -103,33 +106,36 @@ class Payment extends CI_Controller
     function file_form($id, $active_tab = null)
     {
 
-        $contract_id = contract_id_module("payment", $id);
-        $leaders = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "leader" => 1), "code ASC");
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
-        $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => null, "sub_group" => null,), "rank ASC");
+        $payment = $this->Payment_model->get(array("id" => $id));
+        $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
+
+        $leaders = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "leader" => 1), "code ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "rank ASC");
+        $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => null, "sub_group" => null,), "rank ASC");
         $settings = $this->Settings_model->get();
-        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract_id));
+        $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract->id));
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/Payment/$payment->hakedis_no/";
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
+        }
+
         $viewData = new stdClass();
-        $contract = $this->Contract_model->get(array(
-            "id" => $contract_id
-        ));
-
-
-        $project_id = project_id_cont($contract_id);
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->contract = $contract;
+        $viewData->path = $path;
         $viewData->main_groups = $main_groups;
         $viewData->leaders = $leaders;
         $viewData->active_boqs = $active_boqs;
-        $viewData->project_id = $project_id;
+        $viewData->project_id = $project->id;
+        $viewData->project = $project;
         $viewData->active_tab = $active_tab;
         $viewData->settings = $settings;
         $viewData->payment_settings = $payment_settings;
-
 
         $item = $this->Payment_model->get(
             array(
@@ -705,87 +711,64 @@ class Payment extends CI_Controller
 
     }
 
-    public
-    function file_upload($id)
+    public function file_upload($id)
     {
+        $payment = $this->Payment_model->get(array("id" => $id));
+        $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-        $size = $_FILES["file"]["size"];
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/Payment/$payment->hakedis_no/";
 
-        $contract_id = contract_id_module("payment", $id);
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $hak_no = get_from_id("payment", "hakedis_no", $id);
-
-
-        $config["allowed_types"] = "*";
-        $config["upload_path"] = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no";
-        $config["file_name"] = $file_name;
-
-        $this->load->library("upload", $config);
-        if (!is_dir($config["upload_path"])) {
-            mkdir($config["upload_path"], 0777, TRUE);
-            echo "Dosya Yolu Oluşturuldu: " . $config["upload_path"];
-        } else {
-            echo "<p>Aynı İsimde Dosya Mevcut: " . $config["upload_path"] . "</p>";
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
         }
 
 
-        $upload = $this->upload->do_upload("file");
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
 
-        if ($upload) {
+        // call to upload the files
 
-            $uploaded_file = $this->upload->data("file_name");
+        $uploadedFiles = $FileUploader->upload();
 
-            $this->Payment_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
+        $files = ($uploadedFiles['files']);
 
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
 
-        } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
+                }
+            }
         }
 
+        header('Content-Type: application/json');
+        echo json_encode($uploadedFiles);
+        exit;
     }
 
-    public
-    function file_download($id)
+    public function fileDelete_java($id)
     {
-        $fileName = $this->Payment_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+        $fileName = $this->input->post('fileName');
 
-        $payment_id = get_from_id("payment_files", "payment_id", $id);
-        $contract_id = contract_id_module("payment", $payment_id);
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $hak_no = get_from_id("payment", "hakedis_no", $payment_id);
+        $payment = $this->Payment_model->get(array("id" => $id));
+        $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $file_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no/$fileName->img_url";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/Payment/$payment->hakedis_no/";
 
-        if ($file_path) {
-
-            if (file_exists($file_path)) {
-                $data = file_get_contents($file_path);
-                force_download($fileName->img_url, $data);
-            } else {
-                echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
-            }
-        } else {
-            echo "Dosya Yok";
-        }
-
+        unlink("$path/$fileName");
     }
 
     public
@@ -813,88 +796,6 @@ class Payment extends CI_Controller
         $zip_name = $contract_name . "-" . $hak_no . " Hakediş";
         $this->zip->download("$zip_name");
 
-    }
-
-    public
-    function refresh_file_list($id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $viewData->item = $this->Payment_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->item_files = $this->Payment_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-        echo $render_html;
-
-    }
-
-    public
-    function fileDelete($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Payment_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        $payment_id = get_from_id("payment_files", "payment_id", $id);
-        $contract_id = contract_id_module("payment", $payment_id);
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $hak_no = get_from_id("payment", "hakedis_no", $payment_id);
-
-        $delete = $this->Payment_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        if ($delete) {
-
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no/$fileName->img_url";
-
-            unlink($path);
-
-            $viewData->item = $this->Payment_model->get(
-                array(
-                    "id" => $payment_id
-                )
-            );
-
-            $viewData->item_files = $this->Payment_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $payment_id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        }
     }
 
     public

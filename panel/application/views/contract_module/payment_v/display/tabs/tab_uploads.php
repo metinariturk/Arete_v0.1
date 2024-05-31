@@ -5,17 +5,33 @@
      aria-labelledby="uploads-tab">
     <div class="card">
         <div class="row">
-            <div class="col-xl-4 col-md-5 box-col-6">
+            <div class="col-12">
                 <div class="card-body">
                     <div class="file-content">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-8 col-md-7 box-col-6">
-                <div class="card-body">
-                    <div class="file-content">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
+                        <div class="fileuploader fileuploader-theme-dragdrop">
+                            <form method="post" enctype="multipart/form-data">
+
+                                <?php
+                                $uploadDir = $path;
+                                $preloadedFiles = array();
+                                $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
+                                foreach ($uploadsFiles as $file) {
+                                    if (is_dir($uploadDir . $file))
+                                        continue;
+                                    $preloadedFiles[] = array(
+                                        "name" => $file,
+                                        "auc_id" => $item->id,
+                                        "type" => FileUploader::mime_content_type($uploadDir . $file),
+                                        "size" => filesize($uploadDir . $file),
+                                        "file" => base_url($path) . $file,
+                                        "local" => base_url($path) . $file,
+                                    );
+                                }
+                                $preloadedFiles = json_encode($preloadedFiles);
+                                ?>
+                                <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

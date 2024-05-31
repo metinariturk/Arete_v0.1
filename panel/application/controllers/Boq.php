@@ -228,6 +228,9 @@ class Boq extends CI_Controller
         $boq_id = ($this->input->post('boq_id'));
         $boq_array = ($this->input->post('boq[]'));
 
+        if (empty($boq_array)){
+            redirect(base_url("payment/file_form/$payment->id"));
+        }
 
         $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
 

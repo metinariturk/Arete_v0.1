@@ -3,6 +3,8 @@
 <head>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
     <?php $this->load->view("includes/head"); ?>
+    <?php $this->load->view("includes/drag_drop_style"); ?>
+
 </head>
 <body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -24,12 +26,10 @@
 </div>
 
 <?php $this->load->view("includes/include_script"); ?>
-
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/scenario1.php"); ?>
 <script>
     const columns = document.querySelectorAll('td[class^="w-"]');
-
     // Her bir sütunu dolaşın ve genişliklerini ayarlayın
     columns.forEach((column) => {
         const className = column.classList[0]; // Sınıf adını alın, örneğin "w-3"
@@ -55,17 +55,16 @@
         $.post(formAction, formData, function (response) {
             $(".refresh_payment").html(response);
         });
-
-
     }
 
 </script>
 <script>
     $(".sortable").sortable();
-    $(".sortable").on("sortupdate", function(event, ui){
+    $(".sortable").on("sortupdate", function (event, ui) {
         var $data = $(this).sortable("serialize");
         var $data_url = $(this).data("url");
-        $.post($data_url, {data : $data}, function(response){})
+        $.post($data_url, {data: $data}, function (response) {
+        })
     })
 </script>
 
