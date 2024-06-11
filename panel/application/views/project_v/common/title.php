@@ -2,10 +2,7 @@
 if ($subViewFolder == "list") {
     $title = "$this->Module_Title Listesi";
     $base_url = base_url("$this->Module_Name/new_form");
-    $button_group = '
-                    <a class="btn btn-primary" href="'.$base_url.'"> 
-                   <i class="menu-icon fa fa-edit fa-lg"></i> Yeni '.$this->Module_Title.' Oluştur
-                    </a>';
+    $button_group = "";
 } elseif ($subViewFolder == "add") {
     $title = "Yeni $this->Module_Title Oluştur";
     $module_url = base_url("$this->Module_Name/");

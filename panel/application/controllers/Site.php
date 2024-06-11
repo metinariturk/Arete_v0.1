@@ -144,7 +144,6 @@ class Site extends CI_Controller
         ));
 
         $users = $this->User_model->get_all(array());
-        $vehicles = $this->Vehicle_model->get_all(array());
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -156,7 +155,6 @@ class Site extends CI_Controller
         $viewData->project_id = $project_id;
         $viewData->projects = $projects;
         $viewData->users = $users;
-        $viewData->vehicles = $vehicles;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
@@ -299,7 +297,6 @@ class Site extends CI_Controller
             ));
 
             $users = $this->User_model->get_all(array());
-            $vehicles = $this->Vehicle_model->get_all(array());
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
@@ -311,7 +308,6 @@ class Site extends CI_Controller
             $viewData->project_id = $project_id;
             $viewData->projects = $projects;
             $viewData->users = $users;
-            $viewData->vehicles = $vehicles;
             $viewData->form_error = true;
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -523,7 +519,6 @@ class Site extends CI_Controller
         ));
 
         $users = $this->User_model->get_all(array());
-        $vehicles = $this->Vehicle_model->get_all(array());
 
 
         $viewData->viewModule = $this->moduleFolder;
@@ -536,7 +531,6 @@ class Site extends CI_Controller
         $viewData->active_conn_contracts = $active_conn_contracts;
         $viewData->active_subcontracts = $active_subcontracts;
         $viewData->users = $users;
-        $viewData->vehicles = $vehicles;
 
         $viewData->item = $this->Site_model->get(
             array(
@@ -639,7 +633,6 @@ class Site extends CI_Controller
                     "id" => $id,
                 )
             );
-            $vehicles = $this->Vehicle_model->get_all(array());
 
             $viewData = new stdClass();
 
@@ -648,7 +641,6 @@ class Site extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update_project";
             $viewData->form_error = true;
-            $viewData->vehicles = $vehicles;
 
 
             $viewData->item = $this->Site_model->get(

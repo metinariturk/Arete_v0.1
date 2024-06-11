@@ -16,15 +16,14 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("{$viewFolder}/common/title"); ?>
             <?php $this->load->view("{$viewFolder}/{$subViewFolder}/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
+<?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("{$viewFolder}/common/page_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

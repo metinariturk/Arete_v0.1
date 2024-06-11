@@ -64,14 +64,15 @@ class Project extends CI_Controller
         $viewData = new stdClass();
 
         $items = $this->Project_model->get_all(array());
-
         $settings = $this->Settings_model->get();
+        $users = $this->User_model->get_all();
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";
         $viewData->items = $items;
+        $viewData->users = $users;
         $viewData->settings = $settings;
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -218,8 +219,6 @@ class Project extends CI_Controller
 
         $this->load->library("form_validation");
 
-
-        $this->form_validation->set_rules("durumu", "İşin Durumu", "required|trim");
         $this->form_validation->set_rules("department", "Bağlı Olduğu Birim", "required|trim");
         $this->form_validation->set_rules("proje_kodu", "Proje Kodu", "exact_length[$file_name_len]|numeric|required|trim|callback_duplicate_code_check");
         $this->form_validation->set_rules("butce_bedel", "Bütçe Bedel", "trim|numeric");
@@ -262,7 +261,6 @@ class Project extends CI_Controller
 
             $insert = $this->Project_model->add(
                 array(
-                    "durumu" => $this->input->post("durumu"),
                     "proje_kodu" => $project_code,
                     "proje_ad" => yazim_duzen($this->input->post("proje_ad")),
                     "department" => $this->input->post("department"),

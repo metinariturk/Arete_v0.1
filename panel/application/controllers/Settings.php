@@ -16,6 +16,8 @@ class Settings extends CI_Controller
             redirect(base_url("sifre-yenile"));
         }
 
+        $this->Module_Title = "Sistem Ayarları";
+
         $this->viewFolder = "settings_v";
         $this->Module_Name = "settings";
 
