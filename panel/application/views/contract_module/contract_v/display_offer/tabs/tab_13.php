@@ -32,10 +32,10 @@
                                 "auc_id" => $item->id,
                                 "type" => FileUploader::mime_content_type($uploadDir . $file),
                                 "size" => filesize($uploadDir . $file),
-                                "file" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Offer/Drawing/") . $file,
-                                "local" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Offer/Drawing/") . $file,
+                                "file" => base_url("uploads/project_v/$project->project_code/$item->dosya_no/Offer/Drawing/") . $file,
+                                "local" => base_url("uploads/project_v/$project->project_code/$item->dosya_no/Offer/Drawing/") . $file,
                                 "data" => array(
-                                    "url" => base_url("uploads/project_v/$project->proje_kodu/$item->dosya_no/Offer/Drawing/") . $file, // (optional)
+                                    "url" => base_url("uploads/project_v/$project->project_code/$item->dosya_no/Offer/Drawing/") . $file, // (optional)
                                     "thumbnail" => file_exists($uploadDir . 'thumbs/' . $file) ? $uploadDir . 'thumbs/' . $file : null, // (optional)
                                     "readerForce" => true // (optional) prevent browser cache
                                 ),

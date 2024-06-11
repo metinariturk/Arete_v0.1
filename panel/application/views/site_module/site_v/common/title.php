@@ -85,7 +85,7 @@ if ($subViewFolder == "list") { ?>
                                                     <select class="form-control" name="project_id">
                                                         <?php foreach ($projects as $project) { ?>
                                                             <option value="<?php echo "$project->id"; ?>">
-                                                                <?php echo "$project->proje_ad"; ?>
+                                                                <?php echo "$project->project_name"; ?>
                                                             </option>
                                                         <?php } ?>
                                                     </select>

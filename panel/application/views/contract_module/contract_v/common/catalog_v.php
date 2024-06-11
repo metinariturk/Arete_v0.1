@@ -13,7 +13,7 @@
                 </div>
                 <div class="gallery my-gallery card-body row" itemscope="">
                     <?php
-                    $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/catalog";
+                    $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/catalog";
 
                     $support_ext = array("jpg", "jpeg", "gif", "png");
                     $files = directory_map($path, 1);

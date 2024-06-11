@@ -159,7 +159,7 @@ function project_code($id)
         "id" => $id
     ));
 
-    return $project->proje_kodu;
+    return $project->project_code;
 }
 
 function all_projects()
@@ -284,7 +284,7 @@ function project_code_auc($id)
     $q1 = $ci->db->query($sql1);
     if ($q1->num_rows() > 0) {
         foreach ($q1->result() as $data1) {
-            $project_code = $data1->proje_kodu;
+            $project_code = $data1->project_code;
         }
     }
     return $project_code;
@@ -325,8 +325,8 @@ function project_code_name($id)
     $q = $ci->db->query($sql);
     if ($q->num_rows() > 0) {
         foreach ($q->result() as $data) {
-            $project_name = $data->proje_ad;
-            $project_code = $data->proje_kodu;
+            $project_name = $data->project_name;
+            $project_code = $data->project_code;
         }
     }
     return $project_code . " / " . $project_name;
@@ -370,7 +370,7 @@ function project_name($id)
     $q = $ci->db->query($sql);
     if ($q->num_rows() > 0) {
         foreach ($q->result() as $data) {
-            $project_name = $data->proje_ad;
+            $project_name = $data->project_name;
         }
     }
     if (isset($project_name)) {

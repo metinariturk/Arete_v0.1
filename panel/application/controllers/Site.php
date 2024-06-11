@@ -880,7 +880,7 @@ class Site extends CI_Controller
         $site_code = site_code($site_id);
         $project_id = project_id_site($site_id);
         $project_code = project_code($project_id);
-        $project_name = get_from_id("projects", "proje_ad", $project_id);
+        $project_name = get_from_id("projects", "project_name", $project_id);
 
         $path = "uploads/project_v/$project_code/$site_code";
         $zip_name = $project_name;

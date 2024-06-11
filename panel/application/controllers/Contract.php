@@ -130,7 +130,7 @@ class Contract extends CI_Controller
 
         $item = $this->Contract_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
-        $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/Offer/";
+        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/";
         !is_dir($path) && mkdir($path, 0777, TRUE);
 
 
@@ -239,8 +239,8 @@ class Contract extends CI_Controller
 
         $item = $this->Contract_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
-        $path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/Offer/";
-        $draw_path = "$this->File_Dir_Prefix/$project->proje_kodu/$item->dosya_no/Offer/Drawing/";
+        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/";
+        $draw_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/Drawing/";
         !is_dir($path) && mkdir($path, 0777, TRUE);
         !is_dir($draw_path) && mkdir($draw_path, 0777, TRUE);
 
@@ -2007,7 +2007,7 @@ class Contract extends CI_Controller
 
         $contract= $this->Contract_model->get(array("id"=>$id));
         $project = $this->Project_model->get(array("id"=>$contract->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/$type/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/$type/";
 
         unlink("$path/$fileName");
     }

@@ -150,8 +150,8 @@
                                                 <?php $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project->id"));
                                                 if (in_array($item->id, $yetkili)) { ?>
                                                     <tr>
-                                                        <td style="width: 15%"><?php echo $project->proje_kodu; ?></td>
-                                                        <td class="font-primary"><?php echo $project->proje_ad; ?></td>
+                                                        <td style="width: 15%"><?php echo $project->project_code; ?></td>
+                                                        <td class="font-primary"><?php echo $project->project_name; ?></td>
                                                     </tr>
                                                 <?php } ?>
                                             <?php } ?>

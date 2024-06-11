@@ -160,7 +160,7 @@ class Auction extends CI_Controller
 
         $auction = $this->Auction_model->get(array("id"=>$id));
         $project = $this->Project_model->get(array("id"=>$auction->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$auction->dosya_no/Main/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$auction->dosya_no/Main/";
 
         $settings = $this->Settings_model->get();
 
@@ -330,7 +330,7 @@ class Auction extends CI_Controller
         $validate = $this->form_validation->run();
 
         if ($validate) {
-            $project_code = get_from_id("projects", "proje_kodu", $project_id);
+            $project_code = get_from_id("projects", "project_code", $project_id);
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name/main";
             if (!is_dir($path)) {
                 mkdir($path, 0777, TRUE);
@@ -865,7 +865,7 @@ class Auction extends CI_Controller
 
         $auction = $this->Auction_model->get(array("id"=>$id));
         $project = $this->Project_model->get(array("id"=>$auction->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$auction->dosya_no/Main/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$auction->dosya_no/Main/";
 
         unlink("$path/$fileName");
     }

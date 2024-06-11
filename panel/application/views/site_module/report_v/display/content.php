@@ -64,7 +64,7 @@
                                         <h5>
                                             <strong><?php echo dateFormat_dmy($item->report_date); ?></strong>
                                         </h5>
-                                        <h4><?php echo $project->proje_ad; ?></h4>
+                                        <h4><?php echo $project->project_name; ?></h4>
                                         <strong><h5>Günlük Rapor</h5></strong>
                                     </div>
 

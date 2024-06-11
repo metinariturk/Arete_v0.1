@@ -489,7 +489,7 @@ class Catalog extends CI_Controller
 
         $contract_code = contract_code($contract_id);
         $project_id = get_from_id("contract", "proje_id", $contract_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $original_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Catalog/$catalog_name";
         $temp_original_path = "$this->Upload_Folder/temp/Catalog/$catalog_name";
         $thumb_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Catalog/thumb";
@@ -537,7 +537,7 @@ class Catalog extends CI_Controller
         $contract_id = contract_id_module("catalog","$catalog_id");
         $contract_code = contract_code($contract_id);
         $project_id = get_from_id("contract", "proje_id", $contract_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $original_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Catalog/$catalog_name";
         $thumb_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Catalog/$catalog_name/thumb";
 
@@ -606,7 +606,7 @@ class Catalog extends CI_Controller
         $contract_id = contract_id_module("catalog","$catalog_id");
         $contract_code = contract_code($contract_id);
         $project_id = get_from_id("contract", "proje_id", $contract_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
@@ -660,7 +660,7 @@ class Catalog extends CI_Controller
         $contract_id = contract_id_module("catalog","$catalog_id");
         $contract_code = contract_code($contract_id);
         $project_id = get_from_id("contract", "proje_id", $contract_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewFolder = $this->viewFolder;
@@ -699,7 +699,7 @@ class Catalog extends CI_Controller
 
         $contract_id = get_from_id("catalog", "contract_id", $id);
         $project_id = get_from_id("contract", "proje_id", $contract_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $contract_code = get_from_id("contract", "dosya_no", $contract_id);
         $catalog_code = get_from_id("catalog", "dosya_no", $id);
 

@@ -454,18 +454,6 @@ function tevkifat($seperated)
     }
 }
 
-
-function project_type($deger)
-{
-    if ($deger == "1") {
-        return "Resmi İş";
-    } elseif ($deger == "2") {
-        return "Özel İş";
-    } else {
-        return "Diğer";
-    }
-}
-
 function project_cond($deger)
 {
     if ($deger == 1) {

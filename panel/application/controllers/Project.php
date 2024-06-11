@@ -23,19 +23,11 @@ class Project extends CI_Controller
         $this->load->model("Payment_model");
         $this->load->model("Project_file_model");
         $this->load->model("Contract_model");
-        $this->load->model("Extime_model");
-        $this->load->model("Advance_model");
-        $this->load->model("Bond_model");
-        $this->load->model("Costinc_model");
-        $this->load->model("Drawings_model");
         $this->load->model("User_model");
         $this->load->model("Order_model");
         $this->load->model("Auction_model");
         $this->load->model("Site_model");
         $this->load->model("Favorite_model");
-        $this->load->model("Report_model");
-        $this->load->model("Report_workgroup_model");
-        $this->load->model("Report_workmachine_model");
 
         $this->viewFolder = "project_v";
         $this->Module_Name = "project";
@@ -82,18 +74,11 @@ class Project extends CI_Controller
     public function file_form($id)
     {
 
-        $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$id"));
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $viewData = new stdClass();
-
-        $users = $this->User_model->get_all(array(
-            "user_role" => 1
-        ));
 
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
@@ -103,21 +88,26 @@ class Project extends CI_Controller
         ));
 
         $offers = $this->Contract_model->get_all(array(
-                "proje_id" => $id, "offer"=>1
+                "proje_id" => $id, "offer" => 1
             )
         );
+
         $sites = $this->Site_model->get_all(array('proje_id' => $id));
+
         $contracts = $this->Contract_model->get_all(
             array(
                 "proje_id" => $id,
             )
         );
 
+        $settings = $this->Settings_model->get();
+
+
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
-        $viewData->users = $users;
+        $viewData->settings = $settings;
         $viewData->offers = $offers;
         $viewData->sites = $sites;
         $viewData->contracts = $contracts;
@@ -130,14 +120,8 @@ class Project extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Project_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
 
         $alert = null;
 
@@ -145,84 +129,18 @@ class Project extends CI_Controller
 
     }
 
-    public function new_form()
-    {
-
-        $viewData = new stdClass();
-
-        $items = $this->Project_model->get_all();
-        $settings = $this->Settings_model->get();
-        $users = $this->User_model->get_all();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add";
-        $viewData->items = $items;
-        $viewData->settings = $settings;
-        $viewData->users = $users;
-
-        $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
-    }
-
-    public function update_form($id)
-    {
-
-        if (!isAdmin()) {
-            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$id"));
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
-        }
-
-        $this->session->set_flashdata("alert", null);
-        $viewData = new stdClass();
-
-        /** Tablodan Verilerin Getirilmesi.. */
-        $item = $this->Project_model->get(
-            array(
-                "id" => $id,
-            )
-        );
-
-        $viewData->item_files = $this->Project_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
-
-        $settings = $this->Settings_model->get();
-        $users = $this->User_model->get_all(array(
-            "user_role" => 1
-        ));
-
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->users = $users;
-
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "update";
-        $viewData->item = $item;
-        $viewData->settings = $settings;
-
-        $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-    }
-
     public function save()
     {
 
         $file_name_len = file_name_digits();
 
-        $project_code = "PRJ-" . $this->input->post("proje_kodu");
+        $project_code = "PRJ-" . $this->input->post("project_code");
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("department", "Bağlı Olduğu Birim", "required|trim");
-        $this->form_validation->set_rules("proje_kodu", "Proje Kodu", "exact_length[$file_name_len]|numeric|required|trim|callback_duplicate_code_check");
+        $this->form_validation->set_rules("project_code", "Proje Kodu", "exact_length[$file_name_len]|numeric|required|trim|callback_duplicate_code_check");
         $this->form_validation->set_rules("butce_bedel", "Bütçe Bedel", "trim|numeric");
-        $this->form_validation->set_rules("proje_ad", "Proje Adı", "required|trim|is_unique[projects.proje_ad]");
+        $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[projects.project_name]");
 
         $this->form_validation->set_message(
             array(
@@ -241,16 +159,7 @@ class Project extends CI_Controller
 
         if ($validate) {
 
-            $yetkili = $this->input->post('yetkili_personeller');
-
-            if (!empty($yetkili)) {
-                $data_yetkili = implode(",", array_unique($yetkili));
-                print_r($data_yetkili);
-            } else {
-                $data_yetkili = null;
-            }
-
-            $project_code = "PRJ-" . convertToSEO($this->input->post("proje_kodu"));
+            $project_code = "PRJ-" . convertToSEO($this->input->post("project_code"));
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code";
 
             if (!is_dir($path)) {
@@ -261,14 +170,12 @@ class Project extends CI_Controller
 
             $insert = $this->Project_model->add(
                 array(
-                    "proje_kodu" => $project_code,
-                    "proje_ad" => yazim_duzen($this->input->post("proje_ad")),
-                    "department" => $this->input->post("department"),
+                    "project_code" => $project_code,
+                    "project_name" => yazim_duzen($this->input->post("project_name")),
                     "butce_bedel" => $this->input->post("butce_bedel"),
                     "butce_para_birimi" => $this->input->post("butce_para_birimi"),
                     "etiketler" => $this->input->post("etiketler"),
-                    "yetkili_personeller" => $data_yetkili,
-                    "genel_bilgi" => $this->input->post("genel_bilgi"),
+                    "notes" => $this->input->post("notes"),
                     "createdAt" => date("Y-m-d H:i:s")
                 )
             );
@@ -342,7 +249,7 @@ class Project extends CI_Controller
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "add";
+            $viewData->subViewFolder = "list";
             $viewData->form_error = true;
             $viewData->items = $items;
             $viewData->settings = $settings;
@@ -364,28 +271,21 @@ class Project extends CI_Controller
 
     public function update($id)
     {
-        $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$id"));
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
-        $current_name = get_from_any("projects", "proje_ad", "id", $id);
-        $updated_name = $this->input->post("proje_ad");
+
+        echo $this->input->post("project_name");
+        echo $this->input->post("notes");
+        die();
+
+        $project = $this->Project_model->get(array("id"=>$id));
+        $updated_name = $this->input->post("project_name");
 
         $this->load->library("form_validation");
 
-        $proje_ad = $this->input->post("proje_ad");
-
-        $this->form_validation->set_rules("durumu", "İşin Durumu", "required|trim");
-        $this->form_validation->set_rules("department", "Bağlı Olduğu Birim", "required|trim");
-        $this->form_validation->set_rules("butce_bedel", "Bütçe Bedel", "trim|numeric");
-        if ($proje_ad != $current_name) {
-            $this->form_validation->set_rules("proje_ad", "Proje Adı", "required|trim|is_unique[projects.proje_ad]");
-        }
-
-        if ($current_name != $updated_name) {
-            $this->form_validation->set_rules("proje_ad", "Proje Adı", "required|trim|callback_duplicate_name_check");
+        if ($updated_name != $project->project_name) {
+            $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[projects.project_name]");
         }
 
         $this->form_validation->set_message(
@@ -394,41 +294,17 @@ class Project extends CI_Controller
             )
         );
 
-        // Form Validation Calistirilir..
-        // TRUE - FALSE
         $validate = $this->form_validation->run();
 
         if ($validate) {
-
-            $yetkili = $this->input->post('yetkili_personeller');
-
-            if (!empty($yetkili)) {
-                $data_yetkili = implode(",", array_unique($yetkili));
-            } else {
-                $data_yetkili = null;
-            }
-
-            if ($this->input->post("duyuru_tarihi")) {
-                $duyuru_tarihi = dateFormat('Y-m-d', $this->input->post("duyuru_tarihi"));
-            } else {
-                $duyuru_tarihi = null;
-            }
 
             $update = $this->Project_model->update(
                 array(
                     "id" => $id
                 ),
                 array(
-                    "durumu" => $this->input->post("durumu"),
-                    "proje_ad" => $this->input->post("proje_ad"),
-                    "ilgi" => $this->input->post("ilgi"),
-                    "type" => $this->input->post("type"),
-                    "department" => $this->input->post("department"),
-                    "butce_bedel" => $this->input->post("butce_bedel"),
-                    "butce_para_birimi" => $this->input->post("butce_para_birimi"),
-                    "etiketler" => $this->input->post("etiketler"),
-                    "yetkili_personeller" => $data_yetkili,
-                    "genel_bilgi" => $this->input->post("genel_bilgi"),
+                    "project_name" => $this->input->post("project_name"),
+                    "notes" => $this->input->post("notes"),
                 )
             );
 
@@ -469,35 +345,51 @@ class Project extends CI_Controller
 
         } else {
 
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
 
             $viewData = new stdClass();
-            $users = $this->User_model->get_all(array(
-                "user_role" => 1
+
+            $fav = $this->Favorite_model->get(array(
+                "user_id" => active_user_id(),
+                "module" => "project",
+                "view" => "file_form",
+                "module_id" => $id,
             ));
 
-
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Project_model->get(
-                array(
-                    "id" => $id,
+            $offers = $this->Contract_model->get_all(array(
+                    "proje_id" => $id, "offer" => 1
                 )
             );
 
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Form Kontrol Hatalarını İnceleyiniz",
-                "type" => "danger"
+            $sites = $this->Site_model->get_all(array('proje_id' => $id));
+
+            $contracts = $this->Contract_model->get_all(
+                array(
+                    "proje_id" => $id,
+                )
             );
 
-            $this->session->set_flashdata("alert", $alert);
+            $settings = $this->Settings_model->get();
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->users = $users;
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "update";
+            $viewData->subViewFolder = "$this->Display_Folder";
+            $viewData->settings = $settings;
+            $viewData->offers = $offers;
+            $viewData->sites = $sites;
             $viewData->form_error = true;
-            $viewData->item = $item;
+            $viewData->contracts = $contracts;
+            $viewData->fav = $fav;
+
+            $viewData->display_route = $this->display_route;
+            $viewData->item = $this->Project_model->get(
+                array(
+                    "id" => $id
+                )
+            );
 
             $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
@@ -506,11 +398,9 @@ class Project extends CI_Controller
 
     public function delete($id)
     {
-        $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$id"));
+
         if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_name = project_name($id);
@@ -539,8 +429,8 @@ class Project extends CI_Controller
             );
 
 
-            $folder_name = get_from_any("projects", "proje_kodu", "id", $id);
-            $project_name = get_from_any("projects", "proje_ad", "id", $id);
+            $folder_name = get_from_any("projects", "project_code", "id", $id);
+            $project_name = get_from_any("projects", "project_name", "id", $id);
             $path = "$this->Upload_Folder/$this->viewFolder/$folder_name/";
 
             if (file_exists($path)) {
@@ -618,7 +508,7 @@ class Project extends CI_Controller
 
     public function file_upload($id)
     {
-        $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$id"));
+
         if (!isAdmin()) {
             if (!in_array(active_user_id(), $yetkili)) {
                 redirect(base_url("error"));
@@ -628,7 +518,7 @@ class Project extends CI_Controller
         $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
         $size = $_FILES["file"]["size"];
 
-        $kod = get_from_id("projects", "proje_kodu", $id);
+        $kod = get_from_id("projects", "project_code", $id);
         $config["allowed_types"] = "*";
         $config["upload_path"] = "$this->Upload_Folder/$this->viewFolder/$kod/$this->Module_File_Dir/";
         $config["file_name"] = $file_name;
@@ -686,7 +576,7 @@ class Project extends CI_Controller
             }
         }
 
-        $folder = get_from_id("projects", "proje_kodu", $project_id);
+        $folder = get_from_id("projects", "project_code", $project_id);
 
         $file_path = "$this->Upload_Folder/$this->viewFolder/$folder/$this->Module_File_Dir/$fileName->img_url";
 
@@ -730,7 +620,7 @@ class Project extends CI_Controller
             }
         }
 
-        $folder = get_from_id("projects", "proje_kodu", $project_id);
+        $folder = get_from_id("projects", "project_code", $project_id);
 
         $delete = $this->Project_file_model->delete(
             array(
@@ -785,7 +675,7 @@ class Project extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
-        $folder = get_from_id("projects", "proje_kodu", $id);
+        $folder = get_from_id("projects", "project_code", $id);
 
         $delete = $this->Project_file_model->delete(
             array(
@@ -870,7 +760,7 @@ class Project extends CI_Controller
         $this->zip->compression_level = 0;
 
         $project_code = project_code($project_id);
-        $project_name = get_from_id("projects", "proje_ad", $project_id);
+        $project_name = get_from_id("projects", "project_name", $project_id);
 
         $path = "uploads/project_v/$project_code/main";
         echo $path;
@@ -896,7 +786,7 @@ class Project extends CI_Controller
         $viewData->settings = $settings;
 
         $file_name = "PRJ-" . $str;
-        $var = count_data("projects", "proje_kodu", $file_name);
+        $var = count_data("projects", "project_code", $file_name);
         if (($var > 0)) {
             return FALSE;
         } else {
@@ -906,7 +796,7 @@ class Project extends CI_Controller
 
     public function duplicate_name_check($str)
     {
-        $var = count_data("projects", "proje_ad", $str);
+        $var = count_data("projects", "project_name", $str);
 
         if (($var > 0)) {
             return FALSE;

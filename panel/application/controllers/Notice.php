@@ -551,7 +551,7 @@ class Notice extends CI_Controller
         $notice_id = get_from_id("notice_files", "notice_id", $id);
         $auction_id = get_from_id("notice", "auction_id", $notice_id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
         $Notice_code = get_from_id("notice", "dosya_no", $notice_id);
 

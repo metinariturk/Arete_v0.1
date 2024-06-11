@@ -115,7 +115,7 @@ class Payment extends CI_Controller
         $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => null, "sub_group" => null,), "rank ASC");
         $settings = $this->Settings_model->get();
         $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract->id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/Payment/$payment->hakedis_no/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Payment/$payment->hakedis_no/";
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }
@@ -717,7 +717,7 @@ class Payment extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/Payment/$payment->hakedis_no/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Payment/$payment->hakedis_no/";
 
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
@@ -766,7 +766,7 @@ class Payment extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->proje_kodu/$contract->dosya_no/Payment/$payment->hakedis_no/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Payment/$payment->hakedis_no/";
 
         unlink("$path/$fileName");
     }

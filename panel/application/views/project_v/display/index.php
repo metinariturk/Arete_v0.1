@@ -26,6 +26,14 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
 <?php $this->load->view("{$viewFolder}/common/page_script"); ?>
+<?php if ($form_error){ ?>
+    <script>
+        // Sayfa tamamen yüklendiğinde modalı aç
+        $(document).ready(function() {
+            $('#exampleModalgetbootstrap').modal('show');
+        });
+    </script>
+<?php } ?>
 
 </body>
 </html>

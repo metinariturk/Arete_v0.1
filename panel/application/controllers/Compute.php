@@ -173,7 +173,7 @@ class Compute extends CI_Controller
         $auc_id = $id;
         $auction_code = auction_code($auc_id);
         $project_id = project_id_auc($auc_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
 
         $file_name_len = file_name_digits();
         $file_name = "MET-" . $this->input->post('dosya_no');
@@ -397,7 +397,7 @@ class Compute extends CI_Controller
 
         $auction_id = get_from_id("compute", "auction_id", $id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
         $Compute_code = get_from_id("compute", "dosya_no", $id);
 
@@ -460,7 +460,7 @@ class Compute extends CI_Controller
 
         $auction_id = get_from_id("compute", "auction_id", $id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $auction_code = get_from_id("auction", "dosya_no", get_from_id("compute", "auction_id", $id));
         $Compute_code = get_from_id("compute", "dosya_no", $id);
 
@@ -503,7 +503,7 @@ class Compute extends CI_Controller
         $compute_id = get_from_id("compute_files", "compute_id", $id);
         $auction_id = get_from_id("compute", "auction_id", $compute_id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
         $Compute_code = get_from_id("compute", "dosya_no", $compute_id);
 
@@ -569,7 +569,7 @@ class Compute extends CI_Controller
         $compute_id = get_from_id("compute_files", "compute_id", $id);
         $auction_id = get_from_id("compute", "auction_id", $compute_id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
         $Compute_code = get_from_id("compute", "dosya_no", $compute_id);
 
@@ -614,7 +614,7 @@ class Compute extends CI_Controller
 
         $auction_id = get_from_id("compute", "auction_id", $id);
         $project_id = get_from_id("auction", "proje_id", $auction_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
         $auction_code = get_from_id("auction", "dosya_no", $auction_id);
         $Compute_code = get_from_id("compute", "dosya_no", $id);
 

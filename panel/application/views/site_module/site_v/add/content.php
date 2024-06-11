@@ -56,7 +56,7 @@ if (empty($project_id)) { ?>
                             <select class="form-control" name="contract_id">
                                 <?php foreach ($active_projects as $active_project) { ?>
                                     <option value="<?php echo "$active_project->id"; ?>">
-                                        <?php echo "$active_project->proje_ad"; ?>
+                                        <?php echo "$active_project->project_name"; ?>
                                     </option>
                                 <?php } ?>
                             </select>

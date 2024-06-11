@@ -147,7 +147,7 @@ class Guest extends CI_Controller
         $pdf->SetFont('dejavusans', 'B', 7);
 
         $pdf->Cell(30, 5, "Proje Adı", 0, 0, "L", 0);
-        $pdf->Cell(80, 5, mb_strtoupper($project->proje_ad), 0, 0, "L", 0);
+        $pdf->Cell(80, 5, mb_strtoupper($project->project_name), 0, 0, "L", 0);
         $pdf->Cell(50, 5, "", 0, 0, "L", 0);
         if (isset($weather)) {
             $pdf->Cell(30, 5, "En Yüksek : $weather->max °C", 0, 0, "R", 0);

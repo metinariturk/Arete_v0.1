@@ -179,7 +179,7 @@ class Condition extends CI_Controller
     {
         $auction_code = auction_code($auc_id);
         $project_id = project_id_auc($auc_id);
-        $project_code = get_from_id("projects", "proje_kodu", $project_id);
+        $project_code = get_from_id("projects", "project_code", $project_id);
 
         $this->load->library("form_validation");
 

@@ -12,8 +12,8 @@
                         <?php $i = 1; ?>
                         <?php $date = dateFormat_dmy($item->report_date); ?>
                         <?php foreach ($item_files as $item_file) { ?>
-                            <?php $org_path = base_url("uploads/project_v/$project->proje_kodu/$site->dosya_no/Reports/$date/$item_file->img_url"); ?>
-                            <?php $thumb_path = base_url("uploads/project_v/$project->proje_kodu/$site->dosya_no/Reports/$date/thumbnails/$item_file->img_url"); ?>
+                            <?php $org_path = base_url("uploads/project_v/$project->project_code/$site->dosya_no/Reports/$date/$item_file->img_url"); ?>
+                            <?php $thumb_path = base_url("uploads/project_v/$project->project_code/$site->dosya_no/Reports/$date/thumbnails/$item_file->img_url"); ?>
                             <div class="col-sm-3">
                                 <div class="row">
 
