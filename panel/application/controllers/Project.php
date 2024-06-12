@@ -139,7 +139,6 @@ class Project extends CI_Controller
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules("project_code", "Proje Kodu", "exact_length[$file_name_len]|numeric|required|trim|callback_duplicate_code_check");
-        $this->form_validation->set_rules("butce_bedel", "Bütçe Bedel", "trim|numeric");
         $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[projects.project_name]");
 
         $this->form_validation->set_message(
@@ -172,9 +171,6 @@ class Project extends CI_Controller
                 array(
                     "project_code" => $project_code,
                     "project_name" => yazim_duzen($this->input->post("project_name")),
-                    "butce_bedel" => $this->input->post("butce_bedel"),
-                    "butce_para_birimi" => $this->input->post("butce_para_birimi"),
-                    "etiketler" => $this->input->post("etiketler"),
                     "notes" => $this->input->post("notes"),
                     "createdAt" => date("Y-m-d H:i:s")
                 )
@@ -188,7 +184,6 @@ class Project extends CI_Controller
                     "connected_module_id" => $this->db->insert_id(),
                     "file_order" => $project_code,
                     "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
                     "createdBy" => active_user_id()
                 )
             );
@@ -458,7 +453,6 @@ class Project extends CI_Controller
                 ),
                 array(
                     "deletedAt" => date("Y-m-d H:i:s"),
-                    "deletedBy" => active_user_id(),
                     "deletedBy" => active_user_id(),
 
                 )
