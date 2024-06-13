@@ -7,8 +7,6 @@
                         <div class="card-body">
                             <div class="email-app-sidebar left-bookmark">
                                 <ul class="nav main-menu" role="tablist">
-                                    <li></li>
-                                    <li class="nav-item"><span class="main-title">Detaylar</span></li>
                                     <li><a id="pills-created-tab" data-bs-toggle="pill" href="#pills-created" role="tab"
                                            aria-controls="pills-created" aria-selected="true"><span class="title">Proje Genel Bilgileri</span></a>
                                     </li>
@@ -89,7 +87,6 @@
                                                                                                 type="submit">Güncelle
                                                                                         </button>
                                                                                     </div>
-                                                                                    <?php print_r(validation_errors()); ?>
                                                                                 </form>
                                                                             </div>
                                                                         </div>

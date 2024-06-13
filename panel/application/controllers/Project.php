@@ -22,6 +22,9 @@ class Project extends CI_Controller
         $this->load->model("Project_model");
         $this->load->model("Payment_model");
         $this->load->model("Project_file_model");
+        $this->load->model("Report_model");
+        $this->load->model("Report_workgroup_model");
+        $this->load->model("Report_workmachine_model");
         $this->load->model("Contract_model");
         $this->load->model("User_model");
         $this->load->model("Order_model");
@@ -270,22 +273,24 @@ class Project extends CI_Controller
             redirect(base_url("error"));
         }
 
-        echo $this->input->post("project_name");
-        echo $this->input->post("notes");
-        die();
-
-        $project = $this->Project_model->get(array("id"=>$id));
+        $project = $this->Project_model->get(array("id" => $id));
         $updated_name = $this->input->post("project_name");
 
         $this->load->library("form_validation");
 
-        if ($updated_name != $project->project_name) {
+        if ($updated_name != $project->project_name){
             $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[projects.project_name]");
+        } else {
+            $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim");
         }
 
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> boş bırakılamaz",
+                "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
+                "numeric" => "<b>{field}</b> alanı bir sayı olmalıdır",
+                "is_unique" => "<b>{field}</b> 'na sahip başka bir proje mevcut",
+
             )
         );
 
@@ -368,6 +373,7 @@ class Project extends CI_Controller
 
             $settings = $this->Settings_model->get();
 
+
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -375,9 +381,9 @@ class Project extends CI_Controller
             $viewData->settings = $settings;
             $viewData->offers = $offers;
             $viewData->sites = $sites;
-            $viewData->form_error = true;
             $viewData->contracts = $contracts;
             $viewData->fav = $fav;
+            $viewData->form_error = true;
 
             $viewData->display_route = $this->display_route;
             $viewData->item = $this->Project_model->get(
@@ -387,8 +393,11 @@ class Project extends CI_Controller
             );
 
             $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-        }
 
+            $alert = null;
+
+            $this->session->set_flashdata("alert", $alert);
+        }
     }
 
     public function delete($id)

@@ -19,7 +19,7 @@
                             <?php echo $site->santiye_ad; ?>
                         </a>
                     </td>
-                    <?php $this->load->model("Report_model"); ?>
+
                     <?php $reports = $this->Report_model->get_all(array("site_id" => $site->id)); ?>
                     <td>
                         <a href="<?php echo base_url("site/file_form/$site->id"); ?>">
