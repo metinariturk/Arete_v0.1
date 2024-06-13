@@ -454,19 +454,6 @@ function tevkifat($seperated)
     }
 }
 
-function project_cond($deger)
-{
-    if ($deger == 1) {
-        return "Devam Eden";
-    } elseif ($deger == 2) {
-        return "İptal Olan";
-    } elseif ($deger == 0) {
-        return "Tamamlanan";
-    } else {
-        return "Diğer";
-    }
-}
-
 function condition_type($type)
 {
 
