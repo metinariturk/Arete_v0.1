@@ -39,10 +39,11 @@
                                                 <div class="page-title">
                                                     <div class="row">
                                                         <div>
-                                                            <button class="btn btn-primary" type="button"
+                                                            <button class="btn btn-outline-none border-0" type="button"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#exampleModalgetbootstrap"
-                                                                    data-whatever="@getbootstrap">Düzenle
+                                                                    data-whatever="@getbootstrap">
+                                                                <i class="fas fa-edit fa-2x"></i>
                                                             </button>
                                                             <div class="modal fade" id="exampleModalgetbootstrap"
                                                                  tabindex="-1" role="dialog"

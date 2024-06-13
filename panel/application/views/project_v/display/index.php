@@ -3,6 +3,19 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("{$viewFolder}/common/page_style.php"); ?>
+    <style>
+        .btn-outline-none {
+            background: none;
+            border: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .btn-outline-none:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
 
 </head>
 <body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
