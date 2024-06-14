@@ -3,7 +3,10 @@
 <div class="col-12">
     <div class="row">
         <div class="col-4">
-            <h4 class="module-title"><?php echo $this->Module_Title; ?></h4>
+
+            <h4 class="module-title"><?php echo $this->Module_Title; ?> / <?php if (isset($page_description)){
+                    echo $page_description;
+                }?> </h4>
         </div>
         <div class="col-8 d-flex justify-content-end">
             <div class="row">

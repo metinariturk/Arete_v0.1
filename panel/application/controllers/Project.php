@@ -76,12 +76,15 @@ class Project extends CI_Controller
 
     public function file_form($id)
     {
-
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        $viewData = new stdClass();
+        $item = $this->Project_model->get(
+            array(
+                "id" => $id
+            )
+        );
 
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
@@ -103,10 +106,9 @@ class Project extends CI_Controller
             )
         );
 
+        $viewData = new stdClass();
+
         $settings = $this->Settings_model->get();
-
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -115,19 +117,12 @@ class Project extends CI_Controller
         $viewData->sites = $sites;
         $viewData->contracts = $contracts;
         $viewData->fav = $fav;
-
         $viewData->display_route = $this->display_route;
-        $viewData->item = $this->Project_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
+        $viewData->item = $item;
+        $viewData->page_description = $item->project_name;
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
         $alert = null;
-
         $this->session->set_flashdata("alert", $alert);
 
     }
@@ -278,7 +273,7 @@ class Project extends CI_Controller
 
         $this->load->library("form_validation");
 
-        if ($updated_name != $project->project_name){
+        if ($updated_name != $project->project_name) {
             $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[projects.project_name]");
         } else {
             $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim");
