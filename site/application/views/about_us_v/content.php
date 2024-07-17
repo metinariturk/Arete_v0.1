@@ -219,17 +219,16 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="our-story-pic-block">
                         <div class="mt-media our-story-pic">
-                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2013.jpg" alt="">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2024.jpg" alt="">
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-6">
                     <div class="mt-box our-story-detail bg-moving bg-cover"
                          style="background-image:url(images/background/line.png)">
-                        <h4 class="text-uppercase m-b20">2012</h4>
-                        <h4 class="m-b20">Akaryakıt İstasyonu</h4>
-                        <p>Konya-Aksaray Yolu Shell Akaryakıt İsyasyonu. 2000 m² saha içerisinde dinlenme tesisi ve
-                            sosyal alanların projelendirilmesi ve uygulaması.</p>
+                        <h4 class="text-uppercase m-b20">2024</h4>
+                        <h4 class="m-b20">Konya Büyükşehir Belediyesi - Şehir Kütüphanesi (Betonarme İmalatlar)</h4>
+                        <p>5cm / 10cm kalıp izli, ahşap dokulu brüt beton yüzey betonarme imalatların yapımı. </p>
                     </div>
                 </div>
             </div>
@@ -237,93 +236,16 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="our-story-pic-block">
                         <div class="mt-media our-story-pic">
-                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2013_1.jpg" alt="">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2023.jpg" alt="">
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-6">
                     <div class="mt-box our-story-detail bg-moving bg-cover"
                          style="background-image:url(images/background/line.png)">
-                        <h4 class="text-uppercase m-b20">2013</h4>
-                        <h4 class="m-b20">Otel ve Dinlenme Tesisi </h4>
-                        <p>4 Yıldızlı 88 Oda Otel - SPA Merkezi - Dinlenme Tesisi ve Restoran İşleri. Eski bir fabrika
-                            binasının restorasyonu ile bina fonksiyonları değiştirilerek projelendirme ve uygulama
-                            süreçleri takibi.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="our-story-pic-block">
-                        <div class="mt-media our-story-pic">
-                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2015.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-8 col-md-6">
-                    <div class="mt-box our-story-detail bg-moving bg-cover"
-                         style="background-image:url(images/background/line.png)">
-                        <h4 class="text-uppercase m-b20">2015</h4>
-                        <h4 class="m-b20">Rafine Tuz Tesisi</h4>
-                        <p>80.000 m² alan içinde 10.000 m² Betonarme Prefabrik - Çelik Prefabrik - Kompozit Taşıyıcı
-                            Sistem ve Betonarme Uygulamlarının yapıldığı 8 ton/saat kapasiteli tesisin İnşaat-Elektrik
-                            ve Mekanik İmalatlarının tatbiki ve kalite kontrolü</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="our-story-pic-block">
-                        <div class="mt-media our-story-pic">
-                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2017.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-8 col-md-6">
-                    <div class="mt-box our-story-detail bg-moving bg-cover"
-                         style="background-image:url(images/background/line.png)">
-                        <h4 class="text-uppercase m-b20">2017</h4>
-                        <h4 class="m-b20">Konya Organize Sanayi Alanı Atık Su - Yağmur Suyu Şebekesi</h4>
-                        <p> 7.000.000 m² Sanayi alanı içinde Atık Su ve Yağmur Sularının uzaklaştırılması için Ø4000 mm
-                            ile Ø300 mm arasında değişken çaplarda şebeke hattının yapım süreçleri ve kalite
-                            kontrollerinin yapılması</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="our-story-pic-block">
-                        <div class="mt-media our-story-pic">
-                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2018.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-8 col-md-6">
-                    <div class="mt-box our-story-detail bg-moving bg-cover"
-                         style="background-image:url(images/background/line.png)">
-                        <h4 class="text-uppercase m-b20">2018</h4>
-                        <h4 class="m-b20">Konya Organize Sanayi Cami ve Anaokulu</h4>
-                        <p>İç ve Dış Cephede Brüt Beton ve GRC Kaplama uygulamaları ile 3000 Kişilik Cami yapımı, 2000
-                            m² açık 2000 m² kapalı alana sahip 125 öğrencilik Anaokulu Yapılması </p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="our-story-pic-block">
-                        <div class="mt-media our-story-pic">
-                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2019.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-8 col-md-6">
-                    <div class="mt-box our-story-detail bg-moving bg-cover"
-                         style="background-image:url(images/background/line.png)">
-                        <h4 class="text-uppercase m-b20">2019-2022</h4>
-                        <h4 class="m-b20">Konya Organize Sanayi Terfi İstasyonları Yapılması</h4>
-                        <p>30.000.000 m² Sanayi Alanının Atık Su ve Yağmur Sularının 14m - 20m derinlikten deşarj
-                            kanalına ve arıtma tesislerine iletimi için gerekli terfi istasyonu Proje ve Uygulama
-                            süreçleri</p>
+                        <h4 class="text-uppercase m-b20">2023</h4>
+                        <h4 class="m-b20">Konya Büyükşehir Belediyesi - Sedirler Köprülü Kavşağı Kalıp ve Beton İşleri Yapılması</h4>
+                        <p>Köprülü Kavşak Yapım İşi kapsamındaki tüm betonarme kalıp ve betonlama işlerinin yapılması.</p>
                     </div>
                 </div>
             </div>
@@ -391,16 +313,111 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="our-story-pic-block">
                         <div class="mt-media our-story-pic">
-                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2023.jpg" alt="">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2019.jpg" alt="">
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-6">
                     <div class="mt-box our-story-detail bg-moving bg-cover"
                          style="background-image:url(images/background/line.png)">
-                        <h4 class="text-uppercase m-b20">2023</h4>
-                        <h4 class="m-b20">Konya Büyükşehir Belediyesi - Sedirler Köprülü Kavşağı Kalıp ve Beton İşleri Yapılması</h4>
-                        <p>Köprülü Kavşak Yapım İşi kapsamındaki tüm betonarme kalıp ve betonlama işlerinin yapılması.</p>
+                        <h4 class="text-uppercase m-b20">2019-2022</h4>
+                        <h4 class="m-b20">Konya Organize Sanayi Terfi İstasyonları Yapılması</h4>
+                        <p>30.000.000 m² Sanayi Alanının Atık Su ve Yağmur Sularının 14m - 20m derinlikten deşarj
+                            kanalına ve arıtma tesislerine iletimi için gerekli terfi istasyonu Proje ve Uygulama
+                            süreçleri</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="our-story-pic-block">
+                        <div class="mt-media our-story-pic">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2018.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="mt-box our-story-detail bg-moving bg-cover"
+                         style="background-image:url(images/background/line.png)">
+                        <h4 class="text-uppercase m-b20">2018</h4>
+                        <h4 class="m-b20">Konya Organize Sanayi Cami ve Anaokulu</h4>
+                        <p>İç ve Dış Cephede Brüt Beton ve GRC Kaplama uygulamaları ile 3000 Kişilik Cami yapımı, 2000
+                            m² açık 2000 m² kapalı alana sahip 125 öğrencilik Anaokulu Yapılması </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="our-story-pic-block">
+                        <div class="mt-media our-story-pic">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2017.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="mt-box our-story-detail bg-moving bg-cover"
+                         style="background-image:url(images/background/line.png)">
+                        <h4 class="text-uppercase m-b20">2017</h4>
+                        <h4 class="m-b20">Konya Organize Sanayi Alanı Atık Su - Yağmur Suyu Şebekesi</h4>
+                        <p> 7.000.000 m² Sanayi alanı içinde Atık Su ve Yağmur Sularının uzaklaştırılması için Ø4000 mm
+                            ile Ø300 mm arasında değişken çaplarda şebeke hattının yapım süreçleri ve kalite
+                            kontrollerinin yapılması</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="our-story-pic-block">
+                        <div class="mt-media our-story-pic">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2015.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="mt-box our-story-detail bg-moving bg-cover"
+                         style="background-image:url(images/background/line.png)">
+                        <h4 class="text-uppercase m-b20">2015</h4>
+                        <h4 class="m-b20">Rafine Tuz Tesisi</h4>
+                        <p>80.000 m² alan içinde 10.000 m² Betonarme Prefabrik - Çelik Prefabrik - Kompozit Taşıyıcı
+                            Sistem ve Betonarme Uygulamlarının yapıldığı 8 ton/saat kapasiteli tesisin İnşaat-Elektrik
+                            ve Mekanik İmalatlarının tatbiki ve kalite kontrolü</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="our-story-pic-block">
+                        <div class="mt-media our-story-pic">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2013_1.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="mt-box our-story-detail bg-moving bg-cover"
+                         style="background-image:url(images/background/line.png)">
+                        <h4 class="text-uppercase m-b20">2013</h4>
+                        <h4 class="m-b20">Otel ve Dinlenme Tesisi </h4>
+                        <p>4 Yıldızlı 88 Oda Otel - SPA Merkezi - Dinlenme Tesisi ve Restoran İşleri. Eski bir fabrika
+                            binasının restorasyonu ile bina fonksiyonları değiştirilerek projelendirme ve uygulama
+                            süreçleri takibi.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="our-story-pic-block">
+                        <div class="mt-media our-story-pic">
+                            <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2013.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="mt-box our-story-detail bg-moving bg-cover"
+                         style="background-image:url(images/background/line.png)">
+                        <h4 class="text-uppercase m-b20">2012</h4>
+                        <h4 class="m-b20">Akaryakıt İstasyonu</h4>
+                        <p>Konya-Aksaray Yolu Shell Akaryakıt İsyasyonu. 2000 m² saha içerisinde dinlenme tesisi ve
+                            sosyal alanların projelendirilmesi ve uygulaması.</p>
                     </div>
                 </div>
             </div>

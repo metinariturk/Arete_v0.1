@@ -63,20 +63,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/site/assets/images/main-slider/slider1" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\main-slider\slider1" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\includes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0001\SOZ-0027\Offer\Drawing" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\js" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\documents" />
     </key>
   </component>
   <component name="SharedIndexes">
