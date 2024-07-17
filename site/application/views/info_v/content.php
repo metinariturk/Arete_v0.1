@@ -54,7 +54,7 @@
                                                      src="<?php echo base_url("assets"); ?>/fonts/copy.svg">
                                             </td>
                                             <td>Vergi No</td>
-                                            <td id="vergi_no"><?php echo $settings->vergi_no; ?></td>
+                                            <td id="vergi_no"><?php echo sprintf("%010d", $settings->vergi_no); ?></td>
                                         </tr>
                                         <tr>
                                             <td style="width: 10%">
