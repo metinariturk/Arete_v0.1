@@ -2007,7 +2007,11 @@ class Contract extends CI_Controller
 
         $contract= $this->Contract_model->get(array("id"=>$id));
         $project = $this->Project_model->get(array("id"=>$contract->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/$type/";
+        if (empty($type)){
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/";
+        } else {
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/$type/";
+        }
 
         unlink("$path/$fileName");
     }
