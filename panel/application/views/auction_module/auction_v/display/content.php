@@ -13,11 +13,8 @@
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_2"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_3"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4"); ?>
-                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5"); ?>
-                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_10"); ?>
                                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_11"); ?>
-                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_report"); ?>
                             </div>
                         </div>
                     </div>

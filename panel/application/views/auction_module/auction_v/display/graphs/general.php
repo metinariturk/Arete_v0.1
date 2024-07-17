@@ -32,18 +32,7 @@ $bugun = date("Y-m-d");
                 </tr>
             <?php } ?>
             <?php } ?>
-            <tr>
-                <td><b>Bütçe</b></td>
-                <td><?php echo money_format($item->butce) . " " . $item->para_birimi; ?></td>
-            </tr>
-            <tr>
-                <td><b>Aşırı Düşük</b></td>
-                <td><?php echo money_format($item->min_cost) . " " . $item->para_birimi; ?></td>
-            </tr>
-            <tr>
-                <td><b>Aşırı Yüksek</b></td>
-                <td><?php echo money_format($item->max_cost) . " " . $item->para_birimi; ?></td>
-            </tr>
+
             </tbody>
         </table>
     </div>

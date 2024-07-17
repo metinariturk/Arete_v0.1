@@ -1,4 +1,4 @@
-<div class="col-sm-12 d-none d-sm-block">
+div class="col-sm-12 d-none d-sm-block">
     <table class="table">
         <thead>
         <tr>

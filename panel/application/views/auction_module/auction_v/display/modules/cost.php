@@ -133,8 +133,5 @@
             </table>
         <?php } ?>
     </div>
-    <div class="col-sm-6">
-        <?php $this->load->view("{$viewModule}/{$viewFolder}/common/limit_cost"); ?>
-    </div>
 </div>
 

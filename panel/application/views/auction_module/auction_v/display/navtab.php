@@ -45,36 +45,6 @@
                         </a>
                     </li>
                     <li>
-                        <a class="show" id="sartname-tab" data-bs-toggle="pill"
-                           href="#sartname" role="tab" aria-controls="sartname"
-                           aria-selected="false">
-                            <span class="title">
-                                Şartnameler
-                            </span>
-                            <span class="badge pull-right">
-                                <?php if (!empty($idari_sart)) { ?>
-                                    <i class="icon-check"></i>
-                                <?php } else { ?>
-                                    <i class="icon-plus"></i>
-                                <?php } ?>
-                            </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="show" id="tesvik-tab" data-bs-toggle="pill"
-                           href="#tesvik" role="tab" aria-controls="tesvik"
-                           aria-selected="false">
-                            <span class="title">
-                              Teşvik/Hibe
-                            </span>
-                            <span class="badge pull-right">
-                                (<?php echo count($tesvikler) ?>)
-                            </span>
-                        </a>
-                    </li>
-
-
-                    <li>
                         <a class="show" id="offers-tab" data-bs-toggle="pill"
                            href="#offers" role="tab" aria-controls="offers"
                            aria-selected="false">
@@ -86,12 +56,14 @@
                             </span>
                         </a>
                     </li>
-                    <li><a class="show" id="catalog-tab" data-bs-toggle="pill"
+                    <li>
+                        <a class="show" id="catalog-tab" data-bs-toggle="pill"
                            href="#catalog" role="tab" aria-controls="catalog"
-                           aria-selected="false"><span class="title"> Katalog</span></a></li>
-                    <li><a id="report-tab" data-bs-toggle="pill" href="#report" role="tab"
-                           aria-controls="report" aria-selected="true"><span class="title">Raporlar</span></a>
+                           aria-selected="false">
+                            <span class="title"> Katalog</span>
+                        </a>
                     </li>
+
                 </ul>
             </div>
         </div>

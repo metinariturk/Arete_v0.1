@@ -117,10 +117,6 @@
                         <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
                     </form>
                 </div>
-
-                <div class="image_list_container">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
-                </div>
             </div>
         </div>
     </div>
