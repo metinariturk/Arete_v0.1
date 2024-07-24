@@ -92,7 +92,6 @@
     <div class="page-header">
         <div class="header-wrapper row m-0">
             <?php $this->load->view("includes/navbar_left"); ?>
-            <?php $this->load->view("includes/navbar_right"); ?>
         </div>
     </div>
     <div class="page-body-wrapper">

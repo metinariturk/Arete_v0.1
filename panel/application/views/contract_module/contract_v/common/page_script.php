@@ -13,7 +13,7 @@
                 '</div>',
             theme: 'dragdrop',
             upload: {
-                url: "<?php echo base_url("$this->Module_Name/file_upload/$item->id/Offer"); ?>",
+                url: "<?php echo base_url("$this->Module_Name/file_upload/$item->id/Contract"); ?>",
                 data: null,
                 type: 'POST',
                 enctype: 'multipart/form-data',

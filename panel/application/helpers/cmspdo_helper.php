@@ -344,7 +344,7 @@ function contract_code_name($id)
             $contract_code = $data->dosya_no;
         }
     }
-    return $contract_code . " / " . $contract_name;
+    return$contract_name. " / ". $contract_code;
 }
 
 function auction_code_name($id)

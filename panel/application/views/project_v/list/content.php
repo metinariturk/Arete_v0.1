@@ -1,10 +1,10 @@
 <div>
-    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalgetbootstrap" data-whatever="@getbootstrap">Open modal for cuba</button>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalgetbootstrap" data-whatever="@getbootstrap"><i class="fa fa-plus"></i> Yeni Proje</button>
     <div class="modal fade" id="exampleModalgetbootstrap" tabindex="-1" role="dialog" aria-labelledby="exampleModalgetbootstrap" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-toggle-wrapper social-profile text-start dark-sign-up">
-                    <h3 class="modal-header justify-content-center border-0">CUBA SIGN-UP</h3>
+                    <h3 class="modal-header justify-content-center border-0">Yeni Proje Oluştur</h3>
                     <div class="modal-body">
                         <form class="row g-3 needs-validation" novalidate="" action="<?php echo base_url("$this->Module_Name/save/"); ?>" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
@@ -41,7 +41,7 @@
                                 <input type="text" class="form-control" name="notes" placeholder="Genel Açıklama">
                             </div>
                             <div class="col-md-12">
-                                <button class="btn btn-primary" type="submit">Sign Up</button>
+                                <button class="btn btn-primary" type="submit">Proje Oluştur</button>
                             </div>
                             <?php print_r(validation_errors()); ?>
                         </form>
@@ -51,6 +51,7 @@
         </div>
     </div>
 </div>
+<hr>
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body">

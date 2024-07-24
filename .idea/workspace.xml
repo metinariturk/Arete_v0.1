@@ -58,14 +58,26 @@
       <path value="$PROJECT_DIR$/site/assets/phpmailer/vendor/phpmailer/phpmailer" />
     </include_path>
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2WCsf1FIyj311z3OrPJTXMudnx6" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/site/assets/images/main-slider/slider1" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\main-slider\slider1" />
@@ -146,6 +158,8 @@
       <workItem from="1715197403350" duration="9686000" />
       <workItem from="1715624984312" duration="7283000" />
       <workItem from="1715966270032" duration="70000" />
+      <workItem from="1721838848289" duration="1400000" />
+      <workItem from="1721840771007" duration="2897000" />
     </task>
     <servers />
   </component>
@@ -184,7 +198,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1763</line>
+          <line>1728</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="ProvisionfileDelete" />
@@ -193,12 +207,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1844</line>
+          <line>1711</line>
           <properties>
             <option name="className" value="\Contract" />
-            <option name="methodName" value="get_district" />
+            <option name="methodName" value="fileDelete_java" />
           </properties>
-          <option name="timeStamp" value="30" />
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

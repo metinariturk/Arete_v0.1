@@ -150,8 +150,6 @@ class Auction extends CI_Controller
 
     public function file_form($id, $active_tab = null)
     {
-
-
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
@@ -811,7 +809,6 @@ class Auction extends CI_Controller
         redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
     }
 
-
     public function file_upload($id, $type = null)
     {
         $auction_id = $id;
@@ -858,14 +855,13 @@ class Auction extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
-
     public function fileDelete_java($id)
     {
         $fileName = $this->input->post('fileName');
 
         $auction = $this->Auction_model->get(array("id"=>$id));
         $project = $this->Project_model->get(array("id"=>$auction->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$auction->dosya_no/Main/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$auction->dosya_no/Contract/";
 
         unlink("$path/$fileName");
     }

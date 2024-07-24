@@ -5,7 +5,7 @@
      aria-labelledby="genel-tab">
     <div class="card-body">
         <div class="row">
-            <div class="col-xl-7 col-lg-12 col-md-12 box-col-10">
+            <div class="col-xl-7 col-lg-7 col-md-6 box-col-10">
                 <div class="container">
                     <div class="row py-3">
                         <div class="col-12">
@@ -19,16 +19,19 @@
                             <h4>
                                 <?php if (!empty($item->parent)) { ?>
                                     <strong>Taşeron Sözleşmesi</strong>
+                                    <br><?php echo contract_code_name($item->id); ?>
                                 <?php } else { ?>
-                                    <strong>Sözleşme</strong>
+                                    <strong><?php echo contract_code_name($item->id); ?></strong>
                                 <?php } ?>
                                 <a onclick="changeIcon(this)"
                                    url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
                                    id="myBtn">
                                     <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?>"> </i>
                                 </a>
+                                <br>
+
                             </h4>
-                            <?php echo contract_code_name($item->id); ?>
+
                         </div>
                     </div>
                     <div class="row py-3">
@@ -169,15 +172,36 @@
                     <?php } ?>
                 </div>
             </div>
-            <div class="col-xl-5 col-lg-12 col-md-12 box-col-10">
-                <div class="card">
-                    <div class="file-content">
-                        <div class="card-header">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
-                        </div>
-                        <div class="image_list_container">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
-                        </div>
+            <div class="col-xl-5 col-lg-5 col-md-6 box-col-10">
+                <div class="file-content">
+                    <div class="fileuploader fileuploader-theme-dragdrop">
+                        <form action="<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>"
+                              method="post" enctype="multipart/form-data">
+                            <?php
+                            $uploadDir = $path;
+                            $preloadedFiles = array();
+                            $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
+                            foreach ($uploadsFiles as $file) {
+                                if (is_dir($uploadDir . $file))
+                                    continue;
+                                $preloadedFiles[] = array(
+                                    "name" => $file,
+                                    "auc_id" => $item->id,
+                                    "type" => FileUploader::mime_content_type($uploadDir . $file),
+                                    "size" => filesize($uploadDir . $file),
+                                    "file" => base_url("uploads/project_v/$project->project_code/$item->dosya_no/Contract/") . $file,
+                                    "local" => base_url("uploads/project_v/$project->project_code/$item->dosya_no/Contract/") . $file,
+                                    "data" => array(
+                                        "url" => base_url("uploads/project_v/$project->project_code/$item->dosya_no/Contract/") . $file, // (optional)
+                                        "thumbnail" => file_exists($uploadDir . 'thumbs/' . $file) ? $uploadDir . 'thumbs/' . $file : null, // (optional)
+                                        "readerForce" => true // (optional) prevent browser cache
+                                    ),
+                                );
+                            }
+                            $preloadedFiles = json_encode($preloadedFiles);
+                            ?>
+                            <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
+                        </form>
                     </div>
                 </div>
             </div>
