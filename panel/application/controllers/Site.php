@@ -1298,7 +1298,7 @@ class Site extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => site_code_name($id)
+                    "title" => site_code($id)." - ".site_name($id)
                 )
             );
             echo "favoriye eklendi";

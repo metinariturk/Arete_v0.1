@@ -1,71 +1,82 @@
-<div class="row" style="color: #ffffff !important;">
-    <div class="col-xl-3 xl-100 box-col-12">
-        <div class="card">
-            <p style="text-align: center; font-size: 15pt; font-weight: bold">Favoriler</p>
-            <div class="categories pt-1">
-                <div class="learning-header">Projeler</div>
-                <ul>
-                    <?php foreach ($favorites as $favorite) { ?>
-                        <?php if ($favorite->module == "project") { ?>
-                            <li>
-                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
-                                    <?php echo $favorite->title; ?>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    <?php } ?>
-                </ul>
-            </div>
-            <div class="categories pt-0">
-                <div class="learning-header"><span class="f-w-600">Sözleşmeler</span></div>
-                <ul>
-                    <?php foreach ($favorites as $favorite) { ?>
-                        <?php if ($favorite->module == "contract") { ?>
-                            <li>
-                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
-                                    <?php echo $favorite->title; ?>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    <?php } ?>
-                </ul>
-            </div>
-            <div class="categories pt-0">
-                <div class="learning-header"><span class="f-w-600">Teklifler</span></div>
-                <ul>
-                    <?php foreach ($favorites as $favorite) { ?>
-                        <?php if ($favorite->module == "auction") { ?>
-                            <li>
-                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
-                                    <?php echo $favorite->title; ?>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    <?php } ?>
-                </ul>
-            </div>
-            <div class="categories pt-0">
-                <div class="learning-header"><span class="f-w-600">Şantiyeler</span></div>
-                <ul>
-                    <?php foreach ($favorites as $favorite) { ?>
-                        <?php if ($favorite->module == "site") { ?>
-                            <li>
-                                <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>">
-                                    <?php echo $favorite->title; ?>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    <?php } ?>
-                </ul>
-            </div>
-        </div>
-    </div>
+<div class="container-fluid">
+    <div class="email-wrap bookmark-wrap">
+        <div class="row">
+            <div class="col-xl-6 box-col-6">
+                <div class="md-sidebar-aside job-left-aside custom-scrollbar">
+                    <div class="email-left-aside">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="email-app-sidebar left-bookmark">
 
-    <div class="col-xl-6 xl-100 box-col-12">
-        <div class="card">
-            <div class="cal-date-widget card-body">
-                <div class="row">
-                    <div class="col-xl-6 col-xs-12 col-md-6 col-sm-6">
+                                    <ul class="nav main-menu" role="tablist">
+
+                                        <hr>
+
+                                        <li>
+                                            <span class="main-title">Projeler
+                                                <span class="pull-right">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createtag">
+                                                        <i data-feather="plus-circle"></i>
+                                                    </a>
+                                                </span>
+                                            </span>
+                                        </li>
+
+                                        <?php foreach ($favorites as $favorite) { ?>
+                                            <?php if ($favorite->module == "project") { ?>
+                                                <li><a  href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>" role="tab" aria-controls="pills-<?php echo $favorite->module_id; ?>"
+                                                       aria-selected="false"><span class="title"> <?php echo $favorite->title; ?></span></a></li>
+
+                                            <?php } ?>
+                                        <?php } ?>
+
+                                        <hr>
+
+                                        <li>
+                                            <span class="main-title">Sözleşmeler
+                                                <span class="pull-right">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createtag">
+                                                        <i data-feather="plus-circle"></i>
+                                                    </a>
+                                                </span>
+                                            </span>
+                                        </li>
+
+                                        <?php foreach ($favorites as $favorite) { ?>
+                                            <?php if ($favorite->module == "contract") { ?>
+                                                <li><a  href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>" role="tab" aria-controls="pills-<?php echo $favorite->module_id; ?>"
+                                                        aria-selected="false"><span class="title"> <?php echo $favorite->title; ?></span></a></li>
+                                            <?php } ?>
+                                        <?php } ?>
+
+                                        <hr>
+
+                                        <li>
+                                            <span class="main-title">Şantiyeler
+                                                <span class="pull-right">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createtag">
+                                                        <i data-feather="plus-circle"></i>
+                                                    </a>
+                                                </span>
+                                            </span>
+                                        </li>
+
+                                        <?php foreach ($favorites as $favorite) { ?>
+                                            <?php if ($favorite->module == "site") { ?>
+                                                <li><a  href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>" role="tab" aria-controls="pills-<?php echo $favorite->module_id; ?>"
+                                                        aria-selected="false"><span class="title"> <?php echo $favorite->title; ?></span></a></li>
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 xl-100 box-col-12">
+                <div class="card">
+                    <div class="cal-date-widget card-body">
                         <div class="cal-info text-center">
                             <h2><?php echo date("d"); ?></h2>
                             <div class="d-inline-block mt-2"><span
@@ -80,16 +91,11 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-xl-6 col-xs-12 col-md-6 col-sm-6">
-                        <div class="cal-datepicker">
-                            <div class="datepicker-here float-sm-end" data-language="tr"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
+            <div class="col-xl-3 xl-100 box-col-12 todo">
+                <?php $this->load->view("{$viewFolder}/list/todo"); ?>
+            </div>
         </div>
-    </div>
-    <div class="col-xl-3 xl-100 box-col-12 todo">
-        <?php $this->load->view("{$viewFolder}/list/todo"); ?>
     </div>
 </div>
