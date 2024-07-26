@@ -84,6 +84,10 @@ class Contract extends CI_Controller
 
     public function index()
     {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
         $viewData = new stdClass();
 
         /** Tablodan Verilerin Getirilmesi.. */
@@ -103,6 +107,10 @@ class Contract extends CI_Controller
 
     public function select()
     {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
         $viewData = new stdClass();
 
         /** Tablodan Verilerin Getirilmesi.. */
