@@ -56,6 +56,10 @@ class Project extends CI_Controller
     public function index()
     {
 
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
         $viewData = new stdClass();
 
         $items = $this->Project_model->get_all(array());
@@ -129,6 +133,9 @@ class Project extends CI_Controller
 
     public function save()
     {
+        if (!isAdmin()) {
+        redirect(base_url("error"));
+        }
 
         $file_name_len = file_name_digits();
 

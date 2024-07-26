@@ -79,6 +79,9 @@ class Auction extends CI_Controller
 
     public function index()
     {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
         $viewData = new stdClass();
 
         /** Tablodan Verilerin Getirilmesi.. */
