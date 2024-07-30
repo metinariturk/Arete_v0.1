@@ -198,21 +198,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1728</line>
+          <line>1734</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="ProvisionfileDelete" />
           </properties>
           <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1711</line>
-          <properties>
-            <option name="className" value="\Contract" />
-            <option name="methodName" value="fileDelete_java" />
-          </properties>
-          <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

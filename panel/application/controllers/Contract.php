@@ -1719,11 +1719,17 @@ class Contract extends CI_Controller
     }
     public function fileDelete_java($id)
     {
+
         $fileName = $this->input->post('fileName');
 
         $contract = $this->Contract_model->get(array("id"=>$id));
         $project = $this->Project_model->get(array("id"=>$contract->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Contract/";
+
+        if ($contract->offer == 1){
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Offer/";
+        } else {
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Contract/";
+        }
 
         unlink("$path/$fileName");
     }
