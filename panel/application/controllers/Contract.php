@@ -70,7 +70,6 @@ class Contract extends CI_Controller
         $this->Add_Folder = "add";
         $this->Display_Folder = "display";
         $this->Display_offer_Folder = "display_offer";
-        $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
         $this->File_List = "file_list_v";
@@ -93,6 +92,7 @@ class Contract extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Contract_model->get_all(array(
             "isActive" => 1,
+            "offer" => null
 
         ));
 
@@ -100,7 +100,29 @@ class Contract extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->List_Folder";
+        $viewData->subViewFolder = "list_contract";
+        $viewData->items = $items;
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+    }
+
+    public function offer_list()
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $viewData = new stdClass();
+
+        /** Tablodan Verilerin Getirilmesi.. */
+        $items = $this->Contract_model->get_all(array(
+            "isActive" => 1,
+            "offer" => 1
+        ));
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "list_offer";
         $viewData->items = $items;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -1673,11 +1695,16 @@ class Contract extends CI_Controller
 
     public function file_upload($id, $type = null)
     {
-        $auction_id = $id;
-        $auction_code = auction_code($auction_id);
-        $project_id = project_id_auc($auction_id);
+        $contract = $this->Contract_model->get(array("id" => $id));
+        if ($contract->offer == 1){
+            $type = "Offer";
+        } else {
+            $type = "Contract";
+        }
+        $contract_code = contract_code($contract->id);
+        $project_id = project_id_cont($contract->id);
         $project_code = project_code($project_id);
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$auction_code/$type/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/$type/";
 
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);

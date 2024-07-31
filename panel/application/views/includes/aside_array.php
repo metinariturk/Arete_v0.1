@@ -73,7 +73,7 @@ $sidebarList = array(
         "submodules" => array(
             array(
                 "title" => "Teklif Listesi",
-                "url" => base_url("auction")
+                "url" => base_url("contract/offer_list")
             ),
             array(
                 "title" => "Teklif Projeler",
