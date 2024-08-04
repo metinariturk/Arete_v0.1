@@ -3,16 +3,29 @@
         <div class="row">
             <div class="col-xl-2 box-col-6">
                 <div class="email-left-aside">
+
                     <div class="card">
                         <div class="card-body">
+                            <a onclick="changeIcon(this)"
+                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
+                               id="myBtn">
+                                <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?> fa-2x"></i> Ana Sayfaya Ekle
+                            </a>
+
+                            <hr>
                             <div class="email-app-sidebar left-bookmark">
                                 <ul class="nav main-menu" role="tablist">
-                                    <li><a id="pills-created-tab" data-bs-toggle="pill" href="#pills-created" role="tab"
-                                           aria-controls="pills-created" aria-selected="true"><span class="title">Proje Genel Bilgileri</span></a>
+                                    <li>
+                                        <span class="title"><?php echo $item->project_code . "/" . $item->project_name; ?></span>
                                     </li>
-                                    <li><a class="show" id="pills-shared-tab" data-bs-toggle="pill" href="#pills-shared"
+                                    <li>
+                                        <hr>
+                                    </li>
+                                    <li>
+                                        <a class="show" id="pills-shared-tab" data-bs-toggle="pill" href="#pills-shared"
                                            role="tab" aria-controls="pills-shared" aria-selected="false"><span
-                                                    class="title">Sözleşmeler</span></a></li>
+                                                    class="title">Sözleşmeler</span></a>
+                                    </li>
                                     <li><a class="show" id="pills-favourites-tab" data-bs-toggle="pill"
                                            href="#pills-favourites" role="tab" aria-controls="pills-favourites"
                                            aria-selected="false"><span class="title"> Teklifler</span></a></li>
@@ -54,6 +67,7 @@
                                 </div>
                                 <div class="fade tab-pane" id="pills-favourites" role="tabpanel"
                                      aria-labelledby="pills-favourites-tab">
+
                                     <div class="card mb-0">
                                         <div class="card-header d-flex">
                                             <h6 class="mb-0">Teklifler</h6>
@@ -76,8 +90,10 @@
                                 </div>
                                 <div class="fade tab-pane" id="pills-notification" role="tabpanel"
                                      aria-labelledby="pills-notification-tab">
+
                                     <div class="card mb-0">
                                         <div class="card-header d-flex">
+
                                             <h6 class="mb-0">Şantiyeler</h6>
                                             <ul>
                                                 <li>
@@ -96,14 +112,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="pills-created" role="tabpanel"
-                                     aria-labelledby="pills-created-tab">
-                                    <div class="card mb-0">
-                                        <div>
-                                            <?php $this->load->view("{$viewFolder}/{$subViewFolder}/display_table"); ?>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -112,11 +120,6 @@
             <div class="col-xl-3 col-md-12 box-col-12">
                 <div class="tab-content">
                     <?php $this->load->view("{$viewFolder}/$this->Common_Files/add_document"); ?>
-                    <div class="widget">
-                        <div class="widget-body image_list_container">
-                            <?php $this->load->view("{$viewFolder}/$this->Common_Files/file_list_v"); ?>
-                        </div><!-- .widget-body -->
-                    </div><!-- .widget -->
                 </div>
             </div>
         </div>

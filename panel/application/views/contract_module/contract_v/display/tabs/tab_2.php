@@ -66,7 +66,6 @@
                             <h3>Yer Teslimi ile İlgili Evrakları Buraya Ekleyiniz</h3>
                         </div>
                     </div>
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/sitedel_list_v"); ?>
                 </div>
             </div>
 

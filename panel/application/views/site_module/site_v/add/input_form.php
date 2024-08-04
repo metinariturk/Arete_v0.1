@@ -90,25 +90,5 @@
                 <div class="invalid-feedback"><?php echo form_error("teknik_personeller"); ?></div>
             <?php } ?>
         </div>
-        <div class="mb-2">
-            <div class="col-form-label">Şantiye Araçları</div>
-            <select class="js-example-placeholder-multiple col-sm-12 <?php cms_isset(form_error("araclar"), "is-invalid", ""); ?>"
-                    multiple="multiple" name="araclar[]" multiple
-                    data-options="{ tags: true, tokenSeparators: [',', ' '] }">
-                <?php if (isset($form_error)) { ?>
-                    <?php $returns = set_value("araclar[]");
-                    foreach ($returns as $return) { ?>
-                        <option selected
-                                value="<?php echo $return; ?>"><?php echo vehicle_plate($return); ?></option>
-                    <?php } ?>
-                <?php } ?>
-                <?php foreach ($vehicles as $vehicle) { ?>
-                    <option value="<?php echo $vehicle->id; ?>"><?php echo $vehicle->plaka . "-" . $vehicle->marka . "-" . $vehicle->ticari_ad; ?></option>
-                <?php } ?>
-            </select>
-            <?php if (isset($form_error)) { ?>
-                <div class="invalid-feedback"><?php echo form_error("araclar"); ?></div>
-            <?php } ?>
-        </div>
     </div>
 </div>

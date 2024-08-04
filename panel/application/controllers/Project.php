@@ -13,10 +13,15 @@ class Project extends CI_Controller
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
+
+
         $this->Theme_mode = get_active_user()->mode;
         if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
+
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
 
         $this->load->model("Settings_model");
         $this->load->model("Project_model");
@@ -28,7 +33,7 @@ class Project extends CI_Controller
         $this->load->model("Contract_model");
         $this->load->model("User_model");
         $this->load->model("Order_model");
-        $this->load->model("Auction_model");
+
         $this->load->model("Site_model");
         $this->load->model("Favorite_model");
 
@@ -90,6 +95,11 @@ class Project extends CI_Controller
             )
         );
 
+        $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->project_code/$item->project_code/main/";
+
+        !is_dir($path) && mkdir($path, 0777, TRUE);
+
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
             "module" => "project",
@@ -103,7 +113,6 @@ class Project extends CI_Controller
         );
 
         $sites = $this->Site_model->get_all(array('proje_id' => $id));
-
         $contracts = $this->Contract_model->get_all(
             array(
                 "proje_id" => $id,
@@ -111,13 +120,14 @@ class Project extends CI_Controller
         );
 
         $viewData = new stdClass();
-
         $settings = $this->Settings_model->get();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->settings = $settings;
         $viewData->offers = $offers;
+        $viewData->upload_function = $upload_function;
+        $viewData->path = $path;
         $viewData->sites = $sites;
         $viewData->contracts = $contracts;
         $viewData->fav = $fav;
@@ -134,7 +144,7 @@ class Project extends CI_Controller
     public function save()
     {
         if (!isAdmin()) {
-        redirect(base_url("error"));
+            redirect(base_url("error"));
         }
 
         $file_name_len = file_name_digits();
@@ -411,7 +421,6 @@ class Project extends CI_Controller
 
         $project_name = project_name($id);
         $number_of_contracts = count(get_from_any_array_select_ci("id", "contract", "proje_id", $id));
-        $number_of_aucitons = count(get_from_any_array_select_ci("id", "auction", "proje_id", $id));
         $number_of_sites = count(get_from_any_array_select_ci("id", "site", "proje_id", $id));
         $control = $number_of_contracts + $number_of_aucitons + $number_of_sites;
 
@@ -520,50 +529,50 @@ class Project extends CI_Controller
             }
         }
 
-        $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-        $size = $_FILES["file"]["size"];
 
-        $kod = get_from_id("projects", "project_code", $id);
-        $config["allowed_types"] = "*";
-        $config["upload_path"] = "$this->Upload_Folder/$this->viewFolder/$kod/$this->Module_File_Dir/";
-        $config["file_name"] = $file_name;
-        $config["max_size"] = '200048';
+        $project = $this->Project_model->get(array("id" => $id));
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
 
-        $this->load->library("upload", $config);
-
-        $upload = $this->upload->do_upload("file");
-
-        if ($upload) {
-
-            $alert = array(
-                "title" => "Dosya Yükle",
-                "text" => "$file_name Dosyasını Yükleme Başarılı",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-            $uploaded_file = $this->upload->data("file_name");
-
-            $this->Project_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
-
-        } else {
-            $alert = array(
-                "title" => "Dosya Yükle",
-                "text" => "$file_name Dosyasını Yükleme Başarısız, Sistem Yöneticinizle Görüşün",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
         }
+
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
+
+        // call to upload the files
+
+        $uploadedFiles = $FileUploader->upload();
+
+        $files = ($uploadedFiles['files']);
+
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
+
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
+                }
+            }
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($uploadedFiles);
+        exit;
     }
 
-    public function file_download($id)
+    public
+    function file_download($id)
     {
 
 
@@ -599,7 +608,8 @@ class Project extends CI_Controller
 
     }
 
-    public function fileDelete($id)
+    public
+    function fileDelete($id)
     {
 
         $viewData = new stdClass();
@@ -672,7 +682,8 @@ class Project extends CI_Controller
 
     }
 
-    public function fileDelete_all($id)
+    public
+    function fileDelete_all($id)
     {
         $viewData = new stdClass();
 
@@ -727,7 +738,8 @@ class Project extends CI_Controller
         }
     }
 
-    public function refresh_file_list($id)
+    public
+    function refresh_file_list($id)
     {
         $viewData = new stdClass();
 
@@ -752,7 +764,8 @@ class Project extends CI_Controller
 
     }
 
-    public function download_all($project_id)
+    public
+    function download_all($project_id)
     {
         $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
         if (!isAdmin()) {
@@ -781,7 +794,8 @@ class Project extends CI_Controller
 
     }
 
-    public function duplicate_code_check($str)
+    public
+    function duplicate_code_check($str)
     {
 
         $viewData = new stdClass();
@@ -799,7 +813,8 @@ class Project extends CI_Controller
         }
     }
 
-    public function duplicate_name_check($str)
+    public
+    function duplicate_name_check($str)
     {
         $var = count_data("projects", "project_name", $str);
 
@@ -810,7 +825,8 @@ class Project extends CI_Controller
         }
     }
 
-    public function favorite($id)
+    public
+    function favorite($id)
     {
         $fav_id = get_from_any_and_and("favorite", "module", "project", "user_id", active_user_id(), "module_id", "$id");
         if (!empty($fav_id)) {
@@ -827,7 +843,7 @@ class Project extends CI_Controller
                     "view" => "file_form",
                     "module_id" => $id,
                     "user_id" => active_user_id(),
-                    "title" => project_code($id)." - ".project_name($id),
+                    "title" => project_code($id) . " - " . project_name($id),
                 )
             );
             echo "favoriye eklendi";

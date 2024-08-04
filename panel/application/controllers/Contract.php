@@ -15,9 +15,9 @@ class Contract extends CI_Controller
             redirect(base_url("login"));
         }
         $this->Theme_mode = get_active_user()->mode;
+
         $uploader = APPPATH . 'libraries/FileUploader.php';
         include($uploader);
-
 
         // Geçici şifre kontrolü
         if (temp_pass_control()) {
@@ -31,10 +31,8 @@ class Contract extends CI_Controller
         // Modelleri yükleme
         $this->load->model("Advance_model");
         $this->load->model("Bond_model");
-        $this->load->model("Catalog_model");
         $this->load->model("City_model");
         $this->load->model("Company_model");
-        $this->load->model("Condition_model");
         $this->load->model("Contract_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Contract_price_model");
@@ -42,8 +40,6 @@ class Contract extends CI_Controller
         $this->load->model("Collection_model");
         $this->load->model("Delete_model");
         $this->load->model("District_model");
-        $this->load->model("Drawings_file_model");
-        $this->load->model("Drawings_model");
         $this->load->model("Extime_model");
         $this->load->model("Favorite_model");
         $this->load->model("Newprice_model");
@@ -86,16 +82,13 @@ class Contract extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
-
         $viewData = new stdClass();
-
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Contract_model->get_all(array(
             "isActive" => 1,
+            "parent" => 0,
             "offer" => null
-
-        ));
-
+        ),"sozlesme_tarih DESC");
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -123,6 +116,29 @@ class Contract extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list_offer";
+        $viewData->items = $items;
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+    }
+
+    public function contract_sub()
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $viewData = new stdClass();
+
+        /** Tablodan Verilerin Getirilmesi.. */
+        $items = $this->Contract_model->get_all(array(
+            "isActive" => 1,
+            "parent" => 0,
+            "offer" => null,
+        ),"id DESC");
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "list_sub";
         $viewData->items = $items;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -159,12 +175,13 @@ class Contract extends CI_Controller
         }
 
         $item = $this->Contract_model->get(array("id" => $id));
+        $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
         !is_dir($path) && mkdir($path, 0777, TRUE);
 
 
-        if ($item->offer == 1){
+        if ($item->offer == 1) {
             redirect(base_url("contract/file_form_offer/$id"));
         }
 
@@ -191,9 +208,7 @@ class Contract extends CI_Controller
         $collections = $this->Collection_model->get_all(array('contract_id' => $id), "tahsilat_tarih ASC");
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
-        $catalogs = $this->Catalog_model->get_all(array('contract_id' => $id));
         $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
-        $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
         $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
         $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
         $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
@@ -201,7 +216,6 @@ class Contract extends CI_Controller
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "rank ASC");
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
-        $master_catalog = $this->Catalog_model->get(array('contract_id' => $id, "master" => 1));
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $id, 'leader' => 1));
 
@@ -211,19 +225,17 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->active_tab = $active_tab;
         $viewData->project = $project;
+        $viewData->upload_function = $upload_function;
         $viewData->path = $path;
         $viewData->advances = $advances;
         $viewData->collections = $collections;
         $viewData->bonds = $bonds;
         $viewData->leaders = $leaders;
-        $viewData->catalogs = $catalogs;
         $viewData->costincs = $costincs;
-        $viewData->drawings = $drawings;
         $viewData->extimes = $extimes;
         $viewData->fav = $fav;
         $viewData->main_bond = $main_bond;
         $viewData->main_groups = $main_groups;
-        $viewData->master_catalog = $master_catalog;
         $viewData->newprices = $newprices;
         $viewData->payment_no = $payment_no;
         $viewData->payments = $payments;
@@ -584,6 +596,7 @@ class Contract extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
     }
+
     public function save_sub($main_contract_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
@@ -720,6 +733,7 @@ class Contract extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
     }
+
     public function save_offer($project_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
@@ -1500,10 +1514,7 @@ class Contract extends CI_Controller
             $file_ids[] = "Advance*" . $advance->id;
         }
 
-        $drawings = $this->Drawings_model->get_all(array('contract_id' => $id));
-        foreach ($drawings as $drawing) {
-            $file_ids[] = "Drawings*" . $drawing->id;
-        }
+
 
         $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
         foreach ($costincs as $costinc) {
@@ -1518,11 +1529,6 @@ class Contract extends CI_Controller
         $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
         foreach ($extimes as $extime) {
             $file_ids[] = "Extime*" . $extime->id;
-        }
-
-        $catalogs = $this->Catalog_model->get_all(array('contract_id' => $id));
-        foreach ($catalogs as $catalog) {
-            $file_ids[] = "Catalog*" . $catalog->id;
         }
 
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
@@ -1625,6 +1631,7 @@ class Contract extends CI_Controller
             redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
         }
     }
+
     public function hard_delete($id)
     {
         if (!isAdmin()) {
@@ -1696,7 +1703,7 @@ class Contract extends CI_Controller
     public function file_upload($id, $type = null)
     {
         $contract = $this->Contract_model->get(array("id" => $id));
-        if ($contract->offer == 1){
+        if ($contract->offer == 1) {
             $type = "Offer";
         } else {
             $type = "Contract";
@@ -1735,7 +1742,7 @@ class Contract extends CI_Controller
                     $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
 
                     // Yeniden boyutlandırma işlemi
-                    FileUploader::resize($path . $file['name'], $newWidth,$newHeight,$destination = null, $crop = false, $quality = 75);
+                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
                 }
             }
         }
@@ -1744,15 +1751,16 @@ class Contract extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
+
     public function fileDelete_java($id)
     {
 
         $fileName = $this->input->post('fileName');
 
-        $contract = $this->Contract_model->get(array("id"=>$id));
-        $project = $this->Project_model->get(array("id"=>$contract->proje_id));
+        $contract = $this->Contract_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        if ($contract->offer == 1){
+        if ($contract->offer == 1) {
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Offer/";
         } else {
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Contract/";
@@ -1797,6 +1805,7 @@ class Contract extends CI_Controller
         $this->zip->download("$zip_name");
 
     }
+
     public function get_district($id)
     {
         $result = $this->db->where("city_id", $id)->get("district")->result();
@@ -1814,6 +1823,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function sitedel_contractday($sitedal_day, $contract_day)
     {
         $date_diff = date_minus($sitedal_day, $contract_day);
@@ -1823,6 +1833,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function workplan_contractday($workplan_date, $contract_day)
     {
         $date_diff = date_minus($workplan_date, $contract_day);
@@ -1832,6 +1843,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function provision_contractday($provision_date, $contract_day)
     {
         $date_diff = date_minus($provision_date, $contract_day);
@@ -1841,6 +1853,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function final_contractday($final_date, $contract_day)
     {
         $date_diff = date_minus($final_date, $contract_day);
@@ -1850,6 +1863,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function favorite($id)
     {
         $fav_id = get_from_any_and_and("favorite", "module", "contract", "user_id", active_user_id(), "module_id", "$id");
@@ -1874,6 +1888,7 @@ class Contract extends CI_Controller
             echo "favoriye eklendi";
         }
     }
+
     public function add_main_group($contract_id)
     {
         $group_name = $this->input->post('main_group');
@@ -1951,6 +1966,7 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
+
     public function back_main($contract_id)
     {
 
@@ -1973,6 +1989,7 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
+
     public function update_sub_group($contract_id)
     {
 
@@ -2040,6 +2057,7 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
+
     public function delete_group($group_id)
     {
         $group = $this->Contract_price_model->get(array("id" => $group_id));
@@ -2069,6 +2087,7 @@ class Contract extends CI_Controller
         echo $render_boq;
 
     }
+
     public
     function delete_boq($contract_id, $boq_id)
     {
@@ -2097,6 +2116,7 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
     public
     function save_price($contract_id)
     {
@@ -2155,6 +2175,7 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
     public function add_leader($contract_id)
     {
         if (!isAdmin()) {
@@ -2198,6 +2219,7 @@ class Contract extends CI_Controller
 
         echo $render_html;
     }
+
     public
     function drag_drop_price($contract_id, $leader_id, $sub_id)
     {
@@ -2245,6 +2267,7 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
     public
     function delete_contract_price($item_id)
     {
@@ -2294,6 +2317,7 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
     public
     function open_sub($contract_id, $sub_id)
     {
@@ -2321,6 +2345,7 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
     public
     function delete_item($contract_id, $item_id)
     {
@@ -2353,6 +2378,7 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
     public
     function delete_sub($contract_id, $sub_id)
     {
@@ -2390,6 +2416,7 @@ class Contract extends CI_Controller
         echo $render_html;
 
     }
+
     public
     function delete_main($contract_id, $main_id)
     {

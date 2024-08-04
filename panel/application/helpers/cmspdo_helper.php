@@ -136,18 +136,7 @@ function get_currency($id)
     }
 }
 
-function get_currency_auc($id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $sql = "SELECT * FROM auction where `id` =" . $id;
-    $q = $ci->db->query($sql);
-    if ($q->num_rows() > 0) {
-        foreach ($q->result() as $data) {
-            return $data->para_birimi;
-        }
-    }
-}
+
 
 function project_code($id)
 {
@@ -200,16 +189,6 @@ function all_sites()
     return $sites;
 }
 
-function all_auctions()
-{
-    $t = get_instance();
-    $t->load->model("Auction_model");
-    $auctions = $t->Auction_model->get_all(array());
-
-    return $auctions;
-}
-
-
 function project_id_cont($contract_id)
 {
     $t = get_instance();
@@ -219,17 +198,6 @@ function project_id_cont($contract_id)
     ));
 
     return $contract->proje_id;
-}
-
-function project_id_auc($auction_id)
-{
-    $t = get_instance();
-    $t->load->model("Auction_model");
-    $auction = $t->Auction_model->get(array(
-        "id" => $auction_id
-    ));
-
-    return $auction->proje_id;
 }
 
 function project_id_site($site_id)
@@ -255,40 +223,10 @@ function contract_id_module($module, $id)
     return $module->contract_id;
 }
 
-function auction_id_module($module, $id)
-{
-    $model_name = ucfirst($module) . "_model";
-    $t = get_instance();
-    $t->load->model("Auction_model");
-    $module = $t->$model_name->get(array(
-        "id" => $id
-    ));
-
-    return $module->auction_id;
-}
 
 
-function project_code_auc($id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $sql = "SELECT * FROM `auction` where `id` =" . $id;
-    $q = $ci->db->query($sql);
-    if ($q->num_rows() > 0) {
-        foreach ($q->result() as $data) {
-            $auction_name = $data->ihale_ad;
-            $project_id = $data->proje_id;
-        }
-    }
-    $sql1 = "SELECT * FROM `projects` where `id` =" . $project_id;
-    $q1 = $ci->db->query($sql1);
-    if ($q1->num_rows() > 0) {
-        foreach ($q1->result() as $data1) {
-            $project_code = $data1->project_code;
-        }
-    }
-    return $project_code;
-}
+
+
 
 
 function contract_code($id)
@@ -347,20 +285,7 @@ function contract_code_name($id)
     return$contract_name. " / ". $contract_code;
 }
 
-function auction_code_name($id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $sql = "SELECT * FROM `auction` where `id` =" . $id;
-    $q = $ci->db->query($sql);
-    if ($q->num_rows() > 0) {
-        foreach ($q->result() as $data) {
-            $contract_name = $data->ihale_ad;
-            $contract_code = $data->dosya_no;
-        }
-    }
-    return $contract_code . " / " . $contract_name;
-}
+
 
 function project_name($id)
 {
@@ -552,49 +477,7 @@ function vehicle_detail($id)
     }
 }
 
-function auction_name($id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $sql = "SELECT * FROM `auction` where `id` =" . $id;
-    $q = $ci->db->query($sql);
-    if ($q->num_rows() > 0) {
-        foreach ($q->result() as $data) {
-            $name = $data->ihale_ad;
-        }
-    }
 
-    if (!empty($id)) {
-        return $name;
-    } elseif ($id == 0) {
-        return "Bağımsız Sözleşme";
-    } else {
-        return "Bağımsız Sözleşme";
-    }
-
-
-}
-
-function auction_code($id)
-{
-    $ci =& get_instance();
-    $ci->load->database();
-    $sql = "SELECT * FROM `auction` where `id` =" . $id;
-    $q = $ci->db->query($sql);
-    if ($q->num_rows() > 0) {
-        foreach ($q->result() as $data) {
-            $code = $data->dosya_no;
-        }
-    }
-
-    if (!empty($id)) {
-        return $code;
-    } elseif ($id == 0) {
-        return "Bağımsız Sözleşme";
-    } else {
-        return "Bağımsız Sözleşme";
-    }
-}
 
 function full_name($id = null)
 {

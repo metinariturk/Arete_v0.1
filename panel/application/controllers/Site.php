@@ -28,8 +28,6 @@ class Site extends CI_Controller
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
         $this->load->model("User_model");
-        $this->load->model("Auction_model");
-        $this->load->model("Condition_model");
         $this->load->model("Report_model");
         $this->load->model("Report_sign_model");
         $this->load->model("Sitestock_model");
@@ -139,7 +137,6 @@ class Site extends CI_Controller
         ));
 
         $projects = $this->Project_model->get_all(array(
-            'durumu' => 1,
             'id' => $project_id
         ));
 
@@ -292,7 +289,6 @@ class Site extends CI_Controller
             ));
 
             $projects = $this->Project_model->get_all(array(
-                'durumu' => 1,
                 'id' => $project_id
             ));
 

@@ -24,12 +24,20 @@ $sidebarList = array(
         "icon" => "edit-3",
         "submodules" => array(
             array(
+                "title" => "Ana Sözleşmeler",
+                "url" => base_url("contract")
+            ),
+            array(
+                "title" => "Alt Sözleşmeler",
+                "url" => base_url("contract/contract_sub")
+            ),
+            array(
                 "title" => "Hakedişler",
                 "url" => base_url("payment")
             ),
             array(
-                "title" => "Hakediş Metrajları",
-                "url" => base_url("boq")
+                "title" => "Teklifler",
+                "url" => base_url("contract/offer_list")
             ),
             array(
                 "title" => "Tahsilat İşlemleri",
@@ -55,54 +63,12 @@ $sidebarList = array(
                 "title" => "Süre Uzatımı",
                 "url" => base_url("Extime")
             ),
-            array(
-                "title" => "Teknik Çizim ve Föy",
-                "url" => base_url("Drawings")
-            ),
+
             array(
                 "title" => "Katalog",
                 "url" => base_url("Catalog")
             ),
 
-        )
-    ),
-    array(
-        "title" => "Teklif Süreçleri",
-        "icon" => "briefcase",
-        "url" => "#",
-        "submodules" => array(
-            array(
-                "title" => "Teklif Listesi",
-                "url" => base_url("contract/offer_list")
-            ),
-            array(
-                "title" => "Teklif Projeler",
-                "url" => base_url("aucdraw")
-            ),
-            array(
-                "title" => "Metrajlar",
-                "url" => base_url("compute")
-            ),
-            array(
-                "title" => "Yaklaşık Maliyet",
-                "url" => base_url("Cost")
-            ),
-            array(
-                "title" => "Şartnameler",
-                "url" => base_url("Condition")
-            ),
-            array(
-                "title" => "Teşvik Belgeleri",
-                "url" => base_url("Incentive")
-            ),
-            array(
-                "title" => "Teklif Yayınlama",
-                "url" => base_url("Notice")
-            ),
-            array(
-                "title" => "Teklif Teklifleri",
-                "url" => base_url("Offer")
-            )
         )
     ),
 

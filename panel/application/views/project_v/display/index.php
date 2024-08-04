@@ -3,6 +3,8 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("{$viewFolder}/common/page_style.php"); ?>
+    <?php $this->load->view("includes/drag_drop_style"); ?>
+
     <style>
         .btn-outline-none {
             background: none;
@@ -29,16 +31,16 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-             <?php $this->load->view("{$viewFolder}/common/title"); ?>
             <?php $this->load->view("{$viewFolder}/{$subViewFolder}/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
+<?php $this->load->view("includes/file_upload_script.php"); ?>
 <?php $this->load->view("{$viewFolder}/common/page_script"); ?>
-<?php if ($form_error){ ?>
+
+<?php if (isset($form_error)){ ?>
     <script>
         // Sayfa tamamen yüklendiğinde modalı aç
         $(document).ready(function() {

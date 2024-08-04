@@ -80,10 +80,7 @@ class Extime extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Extime_model->get_all(array());
-        $active_contracts = $this->Contract_model->get_all(array(
-                "durumu" => 1
-            )
-        );
+        $active_contracts = $this->Contract_model->get_all(array());
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;

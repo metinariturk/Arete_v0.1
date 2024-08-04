@@ -100,22 +100,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Şantiye Araçları</td>
-                        <td>
-                            <?php if (!empty($item->araclar)) { ?>
-                                <?php foreach (get_as_array($item->araclar) as $arac) { ?>
-                                    <a href="<?php echo base_url("vehicle/file_form/$arac"); ?>">
-                                        <i class="icofont icofont-vehicle-excavator" style="font-size: 30px;"></i>
-                                        <?php echo get_from_any("vehicle", "marka", "id", "$arac"); ?>
-                                        <?php echo get_from_any("vehicle", "ticari_ad", "id", "$arac"); ?>
-                                        <b><?php echo vehicle_plate($arac); ?></b>
-                                    </a>
-                                    <br>
-                                <?php } ?>
-                            <?php } ?>
-                        </td>
-                    </tr>
-                    <tr>
                         <td>Aktif Ekipler</td>
 
                         <td>

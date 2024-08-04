@@ -28,7 +28,6 @@ class user extends CI_Controller
         $this->load->model("Order_model");
         $this->load->model("Company_model");
         $this->load->model("Project_model");
-        $this->load->model("Auction_model");
         $this->load->model("Contract_model");
         $this->load->model("Site_model");
 
@@ -67,7 +66,7 @@ class user extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->User_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
-        $auctions = $this->Auction_model->get_all(array());
+        
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
 
@@ -82,7 +81,6 @@ class user extends CI_Controller
         $viewData->subViewFolder = "$this->List_Folder";
         $viewData->items = $items;
         $viewData->projects = $projects;
-        $viewData->auctions = $auctions;
         $viewData->contracts = $contracts;
         $viewData->sites = $sites;
         $viewData->user = $user;
@@ -116,7 +114,7 @@ class user extends CI_Controller
         $viewData = new stdClass();
 
         $projects = $this->Project_model->get_all(array());
-        $auctions = $this->Auction_model->get_all(array());
+        
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
 
@@ -125,7 +123,6 @@ class user extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
 
         $viewData->projects = $projects;
-        $viewData->auctions = $auctions;
         $viewData->contracts = $contracts;
         $viewData->sites = $sites;
 

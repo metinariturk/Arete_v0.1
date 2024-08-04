@@ -1,44 +1,44 @@
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body">
-            <div class="table-responsive">
+            <div>
                 <table class="display" id="basic-1">
                     <thead>
                     <tr>
-                        <th>Hakediş No</th>
-                        <th>Sözleşme Adı</th>
-                        <th>Hakediş Tarihi</th>
-                        <th>Hakediş Tutarı</th>
-                        <th>Ödeme Tutar</th>
+                        <th class="w5">Hakediş No</th>
+                        <th class="w30">Sözleşme Adı</th>
+                        <th class="w65">Hakedişler</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($items as $item) { ?>
+                    <?php $i = 1; ?>
+                    <?php foreach ($contracts as $contract) { ?>
                         <tr>
-                            <td style="width: 5%">
-                                <a href="<?php echo base_url("payment/file_form/$item->id"); ?>">
-                                    <?php echo str_pad($item->hakedis_no, 2, "0", STR_PAD_LEFT);; ?>
+                            <td>
+                                <?php echo $i++; ?>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("payment/file_form/$contract->id"); ?>">
+                                    <?php echo contract_name($contract->id); ?>
                                 </a>
                             </td>
                             <td>
-                                <a href="<?php echo base_url("payment/file_form/$item->id"); ?>">
-                                    <?php echo get_from_id("contract", "sozlesme_ad", $item->contract_id); ?>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="<?php echo base_url("payment/file_form/$item->id"); ?>">
-                                    <?php echo dateFormat('d-m-Y', $item->imalat_tarihi); ?>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="<?php echo base_url("payment/file_form/$item->id"); ?>">
-                                    <?php echo money_format($item->A) . " " . get_currency($item->contract_id); ?>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="<?php echo base_url("payment/file_form/$item->id"); ?>">
-                                    <?php echo money_format($item->balance) . " " . get_currency($item->id); ?>
-                                </a>
+                                <?php $payments = $this->Payment_model->get_all(array("contract_id" => $contract->id)); ?>
+                                <?php if (!empty($payments)) { ?>
+                                    <?php $j = 0; ?>
+                                    <?php foreach ($payments as $payment) { ?>
+                                        <?php if ($j != 0) { ?>
+                                            <hr>
+                                        <?php }; ?>
+                                        <div>
+                                            <a href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
+                                                <?php echo $payment->hakedis_no; ?> Nolu Hakediş
+                                                - <?php echo money_format($payment->E) . " " . $contract->para_birimi; ?>
+                                            </a>
+                                        </div>
+                                        <?php $j++; ?>
+                                    <?php } ?>
+                                <?php } ?>
                             </td>
                         </tr>
                     <?php } ?>

@@ -3,7 +3,6 @@
 <script src="<?php echo base_url("assets"); ?>/js/jquery-3.5.1.min.js"></script><!--Jquery-->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-
 <!-- Bootstrap js-->
 
 <script src="<?php echo base_url("assets"); ?>/js/bootstrap/bootstrap.bundle.min.js"></script><!--Bootsrap Tema-->
@@ -25,7 +24,6 @@
 <script src="<?php echo base_url("assets"); ?>/js/dropzone/dropzone-script.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/sweet-alert/app.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/sweet-alert/sweetalert.min.js"></script><!--General Page Script -->
-<script src="<?php echo base_url("assets"); ?>/js/custom-spec.js"></script>
 
 <script src="<?php echo base_url("assets"); ?>/js/tree/jstree.min.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/tree/tree.js"></script>

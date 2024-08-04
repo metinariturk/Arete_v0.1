@@ -24,7 +24,7 @@ class Report extends CI_Controller
         $this->viewFolder = "report_v";
         $this->load->model("Report_model");
         $this->load->model("Report_file_model");
-        $this->load->model("Auction_model");
+        
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
@@ -76,14 +76,12 @@ class Report extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Report_model->get_all(array());
-        $prep_auctions = $this->Auction_model->get_all(array('durumu' => 0));
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
         $viewData->items = $items;
-        $viewData->prep_auctions = $prep_auctions;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 

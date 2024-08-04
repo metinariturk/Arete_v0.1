@@ -23,7 +23,12 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("{$viewFolder}/common/page_script"); ?>
-<?php if ($form_error){ ?>
+
+<script src="<?php echo base_url("assets"); ?>/js/datatable/datatables/jquery.dataTables.min.js"></script>
+<script>
+    $('#project_list').DataTable();
+</script>
+<?php if (isset($form_error)){ ?>
 <script>
     // Sayfa tamamen yüklendiğinde modalı aç
     $(document).ready(function() {

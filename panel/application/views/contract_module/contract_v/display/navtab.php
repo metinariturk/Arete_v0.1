@@ -187,7 +187,6 @@
                                 Katalog
                             </span>
                             <span class="badge pull-right">
-                                (<?php echo count($catalogs) ?>)
                             </span>
                         </a>
                     </li>
@@ -199,7 +198,6 @@
                                 Diğer
                             </span>
                             <span class="badge pull-right">
-                                (<?php echo count($drawings) ?>)
                             </span>
                         </a>
                     </li>

@@ -357,14 +357,6 @@ function module_name($module_name)
         "Süre Uzatımı" => "extime",
         "Yeni Birim Fiyat" => "newprice",
         "Hakediş" => "payment",
-        "Teklif" => "auction",
-        "Teklif Teknik Çizimler" => "aucdraw",
-        "Metraj" => "compute",
-        "Şartnameler" => "condition",
-        "Yaklaşık Maliyet" => "cost",
-        "Teşvik/Hibe" => "incentive",
-        "Yayın" => "notice",
-        "Teklif Formu" => "offer",
         "Rapor" => "report",
         "Şantiye" => "site",
         "Şantiye Depo" => "sitestock",
@@ -746,16 +738,6 @@ function getModuleList()
             "extime",
             "newprice",
             "payment"
-        ),
-        "auction" => array(
-            "auction",
-            "aucdraw",
-            "compute",
-            "condition",
-            "cost",
-            "incentive",
-            "notice",
-            "offer"
         ),
         "site" => array(
             "report",

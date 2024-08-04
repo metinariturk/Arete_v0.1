@@ -3,7 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
 </head>
-<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
+<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
@@ -21,8 +21,10 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
-
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script>
+    $('#contract_list').DataTable();
+</script>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

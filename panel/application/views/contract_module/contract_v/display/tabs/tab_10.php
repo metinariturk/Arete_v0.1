@@ -66,7 +66,6 @@
                             <h3>Geçici Kabul ile İlgili Evrakları Buraya Ekleyiniz</h3>
                         </div>
                     </div>
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/provision_list_v"); ?>
                 </div>
             </div>
 

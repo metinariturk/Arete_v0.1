@@ -17,13 +17,12 @@
                 <?php } ?>
 
                 <?php if (isset($form_error)) { ?>
-                    <div class="invalid-feedback"><?php echo form_error("dosya_no"); ?></div>
-                    <div class="invalid-feedback">* Önerilen Proje Kodu
-                        : <?php echo increase_code_suffix("contract"); ?>
-                    </div>
-                    </div>
-                <?php } ?>
+                <div class="invalid-feedback"><?php echo form_error("dosya_no"); ?></div>
+                <div class="invalid-feedback">* Önerilen Proje Kodu
+                    : <?php echo increase_code_suffix("contract"); ?>
+                </div>
             </div>
+            <?php } ?>
         </div>
         <div class="mb-2">
             <div class="col-form-label">Ana Sözleşme Adı</div>
@@ -54,7 +53,7 @@
                     <input type="text"
                            class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
                            readonly
-                           value="<?php echo isset($form_error) ? set_value("isveren") : $main_contract->yuklenici; ?>"
+                           value="<?php echo isset($form_error) ? set_value("isveren") : company_name($main_contract->yuklenici); ?>"
                            name="isveren">
                     <?php if (isset($form_error)) { ?>
                         <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
@@ -65,7 +64,7 @@
         <div class="mb-2">
             <div class="row">
                 <div class="col-12">
-                    <div class="col-form-label">Taşeron/Tedarikçi</div>
+                    <div class="col-form-label">Taşeron/Tedarikçi <i class="fa fa-plus-circle"></i> </div>
                     <select id="select2-demo-1"
                             class="form-control <?php cms_isset(form_error("yuklenici"), "is-invalid", ""); ?>"
                             data-plugin="select2" name="yuklenici">
@@ -80,8 +79,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
 

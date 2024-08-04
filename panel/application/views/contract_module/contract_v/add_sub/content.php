@@ -50,9 +50,6 @@ if (empty($project_id)) { ?>
                 </div>
             </form>
         </div>
-        <div class="row">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/common/error_form"); ?>
-        </div>
     </div>
 <?php } ?>
 
