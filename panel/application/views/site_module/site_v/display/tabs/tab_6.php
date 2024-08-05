@@ -39,14 +39,18 @@
                                             <label for="group" class="form-label">Meslek:</label>
                                             <select class="form-select" name="group">
                                                 <option value="" selected disabled>Seçiniz</option>
-                                                <?php foreach ($workgroups as $active_workgroup => $workgroups) {
-                                                    foreach ($workgroups as $workgroup) { ?>
-                                                        <option value="<?php echo $workgroup; ?>"> <?php echo group_name($workgroup); ?></option>
+                                                <?php if (!empty($workgroups)) { ?>}
+                                                    <?php foreach ($workgroups as $active_workgroup => $workgroups) {
+                                                        foreach ($workgroups as $workgroup) { ?>
+                                                            <option value="<?php echo $workgroup; ?>"> <?php echo group_name($workgroup); ?></option>
+                                                        <?php } ?>
                                                     <?php } ?>
                                                 <?php } ?>
-                                                <?php foreach ($workmachines as $active_workmachines => $workmachines) {
-                                                    foreach ($workmachines as $workmachine) { ?>
-                                                        <option value="<?php echo $workmachine; ?>"> <?php echo machine_name($workmachine); ?></option>
+                                                <?php if (!empty($workmachines)) { ?>}
+                                                    <?php foreach ($workmachines as $active_workmachines => $workmachines) {
+                                                        foreach ($workmachines as $workmachine) { ?>
+                                                            <option value="<?php echo $workmachine; ?>"> <?php echo machine_name($workmachine); ?></option>
+                                                        <?php } ?>
                                                     <?php } ?>
                                                 <?php } ?>
                                             </select>

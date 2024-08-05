@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/photoswipe.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/print_option.css">
-
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
-
-
+    <?php $this->load->view("includes/drag_drop_style"); ?>
     <style>
         @media print {
             .apexcharts-legend-marker {
@@ -48,6 +43,7 @@
 </div>
 
 <?php $this->load->view("includes/include_script"); ?>
+<?php $this->load->view("includes/file_upload_script.php"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>

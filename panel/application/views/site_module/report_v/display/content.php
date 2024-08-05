@@ -36,9 +36,6 @@
             <div class="card-body">
                 <div class="file-content">
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
-                    <div class="image_list_container">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
-                    </div>
                 </div>
             </div>
         </div>
@@ -78,12 +75,12 @@
                                                         class="fa fa-arrow-right"></i>
                                             </a>
                                         <?php } else { ?>
-                                        <a href="<?php echo base_url("report/new_form/$item->site_id"); ?>"
-                                           class="btn btn-pill btn-block btn-outline-primary btn-sm" type="button"
-                                           title="Yeni Rapor">
-                                           Yeni Rapor Oluştur <i
-                                                    class="fa fa-plus-circle"></i>
-                                        </a>
+                                            <a href="<?php echo base_url("report/new_form/$item->site_id"); ?>"
+                                               class="btn btn-pill btn-block btn-outline-primary btn-sm" type="button"
+                                               title="Yeni Rapor">
+                                                Yeni Rapor Oluştur <i
+                                                        class="fa fa-plus-circle"></i>
+                                            </a>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -157,3 +154,4 @@
             </div>
         </div>
     </div>
+</div>

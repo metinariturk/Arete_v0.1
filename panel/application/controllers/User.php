@@ -479,27 +479,7 @@ class user extends CI_Controller
 
     }
 
-    public function refresh_file_list($id, $from)
-    {
-        $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$from";
-
-
-        $viewData->item_files = $this->User_model->get_all(
-            array(
-                "id" => $id
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-        echo $render_html;
-
-    }
 
     public function fileDelete($id, $from)
     {

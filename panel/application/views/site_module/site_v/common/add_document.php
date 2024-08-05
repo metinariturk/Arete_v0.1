@@ -1,8 +1,25 @@
-<div data-url="<?php echo base_url("$this->Module_Name/refresh_file_list/$item->id"); ?>"
-      action="<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>" id="dropzone" class="dropzone"
-      data-plugin="dropzone"
-      data-options="{ url: '<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>'}">
-    <div class="dz-message">
-        <i class="fa-solid fa-cloud-arrow-up fa-4x"></i><h3>Dosyalarınızı Eklemek İçin Tıklayınız veya Sürükleyip Bırakınız</h3>
+<div class="file-content">
+    <div class="fileuploader fileuploader-theme-dragdrop">
+        <form method="post" enctype="multipart/form-data">
+            <?php
+            $uploadDir = $path;
+            $preloadedFiles = array();
+            $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
+            foreach ($uploadsFiles as $file) {
+                if (is_dir($uploadDir . $file))
+                    continue;
+                $preloadedFiles[] = array(
+                    "name" => $file,
+                    "auc_id" => $item->id,
+                    "type" => FileUploader::mime_content_type($uploadDir . $file),
+                    "size" => filesize($uploadDir . $file),
+                    "file" => base_url($path) . $file,
+                    "local" => base_url($path) . $file,
+                );
+            }
+            $preloadedFiles = json_encode($preloadedFiles);
+            ?>
+            <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
+        </form>
     </div>
 </div>

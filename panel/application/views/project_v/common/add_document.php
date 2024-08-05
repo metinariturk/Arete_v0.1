@@ -10,9 +10,11 @@
                     continue;
                 $preloadedFiles[] = array(
                     "name" => $file,
+                    "auc_id" => $item->id,
                     "type" => FileUploader::mime_content_type($uploadDir . $file),
                     "size" => filesize($uploadDir . $file),
                     "file" => base_url($path) . $file,
+                    "local" => base_url($path) . $file,
                 );
             }
             $preloadedFiles = json_encode($preloadedFiles);

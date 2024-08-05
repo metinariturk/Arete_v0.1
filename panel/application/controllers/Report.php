@@ -20,6 +20,10 @@ class Report extends CI_Controller
             redirect(base_url("sifre-yenile"));
         }
 
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
+
+
         $this->moduleFolder = "site_module";
         $this->viewFolder = "report_v";
         $this->load->model("Report_model");
@@ -182,8 +186,16 @@ class Report extends CI_Controller
         $this->load->model("Report_weather_model");
 
         $item = $this->Report_model->get(array("id" => $id));
+        $site = $this->Site_model->get(array("id" => $item->site_id));
 
-        $item = $this->Report_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
+
+        $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+
+        $date = dateFormat_dmy($item->report_date);
+
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/";
+
         $reports = $this->Report_model->get_all(array("site_id" => $item->site_id), "report_date ASC");
 
         $current_report_index = array_search($id, array_column($reports, 'id'));
@@ -202,8 +214,6 @@ class Report extends CI_Controller
         }
 
 
-        $site_id = get_from_any("report", "site_id", "id", "$id");
-        $proje_id = get_from_any("site", "proje_id", "id", $site_id);
 
         $workgroups = $this->Report_workgroup_model->get_all(array("report_id" => $id));
         $weather = $this->Report_weather_model->get(array("date" => $item->report_date));
@@ -211,12 +221,9 @@ class Report extends CI_Controller
         $supplies = $this->Report_supply_model->get_all(array("report_id" => $id));
 
         $site = $this->Site_model->get(array(
-            "id" => $site_id
+            "id" => $site->id
         ));
 
-        $project = $this->Project_model->get(array(
-            "id" => $proje_id
-        ));
 
         $viewData = new stdClass();
 
@@ -224,8 +231,10 @@ class Report extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->path = $path;
+        $viewData->upload_function = $upload_function;
         $viewData->item = $item;
-        $viewData->proje_id = $proje_id;
+        $viewData->proje_id = $project->id;
         $viewData->weather = $weather;
         $viewData->workgroups = $workgroups;
         $viewData->previous_report = $previous_report;
@@ -725,118 +734,54 @@ class Report extends CI_Controller
             }
         }
 
-        $report = $this->Report_model->get(array("id" => $id));
-        $site = $this->Site_model->get(array("id" => $report->site_id));
-        $old_file = $this->Report_file_model->get_last(array("report_id" => $id));
-        $extention = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+        $item = $this->Report_model->get(array("id" => $id));
+        $site = $this->Site_model->get(array("id" => $item->site_id));
 
-        $file_name = $report->report_date . '-' . ($old_file->rank + 1) . "." . $extention;
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
-        $size = $_FILES["file"]["size"];
+        $date = dateFormat_dmy($item->report_date);
 
-        $site_code = $site->dosya_no;
-        $project_id = project_id_site($site->id);
-        $project_code = project_code($project_id);
-        $date = dateFormat_dmy($report->report_date);
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/";
 
-        $config["file_name"] = $file_name;
-        $config["upload_path"] = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site_code/Reports/$date";
-        if (!is_dir($config["upload_path"])) {
-            mkdir($config["upload_path"], 0777, TRUE);
-        }
-        $folder = $config["upload_path"];
-        $config['allowed_types'] = 'gif|jpg|jpeg|png';
-        $config['overwrite'] = TRUE; // Eğer dosya zaten varsa üzerine yaz
-
-        $this->load->library("upload", $config);
-
-        $upload = $this->upload->do_upload("file");
-        $file_path = $folder . "/" . $file_name;
-
-        $thumbnail_folder = $folder . "/thumbnails";
-
-        if (!is_dir($thumbnail_folder)) {
-            // "thumbnails" klasörü yoksa oluştur
-            if (!mkdir($thumbnail_folder, 0777, true)) {
-                echo "Failed to create thumbnails folder...";
-            }
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
         }
 
-        chmod($folder, 0777);
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
 
-        if ($upload) {
-            if ($size > 3000000) {
+        // call to upload the files
 
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = $file_path;
-                $config['new_image'] = $file_path;
-                $config['create_thumb'] = FALSE;
-                $config['maintain_ratio'] = TRUE;
-                $config['width'] = 1920;
-                $config['height'] = 1080;
+        $uploadedFiles = $FileUploader->upload();
 
-                $this->load->library('image_lib', $config);
+        $files = ($uploadedFiles['files']);
 
-                if (!$this->image_lib->resize()) {
-                    // Display any errors that occurred during the resize process
-                    echo "Image resize error: " . $this->image_lib->display_errors();
-                } else {
-                    echo "Image resized successfully.";
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
+
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
                 }
-
-            } else {
-                echo "Dosya yükleme başarılı, ancak boyut küçültmeye gerek yok.";
             }
-
-            $thumbnail_config['image_library'] = 'gd2';
-            $thumbnail_config['source_image'] = $file_path;
-            $thumbnail_config['new_image'] = $thumbnail_folder . "/" . $file_name; // Thumbnail'ı belirtilen yere kaydet
-            $thumbnail_config['create_thumb'] = TRUE;
-            $thumbnail_config['maintain_ratio'] = TRUE;
-            $thumbnail_config['thumb_marker'] = NULL; // Thumbnail dosyasının adına eklenecek özel işaret, NULL kullanılarak devre dışı bırakılır
-            $thumbnail_config['width'] = 800; // Thumbnail için özel genişlik
-            $thumbnail_config['height'] = 600; // Thumbnail için özel yükseklik
-
-            $this->load->library('image_lib', $config);
-
-            $this->image_lib->initialize($thumbnail_config);
-
-            if (!$this->image_lib->resize()) {
-                // İşlem sırasında oluşan hataları görüntüleyin
-                echo "Thumbnail resize error: " . $this->image_lib->display_errors();
-            } else {
-                echo "Thumbnail resized successfully.";
-            }
-
-            $this->Report_file_model->add(
-                array(
-                    "img_url" => $file_name,
-                    "report_id" => $id,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => filesize($file_path),
-                    "rank" => ($old_file->rank + 1)
-                )
-            );
-
-        } else {
-            echo "Dosya yükleme hatası: " . $this->upload->display_errors();
         }
 
-        if ($upload) {
-
-            $uploaded_file = $this->upload->data("file_name");
-
-
-        } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
-        }
-
+        header('Content-Type: application/json');
+        echo json_encode($uploadedFiles);
+        exit;
     }
 
-    public function file_download($id)
+    public function fileDelete_java($id)
     {
         $session_user = $this->session->userdata("user");
 
@@ -846,34 +791,21 @@ class Report extends CI_Controller
             }
         }
 
-        $fileName = $this->Report_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+        $item = $this->Report_model->get(array("id" => $id));
+        $site = $this->Site_model->get(array("id" => $item->site_id));
 
-        $report_file = $this->Report_file_model->get(array("id" => $id));
-        $report = $this->Report_model->get(array("id" => $report_file->report_id));
-        $date = dateFormat_dmy($report->report_date);
-        $site = $this->Site_model->get(array("id" => $report->site_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
-        $project_code = project_code("$site->proje_id");
+        $date = dateFormat_dmy($item->report_date);
 
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/";
 
-        $file_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/$fileName->img_url";
+        $fileName = $this->input->post('fileName');
 
-        if ($file_path) {
-            if (file_exists($file_path)) {
-                $data = file_get_contents($file_path);
-                force_download($fileName->img_url, $data);
-            } else {
-                echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
-            }
-        } else {
-            echo "Dosya Yok";
-        }
-
+        unlink("$path/$fileName");
     }
+
+
 
     public function download_all($report_id)
     {
@@ -904,100 +836,6 @@ class Report extends CI_Controller
         $zip_name = "Foto-" . $date;
         $this->zip->download("$zip_name");
 
-    }
-
-    public function refresh_file_list($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-
-        $item = $this->Report_model->get(array("id" => $id));
-
-        $viewData->item_files = $this->Report_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        $site = $this->Site_model->get(array("id" => $item->site_id));
-        $project = $this->Project_model->get(array("id" => $site->proje_id));
-        $viewData->project = $project;
-        $viewData->site = $site;
-        $viewData->item = $item;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-        echo $render_html;
-
-    }
-
-    public function fileDelete($id)
-    {
-        $session_user = $this->session->userdata("user");
-
-        if ($session_user->user_role != 2) {
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
-        }
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Report_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $report_file = $this->Report_file_model->get(array("id" => $id));
-        $report = $this->Report_model->get(array("id" => $report_file->report_id));
-        $site = $this->Site_model->get(array("id" => $report->site_id));
-        $project = $this->Project_model->get(array("id" => $site->proje_id));
-
-        $date = dateFormat_dmy($report->report_date);
-        $project_code = project_code("$site->proje_id");
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
-
-        $delete = $this->Report_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-        if ($delete) {
-
-            $file_path = "$path/$fileName->img_url";
-            $file_path_thumb = "$path/thumbnails/$fileName->img_url";
-
-            unlink($file_path);
-            unlink($file_path_thumb);
-
-            $viewData->item = $this->Report_model->get(
-                array(
-                    "id" => $report->id
-                )
-            );
-
-            $viewData->item_files = $this->Report_file_model->get_all(
-                array(
-                    "report_id" => $report->id
-                )
-            );
-
-            $viewData->project = $project;
-            $viewData->site = $site;
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        }
     }
 
     public function fileDelete_all($id)
@@ -1067,6 +905,8 @@ class Report extends CI_Controller
 
         }
     }
+
+
 
     public
     function duplicate_code_check($file_name)

@@ -120,9 +120,6 @@
                     <div class="card-header">
                         <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
                     </div>
-                    <div class="image_list_container">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
-                    </div>
                 </div>
             </div>
         </div>

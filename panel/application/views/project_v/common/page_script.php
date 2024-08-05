@@ -9,4 +9,3 @@
         icon.classList.toggle('fa-star-o');
     }
 </script>
-

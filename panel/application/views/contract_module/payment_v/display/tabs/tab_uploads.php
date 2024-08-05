@@ -10,7 +10,6 @@
                     <div class="file-content">
                         <div class="fileuploader fileuploader-theme-dragdrop">
                             <form method="post" enctype="multipart/form-data">
-
                                 <?php
                                 $uploadDir = $path;
                                 $preloadedFiles = array();

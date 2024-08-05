@@ -96,7 +96,8 @@ class Project extends CI_Controller
         );
 
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->project_code/$item->project_code/main/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->project_code/main/";
+
 
         !is_dir($path) && mkdir($path, 0777, TRUE);
 
@@ -419,6 +420,8 @@ class Project extends CI_Controller
             redirect(base_url("error"));
         }
 
+        $project = $this->Project_model->get(array("id"=> $id));
+
         $project_name = project_name($id);
         $number_of_contracts = count(get_from_any_array_select_ci("id", "contract", "proje_id", $id));
         $number_of_sites = count(get_from_any_array_select_ci("id", "site", "proje_id", $id));
@@ -444,8 +447,8 @@ class Project extends CI_Controller
             );
 
 
-            $folder_name = get_from_any("projects", "project_code", "id", $id);
-            $project_name = get_from_any("projects", "project_name", "id", $id);
+            $folder_name = $project->project_code;
+            $project_name = $project->project_name;
             $path = "$this->Upload_Folder/$this->viewFolder/$folder_name/";
 
             if (file_exists($path)) {
@@ -571,197 +574,15 @@ class Project extends CI_Controller
         exit;
     }
 
-    public
-    function file_download($id)
+    public function fileDelete_java($id)
     {
+        $fileName = $this->input->post('fileName');
 
+        $project = $this->Project_model->get(array("id" => $id));
 
-        $fileName = $this->Project_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
 
-        $project_id = get_from_id("projects_files", "$this->Dependet_id_key", $id);
-        $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-        if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
-        }
-
-        $folder = get_from_id("projects", "project_code", $project_id);
-
-        $file_path = "$this->Upload_Folder/$this->viewFolder/$folder/$this->Module_File_Dir/$fileName->img_url";
-
-        if ($file_path) {
-
-            if (file_exists($file_path)) {
-                $data = file_get_contents($file_path);
-                force_download($fileName->img_url, $data);
-            } else {
-                echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
-            }
-        } else {
-            echo "Dosya Yok";
-        }
-
-    }
-
-    public
-    function fileDelete($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-
-        $fileName = $this->Project_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        $project_id = get_from_id("projects_files", "$this->Dependet_id_key", $id);
-
-        $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-        if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
-        }
-
-        $folder = get_from_id("projects", "project_code", $project_id);
-
-        $delete = $this->Project_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-        if ($delete) {
-            $alert = array(
-                "title" => "Dosya Sil",
-                "text" => "Dosyayı Başarılı Bir Şekilde Sildiniz",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Project_model->get(
-                array(
-                    "id" => $project_id
-                )
-            );
-
-            $viewData->item_files = $this->Project_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $project_id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-
-            $path = "$this->Upload_Folder/$this->viewFolder/$folder/$this->Module_File_Dir/$fileName->img_url";
-
-            unlink($path);
-        } else {
-            $alert = array(
-                "title" => "Tümünü Sil",
-                "text" => "Dosyayı Başarılı Bir Şekilde Silemediniz",
-                "type" => "danger"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-        }
-
-    }
-
-    public
-    function fileDelete_all($id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $folder = get_from_id("projects", "project_code", $id);
-
-        $delete = $this->Project_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        if ($delete) {
-            $alert = array(
-                "title" => "Tümünü Sil",
-                "text" => "Tüm Dosyaları Başarılı Bir Şekilde Sildiniz",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            $dir_files = directory_map("$this->Upload_Folder/$this->viewFolder/$folder/$this->Module_File_Dir");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->Upload_Folder/$this->viewFolder/$folder/$this->Module_File_Dir/$dir_file");
-            }
-
-            $viewData->item = $this->Project_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-
-            $viewData->item_files = $this->Project_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        } else {
-            $alert = array(
-                "title" => "Tümünü Sil",
-                "text" => "Tüm Dosyaları Başarılı Bir Şekilde Silemediniz",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-        }
-    }
-
-    public
-    function refresh_file_list($id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $viewData->item = $this->Project_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->item_files = $this->Project_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-        echo $render_html;
-
+        unlink("$path/$fileName");
     }
 
     public

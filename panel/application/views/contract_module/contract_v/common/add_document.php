@@ -1,7 +1,7 @@
 <div class="file-content">
     <div class="fileuploader fileuploader-theme-dragdrop">
-        <form 
-              method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
+
             <?php
             $uploadDir = $path;
             $preloadedFiles = array();
@@ -11,9 +11,11 @@
                     continue;
                 $preloadedFiles[] = array(
                     "name" => $file,
+                    "auc_id" => $item->id,
                     "type" => FileUploader::mime_content_type($uploadDir . $file),
                     "size" => filesize($uploadDir . $file),
                     "file" => base_url($path) . $file,
+                    "local" => base_url($path) . $file,
                 );
             }
             $preloadedFiles = json_encode($preloadedFiles);

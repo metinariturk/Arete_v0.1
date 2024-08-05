@@ -1526,31 +1526,6 @@ class Bond extends CI_Controller
 
     }
 
-    public function refresh_file_list($id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $viewData->item = $this->Bond_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $viewData->item_files = $this->Bond_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-        echo $render_html;
-
-    }
 
     public function fileDelete($id)
     {

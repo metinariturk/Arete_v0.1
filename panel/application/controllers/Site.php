@@ -21,6 +21,9 @@ class Site extends CI_Controller
         $this->moduleFolder = "site_module";
         $this->viewFolder = "site_v";
 
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
+
         $this->load->model("Site_model");
         $this->load->model("Site_file_model");
         $this->load->model("Contract_model");
@@ -56,7 +59,6 @@ class Site extends CI_Controller
         $this->moduleFolder = "site_module";
         $this->viewFolder = "site_v";
         $this->Module_Title = "Şantiye";
-        $this->Module_Main_Dir = "site_v";
         $this->Display_route = "file_form";
         $this->Display_Folder = "display";
         $this->Add_Folder = "add";
@@ -187,7 +189,7 @@ class Site extends CI_Controller
         if ($validate) {
 
             $project_code = project_code($project_id);
-            $path = "$this->Upload_Folder/project_v/$project_code/$file_name/main/";
+            $path = "$this->Upload_Folder/project_v/$project_code/$file_name/Main/";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -397,6 +399,18 @@ class Site extends CI_Controller
             }
         }
 
+        $project_id = project_id_site($id);
+        $item = $this->Site_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+        $project = $this->Project_model->get(array("id"=>$project_id));
+        $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/main/";
+
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
         $this->load->model("Report_supply_model");
@@ -445,11 +459,7 @@ class Site extends CI_Controller
             'main_category' => 1
         ));
 
-        $item = $this->Site_model->get(
-            array(
-                "id" => $id
-            )
-        );
+
 
         $month = date('n');
         $year = date('Y');
@@ -459,6 +469,8 @@ class Site extends CI_Controller
 
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->path = $path;
+        $viewData->upload_function = $upload_function;
         $viewData->reports = $reports;
         $viewData->site_stocks = $site_stocks;
         $viewData->active_tab = $active_tab;
@@ -542,117 +554,6 @@ class Site extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function update_project($id)
-    {
-
-        $this->load->library("form_validation");
-
-        $this->form_validation->set_rules("santiye_sefi", "Şantiye Şefi", "greater_than[0]|required|trim");
-        $this->form_validation->set_rules("santiye_ad", "Şantiye Adı", "required|trim");
-
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-
-
-            $personeller = $this->input->post('teknik_personel');
-
-            if (!empty($personeller)) {
-                $data_personel = implode(",", array_unique($personeller));
-            } else {
-                $data_personel = null;
-            }
-
-            $araclar = $this->input->post('araclar');
-
-            if (!empty($araclar)) {
-                $data_araclar = implode(",", array_unique($araclar));
-            } else {
-                $data_araclar = null;
-            }
-
-            $update = $this->Site_model->update(
-                array(
-                    "id" => $id
-                ),
-                array(
-                    "santiye_ad" => $this->input->post("santiye_ad"),
-                    "santiye_sefi" => $this->input->post("santiye_sefi"),
-                    "teknik_personel" => $data_personel,
-                    "araclar" => $data_araclar,
-                    "aciklama" => $this->input->post("aciklama"),
-                )
-            );
-
-            $record_id = $this->db->insert_id();
-
-            $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
-
-            $update2 = $this->Order_model->update(
-                array(
-                    "id" => $file_order_id
-                ),
-                array(
-                    "updatedAt" => date("Y-m-d H:i:s"),
-                )
-            );
-
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
-
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Project_model->get(
-                array(
-                    "id" => $id,
-                )
-            );
-
-            $viewData = new stdClass();
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "update_project";
-            $viewData->form_error = true;
-
-
-            $viewData->item = $this->Site_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-            $viewData->item_files = $this->Site_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-        }
-    }
-
     public function delete($id)
     {
         $site_code = get_from_id("site", "dosya_no", $id);
@@ -714,127 +615,75 @@ class Site extends CI_Controller
         redirect(base_url("project/file_form/$project_id"));
     }
 
+
     public function file_upload($id)
     {
 
-        $project_id = get_from_id("site", "proje_id", $id);
-        $project_code = project_code($project_id);
-        $site_code = site_code($id);
-        $path = "$this->File_Dir_Prefix/$project_code/$site_code/main";
+        if (!isAdmin()) {
+            if (!in_array(active_user_id(), $yetkili)) {
+                redirect(base_url("error"));
+            }
+        }
+
+        $project_id = project_id_site($id);
+        $site = $this->Site_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $project_id));
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/main/";
 
         if (!is_dir($path)) {
-            mkdir("$path", 0777, TRUE);
-            echo "oluştu";
-        } else {
-            echo "aynı isimde dosya mevcut";
+            mkdir($path, 0777, TRUE);
         }
 
-        $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-        $size = $_FILES["file"]["size"];
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
 
-        $config["allowed_types"] = "*";
-        $config["upload_path"] = "$path";
-        $config["file_name"] = $file_name;
+        // call to upload the files
 
-        $this->load->library("upload", $config);
+        $uploadedFiles = $FileUploader->upload();
 
-        $upload = $this->upload->do_upload("file");
+        $files = ($uploadedFiles['files']);
 
-        if ($upload) {
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
 
-            $uploaded_file = $this->upload->data("file_name");
-
-            $this->Site_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
-            echo $config["upload_path"];
-
-
-        } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
-
-        }
-
-    }
-
-    public function file_download($id)
-    {
-        $fileName = $this->Site_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        $site_id = get_from_id("site_files", "site_id", $id);
-        $project_id = get_from_id("site", "proje_id", $site_id);
-        $project_code = project_code($project_id);
-        $site_code = site_code($site_id);
-        $file_path = "$this->File_Dir_Prefix/$project_code/$site_code/main/$fileName->img_url";
-
-        if ($file_path) {
-
-            if ($file_path && file_exists($file_path)) {
-                $data = file_get_contents($file_path);
-                force_download($fileName->img_url, $data);
-                $alert = [
-                    "title" => "İşlem Başarılı",
-                    "text" => "Dosya indirildi",
-                    "type" => "success"
-                ];
-
-                $this->session->set_flashdata("alert", $alert);
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN",
-                    "type" => "danger"
-                );
-
-                $this->session->set_flashdata("alert", $alert);
-            }
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Dosya yok",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-        }
-    }
-
-    public function expense_download($expense_id)
-    {
-
-        $date_folder = get_from_id("sitewallet", "date", "$expense_id");
-
-        $site_id = get_from_id("sitewallet", "site_id", $expense_id);
-
-        $site_code = site_code($site_id);
-        $project_id = project_id_site($site_id);
-        $project_code = project_code($project_id);
-
-        $file_path = "$this->File_Dir_Prefix/$project_code/$site_code/Sitewallet/$date_folder";
-
-        $files = scandir($file_path);
-        foreach ($files as $file) {
-            // Dosya ismini uzantısız olarak almak için pathinfo() fonksiyonunu kullanabilirsiniz
-            $filename = pathinfo($file, PATHINFO_FILENAME);
-
-            if (strpos($filename, $expense_id) !== false) {
-                $this->load->helper('download');
-                force_download("$file_path/$file", NULL);
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
+                }
             }
         }
 
+        header('Content-Type: application/json');
+        echo json_encode($uploadedFiles);
+        exit;
+    }
 
+    public function fileDelete_java($id)
+    {
+        if (!isAdmin()) {
+            if (!in_array(active_user_id(), $yetkili)) {
+                redirect(base_url("error"));
+            }
+        }
+
+        $project_id = project_id_site($id);
+        $site = $this->Site_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $project_id));
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/main/";
+
+        $fileName = $this->input->post('fileName');
+
+        unlink("$path/$fileName");
     }
 
     public function expense_delete($expense_id)
@@ -884,89 +733,6 @@ class Site extends CI_Controller
         $this->zip->read_dir($path, FALSE);
         $this->zip->download("$zip_name.zip");
 
-    }
-
-    public function refresh_file_list($id)
-    {
-        $viewData = new stdClass();
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->item = $this->Site_model->get(
-            array(
-                "id" => $id
-            )
-        );
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-        echo $render_html;
-    }
-
-    public function fileDelete($id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Site_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $site_id = get_from_id("site_files", "site_id", $id);
-        $project_id = project_id_site($site_id);
-        $project_code = project_code($project_id);
-        $dosya_no = site_code($site_id);
-
-        $delete = $this->Site_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-        $path = "uploads/project_v/$project_code/$dosya_no/main/$fileName->img_url";
-        unlink($path);
-
-        if ($delete) {
-
-
-            $alert = array(
-                "title" => "Dosya Sil",
-                "text" => "Dosyayı Başarılı Bir Şekilde Sildiniz",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Site_model->get(
-                array(
-                    "id" => $site_id
-                )
-            );
-            $viewData->item_files = $this->Site_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $site_id
-                )
-            );
-
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        } else {
-            $alert = array(
-                "title" => "Dosya Silinemedi",
-                "text" => " $fileName->img_url Dosyası Silme Başarısz",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-        }
     }
 
     public function fileDelete_all($site_id)

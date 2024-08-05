@@ -90,7 +90,6 @@
                                 </div>
                                 <div class="fade tab-pane" id="pills-notification" role="tabpanel"
                                      aria-labelledby="pills-notification-tab">
-
                                     <div class="card mb-0">
                                         <div class="card-header d-flex">
 
@@ -118,9 +117,9 @@
                 </div>
             </div>
             <div class="col-xl-3 col-md-12 box-col-12">
-                <div class="tab-content">
-                    <?php $this->load->view("{$viewFolder}/$this->Common_Files/add_document"); ?>
-                </div>
+                <div class="card mb-0">
+                        <?php $this->load->view("{$viewFolder}/$this->Common_Files/add_document"); ?>
+                    </div>
             </div>
         </div>
     </div>

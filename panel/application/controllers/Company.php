@@ -408,26 +408,7 @@ class company extends CI_Controller
         }
     }
 
-    public
-    function refresh_file_list($id)
-    {
-        $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $viewData->item = $this->company_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/avatar", $viewData, true);
-
-        echo $render_html;
-
-    }
 
     public
     function fileDelete($id, $from)
