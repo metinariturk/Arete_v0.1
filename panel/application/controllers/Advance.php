@@ -545,29 +545,6 @@ class Advance extends CI_Controller
     {
 
 
-        $advance_id = get_from_id("advance_files", "advance_id", $id);
-        $contract_id = contract_id_module("advance", $advance_id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $advance_code = get_from_id("advance", "dosya_no", $advance_id);
-
-        $file_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Advance/$advance_code/$fileName->img_url";
-
-        if ($file_path) {
-
-            if (file_exists($file_path)) {
-                $data = file_get_contents($file_path);
-                force_download($fileName->img_url, $data);
-            } else {
-                echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
-            }
-        } else {
-            echo "Dosya Yok";
-        }
 
     }
 

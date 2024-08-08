@@ -564,35 +564,6 @@ class Collection extends CI_Controller
 
     }
 
-    public function file_download($id)
-    {
-        
-
-        $collection_id = get_from_id("collection_files", "collection_id", $id);
-        $contract_id = contract_id_module("collection", $collection_id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $collection_code = get_from_id("collection", "dosya_no", $collection_id);
-
-        $file_path = "$this->File_Dir_Prefix/$project_code/$contract_code/Collection/$collection_code/$fileName->img_url";
-
-        if ($file_path) {
-
-            if (file_exists($file_path)) {
-                $data = file_get_contents($file_path);
-                force_download($fileName->img_url, $data);
-            } else {
-                echo "Dosya veritabanında var ancak klasör içinden silinmiş, SİSTEM YÖNETİCİNİZE BAŞVURUN";
-            }
-        } else {
-            echo "Dosya Yok";
-        }
-
-    }
 
     public function download_all($collection_id)
     {

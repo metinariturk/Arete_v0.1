@@ -34,31 +34,7 @@
                         </a>
                     </td>
                     <td>
-                        <div>
-                            <?php if (!empty($advance->id)) {
-                                $advance_files = get_module_files("advance_files", "advance_id", "$advance->id");
-                                if (!empty($advance_files)) { ?>
-                                    <a class="btn btn-pill btn-success btn-air-success" type="button" title=""
-                                       href="<?php echo base_url("advance/download_all/$advance->id"); ?>"
-                                       data-bs-original-title="<?php foreach ($advance_files as $advance_file) { ?>
-                                            <?php echo filenamedisplay($advance_file->img_url); ?> |
-                                            <?php } ?>"
-                                       data-original-title="btn btn-pill btn-info btn-air-info btn-lg">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
-                                        (<?php echo count($advance_files); ?>)
-                                    </a>
-                                <?php } ?>
-                            <?php } else { ?>
-                                <div class="div-table">
-                                    <div class="div-table-row">
-                                        <div class="div-table-col">
-                                            Dosya Yok, Eklemek İçin Görüntüle Butonundan Şartname Sayfasına
-                                            Gidiniz
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php } ?>
-                        </div>
+
                     </td>
                 </tr>
             <?php } ?>

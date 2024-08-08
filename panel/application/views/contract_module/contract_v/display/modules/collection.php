@@ -47,29 +47,7 @@
                 </td>
                 <td>
                     <div>
-                        <?php if (!empty($collection->id)) {
-                            $collection_files = get_module_files("collection_files", "collection_id", "$collection->id");
-                            if (!empty($collection_files)) { ?>
-                                <a class="btn btn-pill btn-success btn-air-success" type="button" title=""
-                                   href="<?php echo base_url("collection/download_all/$collection->id"); ?>"
-                                   data-bs-original-title="<?php foreach ($collection_files as $collection_file) { ?>
-                                            <?php echo filenamedisplay($collection_file->img_url); ?> |
-                                            <?php } ?>"
-                                   data-original-title="btn btn-pill btn-info btn-air-info btn-lg">
-                                    <i class="fa fa-download" aria-hidden="true"></i>
-                                    (<?php echo count($collection_files); ?>)
-                                </a>
-                            <?php } ?>
-                        <?php } else { ?>
-                            <div class="div-table">
-                                <div class="div-table-row">
-                                    <div class="div-table-col">
-                                        Dosya Yok, Eklemek İçin Görüntüle Butonundan Şartname Sayfasına
-                                        Gidiniz
-                                    </div>
-                                </div>
-                            </div>
-                        <?php } ?>
+
                     </div>
                 </td>
             </tr>
