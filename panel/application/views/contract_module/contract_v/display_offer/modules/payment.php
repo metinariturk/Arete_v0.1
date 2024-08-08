@@ -32,31 +32,7 @@
                     </a>
                 </td>
                 <td>
-                    <div>
-                        <?php if (!empty($payment->id)) {
-                            $payment_files = get_module_files("payment_files", "payment_id", "$payment->id");
-                            if (!empty($payment_files)) { ?>
-                                <a class="btn btn-pill btn-success btn-air-success" type="button" title=""
-                                   href="<?php echo base_url("payment/download_all/$payment->id"); ?>"
-                                   data-bs-original-title="<?php foreach ($payment_files as $payment_file) { ?>
-                                            <?php echo filenamedisplay($payment_file->img_url); ?> |
-                                            <?php } ?>"
-                                   data-original-title="btn btn-pill btn-info btn-air-info btn-lg">
-                                    <i class="fa fa-download" aria-hidden="true"></i>
-                                    (<?php echo count($payment_files); ?>)
-                                </a>
-                            <?php } ?>
-                        <?php } else { ?>
-                            <div class="div-table">
-                                <div class="div-table-row">
-                                    <div class="div-table-col">
-                                        Dosya Yok, Eklemek İçin Görüntüle Butonundan Şartname Sayfasına
-                                        Gidiniz
-                                    </div>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
+
                 </td>
             </tr>
         <?php } ?>

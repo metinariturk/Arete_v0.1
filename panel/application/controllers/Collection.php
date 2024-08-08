@@ -44,7 +44,7 @@ class Collection extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
     }
 
@@ -138,11 +138,7 @@ class Collection extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Collection_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+        
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
 
@@ -172,11 +168,7 @@ class Collection extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Collection_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+        
 
         $viewData->contract_id = $contract_id;
         $viewData->project_id = $project_id;
@@ -450,11 +442,7 @@ class Collection extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Collection_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
+            
 
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;
@@ -578,11 +566,7 @@ class Collection extends CI_Controller
 
     public function file_download($id)
     {
-        $fileName = $this->Collection_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+        
 
         $collection_id = get_from_id("collection_files", "collection_id", $id);
         $contract_id = contract_id_module("collection", $collection_id);
@@ -640,114 +624,9 @@ class Collection extends CI_Controller
     }
 
 
-    public function fileDelete($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Collection_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
 
 
-        $collection_id = get_from_id("collection_files", "collection_id", $id);
-        $contract_id = contract_id_module("collection", $collection_id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $collection_code = get_from_id("collection", "dosya_no", $collection_id);
 
-        $delete = $this->Collection_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        if ($delete) {
-
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Collection/$collection_code/$fileName->img_url";
-
-            unlink($path);
-
-            $viewData->item = $this->Collection_model->get(
-                array(
-                    "id" => $collection_id
-                )
-            );
-
-            $viewData->item_files = $this->Collection_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $collection_id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        }
-    }
-
-    public function fileDelete_all($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $contract_id = contract_id_module("collection", $id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $collection_code = get_from_id("collection", "dosya_no", $id);
-
-        $delete = $this->Collection_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->File_Dir_Prefix/$project_code/$contract_code/Collection/$collection_code");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->File_Dir_Prefix/$project_code/$contract_code/Collection/$collection_code/$dir_file");
-            }
-
-            $viewData->item = $this->Collection_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-
-            $viewData->item_files = $this->Collection_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-            echo $render_html;
-
-
-        }
-    }
 
     public function duplicate_code_check($file_name)
     {

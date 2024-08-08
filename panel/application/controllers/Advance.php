@@ -21,13 +21,11 @@ class Advance extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "advance_v";
         $this->load->model("Advance_model");
-        $this->load->model("Advance_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
         $this->load->model("Bond_model");
-        $this->load->model("Bond_file_model");
 
         $this->Module_Name = "advance";
         $this->Module_Title = "Avans";
@@ -46,7 +44,7 @@ class Advance extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
     }
 
@@ -139,11 +137,7 @@ class Advance extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Advance_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+        
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
 
@@ -173,11 +167,7 @@ class Advance extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Advance_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+        
 
         $viewData->contract_id = $contract_id;
         $viewData->project_id = $project_id;
@@ -457,11 +447,7 @@ class Advance extends CI_Controller
                 )
             );
 
-            $delete_bond_file = $this->Bond_file_model->delete(
-                array(
-                    "bond_id" => $bond_id
-                )
-            );
+
 
             $delete_bond = $this->Bond_model->delete(
                 array(
@@ -488,10 +474,6 @@ class Advance extends CI_Controller
             array("deletedAt" => date("Y-m-d H:i:s"),
                 "deletedBy" => active_user_id(),
             )
-        );
-
-        $delete_advance_file = $this->Advance_file_model->delete(
-            array("$this->Dependet_id_key" => $id)
         );
 
         $delete_advance = $this->Advance_model->delete(
@@ -552,17 +534,6 @@ class Advance extends CI_Controller
 
             $uploaded_file = $this->upload->data("file_name");
 
-            $this->Advance_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
-
-
         } else {
             echo "islem basarisiz";
             echo $config["upload_path"];
@@ -572,11 +543,7 @@ class Advance extends CI_Controller
 
     public function file_download($id)
     {
-        $fileName = $this->Advance_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+
 
         $advance_id = get_from_id("advance_files", "advance_id", $id);
         $contract_id = contract_id_module("advance", $advance_id);
@@ -620,7 +587,6 @@ class Advance extends CI_Controller
         $contract_name = contract_name($contract_id);
 
         $path = "uploads/project_v/$project_code/$contract_code/Advance/$Advance_code";
-        echo $path;
 
         $files = glob($path . '/*');
 
@@ -633,114 +599,7 @@ class Advance extends CI_Controller
 
     }
 
-    public function fileDelete($id)
-    {
 
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Advance_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        $advance_id = get_from_id("advance_files", "advance_id", $id);
-        $contract_id = contract_id_module("advance", $advance_id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $advance_code = get_from_id("advance", "dosya_no", $advance_id);
-
-        $delete = $this->Advance_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        if ($delete) {
-
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Advance/$advance_code/$fileName->img_url";
-
-            unlink($path);
-
-            $viewData->item = $this->Advance_model->get(
-                array(
-                    "id" => $advance_id
-                )
-            );
-
-            $viewData->item_files = $this->Advance_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $advance_id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        }
-    }
-
-    public function fileDelete_all($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $contract_id = contract_id_module("advance", $id);
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $advance_code = get_from_id("advance", "dosya_no", $id);
-
-        $delete = $this->Advance_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->File_Dir_Prefix/$project_code/$contract_code/Advance/$advance_code");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->File_Dir_Prefix/$project_code/$contract_code/Advance/$advance_code/$dir_file");
-            }
-
-            $viewData->item = $this->Advance_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-
-            $viewData->item_files = $this->Advance_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-            echo $render_html;
-
-
-        }
-    }
 
     public function duplicate_code_check($file_name)
     {

@@ -58,7 +58,7 @@ class Payment extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
 
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
         $module_unique_name = module_name($this->Module_Name);
     }
@@ -793,56 +793,6 @@ class Payment extends CI_Controller
         $zip_name = $contract_name . "-" . $hak_no . " Hakediş";
         $this->zip->download("$zip_name");
 
-    }
-
-    public
-    function fileDelete_all($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $contract_id = contract_id_module("payment", $id);
-        $project_id = project_id_cont("$contract_id");
-        $project_code = project_code("$project_id");
-        $contract_code = contract_code($contract_id);
-        $hak_no = get_from_id("payment", "hakedis_no", $id);
-
-        $delete = $this->Payment_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no/$dir_file");
-            }
-
-            $viewData->item = $this->Payment_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-
-            $viewData->item_files = $this->Payment_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-            echo $render_html;
-
-
-        }
     }
 
     public
@@ -2794,12 +2744,7 @@ class Payment extends CI_Controller
                     "id" => $id
                 )
             );
-
-            $viewData->item_files = $this->Payment_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
+            
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
             echo $render_html;
@@ -2825,11 +2770,7 @@ class Payment extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Payment_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
+            
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
             print_r(validation_errors());

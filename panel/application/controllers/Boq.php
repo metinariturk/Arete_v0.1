@@ -28,7 +28,6 @@ class Boq extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "boq_v";
         $this->load->model("Boq_model");
-        $this->load->model("Boq_file_model");
         $this->load->model("Payment_model");
         $this->load->model("Contract_model");
         $this->load->model("Contract_price_model");
@@ -36,7 +35,6 @@ class Boq extends CI_Controller
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
         $this->load->model("Bond_model");
-        $this->load->model("Bond_file_model");
 
         $this->Module_Name = "boq";
         $this->Module_Title = "Metraj";
@@ -55,7 +53,7 @@ class Boq extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
     }
 

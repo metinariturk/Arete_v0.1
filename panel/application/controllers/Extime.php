@@ -47,7 +47,7 @@ class Extime extends CI_Controller
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
 
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
     }
 
@@ -855,110 +855,6 @@ class Extime extends CI_Controller
 
 
 
-    public
-    function fileDelete($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Extime_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        $extime_id = get_from_id("extime_files", "extime_id", $id);
-        $contract_id = contract_id_module("extime", $extime_id);
-        $contract_code = contract_code($contract_id);
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $extime_code = get_from_id("Extime", "dosya_no", $extime_id);
-
-        $delete = $this->Extime_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        if ($delete) {
-
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Extime/$extime_code/$fileName->img_url";
-
-            unlink($path);
-
-            $viewData->item = $this->Extime_model->get(
-                array(
-                    "id" => $extime_id
-                )
-            );
-
-            $viewData->item_files = $this->Extime_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $extime_id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        }
-    }
-
-    public
-    function fileDelete_all($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $contract_id = contract_id_module("extime", $id);
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = contract_code($contract_id);
-        $extime_code = get_from_id("Extime", "dosya_no", $id);
-
-        $delete = $this->Extime_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->File_Dir_Prefix/$project_code/$contract_code/Extime/$extime_code");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->File_Dir_Prefix/$project_code/$contract_code/Extime/$extime_code/$dir_file");
-            }
-
-            $viewData->item = $this->Extime_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-
-            $viewData->item_files = $this->Extime_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-            echo $render_html;
-
-
-        }
-    }
 
     public
     function duplicate_code_check($file_name)

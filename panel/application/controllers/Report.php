@@ -53,7 +53,7 @@ class Report extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
     }
 
@@ -837,76 +837,6 @@ class Report extends CI_Controller
         $this->zip->download("$zip_name");
 
     }
-
-    public function fileDelete_all($id)
-    {
-
-        $session_user = $this->session->userdata("user");
-
-        if ($session_user->user_role != 2) {
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
-        }
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Report_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        $report = $this->Report_model->get(array("id" => $id));
-        $site = $this->Site_model->get(array("id" => $report->site_id));
-        $project = $this->Project_model->get(array("id" => $report->site_id));
-        $viewData->project = $project;
-        $viewData->site = $site;
-
-
-        $project_code = project_code("$site->proje_id");
-
-        $date = dateFormat_dmy($report->report_date);
-
-
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
-
-        $delete = $this->Report_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        if ($delete) {
-
-            $this->load->helper('file');
-            delete_files($path, true);
-
-            $viewData->item = $this->Report_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-
-            $viewData->item_files = $this->Report_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-            echo $render_html;
-
-
-        }
-    }
-
-
 
     public
     function duplicate_code_check($file_name)

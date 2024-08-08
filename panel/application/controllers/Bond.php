@@ -20,7 +20,6 @@ class Bond extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "bond_v";
         $this->load->model("Bond_model");
-        $this->load->model("Bond_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
@@ -42,7 +41,7 @@ class Bond extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
     }
 
@@ -281,11 +280,7 @@ class Bond extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Bond_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$type_page/index", $viewData);
 
@@ -311,11 +306,7 @@ class Bond extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Bond_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+        
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -985,11 +976,7 @@ class Bond extends CI_Controller
             );
 
 
-            $viewData->item_files = $this->Bond_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
+            
 
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/update_advance/index", $viewData);
@@ -1168,11 +1155,7 @@ class Bond extends CI_Controller
             );
 
 
-            $viewData->item_files = $this->Bond_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
+            
 
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/update_contract/index", $viewData);
@@ -1348,11 +1331,7 @@ class Bond extends CI_Controller
             );
 
 
-            $viewData->item_files = $this->Bond_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
+            
 
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/update_costinc/index", $viewData);
@@ -1390,11 +1369,6 @@ class Bond extends CI_Controller
             )
         );
 
-        $delete = $this->Bond_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
 
         $delete = $this->Bond_model->delete(
             array(
@@ -1451,15 +1425,7 @@ class Bond extends CI_Controller
 
             $uploaded_file = $this->upload->data("file_name");
 
-            $this->Bond_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
+
 
 
         } else {
@@ -1471,11 +1437,7 @@ class Bond extends CI_Controller
 
     public function file_download($id)
     {
-        $fileName = $this->Bond_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+        
 
         $bond_id = get_from_id("bond_files", "bond_id", $id);
         $contract_id = contract_id_module("bond", $bond_id);
@@ -1527,108 +1489,9 @@ class Bond extends CI_Controller
     }
 
 
-    public function fileDelete($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $fileName = $this->Bond_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
 
 
-        $bond_id = get_from_id("bond_files", "bond_id", $id);
-        $contract_id = contract_id_module("bond", $bond_id);
-        $contract_code = contract_code($contract_id);
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $bond_code = get_from_id("bond", "dosya_no", $bond_id);
 
-        $delete = $this->Bond_file_model->delete(
-            array(
-                "id" => $id
-            )
-        );
-
-
-        if ($delete) {
-
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Bond/$bond_code/$fileName->img_url";
-
-            unlink($path);
-
-            $viewData->item = $this->Bond_model->get(
-                array(
-                    "id" => $bond_id
-                )
-            );
-
-            $viewData->item_files = $this->Bond_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $bond_id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-        }
-    }
-
-    public function fileDelete_all($id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $contract_id = contract_id_module("bond", $id);
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = contract_code($contract_id);
-        $bond_code = get_from_id("bond", "dosya_no", $id);
-
-        $delete = $this->Bond_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->File_Dir_Prefix/$project_code/$contract_code/Bond/$bond_code");
-
-            foreach ($dir_files as $dir_file) {
-                unlink("$this->File_Dir_Prefix/$project_code/$contract_code/Bond/$bond_code/$dir_file");
-            }
-
-            $viewData->item = $this->Bond_model->get(
-                array(
-                    "id" => $id
-                )
-            );
-
-            $viewData->item_files = $this->Bond_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-
-            echo $render_html;
-
-
-        }
-    }
 
     public function duplicate_code_check($file_name)
     {

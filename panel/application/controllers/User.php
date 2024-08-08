@@ -53,7 +53,7 @@ class user extends CI_Controller
         $this->List_Folder = "list";
         $this->Update_Folder = "update";
 
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
     }
 

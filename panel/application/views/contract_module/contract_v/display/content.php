@@ -45,8 +45,8 @@
                                     <button class="btn btn-danger" type="button"
                                             onclick="deleteConfirmationModule(this)"
                                             data-text="<?php echo $this->Module_Title; ?>"
-                                            data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>"
-                                            url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
+                                            data-url="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>"
+                                            url="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
                                         <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Sil
                                     </button>
 

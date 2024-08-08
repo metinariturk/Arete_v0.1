@@ -27,15 +27,7 @@
                     </div><!-- .widget -->
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="widget">
-                        <div class="widget-body image_list_container">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/file_list_v"); ?>
-                        </div><!-- .widget-body -->
-                    </div><!-- .widget -->
-                </div>
-            </div>
+            
         </div>
     </div>
     <div class="row">

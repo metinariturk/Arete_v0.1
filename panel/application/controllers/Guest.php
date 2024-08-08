@@ -28,7 +28,7 @@ class Guest extends CI_Controller
         $this->Display_Folder = "display";
         $this->Update_route = "update_form";
         $this->Upload_Folder = "uploads";
-        $this->File_List = "file_list_v";
+        
         $this->List_Folder = "list";
         $this->Common_Files = "common";
         $this->Settings = get_settings();

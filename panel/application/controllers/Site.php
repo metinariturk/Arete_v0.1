@@ -64,14 +64,14 @@ class Site extends CI_Controller
         $this->Add_Folder = "add";
         $this->Update_route = "update_form";
         $this->Upload_Folder = "uploads";
-        $this->File_List = "file_list_v";
+        
         $this->List_Folder = "list";
         $this->Dependet_id_key = "site_id";
         $this->Common_Files = "common";
 
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        $this->File_List = "file_list_v";
+        
     }
 
     public function index()
@@ -735,66 +735,6 @@ class Site extends CI_Controller
 
     }
 
-    public function fileDelete_all($site_id)
-    {
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $site_code = site_code($site_id);
-        $project_id = project_id_site($site_id);
-        $project_code = project_code($project_id);
-
-        $delete = $this->Site_file_model->delete(
-            array(
-                "site_id" => $site_id
-            )
-        );
-
-        if ($delete) {
-
-            $dir_files = directory_map("$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site_code/main");
-            !empty($value) && array_map('unlink', glob($dir_files));
-
-            $alert = array(
-                "title" => "Tüm Dosyalar Silindi",
-                "text" => " Tüm Dosyaları Silme Başarılı",
-                "type" => "success"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-
-            $viewData->item = $this->Site_model->get(
-                array(
-                    "id" => $site_id
-                )
-            );
-
-            $viewData->item_files = $this->Site_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $site_id
-                )
-            );
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/$this->File_List", $viewData, true);
-            echo $render_html;
-
-
-        } else {
-
-            $alert = array(
-                "title" => "Dosyalar Silinemedi",
-                "text" => " Tüm Dosyaları Silme Başarısız",
-                "type" => "danger"
-            );
-
-            $this->session->set_flashdata("alert", $alert);
-
-        }
-
-    }
 
     public function duplicate_code_check($file_name)
     {
@@ -860,11 +800,7 @@ class Site extends CI_Controller
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->main_categories = $main_categories;
 
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $site_id
-            ),
-        );
+        
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workgroup", $viewData, true);
 
@@ -919,11 +855,7 @@ class Site extends CI_Controller
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->main_categories = $main_categories;
 
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $site_id
-            ),
-        );
+        
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workgroup", $viewData, true);
 
@@ -976,11 +908,7 @@ class Site extends CI_Controller
 
         $viewData->workmachines = json_decode($item->active_machine, true);
 
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $site_id
-            ),
-        );
+        
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workmachine", $viewData, true);
 
@@ -1031,11 +959,7 @@ class Site extends CI_Controller
         );
         $viewData->item = $item;
         $viewData->workmachines = json_decode($item->active_machine, true);
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $site_id
-            ),
-        );
+        
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workmachine", $viewData, true);
 
         echo $render_html;

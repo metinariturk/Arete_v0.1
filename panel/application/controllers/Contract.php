@@ -33,7 +33,6 @@ class Contract extends CI_Controller
         $this->load->model("Bond_model");
         $this->load->model("City_model");
         $this->load->model("Company_model");
-        $this->load->model("Contract_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Contract_price_model");
         $this->load->model("Costinc_model");
@@ -68,7 +67,7 @@ class Contract extends CI_Controller
         $this->Display_offer_Folder = "display_offer";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        $this->File_List = "file_list_v";
+        
         $this->Common_Files = "common";
 
         $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
@@ -88,7 +87,7 @@ class Contract extends CI_Controller
             "isActive" => 1,
             "parent" => 0,
             "offer" => null
-        ),"sozlesme_tarih DESC");
+        ), "sozlesme_tarih DESC");
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -133,7 +132,7 @@ class Contract extends CI_Controller
             "isActive" => 1,
             "parent" => 0,
             "offer" => null,
-        ),"id DESC");
+        ), "id DESC");
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -263,13 +262,6 @@ class Contract extends CI_Controller
         $viewData->item = $this->Contract_model->get(array("id" => $id));
 
 
-        // İlgili dosya verilerini al
-        $viewData->item_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "contract"));
-        $viewData->sitedel_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "sitedel"));
-        $viewData->workplan_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "workplan"));
-        $viewData->provision_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "provision"));
-        $viewData->final_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "final"));
-
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -320,7 +312,6 @@ class Contract extends CI_Controller
         $viewData->item = $this->Contract_model->get(array("id" => $id));
 
         // İlgili dosya verilerini al
-        $viewData->item_files = $this->Contract_file_model->get_all(array("$this->Dependet_id_key" => $id, "type" => "offer"));
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -906,11 +897,7 @@ class Contract extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
@@ -1071,12 +1058,6 @@ class Contract extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Contract_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
-
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
     }
@@ -1111,12 +1092,6 @@ class Contract extends CI_Controller
             array(
                 "id" => $id
             )
-        );
-
-        $viewData->item_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
         );
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -1458,31 +1433,38 @@ class Contract extends CI_Controller
         }
     }
 
-    public function delete_form($error_list_id)
+    public function delete_form($id)
     {
-        $contract_id = get_from_any("delete_error", "module_id", "id", "$error_list_id");
-
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+
+        $contract = $this->Contract_model->get(array("id" => $id));
+
+        $advances = $this->Advance_model->get_all(array('contract_id' => $id));
+        $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
+        $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
+        $collections = $this->Collection_model->get_all(array('contract_id' => $id));
+        $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
+        $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
+        $payments = $this->Payment_model->get_all(array('contract_id' => $id));
+
         $viewData = new stdClass();
 
-        $project_id = project_id_cont($contract_id);
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "delete_form";
-        $viewData->contract_id = $contract_id;
-        $viewData->project_id = $project_id;
-
-        $viewData->item = $this->Delete_model->get(
-            array(
-                "id" => $error_list_id
-            )
-        );
+        $viewData->contract = $contract;
+        $viewData->advances = $advances;
+        $viewData->bonds = $bonds;
+        $viewData->costincs = $costincs;
+        $viewData->collections = $collections;
+        $viewData->extimes = $extimes;
+        $viewData->newprices = $newprices;
+        $viewData->payments = $payments;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
 
     }
 
@@ -1498,50 +1480,6 @@ class Contract extends CI_Controller
 
         $file_ids = array();
 
-        $payments = $this->Payment_model->get_all(array('contract_id' => $id));
-        foreach ($payments as $payment) {
-            $file_ids[] = "Payment*" . $payment->id;
-        }
-
-        $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
-        foreach ($bonds as $bond) {
-            $file_ids[] = "Bond*" . $bond->id;
-        }
-
-
-        $advances = $this->Advance_model->get_all(array('contract_id' => $id));
-        foreach ($advances as $advance) {
-            $file_ids[] = "Advance*" . $advance->id;
-        }
-
-
-
-        $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
-        foreach ($costincs as $costinc) {
-            $file_ids[] = "Costinc*" . $costinc->id;
-        }
-
-        $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
-        foreach ($newprices as $newprice) {
-            $file_ids[] = "Newprice*" . $newprice->id;
-        }
-
-        $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
-        foreach ($extimes as $extime) {
-            $file_ids[] = "Extime*" . $extime->id;
-        }
-
-        $sites = $this->Site_model->get_all(array('contract_id' => $id));
-        foreach ($sites as $site) {
-            $file_ids[] = "Site*" . $site->id;
-        }
-
-        $error_log = $this->Delete_model->get(
-            array(
-                "module_name" => "Contract",
-                "module_id" => "$id",
-            )
-        );
 
         if (!empty($file_ids)) {
 
@@ -1580,7 +1518,6 @@ class Contract extends CI_Controller
                 )
             );
 
-            $delete_contract_files = $this->Contract_file_model->delete(array("$this->Dependet_id_key" => $id));
             $delete_contract = $this->Contract_model->delete(array("id" => $id));
 
             $this->Favorite_model->delete(
@@ -1637,25 +1574,23 @@ class Contract extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+
         $project_id = get_from_id("contract", "proje_id", $id);
         $project_code = project_code($project_id);
         $sub_folder = get_from_id("contract", "dosya_no", $id);
+
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$sub_folder";
         $sil = deleteDirectory($path);
 
-        $delete_module_list = array("advance", "bond", "costinc", "drawings", "extime", "payment", "catalog", "newprice");
+        $delete_module_list = array("Advance_model", "Bond_model", "Costinc_model", "Extime_model", "Payment_model", "Payment_settings_model", "Payment_sign_model", "Newprice_model", "Boq_model", "Collection_model");
         foreach ($delete_module_list as $module) {
-            if (!empty($module_ids = get_from_any_array_select_ci("id", "$module", "contract_id", $id))) {
-                foreach ($module_ids as $module_id) {
-                    $this->db->where(array("id" => $module_id))->delete($module);
-                    $module_file = $module . "_files";
-                    $module_name_id = $module . "_id";
-                    $this->db->where(array($module_name_id => $module_id))->delete($module_file);
-                }
-            }
+            $delete = $this->$module->delete(
+                array(
+                    "contract_id" => $id
+                )
+            );
         }
 
-        $delete_contract_files = $this->Contract_file_model->delete(array("$this->Dependet_id_key" => $id));
         $delete_contract = $this->Contract_model->delete(array("id" => $id));
 
         $this->Favorite_model->delete(
@@ -1804,6 +1739,27 @@ class Contract extends CI_Controller
         $zip_name = $cont_name . "_" . $ext;
         $this->zip->download("$zip_name");
 
+    }
+
+    public function download_backup($cont_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $this->load->library('zip');
+        $this->zip->compression_level = 1;
+
+        $contract = $this->Contract_model->get(array("id" => $cont_id));
+        $project_code = project_code($contract->proje_id);
+
+        $path = FCPATH . "uploads/project_v/$project_code/$contract->dosya_no/";
+
+        $this->zip->read_dir($path, FALSE);
+
+        $zip_name = $contract->sozlesme_ad . "_Backup.zip";
+
+        $this->zip->download($zip_name);
     }
 
     public function get_district($id)
@@ -2104,12 +2060,6 @@ class Contract extends CI_Controller
             )
         );
         $viewData->item = $item;
-
-        $viewData->item_files = $this->Contract_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $contract_id
-            ),
-        );
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
 

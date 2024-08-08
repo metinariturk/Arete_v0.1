@@ -183,7 +183,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>2934</line>
+          <line>2875</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="sign_rankSetter" />
@@ -192,7 +192,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>457</line>
+          <line>455</line>
           <properties>
             <option name="className" value="\Boq" />
             <option name="methodName" value="template_download" />
@@ -201,7 +201,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1761</line>
+          <line>1696</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="ProvisionfileDelete" />
@@ -238,7 +238,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>4289</line>
+          <line>4230</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>

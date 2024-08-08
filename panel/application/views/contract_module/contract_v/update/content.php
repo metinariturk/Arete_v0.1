@@ -35,16 +35,6 @@
             </form>
         </div>
     </div>
-    <div class="col-xl-6 col-md-4">
-        <div class="card">
-            <div class="file-content">
-                <div class="card-header">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
-                </div>
-
-            </div>
-        </div>
-    </div>
 </div>
 
 <?php echo validation_errors(); ?>

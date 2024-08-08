@@ -22,8 +22,6 @@
 <script src="<?php echo base_url("assets"); ?>/js/fileuploader/jquery.fileuploader.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/dropzone/dropzone.js"></script><!--General Page Script -->
 <script src="<?php echo base_url("assets"); ?>/js/dropzone/dropzone-script.js"></script><!--General Page Script -->
-<script src="<?php echo base_url("assets"); ?>/js/sweet-alert/app.js"></script><!--General Page Script -->
-<script src="<?php echo base_url("assets"); ?>/js/sweet-alert/sweetalert.min.js"></script><!--General Page Script -->
 
 <script src="<?php echo base_url("assets"); ?>/js/tree/jstree.min.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/tree/tree.js"></script>
@@ -56,3 +54,43 @@
     });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+    function cancelConfirmationModule(button) {
+        swal.fire({
+            title: 'Emin misiniz?',
+            text: "Yaptığınız değişiklik varsa kaydedilmeyecektir.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '<i class="fa fa-arrow-circle-o-left fa-lg"></i> Değişiklik Yapmayacağım',
+            cancelButtonText: 'Düzenlemeye Devam Et <i class="fa fa-arrow-circle-o-right fa-lg"></i>'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = button.getAttribute('url');
+            }
+        });
+    }
+</script>
+
+<script>
+    function deleteConfirmationModule(button) {
+        swal.fire({
+            title: 'Silmek İstediğinize Emin misiniz?',
+            text: "Bu işlemi geri alamazsınız!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '<i class="fa fa-trash-o"></i> Evet, SİL!',
+            cancelButtonText: 'Hayır, vazgeç'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = button.getAttribute('url');
+            }
+        });
+    }
+</script>

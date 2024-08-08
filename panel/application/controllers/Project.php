@@ -45,7 +45,7 @@ class Project extends CI_Controller
         $this->Display_Folder = "display";
         $this->Update_route = "update_form";
         $this->Upload_Folder = "uploads";
-        $this->File_List = "file_list_v";
+        
         $this->List_Folder = "list";
         $this->Dependet_id_key = "project_id";
         $this->Common_Files = "common";
