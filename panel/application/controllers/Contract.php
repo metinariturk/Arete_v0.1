@@ -85,7 +85,8 @@ class Contract extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Contract_model->get_all(array(
             "isActive" => 1,
-
+            "parent" => array(0, null),
+            "offer" => array(0, null)
         ), "sozlesme_tarih DESC");
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
