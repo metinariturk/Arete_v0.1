@@ -26,7 +26,7 @@ class Project extends CI_Controller
         $this->load->model("Settings_model");
         $this->load->model("Project_model");
         $this->load->model("Payment_model");
-        $this->load->model("Project_file_model");
+
         $this->load->model("Report_model");
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
@@ -480,11 +480,7 @@ class Project extends CI_Controller
 
                 )
             );
-            $delete1 = $this->Project_file_model->delete(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
+
 
             $delete = $this->Project_model->delete(array("id" => $id));
 

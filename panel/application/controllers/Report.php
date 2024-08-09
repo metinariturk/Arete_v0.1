@@ -27,8 +27,7 @@ class Report extends CI_Controller
         $this->moduleFolder = "site_module";
         $this->viewFolder = "report_v";
         $this->load->model("Report_model");
-        $this->load->model("Report_file_model");
-        
+
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
@@ -168,11 +167,6 @@ class Report extends CI_Controller
         );
 
 
-        $viewData->item_files = $this->Report_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
@@ -250,11 +244,6 @@ class Report extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Report_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -683,11 +672,7 @@ class Report extends CI_Controller
             echo '<br>errors occured';
         }
 
-        $delete1 = $this->Report_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $report_id
-            )
-        );
+
 
         $delete2 = $this->Report_model->delete(
             array(
@@ -855,7 +840,6 @@ class Report extends CI_Controller
     function print_report($report_id, $print_pic = null, $P_or_D = null)
     {
         $this->load->model("Company_model");
-        $this->load->model("Report_file_model");
         $this->load->model("Report_weather_model");
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");

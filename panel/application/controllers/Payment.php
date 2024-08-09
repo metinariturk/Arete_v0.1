@@ -25,7 +25,6 @@ class Payment extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "payment_v";
         $this->load->model("Payment_model");
-        $this->load->model("Payment_file_model");
         $this->load->model("Payment_settings_model");
         $this->load->model("Payment_sign_model");
 
@@ -143,11 +142,6 @@ class Payment extends CI_Controller
         $viewData->item = $item;
 
 
-        $viewData->item_files = $this->Payment_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
@@ -519,11 +513,7 @@ class Payment extends CI_Controller
                     "deletedBy" => active_user_id(),
                 )
             );
-            $delete1 = $this->Payment_file_model->delete(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
+
             $delete2 = $this->Payment_model->delete(
                 array(
                     "id" => $id
@@ -596,11 +586,7 @@ class Payment extends CI_Controller
                 )
             );
 
-            $delete1 = $this->Payment_file_model->delete(
-                array(
-                    "$this->Dependet_id_key" => $id
-                )
-            );
+
             $delete2 = $this->Payment_model->delete(
                 array(
                     "id" => $id
@@ -2818,11 +2804,6 @@ class Payment extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Payment_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $payment_id
-            )
-        );
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
         echo $render_html;

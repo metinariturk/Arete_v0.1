@@ -25,7 +25,6 @@ class Site extends CI_Controller
         include($uploader);
 
         $this->load->model("Site_model");
-        $this->load->model("Site_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
@@ -496,11 +495,6 @@ class Site extends CI_Controller
         $viewData->fav = $fav;
 
 
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -546,11 +540,7 @@ class Site extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -561,11 +551,7 @@ class Site extends CI_Controller
         $project_code = project_code($project_id);
         $path = "$this->File_Dir_Prefix/$project_code/$site_code";
 
-        $delete1 = $this->Site_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
+
 
         $delete2 = $this->Site_model->delete(
             array(
@@ -1086,11 +1072,7 @@ class Site extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Site_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $site_id
-                )
-            );
+
 
 
             $viewData->contractor_sign = $contractor_sign;
@@ -1132,11 +1114,7 @@ class Site extends CI_Controller
             $viewData->owner_sign = $owner_sign;
             $viewData->owner_staff = $owner_staff;
 
-            $viewData->item_files = $this->Site_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $site_id
-                )
-            );
+
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
             echo $render_html;
@@ -1193,11 +1171,7 @@ class Site extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Site_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $site_id
-            )
-        );
+
 
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
         echo $render_html;

@@ -21,13 +21,11 @@ class Extime extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "extime_v";
         $this->load->model("Extime_model");
-        $this->load->model("Extime_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
         $this->load->model("Costinc_model");
-        $this->load->model("Costinc_file_model");
 
         $this->Module_Name = "Extime";
         $this->Module_Title = "Süre Uzatımı";
@@ -190,11 +188,7 @@ class Extime extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Extime_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
@@ -219,11 +213,6 @@ class Extime extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Extime_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -526,11 +515,7 @@ class Extime extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Extime_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
@@ -667,11 +652,6 @@ class Extime extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Extime_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $extime_id
-                ),
-            );
 
 
             $settings = $this->Settings_model->get();
@@ -709,11 +689,7 @@ class Extime extends CI_Controller
             echo '<br>errors occured';
         }
 
-        $delete = $this->Extime_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
+
 
         $delete = $this->Extime_model->delete(
             array(
@@ -776,15 +752,7 @@ class Extime extends CI_Controller
 
             $uploaded_file = $this->upload->data("file_name");
 
-            $this->Extime_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-"createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
+
 
 
         } else {
@@ -797,11 +765,6 @@ class Extime extends CI_Controller
     public
     function file_download($id)
     {
-        $fileName = $this->Extime_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
 
         $extime_id = get_from_id("extime_files", "extime_id", $id);
         $extime_code = get_from_id("extime", "dosya_no", $extime_id);

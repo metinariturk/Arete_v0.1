@@ -20,13 +20,11 @@ class Costinc extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "Costinc_v";
         $this->load->model("Costinc_model");
-        $this->load->model("Costinc_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
         $this->load->model("Costinc_model");
-        $this->load->model("Costinc_file_model");
         $this->load->model("Newprice_model");
 
         $this->Module_Name = "Costinc";
@@ -196,11 +194,6 @@ class Costinc extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Costinc_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
@@ -225,11 +218,7 @@ class Costinc extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Costinc_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -582,11 +571,6 @@ class Costinc extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Costinc_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
@@ -707,11 +691,7 @@ class Costinc extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Costinc_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
+
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
@@ -756,11 +736,7 @@ class Costinc extends CI_Controller
                 )
             );
 
-            $delete_bond_file = $this->Bond_file_model->delete(
-                array(
-                    "bond_id" => $bond_id
-                )
-            );
+
 
             $delete_bond = $this->Bond_model->delete(
                 array(
@@ -781,11 +757,6 @@ class Costinc extends CI_Controller
             echo '<br>errors occured';
         }
 
-        $delete1 = $this->Costinc_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
 
         $delete2 = $this->Costinc_model->delete(
             array(
@@ -847,15 +818,7 @@ class Costinc extends CI_Controller
 
             $uploaded_file = $this->upload->data("file_name");
 
-            $this->Costinc_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-"createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
+
 
         } else {
             echo "islem basarisiz";
@@ -866,11 +829,7 @@ class Costinc extends CI_Controller
 
     public function file_download($id)
     {
-        $fileName = $this->Costinc_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+
 
         $costinc_id = get_from_id("costinc_files", "costinc_id", $id);
         $contract_id = contract_id_module("costinc", $costinc_id);

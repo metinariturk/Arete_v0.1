@@ -21,13 +21,11 @@ class Newprice extends CI_Controller
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "Newprice_v";
         $this->load->model("Newprice_model");
-        $this->load->model("Newprice_file_model");
         $this->load->model("Contract_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
         $this->load->model("Bond_model");
-        $this->load->model("Bond_file_model");
 
         $this->Module_Name = "Newprice";
         $this->Module_Title = "Yeni Birim Fiyat";
@@ -120,11 +118,6 @@ class Newprice extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Newprice_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
@@ -151,11 +144,7 @@ class Newprice extends CI_Controller
             )
         );
 
-        $viewData->item_files = $this->Newprice_file_model->get_all(
-            array(
-                "$this->Dependet_id_key" => $id
-            ),
-        );
+
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
@@ -382,11 +371,6 @@ class Newprice extends CI_Controller
                 )
             );
 
-            $viewData->item_files = $this->Newprice_file_model->get_all(
-                array(
-                    "$this->Dependet_id_key" => $id
-                ),
-            );
 
             $contract_id = get_from_any("newprice", "contract_id", "id", "$id");
 
@@ -430,11 +414,7 @@ class Newprice extends CI_Controller
                 )
             );
 
-            $delete_bond_file = $this->Bond_file_model->delete(
-                array(
-                    "bond_id" => $bond_id
-                )
-            );
+
 
             $delete_bond = $this->Bond_model->delete(
                 array(
@@ -455,11 +435,7 @@ class Newprice extends CI_Controller
             echo '<br>errors occured';
         }
 
-        $delete1 = $this->Newprice_file_model->delete(
-            array(
-                "$this->Dependet_id_key" => $id
-            )
-        );
+
 
         $delete2 = $this->Newprice_model->delete(
             array(
@@ -521,15 +497,6 @@ class Newprice extends CI_Controller
 
             $uploaded_file = $this->upload->data("file_name");
 
-            $this->Newprice_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
 
 
         } else {
@@ -567,11 +534,7 @@ class Newprice extends CI_Controller
 
     public function file_download($id)
     {
-        $fileName = $this->Newprice_file_model->get(
-            array(
-                "id" => $id
-            )
-        );
+
 
 
         $newprice_id = get_from_id("newprice_files", "newprice_id", $id);

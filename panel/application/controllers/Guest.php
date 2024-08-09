@@ -68,7 +68,6 @@ class Guest extends CI_Controller
     function print_report($report_id, $print_pic = null, $P_or_D = null)
     {
         $this->load->model("Company_model");
-        $this->load->model("Report_file_model");
         $this->load->model("Report_weather_model");
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");

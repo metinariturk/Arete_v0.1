@@ -22,7 +22,6 @@ class Collection extends CI_Controller
         $this->viewFolder = "collection_v";
         $this->load->model("Contract_model");
         $this->load->model("Collection_model");
-        $this->load->model("Collection_file_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
@@ -484,9 +483,7 @@ class Collection extends CI_Controller
             )
         );
 
-        $delete_collection_file = $this->Collection_file_model->delete(
-            array("$this->Dependet_id_key" => $id)
-        );
+
 
         $delete_collection = $this->Collection_model->delete(
             array("id" => $id)
@@ -546,15 +543,7 @@ class Collection extends CI_Controller
 
             $uploaded_file = $this->upload->data("file_name");
 
-            $this->Collection_file_model->add(
-                array(
-                    "img_url" => $uploaded_file,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                    "$this->Dependet_id_key" => $id,
-                    "size" => $size
-                )
-            );
+
 
 
         } else {
