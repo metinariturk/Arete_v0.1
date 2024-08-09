@@ -490,7 +490,7 @@ class Collection extends CI_Controller
         );
 
         // TODO Alert Sistemi Eklenecek...
-        if ($update_file_order and $delete_collection_file and $delete_collection) {
+        if ($update_file_order and $delete_collection) {
 
             $alert = array(
                 "title" => "İşlem Başarılı",

@@ -105,6 +105,8 @@ class Payment extends CI_Controller
         $payment = $this->Payment_model->get(array("id" => $id));
         $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
+        $prev_payment = $this->Payment_model->get(array("hakedis_no" => $payment->hakedis_no-1, "contract_id" =>$payment->contract_id));
+        $next_payment = $this->Payment_model->get(array("hakedis_no" => $payment->hakedis_no+1, "contract_id" =>$payment->contract_id));
 
         $leaders = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "leader" => 1), "code ASC");
         $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "rank ASC");
@@ -125,6 +127,8 @@ class Payment extends CI_Controller
         $viewData->contract = $contract;
         $viewData->path = $path;
         $viewData->main_groups = $main_groups;
+        $viewData->prev_payment = $prev_payment;
+        $viewData->next_payment = $next_payment;
         $viewData->leaders = $leaders;
         $viewData->active_boqs = $active_boqs;
         $viewData->project_id = $project->id;
