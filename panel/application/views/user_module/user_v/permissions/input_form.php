@@ -7,20 +7,21 @@
     <th>Silme</th>
     </thead>
     <tbody>
-    <?php foreach (getControllerList() as $controllerName) { ?>
+    <?php $permition_modules = array("project", "contract","offer","payment","site"); ?>
+    <?php foreach ($permition_modules as $permition_module) { ?>
         <tr>
-            <td><?php echo $controllerName; ?></td>
+            <td><?php echo $permition_module; ?></td>
             <td class="w5 text-center">
-                <input name="permissions[<?php echo $controllerName; ?>][read]" type="checkbox" data-switchery data-color="#10c469"/>
+                <input name="permissions[<?php echo $permition_module; ?>][read]" type="checkbox" data-switchery data-color="#10c469"/>
             </td>
             <td class="w5 text-center">
-                <input name="permissions[<?php echo $controllerName; ?>][write]" type="checkbox" data-switchery data-color="#10c469"/>
+                <input name="permissions[<?php echo $permition_module; ?>][write]" type="checkbox" data-switchery data-color="#10c469"/>
             </td>
             <td class="w5 text-center">
-                <input name="permissions[<?php echo $controllerName; ?>][update]" type="checkbox" data-switchery data-color="#10c469"/>
+                <input name="permissions[<?php echo $permition_module; ?>][update]" type="checkbox" data-switchery data-color="#10c469"/>
             </td>
             <td class="w5 text-center">
-                <input name="permissions[<?php echo $controllerName; ?>][delete]" type="checkbox" data-switchery data-color="#10c469"/>
+                <input name="permissions[<?php echo $permition_module; ?>][delete]" type="checkbox" data-switchery data-color="#10c469"/>
             </td>
         </tr>
     <?php } ?>

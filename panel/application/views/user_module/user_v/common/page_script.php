@@ -26,3 +26,15 @@
         spanElement.textContent = formattedNumber;
     }
 </script>
+
+<script>
+    function show_user_detail(ItemID) {
+        var formAction = '<?php echo base_url("user/user_detail/"); ?>' + ItemID;
+
+        $.post(formAction, function (response) {
+            $(".user_details").html(response);
+
+        });
+    }
+</script>
+

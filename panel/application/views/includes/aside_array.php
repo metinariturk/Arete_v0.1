@@ -12,14 +12,9 @@ $sidebarList = array(
         "url" => base_url("project")
     ),
 
-    array(
-        "title" => "Sözleşmeler",
-        "icon" => "edit",
-        "url" => base_url("contract")
-    ),
 
     array(
-        "title" => "Sözleşme Süreçleri",
+        "title" => "Sözleşme Yönetimi",
         "url" => "#",
         "icon" => "edit-3",
         "submodules" => array(
@@ -63,12 +58,6 @@ $sidebarList = array(
                 "title" => "Süre Uzatımı",
                 "url" => base_url("Extime")
             ),
-
-            array(
-                "title" => "Katalog",
-                "url" => base_url("Catalog")
-            ),
-
         )
     ),
 
@@ -92,10 +81,6 @@ $sidebarList = array(
             array(
                 "title" => "İş Makineleri",
                 "url" => base_url("Workmachine")
-            ),
-            array(
-                "title" => "Şantiye Depo",
-                "url" => base_url("Sitestock")
             ),
             array(
                 "title" => "Hava Durumu",

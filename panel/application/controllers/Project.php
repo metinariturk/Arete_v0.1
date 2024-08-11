@@ -584,7 +584,6 @@ class Project extends CI_Controller
     public
     function download_all($project_id)
     {
-        $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
         if (!isAdmin()) {
             if (!in_array(active_user_id(), $yetkili)) {
                 redirect(base_url("error"));

@@ -179,7 +179,7 @@ class user extends CI_Controller
         $user_name = $this->input->post("user_name");
 
         $this->form_validation->set_rules("user_name", "Kullanıcı Adı", "required|trim|min_length[6]|is_unique[users.user_name]|callback_charset_control");
-        $this->form_validation->set_rules("phone", "Telefon Numarası ", "regex_match[/^[0-9]{10}$/]"); //{10} for 10 digits number
+        $this->form_validation->set_rules('phone', 'Telefon Numarası', 'callback_validate_phone_number');
         $this->form_validation->set_rules("user_role", "Kullanıcı Türü", "required|trim");
         $this->form_validation->set_rules("name", "Ad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("surname", "Soyad", "callback_name_control|min_length[3]|required|trim");
@@ -206,9 +206,6 @@ class user extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
 
-        $default_permissions = user_role_permissions($this->input->post("user_role"));
-
-
         if ($validate) {
 
             $name = mb_convert_case($this->input->post("name"), MB_CASE_TITLE, "UTF-8");
@@ -223,7 +220,6 @@ class user extends CI_Controller
                     "unvan" => $this->input->post("unvan"),
                     "name" => $name,
                     "phone" => $this->input->post("phone"),
-                    "permissions" => $default_permissions,
                     "surname" => $surname,
                     "email" => $this->input->post("email"),
                     "password" => $this->encryption->encrypt($this->input->post("password")),
@@ -290,13 +286,11 @@ class user extends CI_Controller
     public function update($id)
     {
 
-        $current_role = get_from_id("users", "user_role_id", "$id");
-        $income_role = $this->input->post("user_role");
+        $permissions = json_encode($this->input->post("permissions"));
 
         $this->load->library('encryption');
         $this->load->library("form_validation");
-
-        $current_user_name = get_from_any("users", "user_name", "id", $id);
+        $user = $this->User_model->get(array("id"=>$id));
 
         if (empty($this->input->post("password"))) {
             $current_password = $this->encryption->decrypt(get_from_any("users", "password", "id", $id));
@@ -306,13 +300,11 @@ class user extends CI_Controller
 
         $user_name = $this->input->post("user_name");
 
-        if ($current_user_name != $user_name) {
+        if ($user->user_name != $user_name) {
             $this->form_validation->set_rules("user_name", "Kullanıcı Adı", "required|trim|min_length[6]|is_unique[users.user_name]|callback_charset_control");
         }
 
-
-        $this->form_validation->set_rules("phone", "Telefon Numarası ", "regex_match[/^[0-9]{10}$/]"); //{10} for 10 digits number
-        $this->form_validation->set_rules("user_role", "Kullanıcı Türü", "required|trim");
+        $this->form_validation->set_rules('phone', 'Telefon Numarası', 'callback_validate_phone_number');
         $this->form_validation->set_rules("profession", "Meslek", "required|trim");
         $this->form_validation->set_rules("company", "Firma", "required|trim");
         $this->form_validation->set_rules("name", "Ad", "callback_name_control|min_length[3]|required|trim");
@@ -322,7 +314,6 @@ class user extends CI_Controller
         if (!empty($this->input->post("password"))) {
             $this->form_validation->set_rules("password_check", "Şifre Kontrol", "matches[password]|required|trim");
         }
-
 
         $this->form_validation->set_message(
             array(
@@ -342,17 +333,10 @@ class user extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
 
-
         if ($validate) {
 
             $name = mb_convert_case($this->input->post("name"), MB_CASE_TITLE, "UTF-8");
             $surname = mb_strtoupper($this->input->post("surname"), "UTF-8");
-
-            if ($current_role == $income_role) {
-                $permissions = json_encode($this->input->post("permissions"));
-            } else {
-                $permissions = user_role_permissions($this->input->post("user_role"));
-            }
 
             $update = $this->User_model->update(
                 array(
@@ -398,6 +382,7 @@ class user extends CI_Controller
 
         } else {
 
+            $modules = getModuleList();
 
             $viewData = new stdClass();
 
@@ -411,6 +396,7 @@ class user extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Update_Folder";
             $viewData->settings = $settings;
+            $viewData->modules = $modules;
             $viewData->companys = $companys;
             $viewData->form_error = true;
 
@@ -536,6 +522,27 @@ class user extends CI_Controller
         return (!preg_match("/^([-a-z üğışçöÜĞİŞÇÖ])+$/i", $user_name)) ? FALSE : TRUE;
     }
 
+    function validate_phone_number($phone)
+    {
+        // Tüm boşlukları sil
+        $phone = str_replace(' ', '', $phone);
+
+        // Eğer başında 0 varsa, bu sıfırı sil
+        if (substr($phone, 0, 1) === '0') {
+            $phone = substr($phone, 1);
+        }
+
+        // 10 haneli mi kontrol et
+        if (strlen($phone) === 10 && preg_match('/^[0-9]{10}$/', $phone)) {
+            return TRUE;
+        } else {
+            // Hata mesajı ekle
+            $this->form_validation->set_message('validate_phone_number', 'Geçersiz telefon numarası.');
+            return FALSE;
+        }
+    }
+
+
     public function mode()
     {
         $user_mode = get_active_user()->mode;
@@ -562,5 +569,22 @@ class user extends CI_Controller
 
     }
 
+    public function user_detail($id)
+    {
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "list";
+
+        $viewData->item = $this->User_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/show_details", $viewData);
+
+    }
 
 }

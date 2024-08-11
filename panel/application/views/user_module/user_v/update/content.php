@@ -8,6 +8,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title mb-0">Kullanıcı Profili</h4>
+                            <?php echo validation_errors(); ?>
                             <div class="card-options"><a class="card-options-collapse" href="#"
                                                          data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a
                                         class="card-options-remove" href="#" data-bs-toggle="card-remove"><i
@@ -127,7 +128,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Telefon</label> <span id="formattedPhoneNumber"><?php echo formatPhoneNumber($item->phone); ?></span>
-                                <input type="text" name="phone" placeholder="5XX XXX XX XX" id="phoneInput" oninput="formatAndDisplayPhoneNumber()" maxlength="10"
+                                <input type="text" name="phone" placeholder="5XX XXX XX XX" id="phoneInput" maxlength="11"
                                        class="form-control <?php cms_isset(form_error("phone"), "is-invalid", ""); ?>"
                                        value="<?php echo isset($form_error) ? set_value("phone") : "$item->phone"; ?>">
                                 <?php if (isset($form_error)) { ?>

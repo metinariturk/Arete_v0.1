@@ -23,20 +23,11 @@
                 <div class="row">
                     <div class="col-2">
                     </div>
-                    <div class="col-2 text-center">Tümü
-                    </div>
-                    <div class="col-2  text-center">
-                        Görüntüle
-                    </div>
-                    <div class="col-2  text-center">
-                        Oluştur
-                    </div>
-                    <div class="col-2  text-center">
-                        Düzenle
-                    </div>
-                    <div class="col-2  text-center">
-                        Sil
-                    </div>
+                    <div class="col-2 text-center">Tümü</div>
+                    <div class="col-2  text-center">Görüntüle</div>
+                    <div class="col-2  text-center">Oluştur</div>
+                    <div class="col-2  text-center">Düzenle</div>
+                    <div class="col-2  text-center">Sil</div>
                 </div>
                 <?php foreach ($sub_modules as $sub_module) { ?>
                     <?php if (isset($permission_groups[$sub_module])) { ?>

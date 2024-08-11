@@ -67,7 +67,7 @@ class Contract extends CI_Controller
         $this->Display_offer_Folder = "display_offer";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        
+
         $this->Common_Files = "common";
 
         $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
@@ -319,10 +319,7 @@ class Contract extends CI_Controller
     public function new_form_main($project_id = null)
     {
         if (!isAdmin()) {
-            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
 
@@ -365,10 +362,7 @@ class Contract extends CI_Controller
     public function new_form_sub($main_contract_id = null)
     {
         if (!isAdmin()) {
-            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $project_id = project_id_cont($main_contract_id);
@@ -414,10 +408,7 @@ class Contract extends CI_Controller
     public function new_form_offer($project_id = null)
     {
         if (!isAdmin()) {
-            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         if (empty($project_id)) {
@@ -457,10 +448,7 @@ class Contract extends CI_Controller
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
         if (!isAdmin()) {
-            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $is_sub = $this->input->post("is_sub") == 1 ? 1 : 0;
@@ -592,10 +580,7 @@ class Contract extends CI_Controller
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
         if (!isAdmin()) {
-            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $main_contract = $this->Contract_model->get(array('id' => $main_contract_id));
@@ -729,10 +714,7 @@ class Contract extends CI_Controller
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
         if (!isAdmin()) {
-            $yetkili = get_as_array(get_from_id("projects", "yetkili_personeller", "$project_id"));
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+            redirect(base_url("error"));
         }
 
         $is_sub = $this->input->post("is_sub") == 1 ? 1 : 0;
@@ -896,7 +878,6 @@ class Contract extends CI_Controller
                 "id" => $id
             )
         );
-
 
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);

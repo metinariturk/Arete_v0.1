@@ -350,7 +350,6 @@ function module_name($module_name)
         "Hakediş Metraj" => "boq",
         "Avans" => "advance",
         "Teminat" => "bond",
-        "Görsel Katalogları" => "catalog",
         "Sözleşme" => "contract",
         "Keşif Artışı" => "costinc",
         "Teknik Çizimler" => "drawings",
@@ -368,6 +367,7 @@ function module_name($module_name)
         "Firma" => "company",
         "E-Posta Ayarları" => "emailsettings",
         "Sistem Ayarları" => "settings",
+        "Teklifler" => "offer",
         "Kullanıcılar" => "user",
         "Finansal" => "finance",
         "Kullanıcı Rolleri" => "user_roles"
@@ -729,27 +729,15 @@ function getModuleList()
             "project"
         ),
         "contract" => array(
-            "advance",
-            "bond",
-            "catalog",
             "contract",
-            "costinc",
-            "drawings",
-            "extime",
-            "newprice",
+            "offer",
             "payment"
         ),
         "site" => array(
-            "report",
             "site",
-            "sitestock",
-            "sitewallet",
-            "workgroup",
-            "workmachine"
         ),
         "settings" => array(
             "company",
-            "emailsettings",
             "settings",
             "user",
             "user_roles"
