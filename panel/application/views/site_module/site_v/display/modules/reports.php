@@ -36,12 +36,6 @@
                             </a>
                         </td>
                         <td class="d-none d-sm-table-cell">
-                            <?php if (!empty($report->id)) {
-                                $report_files = get_module_files("report_files", "report_id", "$report->id");
-                                if (!empty($report_files)) { ?>
-                                    (<?php echo count($report_files); ?>)
-                                <?php } ?>
-                            <?php } ?>
 
                         </td>
 
