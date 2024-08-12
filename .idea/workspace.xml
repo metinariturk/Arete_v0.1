@@ -70,7 +70,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/user_module/user_v/list",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/collection_v/common",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -81,11 +81,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\collection_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\main-slider\slider1" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\includes" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
@@ -166,6 +166,7 @@
       <workItem from="1723151297130" duration="145000" />
       <workItem from="1723239225247" duration="3798000" />
       <workItem from="1723403917098" duration="7973000" />
+      <workItem from="1723486607982" duration="6448000" />
     </task>
     <servers />
   </component>

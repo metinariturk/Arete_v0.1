@@ -5,19 +5,19 @@
                 <div class="file-sidebar">
                     <ul>
                         <li>
-                            <a href="<?php echo base_url("project/file_form/$project_id"); ?>">
+                            <a href="<?php echo base_url("project/file_form/$project->id"); ?>">
                                 <div class="btn btn-light">
                                     <i data-feather="home"></i>
-                                    <?php echo project_code_name($project_id); ?>
+                                    <?php echo project_code_name($project->id); ?>
                                 </div>
                             </a>
                         </li>
                         <li>
                             <div class="btn btn-light ">
-                                <a href="<?php echo base_url("contract/file_form/$contract_id"); ?>">
+                                <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>">
                                     <span style="padding-left: 20px">
                                     <i class="icofont icofont-law-document"></i>
-                                    <?php echo contract_code_name($item->contract_id); ?>
+                                    <?php echo contract_code_name($contract->id); ?>
                                     </span>
                                 </a>
                             </div>
@@ -44,7 +44,6 @@
                 <div class="card-header">
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
                 </div>
-                
             </div>
         </div>
     </div>
