@@ -44,16 +44,6 @@
             </form>
         </div>
     </div>
-    <div class="col-xl-8 col-md-6 box-col-6">
-        <div class="file-content">
-            <div class="card">
-                <div class="card-header">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
-                </div>
-                
-            </div>
-        </div>
-    </div>
 </div>
 
 
