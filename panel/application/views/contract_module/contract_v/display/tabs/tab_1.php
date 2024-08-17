@@ -71,6 +71,18 @@
                     </div>
                     <div class="row py-3">
                         <div class="col-6">
+                            <strong>Teklif</strong>
+                        </div>
+                        <div class="col-6">
+                            <?php if (isset($site)){ ?>
+                                <a href="<?php echo base_url("contract/file_form_offer/$item->id"); ?>">
+                                    <?php echo contract_name($item->id); ?> (Teklif Dosyası)
+                                </a>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-6">
                             <strong>İşveren:</strong>
                         </div>
                         <div class="col-6">

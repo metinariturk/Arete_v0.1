@@ -1,5 +1,14 @@
 <div class="card">
     <div class="card-header">
+        <?php if ($item->parent > 0) { ?>
+            <div class="mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="h4">Alt Taşeron Sözleşmesi</div>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
         <div class="mb-2">
             <div class="row">
                 <div class="col-12">
@@ -16,14 +25,11 @@
         <div class="mb-2">
             <div class="row">
                 <div class="col-12">
-                    <div class="col-form-label">Sözleşme İşveren</div>
-                    <select id="select2-demo-1"
+                    <div class="col-form-label">İşveren</div>
+                    <select id="select2-demo-1" readonly
                             class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
                             data-plugin="select2" name="isveren">
                         <option value="<?php echo isset($form_error) ? set_value("isveren") : "$item->isveren"; ?>"><?php echo isset($form_error) ? company_name(set_value("isveren")) : company_name($item->isveren); ?></option>
-                        <?php foreach ($companys as $company) { ?>
-                            <option value="<?php echo $company->id; ?>"><?php echo $company->company_name; ?></option>
-                        <?php } ?>
                     </select>
                     <?php if (isset($form_error)) { ?>
                         <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
@@ -154,40 +160,6 @@
                 </div>
             </div>
         </div>
-        <?php if ($item->parent > 0) { ?>
-            <div class="mb-2">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="col-form-label">İşveren</div>
-                        <select id="select2-demo-1"
-                                class="form-control <?php cms_isset(form_error("isveren"), "is-invalid", ""); ?>"
-                                data-plugin="select2" name="isveren">
-                            <option value="<?php echo isset($form_error) ? set_value("isveren") : "$item->isveren"; ?>"><?php echo isset($form_error) ? company_name(set_value("isveren")) : company_name($item->isveren); ?></option>
-                            <?php foreach ($isverenler as $isveren) { ?>
-                                <option value="<?php echo $isveren->id; ?>"><?php echo $isveren->company_name; ?></option>
-                            <?php } ?>
-                        </select>
-                        <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("isveren"); ?></div>
-                        <?php } ?>
-                    </div>
-                    <div class="col-6">
-                        <div class="col-form-label">Yüklenici/Taşeron</div>
-                        <select id="select2-demo-1"
-                                class="form-control <?php cms_isset(form_error("yuklenici"), "is-invalid", ""); ?>"
-                                data-plugin="select2" name="yuklenici">
-                            <option value="<?php echo isset($form_error) ? set_value("yuklenici") : "$item->yuklenici"; ?>"><?php echo isset($form_error) ? company_name(set_value("yuklenici")) : company_name($item->yuklenici); ?></option>
-                            <?php foreach ($companys as $company) { ?>
-                                <option value="<?php echo $company->id; ?>"><?php echo $company->company_name; ?></option>
-                            <?php } ?>
-                        </select>
-                        <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("yuklenici"); ?></div>
-                        <?php } ?>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
     </div>
 </div>
 

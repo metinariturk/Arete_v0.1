@@ -274,7 +274,7 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/";
-        $draw_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/Drawing/";
+        $draw_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/Drawings/";
         !is_dir($path) && mkdir($path, 0777, TRUE);
         !is_dir($draw_path) && mkdir($draw_path, 0777, TRUE);
 
@@ -1665,6 +1665,53 @@ class Contract extends CI_Controller
 
         header('Content-Type: application/json');
         echo json_encode($uploadedFiles);
+        exit;
+    }
+
+    public function file_upload_drawings($id)
+    {
+        $contract = $this->Contract_model->get(array("id" => $id));
+        $contract_code = contract_code($contract->id);
+        $project_id = project_id_cont($contract->id);
+        $project_code = project_code($project_id);
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$contract_code/Offer/Drawings";
+
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
+        }
+
+
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
+
+        // call to upload the files
+
+        $offer_drawings = $FileUploader->upload();
+
+        $files = ($offer_drawings['files']);
+
+        if ($offer_drawings['isSuccess'] && count($offer_drawings['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($offer_drawings['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
+
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
+                }
+            }
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($offer_drawings);
         exit;
     }
 

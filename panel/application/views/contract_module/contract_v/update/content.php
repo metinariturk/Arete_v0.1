@@ -31,7 +31,11 @@
             <form id="update_<?php echo $this->Module_Name; ?>"
                   action="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>" method="post"
                   enctype="multipart/form-data" autocomplete="off">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+                <?php if ($item->parent > 0) { ?>
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form_sub"); ?>
+                <?php } else { ?>
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+                <?php } ?>
             </form>
         </div>
     </div>

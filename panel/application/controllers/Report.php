@@ -749,6 +749,25 @@ class Report extends CI_Controller
         if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
             // Yüklenen dosyaları işleyin
             foreach ($uploadedFiles['files'] as $file) {
+                $filePath = $path . $file['name'];
+
+                // HEIC dosyasını kontrol et ve JPG formatına dönüştür
+                $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                if ($fileExtension === 'heic') {
+                    $jpgFilePath = str_replace('.heic', '.jpg', $filePath);
+
+                    // Imagick ile HEIC dosyasını JPG'ye dönüştür
+                    $imagick = new Imagick($filePath);
+                    $imagick->setImageFormat('jpg');
+                    $imagick->writeImage($jpgFilePath);
+
+                    // HEIC dosyasını sil
+                    unlink($filePath);
+
+                    // Dosya adını güncelle
+                    $file['name'] = basename($jpgFilePath);
+                }
+
                 // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
                 if ($file['size'] > 2097152) {
                     // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
