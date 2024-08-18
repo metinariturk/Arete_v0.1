@@ -24,8 +24,13 @@
 
                                         <?php foreach ($favorites as $favorite) { ?>
                                             <?php if ($favorite->module == "project") { ?>
-                                                <li><a  href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>" role="tab" aria-controls="pills-<?php echo $favorite->module_id; ?>"
-                                                       aria-selected="false"><span class="title"> <?php echo $favorite->title; ?></span></a></li>
+                                                <li>
+                                                    <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>"
+                                                       role="tab"
+                                                       aria-controls="pills-<?php echo $favorite->module_id; ?>"
+                                                       aria-selected="false"><span
+                                                                class="title"> <?php echo $favorite->title; ?></span></a>
+                                                </li>
 
                                             <?php } ?>
                                         <?php } ?>
@@ -44,8 +49,13 @@
 
                                         <?php foreach ($favorites as $favorite) { ?>
                                             <?php if ($favorite->module == "contract") { ?>
-                                                <li><a  href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>" role="tab" aria-controls="pills-<?php echo $favorite->module_id; ?>"
-                                                        aria-selected="false"><span class="title"> <?php echo $favorite->title; ?></span></a></li>
+                                                <li>
+                                                    <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>"
+                                                       role="tab"
+                                                       aria-controls="pills-<?php echo $favorite->module_id; ?>"
+                                                       aria-selected="false"><span
+                                                                class="title"> <?php echo $favorite->title; ?></span></a>
+                                                </li>
                                             <?php } ?>
                                         <?php } ?>
 
@@ -63,8 +73,13 @@
 
                                         <?php foreach ($favorites as $favorite) { ?>
                                             <?php if ($favorite->module == "site") { ?>
-                                                <li><a  href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>" role="tab" aria-controls="pills-<?php echo $favorite->module_id; ?>"
-                                                        aria-selected="false"><span class="title"> <?php echo $favorite->title; ?></span></a></li>
+                                                <li>
+                                                    <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>"
+                                                       role="tab"
+                                                       aria-controls="pills-<?php echo $favorite->module_id; ?>"
+                                                       aria-selected="false"><span
+                                                                class="title"> <?php echo $favorite->title; ?></span></a>
+                                                </li>
                                             <?php } ?>
                                         <?php } ?>
                                     </ul>
@@ -93,7 +108,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 box-col-6">
+            <div class="col-xl-4">
                 <?php $this->load->view("{$viewFolder}/list/todo"); ?>
             </div>
         </div>
