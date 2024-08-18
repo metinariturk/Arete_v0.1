@@ -3664,9 +3664,9 @@ class Payment extends CI_Controller
 
                             $pdf->Cell(21, 5, "Birim Fiyat", 1, 0, "C", 1);
                             $pdf->Cell(21, 5, "Toplam Miktar", 1, 0, "C", 1);
-                            $pdf->Cell(21, 5, "Önceki Hakediş", 1, 0, "C", 1);
-                            $pdf->Cell(21, 5, "Bu Hakediş", 1, 0, "C", 1);
-                            $pdf->Cell(21, 5, "Toplam İmalat", 1, 0, "C", 1);
+                            $pdf->Cell(21, 5, "Önceki Miktar", 1, 0, "C", 1);
+                            $pdf->Cell(21, 5, "Bu Miktar", 1, 0, "C", 1);
+                            $pdf->Cell(21, 5, "Toplam Tutar", 1, 0, "C", 1);
                             $pdf->Cell(21, 5, "Önceki Tutar", 1, 0, "C", 1);
                             $pdf->Cell(21, 5, "Bu Hakediş", 1, 0, "C", 1);
 
@@ -3675,11 +3675,26 @@ class Payment extends CI_Controller
                             $pdf->SetFont('dejavusans', 'N', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
 
                             $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_id" => $sub_group->id));
+
+
+                            $E_total = 0;
+                            $F_total = 0;
+                            $G_total = 0;
+
                             foreach ($contract_items as $contract_item) {
+                                $E = 0;
+                                $F = 0;
+                                $G = 0;
+
                                 $calculate = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "boq_id" => $contract_item->id));
                                 $old_total = $this->Boq_model->sum_all(array('contract_id' => $payment->contract_id, "payment_no <" => $payment->hakedis_no, "boq_id" => $contract_item->id), "total");
                                 $this_total = isset($calculate->total) ? $calculate->total : 0;
+
+
                                 if (($old_total + $this_total) != 0) {
+                                    $E = ($old_total + $this_total) * $contract_item->price;
+                                    $F = $old_total * $contract_item->price;
+                                    $G = $this_total * $contract_item->price;
                                     $pdf->Cell(12, 5, $k++ . "-" . $i++, 1, 0, "C", 0);
                                     $pdf->Cell(25, 5, $contract_item->code, 1, 0, "L", 0);
                                     $pdf->Cell(85, 5, $contract_item->name, 1, 0, "L", 0);
@@ -3688,12 +3703,22 @@ class Payment extends CI_Controller
                                     $pdf->Cell(21, 5, money_format($old_total + $this_total), 1, 0, "R", 0);
                                     $pdf->Cell(21, 5, money_format($old_total), 1, 0, "R", 0);
                                     $pdf->Cell(21, 5, money_format($this_total), 1, 0, "R", 0);
-                                    $pdf->Cell(21, 5, money_format(($old_total + $this_total) * $contract_item->price), 1, 0, "R", 0);
-                                    $pdf->Cell(21, 5, money_format($old_total * $contract_item->price), 1, 0, "R", 0);
-                                    $pdf->Cell(21, 5, money_format($this_total * $contract_item->price), 1, 0, "R", 0);
+                                    $pdf->Cell(21, 5, money_format($E), 1, 0, "R", 0);
+                                    $pdf->Cell(21, 5, money_format($F), 1, 0, "R", 0);
+                                    $pdf->Cell(21, 5, money_format($G), 1, 0, "R", 0);
                                     $pdf->Ln();
+                                    $E_total += $E;
+                                    $F_total += $F;
+                                    $G_total += $G;
                                 }
+
+
                             }
+                            $pdf->Cell(217, 5, "TOPLAM", 1, 0, "R", 0);
+                            $pdf->Cell(21, 5, money_format($E_total), 1, 0, "R", 0);
+                            $pdf->Cell(21, 5, money_format($F_total), 1, 0, "R", 0);
+                            $pdf->Cell(21, 5, money_format($G_total), 1, 0, "R", 0);
+                            $pdf->Ln();
                         }
                         $pdf->Cell(265, 2, '', 0, 1); // 0 genişlik, 10 yükseklik, boş içerik
                     }
