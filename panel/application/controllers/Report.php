@@ -726,7 +726,7 @@ class Report extends CI_Controller
 
         $date = dateFormat_dmy($item->report_date);
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/";
+        $path = rtrim($this->Upload_Folder, '/') . '/' . $this->Module_Main_Dir . "/$project->project_code/$site->dosya_no/Reports/$date/";
 
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
@@ -747,19 +747,30 @@ class Report extends CI_Controller
         $files = ($uploadedFiles['files']);
 
         if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+
+            $thumbnailDir = $path . 'thumb/';
+            if (!is_dir($thumbnailDir)) {
+                mkdir($thumbnailDir, 0777, true); // Thumbnail klasörünü oluştur
+            }
+
             // Yüklenen dosyaları işleyin
             foreach ($uploadedFiles['files'] as $file) {
                 $filePath = $path . $file['name'];
 
                 // HEIC dosyasını kontrol et ve JPG formatına dönüştür
-                $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                $fileExtension = strtolower(pathinfo(realpath($filePath), PATHINFO_EXTENSION));
                 if ($fileExtension === 'heic') {
-                    $jpgFilePath = str_replace('.heic', '.jpg', $filePath);
+                    $jpgFilePath = str_replace('.heic', '.jpg', realpath($filePath));
 
-                    // Imagick ile HEIC dosyasını JPG'ye dönüştür
-                    $imagick = new Imagick($filePath);
-                    $imagick->setImageFormat('jpg');
-                    $imagick->writeImage($jpgFilePath);
+
+                    try {
+                        $imagick = new Imagick(realpath($filePath));
+                        $imagick->setImageFormat('jpg');
+                        $imagick->writeImage($jpgFilePath);
+                    } catch (ImagickException $e) {
+                        error_log('Dönüştürme hatası: ' . $e->getMessage());
+                        echo $e->getMessage();
+                    }
 
                     // HEIC dosyasını sil
                     unlink($filePath);
@@ -777,7 +788,17 @@ class Report extends CI_Controller
                     // Yeniden boyutlandırma işlemi
                     FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
                 }
+
+                // Thumbnail oluştur
+                $thumbnailPath = $thumbnailDir . $file['name'];
+                $thumbnailWidth = 750; // Thumbnail genişliği (örnek değer)
+                $thumbnailHeight = 750; // Thumbnail yüksekliği (örnek değer)
+
+                // Thumbnail oluşturma ve kaydetme
+                FileUploader::resize($path . $file['name'], $thumbnailWidth, $thumbnailHeight, $thumbnailPath, $crop = true, $quality = 75);
             }
+
+
         }
 
         header('Content-Type: application/json');
@@ -802,11 +823,13 @@ class Report extends CI_Controller
 
         $date = dateFormat_dmy($item->report_date);
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date";
+        $thumb_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/thumb";
 
         $fileName = $this->input->post('fileName');
 
         unlink("$path/$fileName");
+        unlink("$thumb_path/$fileName");
     }
 
 
@@ -1204,7 +1227,7 @@ class Report extends CI_Controller
             $project_code = project_code($site->proje_id);
 
 
-            $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
+            $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumb";
 
             $originalPath = K_PATH_MAIN;
             if (DIRECTORY_SEPARATOR == "\\") {
