@@ -52,7 +52,7 @@ class Report extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        
+
         $this->Common_Files = "common";
     }
 
@@ -206,7 +206,6 @@ class Report extends CI_Controller
                 $next_report = $reports[$current_report_index + 1];
             }
         }
-
 
 
         $workgroups = $this->Report_workgroup_model->get_all(array("report_id" => $id));
@@ -673,7 +672,6 @@ class Report extends CI_Controller
         }
 
 
-
         $delete2 = $this->Report_model->delete(
             array(
                 "id" => $report_id
@@ -831,7 +829,6 @@ class Report extends CI_Controller
         unlink("$path/$fileName");
         unlink("$thumb_path/$fileName");
     }
-
 
 
     public function download_all($report_id)
@@ -1184,7 +1181,7 @@ class Report extends CI_Controller
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetX(10);
         $pdf->SetFont('dejavusans', '', 7);
-        $notes = array_filter((explode(".", $report->aciklama)),'strlen');
+        $notes = array_filter((explode(".", $report->aciklama)), 'strlen');
         $n = 1;
         foreach ($notes as $note) {
             $pdf->Cell(10, 5, $n++, 1, 0, "C", 0);
@@ -1212,118 +1209,108 @@ class Report extends CI_Controller
         }
         $pdf->Ln(); // Yeni satıra geç
 
-        if ($print_pic == 1) {
+
+        $date = dateFormat_dmy($report->report_date);
+        $project_code = project_code($site->proje_id);
+
+
+        $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
+
+        $originalPath = K_PATH_MAIN;
+        if (DIRECTORY_SEPARATOR == "\\") {
+            $removePart = 'application' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tcpdf/';
+        } else {
+            $removePart = 'application' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR;
+        }
+        $newPath = str_replace($removePart, '', $originalPath);
+        $path = $newPath . $imageDirectory;
+
+
+        $baseDirectory = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+
+        $files = glob($baseDirectory . '/*');
+
+        if ($print_pic == 1 and count($files)>0) {
             $pdf->AddPage();
 
-            $offset = 10; // 1 cm = 10 mm
-            $pageWidth = $pdf->getPageWidth() - $offset;
-            $pageHeight = $pdf->getPageHeight() - $offset;
-
-// Kutucuk özellikleri
-            $boxWidth = ($pageWidth - $offset) / 2;
-            $boxHeight = ($pageHeight - $offset) / 2;
-
-            $date = dateFormat_dmy($report->report_date);
-            $project_code = project_code($site->proje_id);
-
-
-            $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
-
-            $originalPath = K_PATH_MAIN;
-            if (DIRECTORY_SEPARATOR == "\\") {
-                $removePart = 'application' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tcpdf/';
+            if (count($files) > 6) {
+                $files = array_rand(array_flip($files), 6); // 6 rastgele dosya seç
             } else {
-                $removePart = 'application' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR;
+                $files = array_slice($files, 0, 6); // Tüm dosyaları al
             }
-            $newPath = str_replace($removePart, '', $originalPath);
-            $path = $newPath . $imageDirectory;
-            $baseDirectory = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
 
-            $files = glob($baseDirectory . '/*');
+// Maksimum yükseklik
+            $maxHeight = 90;
 
-            $x = 10;
+            switch (count($files)) {
+                case 6:
+                    $positions = [
+                        // Üst iki
+                        ['x' => 10, 'y' => 5, 'w' => 90, 'h' => 90], ['x' => 110, 'y' => 5, 'w' => 90, 'h' => 90],
+                        // Ortada iki
+                        ['x' => 10, 'y' => 95, 'w' => 90, 'h' => 90], ['x' => 110, 'y' => 95, 'w' => 90, 'h' => 90],
+                        // Altta iki
+                        ['x' => 10, 'y' => 185, 'w' => 90, 'h' => 90], ['x' => 110, 'y' => 185, 'w' => 90, 'h' => 90],
+                    ];
+                    break;
+                case 5:
+                    $positions = [
+                        // Üst iki
+                        ['x' => 10, 'y' => 5, 'w' => 90, 'h' => 90], ['x' => 115, 'y' => 5, 'w' => 90, 'h' => 90],
+                        // Ortada iki
+                        ['x' => 10, 'y' => 95, 'w' => 90, 'h' => 90], ['x' => 115, 'y' => 95, 'w' => 90, 'h' => 90],
+                        // Altta ortada bir
+                        ['x' => 62, 'y' => 185, 'w' => 90, 'h' => 90]
+                    ];
+                    break;
+                case 4:
+                    $positions = [
+                        // Üst iki
+                        ['x' => 10, 'y' => 10, 'w' => 100, 'h' => 100], ['x' => 105, 'y' => 10, 'w' => 100, 'h' => 100],
+                        // Altta iki
+                        ['x' => 10, 'y' => 115, 'w' => 100, 'h' => 100], ['x' => 105, 'y' => 115, 'w' => 100, 'h' => 100]
+                    ];
+                    break;
+                case 3:
+                    $positions = [
+                        // Üst iki
+                        ['x' => 10, 'y' => 10, 'w' => 100, 'h' => 100], ['x' => 115, 'y' => 10, 'w' => 100, 'h' => 100],
+                        // Altta ortada bir
+                        ['x' => 35, 'y' => 120, 'w' => 155, 'h' => 155]
+                    ];
+                    break;
+                case 2:
+                    $positions = [
+                        // Üstte bir
+                        ['x' => 40, 'y' => 10, 'w' => 130, 'h' => 130],
+                        // Altta bir
+                        ['x' => 40, 'y' => 145, 'w' => 130, 'h' => 130]
+                    ];
+                    break;
+                case 1:
+                    $positions = [
+                        ['x' => 15, 'y' => 10, 'w' => 180, 'h' => 180]
+                    ];
+                    break;
+            }
 
-            // Kenarlardan 1 cm offset
-            $offset = 10; // 1 cm = 10 mm
-            $pageWidth = $pdf->getPageWidth() - 2 * $offset;
-            $pageHeight = $pdf->getPageHeight() - 2 * $offset;
+            foreach ($files as $index => $file) {
+                // Görselin yüksekliğini sınırlandırın, en boy oranını koruyarak genişliği ayarlayın
+                $imageSize = getimagesize($file);
+                $origWidth = $imageSize[0];
+                $origHeight = $imageSize[1];
 
-// Kutucuk özellikleri
-            $boxWidth = ($pageWidth - 2 * $offset) / 2;
-            $boxHeight = ($pageHeight - 2 * $offset) / 2;
-
-// Başlangıç X ve Y koordinatları
-            $x = $offset;
-            $y = $offset;
-
-// İşlenen dosya sayısı
-            $fileCount = 0;
-
-            if (count($files) > 4) {
-                $randomIndexes = array_rand($files, 4);
-                $selectedFiles = array();
-
-                // Seçilen rastgele görselleri al
-                foreach ($randomIndexes as $index) {
-                    $selectedFiles[] = $files[$index];
+                if ($origHeight > $maxHeight) {
+                    $height = $maxHeight;
+                    $width = ($maxHeight / $origHeight) * $origWidth;
+                } else {
+                    $width = $origWidth;
+                    $height = $origHeight;
                 }
 
-                // Seçilen görselleri kullanarak işlem yap
-                foreach ($selectedFiles as $file) {
-                    if (is_file($file) && $fileCount < 4) {
-                        // Dosyanın boyutlarını al
-                        list($imgWidth, $imgHeight) = getimagesize($file);
 
-                        // En-boy oranını koruyarak resmi yerleştir
-                        if ($imgWidth > $imgHeight) {
-                            // Yüksekliği oranı ile ayarla
-                            $pdf->Image($file, $x, $y + 30, $boxWidth + 10, 0, 'JPG');
-                        } else {
-                            // Genişliği oranı ile ayarla
-                            $pdf->Image($file, $x + 20, $y, 0, $boxHeight, 'JPG');
-                        }
+                $pdf->Image($file, $positions[$index]['x'], $positions[$index]['y'], $positions[$index]['w'], $positions[$index]['h'], '', '', '', true, 150, '', false, false, 1, false, false, false);
 
-                        // X koordinatını güncelle
-                        $x += $boxWidth + $offset;
-
-                        // Dosya sayısını artır
-                        $fileCount++;
-
-                        // İlk iki resim tamamlandıysa, ikinci satıra geç
-                        if ($fileCount % 2 == 0) {
-                            $x = $offset;
-                            $y += $boxHeight - 1 + $offset;
-                        }
-                    }
-                }
-            } else {
-                foreach ($files as $file) {
-                    if (is_file($file) && $fileCount < 4) {
-                        // Dosyanın boyutlarını al
-                        list($imgWidth, $imgHeight) = getimagesize($file);
-
-                        // En-boy oranını koruyarak resmi yerleştir
-                        if ($imgWidth > $imgHeight) {
-                            // Yüksekliği oranı ile ayarla
-                            $pdf->Image($file, $x, $y + 30, $boxWidth + 10, 0, 'JPG');
-                        } else {
-                            // Genişliği oranı ile ayarla
-                            $pdf->Image($file, $x + 20, $y, 0, $boxHeight, 'JPG');
-                        }
-
-                        // X koordinatını güncelle
-                        $x += $boxWidth + $offset;
-
-                        // Dosya sayısını artır
-                        $fileCount++;
-
-                        // İlk iki resim tamamlandıysa, ikinci satıra geç
-                        if ($fileCount % 2 == 0) {
-                            $x = $offset;
-                            $y += $boxHeight - 1 + $offset;
-                        }
-                    }
-                }
             }
         }
 
