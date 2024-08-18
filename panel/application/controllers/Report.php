@@ -748,7 +748,7 @@ class Report extends CI_Controller
 
         if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
 
-            $thumbnailDir = $path . 'thumb/';
+            $thumbnailDir = $path . 'thumbnails/';
             if (!is_dir($thumbnailDir)) {
                 mkdir($thumbnailDir, 0777, true); // Thumbnail klasörünü oluştur
             }
@@ -824,7 +824,7 @@ class Report extends CI_Controller
         $date = dateFormat_dmy($item->report_date);
 
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date";
-        $thumb_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/thumb";
+        $thumb_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/thumbnails";
 
         $fileName = $this->input->post('fileName');
 
@@ -1227,7 +1227,7 @@ class Report extends CI_Controller
             $project_code = project_code($site->proje_id);
 
 
-            $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumb";
+            $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
 
             $originalPath = K_PATH_MAIN;
             if (DIRECTORY_SEPARATOR == "\\") {
