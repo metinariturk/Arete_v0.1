@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="email-wrap bookmark-wrap">
         <div class="row">
-            <div class="col-xl-6 box-col-6">
+            <div class="col-xl-4 box-col-6">
                 <div class="md-sidebar-aside job-left-aside custom-scrollbar">
                     <div class="email-left-aside">
                         <div class="card">
@@ -74,7 +74,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 xl-100 box-col-12">
+            <div class="col-xl-4 box-col-6">
                 <div class="card">
                     <div class="cal-date-widget card-body">
                         <div class="cal-info text-center">
@@ -93,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 xl-100 box-col-12 todo">
+            <div class="col-xl-4 box-col-6">
                 <?php $this->load->view("{$viewFolder}/list/todo"); ?>
             </div>
         </div>
