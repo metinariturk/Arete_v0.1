@@ -177,7 +177,16 @@ class Contract extends CI_Controller
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
+        $collection_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection";
+        $advance_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance";
+        $offer_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer";
+        $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
+
         !is_dir($path) && mkdir($path, 0777, TRUE);
+        !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
+        !is_dir($advance_path) && mkdir($collection_path, 0777, TRUE);
+        !is_dir($offer_path) && mkdir($collection_path, 0777, TRUE);
+        !is_dir($payment_path) && mkdir($collection_path, 0777, TRUE);
 
 
         if ($item->offer == 1) {

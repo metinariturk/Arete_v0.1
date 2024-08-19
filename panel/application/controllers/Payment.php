@@ -3711,9 +3711,8 @@ class Payment extends CI_Controller
                                     $F_total += $F;
                                     $G_total += $G;
                                 }
-
-
                             }
+
                             $pdf->Cell(217, 5, "TOPLAM", 1, 0, "R", 0);
                             $pdf->Cell(21, 5, money_format($E_total), 1, 0, "R", 0);
                             $pdf->Cell(21, 5, money_format($F_total), 1, 0, "R", 0);
