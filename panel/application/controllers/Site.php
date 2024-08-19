@@ -491,6 +491,7 @@ class Site extends CI_Controller
         $viewData->owner_sign = $owner_sign;
         $viewData->owner_staff = $owner_staff;
         $viewData->workgroups = json_decode($item->active_group, true);
+        $viewData->all_workgroups = $this->Report_workgroup_model->get_unique_workgroups($id);
         $viewData->workmachines = json_decode($item->active_machine, true);
         $viewData->fav = $fav;
 

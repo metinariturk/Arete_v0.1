@@ -45,4 +45,13 @@ class Report_workgroup_model extends CI_Model
         return $this->db->where($where)->delete($this->tableName);
     }
 
+    public function get_unique_workgroups($site_id) {
+        $this->db->distinct();
+        $this->db->select('workgroup');
+        $this->db->from('report_workgroup');
+        $this->db->where('site_id', $site_id);
+        $query = $this->db->get();
+        return $query->result_array(); // Dizi döndür
+    }
+
 }
