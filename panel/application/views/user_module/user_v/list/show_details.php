@@ -6,10 +6,12 @@
                     alt="">
             <input class="updateimg" type="file" name="img" onchange="readURL(this,2)">
             <div class="media-body mt-0">
-                <h5><span class="first_name_2"><?php echo $item->name; ?> </span><span
-                            class="last_name_2"><?php echo $item->surname; ?></span></h5>
+                <a href="<?php echo base_url("user/file_form/$item->id"); ?>">
+                    <h5>
+                        <span class="first_name_2"><?php echo $item->name; ?> </span><span
+                                class="last_name_2"><?php echo $item->surname; ?></span></h5>
+                </a>
                 <p class="email_add_2"><?php echo $item->email; ?></p>
-                <p class="email_add_2"><?php echo $item->user_name; ?></p>
                 <ul>
                     <li><a href="<?php echo base_url("user/update_form/$item->id"); ?>">Düzenle</a></li>
                 </ul>
@@ -29,8 +31,8 @@
                 <?php $permissions = json_decode($item->permissions, true); ?>
                 <li>Yekiler :
                     <div class="table-responsive">
-                      <table class="table table-responsive">
-                        <thead>
+                        <table class="table table-responsive">
+                            <thead>
                             <tr>
                                 <th>Modül</th>
                                 <th>Görüntüleme</th>
@@ -38,8 +40,8 @@
                                 <th>Düzenleme</th>
                                 <th>Silme</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             <?php foreach ($permissions as $module => $permission) { ?>
                                 <tr>
                                     <td><?php echo module_name($module); ?></td>
@@ -49,8 +51,8 @@
                                     <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : ''; ?></td>
                                 </tr>
                             <?php } ?>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
                     </div>
                 </li>
             </ul>
