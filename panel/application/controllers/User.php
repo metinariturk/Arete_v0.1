@@ -19,6 +19,8 @@ class user extends CI_Controller
             redirect(base_url("sifre-yenile"));
         }
 
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
 
         $this->moduleFolder = "user_module";
         $this->viewFolder = "user_v";
@@ -53,7 +55,7 @@ class user extends CI_Controller
         $this->List_Folder = "list";
         $this->Update_Folder = "update";
 
-        
+
         $this->Common_Files = "common";
     }
 
@@ -66,7 +68,7 @@ class user extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->User_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
-        
+
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
 
@@ -113,8 +115,19 @@ class user extends CI_Controller
     {
         $viewData = new stdClass();
 
+        $path = "$this->File_Dir_Prefix/$id/";
+
+        // Dizin kontrolü
+        if (!is_dir($path)) {
+            // Dizin yoksa oluştur
+            if (!mkdir($path, 0777, true)) {
+                echo json_encode(['error' => 'Dizin oluşturulamadı.']);
+                exit;
+            }
+        }
+
         $projects = $this->Project_model->get_all(array());
-        
+
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
 
@@ -290,10 +303,10 @@ class user extends CI_Controller
 
         $this->load->library('encryption');
         $this->load->library("form_validation");
-        $user = $this->User_model->get(array("id"=>$id));
+        $user = $this->User_model->get(array("id" => $id));
 
         if (empty($this->input->post("password"))) {
-            $current_password = $this->encryption->decrypt(get_from_any("users", "password", "id", $id));
+            $current_password = $this->encryption->decrypt($user->password);
         } else {
             $current_password = $this->input->post("password");
         }
@@ -310,8 +323,9 @@ class user extends CI_Controller
         $this->form_validation->set_rules("name", "Ad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("surname", "Soyad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("email", "E-Posta", "valid_email|required|trim");
-        $this->form_validation->set_rules("password", "Şifre", "trim|min_length[8]");
-        if (!empty($this->input->post("password"))) {
+
+        if (!empty($this->input->post("password")) && $this->input->post("password") !== $this->encryption->decrypt($user->password)) {
+            $this->form_validation->set_rules("password", "Şifre", "trim|min_length[8]");
             $this->form_validation->set_rules("password_check", "Şifre Kontrol", "matches[password]|required|trim");
         }
 
@@ -466,7 +480,6 @@ class user extends CI_Controller
     }
 
 
-
     public function fileDelete($id, $from)
     {
 
@@ -585,6 +598,77 @@ class user extends CI_Controller
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/show_details", $viewData);
 
+    }
+
+    public function ajax_upload_file($id)
+    {
+        $path = "$this->File_Dir_Prefix/$id/";
+
+        // Dizin kontrolü
+        if (!is_dir($path)) {
+            // Dizin yoksa oluştur
+            if (!mkdir($path, 0777, true)) {
+                echo json_encode(['error' => 'Dizin oluşturulamadı.']);
+                exit;
+            }
+        } else {
+            // Dizin varsa, içindeki tüm dosyaları sil
+            $files = glob($path . '*'); // Dizin içindeki tüm dosyaları al
+
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    unlink($file); // Dosyaları sil
+                }
+            }
+        }
+
+        $configuration = [
+            'limit' => 1,
+            'fileMaxSize' => 10,
+            'extensions' => ['image/*'],
+            'title' => $id . '_avatar', // Dosya adını burada değiştiriyoruz
+            'uploadDir' => $path, // $path doğrudan kullanılıyor
+            'replace' => false,
+            'editor' => [
+                'maxWidth' => 512,
+                'maxHeight' => 512,
+                'crop' => false,
+                'quality' => 95
+            ]
+        ];
+
+        if (isset($_POST['fileuploader']) && isset($_POST['name'])) {
+            $name = str_replace(array('/', '\\'), '', $_POST['name']);
+            $editing = isset($_POST['editing']) && $_POST['editing'] == true;
+
+            if (is_file($configuration['uploadDir'] . $name)) {
+                $configuration['title'] = $name;
+                $configuration['replace'] = true;
+            }
+        }
+
+        // initialize FileUploader
+        $FileUploader = new FileUploader('files', $configuration);
+
+        // call to upload the files
+        $data = $FileUploader->upload();
+
+        // change file's public data
+        if (!empty($data['files'])) {
+            $item = $data['files'][0];
+
+            $data['files'][0] = array(
+                'title' => $item['title'],
+                'name' => $item['name'],
+                'size' => $item['size'],
+                'size2' => $item['size2']
+            );
+        }
+
+        // export to js
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
     }
 
 }

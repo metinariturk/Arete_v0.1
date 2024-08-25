@@ -3,13 +3,36 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card hovercard text-center">
-                    <div class="cardheader"><img alt=""
-                                                 style="height: 250px; width: auto" <?php echo get_company_avatar($item->company); ?>>
-                    </div>
-                    <div class="user-image">
-                        <div class="avatar"><img alt="" <?php echo get_avatar($item->id); ?>></div>
-                        <div class="icon-wrapper"><a href="<?php echo base_url("user/update_form/$item->id"); ?>"><i
-                                        class="icofont icofont-pencil-alt-5"></i></a></div>
+                    <div class="cardheader" style="display: flex;
+    justify-content: center; /* Yatayda ortalama */
+    align-items: center;     /* Düşeyde ortalama (opsiyonel, öğe yüksekliği varsa) */
+    height: 100%;         ">
+                        <?php
+                        $enabled = true;
+                        $file = 'assets/images/user/user.png';
+
+                        // Klasörde dosyayı bulma
+                        $path = "$this->File_Dir_Prefix/$item->id/";
+
+                        // Eğer dizin mevcut değilse
+                        if (is_dir($path)) {
+                            // Dizindeki dosyaları al
+                            $files = glob($path . '*');
+
+                            // Klasördeki dosyaları kontrol et
+                            foreach ($files as $file) {
+                                // Dosya olup olmadığını kontrol et ve avatar olup olmadığını kontrol et
+                                if (is_file($file) && strpos($file, '_avatar') !== false) {
+                                    // Dosya bulunduğunda varsayılan avatar olarak ayarla
+                                    $default_avatar = $file;
+                                    break; // Dosya bulunduğunda döngüyü sonlandır
+                                }
+                            }
+                        }
+                        ?>
+                        <input type="file" name="files" data-fileuploader-default="<?php echo base_url($file); ?>"
+                               data-fileuploader-files='<?php echo isset($avatar) ? json_encode(array($avatar)) : ''; ?>'
+                            <?php echo !$enabled ? ' disabled' : ''; ?>>
                     </div>
                     <div class="info">
                         <div class="row">
@@ -61,6 +84,30 @@
                             </div>
                         </div>
                         <hr>
+                        YETKİLER
+                        <?php $permissions = json_decode($item->permissions, true); ?>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Modül</th>
+                                <th>Görüntüleme</th>
+                                <th>Oluşturma</th>
+                                <th>Düzenleme</th>
+                                <th>Silme</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($permissions as $module => $permission) { ?>
+                                <tr>
+                                    <td><?php echo module_name($module); ?></td>
+                                    <td class="w20c"><?php echo isset($permission['read']) ? '✔' : ''; ?></td>
+                                    <td class="w20c"><?php echo isset($permission['write']) ? '✔' : ''; ?></td>
+                                    <td class="w20c"><?php echo isset($permission['update']) ? '✔' : ''; ?></td>
+                                    <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : ''; ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

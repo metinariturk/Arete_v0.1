@@ -29,35 +29,5 @@ if ($subViewFolder == "list") {
                             <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                      </button>
                      ';
-} elseif ($subViewFolder == "display") {
-    $title = "$this->Module_Title Görüntüle";
-    $base_url = base_url("$this->Module_Name/delete/$item->id");
-    $url = base_url("$this->Module_Name/delete/$item->id");
-    $update_url = base_url("$this->Module_Name/update_form/$item->id");
-    $button_group = '
-                    <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)" 
-                            data-text="' . $this->Module_Title . '"
-                            data-url="' . $base_url . '"
-                            url="' . $url . '">
-                        <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Sil
-                    </button>
-                    ';
 }
 ?>
-
-<div class="container-fluid">
-    <div class="page-title">
-        <div class="row">
-            <div class="col-6">
-                <h3>
-                    <?php echo $title; ?>
-                </h3>
-            </div>
-            <div class="col-6">
-                <ol class="breadcrumb">
-                    <li><?php echo $button_group; ?></li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</div>

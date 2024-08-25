@@ -34,7 +34,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe">
     <include_path>
       <path value="$PROJECT_DIR$/panel/vendor/composer" />
       <path value="$PROJECT_DIR$/panel/vendor/maennchen/zipstream-php" />
@@ -67,32 +67,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/update&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/assets",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\update" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\collection_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\main-slider\slider1" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\css" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0001\SOZ-0027\Offer\Drawing" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\js" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\common" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -169,6 +169,7 @@
       <workItem from="1723486607982" duration="6449000" />
       <workItem from="1723840780341" duration="2435000" />
       <workItem from="1723877447942" duration="136000" />
+      <workItem from="1724582349619" duration="10681000" />
     </task>
     <servers />
   </component>

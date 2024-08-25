@@ -8,7 +8,6 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title mb-0">Kullanıcı Profili</h4>
-                            <?php echo validation_errors(); ?>
                             <div class="card-options"><a class="card-options-collapse" href="#"
                                                          data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a
                                         class="card-options-remove" href="#" data-bs-toggle="card-remove"><i
@@ -52,15 +51,15 @@
                             <div class="mb-3">
                                 <label class="form-label">Şifreyi Değiştir</label>
                                 <input class="form-control <?php cms_isset(form_error("password"), "is-invalid", ""); ?>"
-                                       name="password" type="password" value="">
+                                       name="password" type="password" value="<?php echo isset($form_error) ? set_value("password") : ""; ?>" autocomplete="new-password">
                                 <?php if (isset($form_error)) { ?>
                                     <div class="invalid-feedback"><?php echo form_error("password"); ?></div>
                                 <?php } ?>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Şifreyi Tekrar</label>
-                                <input class="form-control <?php cms_isset(form_error("password"), "is-invalid", ""); ?>"
-                                       name="password_check" type="password" value="">
+                                <input class="form-control <?php cms_isset(form_error("password_check"), "is-invalid", ""); ?>"
+                                       name="password_check" type="password"  autocomplete="new-password">
                                 <?php if (isset($form_error)) { ?>
                                     <div class="invalid-feedback"><?php echo form_error("password_check"); ?></div>
                                 <?php } ?>
@@ -144,3 +143,11 @@
         </form>
     </div>
 </div>
+
+<button class="btn btn-danger" type="button" onclick="cancelConfirmationModule(this)"
+        url="<?php echo base_url("User/file_form/$item->id"); ?>">
+    <i class="menu-icon fa fa-close fa-lg" aria-hidden="true"></i> İptal
+</button>
+<button type="submit" form="update_user" class="btn btn-success">
+    <i class="fa fa-floppy-o fa-lg"></i> Kaydet
+</button>
