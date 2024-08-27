@@ -346,15 +346,19 @@
                                         </tr>
                                         <tr>
                                             <td>Kalan Avans</td>
-                                            <td><?php echo money_format($advance_given - $sum_old_advance) . " " . $contract->para_birimi; ?></td>
+                                            <td><?php echo money_format($remain_advance = $advance_given - $sum_old_advance) . " " . $contract->para_birimi; ?></td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </td>
+                                <?php
+                                $this_offset_advance = min($remain_advance, $payment_settings->avans_oran * $this_payment_calculation_price);
+                                ?>
+
                                 <td class="total-group-row-left">
                                     <input id="I" type="number" step=".01" name="I"
                                            onblur="calcular()"
-                                           value="<?php echo isset($item->I) ? $item->I : null; ?>"
+                                           value="<?php echo isset($item->I) ? $item->I : $this_offset_advance; ?>"
                                            onfocus="calcular()">
                                 </td>
                             </tr>

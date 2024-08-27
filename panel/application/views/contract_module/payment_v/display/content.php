@@ -28,10 +28,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-4 box-col-2">
+            <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-4 box-col-2">
                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/navtab"); ?>
             </div>
-            <div class="col-xxl-10 col-xl-9 col-lg-8 col-md-8 box-col-10">
+            <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-8 box-col-10">
                 <div class="email-right-aside bookmark-tabcontent">
                     <div class="card email-body radius-left">
                         <div class="ps-0">
