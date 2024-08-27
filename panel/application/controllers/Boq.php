@@ -447,7 +447,7 @@ class Boq extends CI_Controller
 
         $delete = $this->Boq_model->delete(
             array(
-                "id" => $boq_id,
+                "id" => $boq->id,
                 "contract_id" => $contract_id,
                 "payment_no" => $payment_no
             )
