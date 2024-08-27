@@ -1,7 +1,7 @@
 <?php if (isset($income)) { ?>
 <?php $boq = $this->Contract_price_model->get(array("id" => $income)); ?>
 
-<?php $income_contract_price = $this->Contract_price_model->get(array("id"=>$income)); ?>
+<?php $income_contract_price = $this->Contract_price_model->get(array("id" => $income)); ?>
 <div class="card">
     <div class="card-body">
         <fieldset>
@@ -42,10 +42,6 @@
 <div class="row">
     <div class="container-fluid">
         <div style="text-align: right;">
-            <a onclick="resetInputValues()">
-                <i style="font-size: 18px; color: Tomato;" class="fa-regular fa-square-minus"
-                   aria-hidden="true"></i>
-            </a>
 
             <a onclick="delete_boq(this)"
                url="<?php echo base_url("$this->Module_Name/delete/$contract_id/$payment->hakedis_no/$income"); ?>">
@@ -65,7 +61,7 @@
                            class="form-control form-control-lg">
                 </div>
                 <div class="col-3">
-                    <label for="formFileLg" class="form-label">Excel Dosyası Seçin:</label>
+                    <label for="formFileLg" class="form-label">&nbsp;</label>
                     <br>
                     <button
                             class="btn btn-outline-primary"
@@ -269,6 +265,7 @@
         </div>
     </div>
     <?php } else { ?>
+        <?php $income = 0; ?>
         <div class="card" style="height: 150px">
             <div class="card-body">
                 <h4 class="m-t-10 text-center"><?php echo contract_name($contract->id); ?> </h4>
@@ -282,7 +279,6 @@
         </div>
     <?php } ?>
 
-</div>
 </div>
 <script>
     function renderCalculate(btn) {
@@ -299,69 +295,34 @@
     function delete_boq(btn) {
         var $url = btn.getAttribute('url');
 
-        swal({
+        Swal.fire({
             title: "Metrajı Silmek İstediğine Emin Misin?",
             text: "Bu işlem geri alınamaz!",
             icon: "warning",
-            buttons: ["İptal", "Sil"],
+            showCancelButton: true,
+            confirmButtonText: "Sil",
+            cancelButtonText: "İptal",
             dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post($url, {}, function (response) {
+                    $(".dynamic").html(response);
+                });
 
-                    $.post($url, {}, function (response) {
-                        $(".dynamic").html(response);
-                    })
+                Swal.fire("Metraj Başarılı Bir Şekilde Silindi", {
+                    icon: "success",
+                });
 
-                    swal("Metraj Başarılı Bir Şekilde Silindi", {
-                        icon: "success",
-                    });
-
-                } else {
-                    swal("Metraj Güvende");
-                }
-            })
+            } else {
+                Swal.fire("Metraj Güvende");
+            }
+        });
     }
 </script>
-<script>
-    function resetInputValues() {
 
-        swal({
-            title: "Formu Temizlemek İstediğine Emin Misin?",
-            text: "Bu işlem geri alınamaz!",
-            icon: "warning",
-            buttons: ["İptal", "Temizle"],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
 
-                    var form = document.getElementById('save_boq');
-
-                    // Get all input elements within the form
-                    var inputElements = form.querySelectorAll('input');
-
-                    // Loop through the input elements and set their values to 0, except for the input with id "dont_delete"
-                    for (var i = 0; i < inputElements.length; i++) {
-                        var input = inputElements[i];
-                        if ((input.type === 'text' || input.type === 'number') && input.id !== 'dont_delete') {
-                            input.value = '';
-                        }
-                    }
-
-                    swal("Form Temizlendi; Kaydetmediğiniz sürece sildiğiniz veriler saklanır", {
-                        icon: "success",
-                    });
-
-                } else {
-                    swal("Temizleme İptal Edildi");
-                }
-            })
-    }
-</script>
 <script>
     function saveCalc(btn) {
-
         calculateAndSetResult(<?php echo $income; ?>, 1);
 
         var url = btn.getAttribute('data-url');
@@ -528,11 +489,8 @@
             tInput.readOnly = toggleCheckbox.checked;
             tInput.style.pointerEvents = pointerEventsValue;
         }
-
-
     }
 </script>
-
 
 
 
