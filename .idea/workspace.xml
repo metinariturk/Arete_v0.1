@@ -70,7 +70,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/assets",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/tabs",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -81,11 +81,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\update" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\collection_v\common" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />

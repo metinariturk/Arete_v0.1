@@ -191,11 +191,20 @@
                         </a>
                     </li>
 
-                    <li><a class="show" id="catalog-tab" data-bs-toggle="pill"
+                    <li><a class="show" id="drawing-tab" data-bs-toggle="pill"
                            href="#drawings" role="tab" aria-controls="drawings"
                            aria-selected="false">
                             <span class="title">
                                 Diğer
+                            </span>
+                            <span class="badge pull-right">
+                            </span>
+                        </a>
+                    </li>
+                    <li><a class="show"
+                           href="<?php echo base_url("contract/file_form_offer/$item->id"); ?>" >
+                            <span class="title">
+                                Teklif/Hazırlık Dosyası
                             </span>
                             <span class="badge pull-right">
                             </span>
