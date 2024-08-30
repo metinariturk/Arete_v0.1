@@ -83,7 +83,7 @@
                                 <ul>
                                     <?php foreach ($contracts as $contract) { ?>
                                         <li>
-                                            <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>"><?php echo $contract->sozlesme_ad; ?></a>
+                                            <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>"><?php echo $contract->contract_name; ?></a>
                                         </li>
                                     <?php } ?>
                                 </ul>

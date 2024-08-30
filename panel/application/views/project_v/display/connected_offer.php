@@ -14,7 +14,7 @@
                 <tr>
                     <td>
                         <a href="<?php echo base_url("contract/file_form/$offer->id"); ?>">
-                            <?php echo $offer->sozlesme_ad; ?>
+                            <?php echo $offer->contract_name; ?>
                         </a>
                     </td>
                     <td style="text-align: right"><?php echo money_format($offer->sozlesme_bedel); ?></td>

@@ -39,7 +39,7 @@
                         </td>
                         <td style="width:2%; text-align: center">:</td>
                         <td style="width:49%; text-align: left;">
-                            <?php echo $contract->sozlesme_ad; ?>
+                            <?php echo $contract->contract_name; ?>
                         </td>
                     </tr>
                     <tr>

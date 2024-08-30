@@ -64,6 +64,6 @@
         var wb = XLSX.utils.table_to_book(elt, {sheet: "Sayfa1"});
         return dl ?
             XLSX.write(wb, {bookType: type, bookSST: true, type: 'base64'}) :
-            XLSX.writeFile(wb, fn || ('<?php echo $item->sozlesme_ad; ?> Maliyet.' + (type || 'xlsx')));
+            XLSX.writeFile(wb, fn || ('<?php echo $item->contract_name; ?> Maliyet.' + (type || 'xlsx')));
     }
 </script>

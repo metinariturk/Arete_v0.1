@@ -83,7 +83,7 @@
                         </td>
                         <td>
                             <a href="<?php echo base_url("contract/file_form/$contract->id"); ?>">
-                                <?php echo $contract->sozlesme_ad; ?>
+                                <?php echo $contract->contract_name; ?>
                             </a>
                         </td>
                         <td style="text-align: right">+ <?php echo money_format($contract->sozlesme_bedel); ?></td>
@@ -107,7 +107,7 @@
                                 </a>
                             </td>
                             <td><a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
-                                    <?php echo $sub_contract->sozlesme_ad; ?>
+                                    <?php echo $sub_contract->contract_name; ?>
                                 </a></td>
                             <td style="text-align: right">
                                 - <?php echo money_format($sub_contract->sozlesme_bedel); ?></td>

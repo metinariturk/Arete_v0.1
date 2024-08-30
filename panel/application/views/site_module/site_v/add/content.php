@@ -18,7 +18,7 @@ if (empty($project_id)) { ?>
                             <select class="form-control" name="contract_id">
                                 <?php foreach ($contracts as $active_contract) { ?>
                                     <option value="<?php echo "$active_contract->id"; ?>">
-                                        <?php echo "$active_contract->sozlesme_ad"; ?>
+                                        <?php echo "$active_contract->contract_name"; ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -37,7 +37,7 @@ if (empty($project_id)) { ?>
                             <select class="form-control" name="contract_id">
                                 <?php foreach ($active_contracts as $active_contract) { ?>
                                     <option value="<?php echo "$active_contract->id"; ?>">
-                                        <?php echo "$active_contract->sozlesme_ad"; ?>
+                                        <?php echo "$active_contract->contract_name"; ?>
                                     </option>
                                 <?php } ?>
                             </select>

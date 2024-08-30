@@ -26,12 +26,12 @@
         <div class="mb-2">
             <div class="col-form-label">Sözleşme Adı</div>
             <input type="text"
-                   class="form-control <?php cms_isset(form_error("sozlesme_ad"), "is-invalid", ""); ?>"
+                   class="form-control <?php cms_isset(form_error("contract_name"), "is-invalid", ""); ?>"
                    placeholder="Sözleşme Adı"
-                   value="<?php echo isset($form_error) ? set_value("sozlesme_ad") : ""; ?>"
-                   name="sozlesme_ad">
+                   value="<?php echo isset($form_error) ? set_value("contract_name") : ""; ?>"
+                   name="contract_name">
             <?php if (isset($form_error)) { ?>
-                <div class="invalid-feedback"><?php echo form_error("sozlesme_ad"); ?></div>
+                <div class="invalid-feedback"><?php echo form_error("contract_name"); ?></div>
             <?php } ?>
         </div>
         <div class="mb-2">

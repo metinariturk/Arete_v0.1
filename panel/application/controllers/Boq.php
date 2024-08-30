@@ -548,7 +548,7 @@ class Boq extends CI_Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->setCellValue('A2', "$company->company_name" );
-        $sheet->setCellValue('A3', "$contract->sozlesme_ad" );
+        $sheet->setCellValue('A3', "$contract->contract_name" );
         $sheet->setCellValue('A4', "$boq->name" );
         $sheet->setCellValue('H4', "$boq->unit" );
 
@@ -623,7 +623,7 @@ class Boq extends CI_Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->setCellValue('A2', "$company->company_name" );
-        $sheet->setCellValue('A3', "$contract->sozlesme_ad" );
+        $sheet->setCellValue('A3', "$contract->contract_name" );
         $sheet->setCellValue('A4', "$boq->name" );
         $sheet->setCellValue('H4', "$boq->unit" );
 

@@ -278,7 +278,7 @@ function contract_code_name($id)
     $q = $ci->db->query($sql);
     if ($q->num_rows() > 0) {
         foreach ($q->result() as $data) {
-            $contract_name = $data->sozlesme_ad;
+            $contract_name = $data->contract_name;
             $contract_code = $data->dosya_no;
         }
     }
@@ -445,7 +445,7 @@ function contract_name($id)
         $q = $ci->db->query($sql);
         if ($q->num_rows() > 0) {
             foreach ($q->result() as $data) {
-                return $data->sozlesme_ad;
+                return $data->contract_name;
             }
         }
     }

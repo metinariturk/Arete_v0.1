@@ -358,11 +358,17 @@ class Project extends CI_Controller
 
         } else {
 
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
+            $item = $this->Project_model->get(
+                array(
+                    "id" => $id
+                )
+            );
 
-            $viewData = new stdClass();
+            $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->project_code/main/";
+
+
+            !is_dir($path) && mkdir($path, 0777, TRUE);
 
             $fav = $this->Favorite_model->get(array(
                 "user_id" => active_user_id(),
@@ -377,38 +383,31 @@ class Project extends CI_Controller
             );
 
             $sites = $this->Site_model->get_all(array('proje_id' => $id));
-
             $contracts = $this->Contract_model->get_all(
                 array(
                     "proje_id" => $id,
                 )
             );
 
+            $viewData = new stdClass();
             $settings = $this->Settings_model->get();
-
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Display_Folder";
             $viewData->settings = $settings;
+            $viewData->form_error = true;
             $viewData->offers = $offers;
+            $viewData->upload_function = $upload_function;
+            $viewData->path = $path;
             $viewData->sites = $sites;
             $viewData->contracts = $contracts;
             $viewData->fav = $fav;
-            $viewData->form_error = true;
-
             $viewData->display_route = $this->display_route;
-            $viewData->item = $this->Project_model->get(
-                array(
-                    "id" => $id
-                )
-            );
+            $viewData->item = $item;
+            $viewData->page_description = $item->project_name;
 
             $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
             $alert = null;
-
             $this->session->set_flashdata("alert", $alert);
         }
     }

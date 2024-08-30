@@ -44,6 +44,15 @@
     </script>
 <?php } ?>
 
+<?php if (isset($form_error)){ ?>
+    <script>
+        // Sayfa tamamen yüklendiğinde modalı aç
+        $(document).ready(function() {
+            $('#updateFormModal').modal('show');
+        });
+    </script>
+<?php } ?>
+
 
 </body>
 </html>

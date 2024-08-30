@@ -2208,7 +2208,7 @@ class Payment extends CI_Controller
         $pdf->Cell(72, 8, "", 0, 0, "L", 0);
         $pdf->Ln(); // Yeni satıra geç
         $rows = array(
-            "Yapılan İşin Adı" => $contract->sozlesme_ad,
+            "Yapılan İşin Adı" => $contract->contract_name,
             "Yüklenicinin Adı" => $contractor->company_name,
             "Sözleşme Bedeli" => money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi,
             "İhale Tarihi" => "",
@@ -2337,7 +2337,7 @@ class Payment extends CI_Controller
 
         $pdf->SetX(20);
         $pdf->SetFont('dejavusans', 'B', 9);
-        $pdf->Cell(120, 7, mb_strtoupper($contract->sozlesme_ad), 1, 0, "L", 0);
+        $pdf->Cell(120, 7, mb_strtoupper($contract->contract_name), 1, 0, "L", 0);
         $pdf->Cell(50, 7, "Hakediş No : " . $payment->hakedis_no, 1, 0, "R", 0);
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetX(20);
@@ -2929,7 +2929,7 @@ class Payment extends CI_Controller
             $pdf->Cell(72, 8, "", 0, 0, "L", 0);
             $pdf->Ln(); // Yeni satıra geç
             $rows = array(
-                "Yapılan İşin Adı" => $contract->sozlesme_ad,
+                "Yapılan İşin Adı" => $contract->contract_name,
                 "Yüklenicinin Adı" => $contractor->company_name,
                 "Sözleşme Bedeli" => money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi,
                 "İhale Tarihi" => "",
@@ -3032,7 +3032,7 @@ class Payment extends CI_Controller
 
             $pdf->SetX(20);
             $pdf->SetFont('dejavusans', 'B', 9);
-            $pdf->Cell(120, 7, mb_strtoupper($contract->sozlesme_ad), 1, 0, "L", 0);
+            $pdf->Cell(120, 7, mb_strtoupper($contract->contract_name), 1, 0, "L", 0);
             $pdf->Cell(50, 7, "Hakediş No : " . $payment->hakedis_no, 1, 0, "R", 0);
             $pdf->Ln(); // Yeni satıra geç
             $pdf->SetX(20);

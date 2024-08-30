@@ -6,7 +6,7 @@
                     required data-plugin="select2" name="contract_id">
                 <option value=""></option>
                 <?php foreach ($active_contracts as $active_contract) { ?>
-                    <option value="<?php echo $active_contract->id; ?>"><?php echo $active_contract->sozlesme_ad; ?></option>
+                    <option value="<?php echo $active_contract->id; ?>"><?php echo $active_contract->contract_name; ?></option>
                 <?php } ?>
             </select>
         </td>

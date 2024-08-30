@@ -70,7 +70,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/tabs",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/update",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -81,11 +81,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\update" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\update" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\collection_v\common" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
@@ -170,6 +170,7 @@
       <workItem from="1723840780341" duration="2435000" />
       <workItem from="1723877447942" duration="136000" />
       <workItem from="1724582349619" duration="11478000" />
+      <workItem from="1725035405797" duration="8140000" />
     </task>
     <servers />
   </component>
@@ -208,7 +209,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1724</line>
+          <line>1741</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="ProvisionfileDelete" />
@@ -217,7 +218,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
-          <line>521</line>
+          <line>520</line>
           <properties>
             <option name="className" value="\Project" />
             <option name="methodName" value="file_upload" />
@@ -232,6 +233,15 @@
             <option name="methodName" value="fileDelete_java" />
           </properties>
           <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
+          <line>571</line>
+          <properties>
+            <option name="className" value="\Project" />
+            <option name="methodName" value="fileDelete_java" />
+          </properties>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

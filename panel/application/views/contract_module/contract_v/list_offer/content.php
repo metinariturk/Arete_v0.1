@@ -23,7 +23,7 @@
                             </td>
                             <td>
                                 <a href="<?php echo base_url("contract/file_form/$item->id"); ?>">
-                                    <?php echo $item->sozlesme_ad; ?>
+                                    <?php echo $item->contract_name; ?>
                                 </a>
                             </td>
                             <td>

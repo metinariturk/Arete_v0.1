@@ -39,7 +39,7 @@ if ($subViewFolder == "list") { ?>
                                                     <select class="form-control" name="contract_id">
                                                         <?php foreach ($active_contracts as $item) { ?>
                                                             <option value="<?php echo "$item->id"; ?>">
-                                                                <?php echo "$item->sozlesme_ad"; ?>
+                                                                <?php echo "$item->contract_name"; ?>
                                                             </option>
                                                         <?php } ?>
                                                     </select>

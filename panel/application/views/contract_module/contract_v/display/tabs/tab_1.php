@@ -31,7 +31,11 @@
                                 <br>
 
                             </h4>
-
+                            <?php if ($item->parent > 0) { ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/update/update"); ?>
+                            <?php } elseif ($item->parent == 0 || !null ) { ?>
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/update/update_sub"); ?>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="row py-3">
@@ -173,7 +177,7 @@
                                 <ol>
                                     <?php foreach ($sub_contracts as $sub_contract) { ?>
                                         <li><a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
-                                                <?php echo $sub_contract->sozlesme_ad; ?>
+                                                <?php echo $sub_contract->contract_name; ?>
                                             </a>
                                         </li>
                                     <?php } ?>

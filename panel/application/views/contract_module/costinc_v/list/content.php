@@ -24,7 +24,7 @@
                             </td>
                             <td>
                                 <a href="<?php echo base_url("costinc/file_form/$item->id"); ?>">
-                                    <?php echo get_from_id("contract", "sozlesme_ad", $item->contract_id); ?>
+                                    <?php echo get_from_id("contract", "contract_name", $item->contract_id); ?>
                                 </a>
                             </td>
                             <td>

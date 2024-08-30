@@ -516,7 +516,7 @@ class Newprice extends CI_Controller
         $Newprice_code = get_from_id("Newprice", "dosya_no", "$newprice_id");
         $project_code = project_code($project_id);
         $contract_code = get_from_id("contract", "dosya_no", $contract_id);
-        $contract_name = get_from_id("contract", "sozlesme_ad", $contract_id);
+        $contract_name = get_from_id("contract", "contract_name", $contract_id);
 
         $path = "uploads/project_v/$project_code/$contract_code/Newprice/$Newprice_code";
         echo $path;
