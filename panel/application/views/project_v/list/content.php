@@ -90,10 +90,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    // Sayfa tamamen yüklendiğinde modalı aç
-    $(document).ready(function() {
-        $('#exampleModalgetbootstrap').modal('show');
-    });
-</script>

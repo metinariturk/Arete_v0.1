@@ -4,18 +4,22 @@
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
     <style>
-        @media print {
-            .apexcharts-legend-marker {
-                -webkit-print-color-adjust: exact;
-            }
+        .table td input {
+            width: 100%;
+            box-sizing: border-box;
         }
-
-        @page {
-            size: A3 portrait;
-            margin-left: 75px;
-            margin-bottom: 60px;
-            margin-right: 75px;
-            margin-top: 75px;
+        .table .input-cell {
+            position: relative;
+        }
+        .table .save-btn {
+            display: none;
+        }
+        .table .edit-mode .save-btn {
+            display: inline-block;
+        }
+        .table .edit-mode td input {
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
     </style>
 
@@ -45,84 +49,7 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/file_upload_script.php"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
-
-<script>
-    function delete_sign(btn) {
-        var $url = btn.getAttribute('url');
-        var $div = btn.getAttribute('div');
-
-        swal({
-            title: "Tüm isimler silinecek?",
-            text: "Bu işlem geri alınamaz!",
-            icon: "warning",
-            buttons: ["İptal", "Sil"],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    $.post($url, {}, function (response) {
-                        $("." + $div).html(response);
-                        $(".sortable").sortable();
-                        $(".sortable").on("sortupdate", function (event, ui) {
-                            var $data = $(this).sortable("serialize");
-                            var $data_url = $(this).data("url");
-                            $.post($data_url, {data: $data}, function (response) {
-                            })
-                        })
-                    })
-                    swal("Dosya Başarılı Bir Şekilde Silindi", {
-                        icon: "success",
-                    });
-                } else {
-                    swal("Dosya Güvende");
-                }
-            })
-    }
-</script>
-<script>
-    $(".sortable").sortable();
-    $(".sortable").on("sortupdate", function (event, ui) {
-        var $data = $(this).sortable("serialize");
-        var $data_url = $(this).data("url");
-        $.post($data_url, {data: $data}, function (response) {
-        })
-    })
-</script>
-
-<script>
-    function add_sign(anchor) {
-        var formId = anchor.getAttribute('form-id');
-        var divId = $("#" + formId).attr("div");
-        var formAction = $("#" + formId).attr("action");
-        var formData = $("#" + formId).serialize();
-
-        $.post(formAction, formData, function (response) {
-            $("." + divId).html(response);
-            $(".sortable").sortable();
-            $(".sortable").on("sortupdate", function (event, ui) {
-                var $data = $(this).sortable("serialize");
-                var $data_url = $(this).data("url");
-                $.post($data_url, {data: $data}, function (response) {
-                })
-            })
-        });
-    }
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#report_table').DataTable({
-            "initComplete": function (settings, json) {
-                // Sıra numaralarını güncelle
-                $('#report_table').DataTable().column(0, {search:'applied', order:'applied'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1;
-                });
-            }
-        });
-    });
-</script>
 
 </body>
 </html>

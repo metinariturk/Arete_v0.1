@@ -1,4 +1,82 @@
 <script>
+    function delete_sign(btn) {
+        var $url = btn.getAttribute('url');
+        var $div = btn.getAttribute('div');
+
+        swal({
+            title: "Tüm isimler silinecek?",
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            buttons: ["İptal", "Sil"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.post($url, {}, function (response) {
+                        $("." + $div).html(response);
+                        $(".sortable").sortable();
+                        $(".sortable").on("sortupdate", function (event, ui) {
+                            var $data = $(this).sortable("serialize");
+                            var $data_url = $(this).data("url");
+                            $.post($data_url, {data: $data}, function (response) {
+                            })
+                        })
+                    })
+                    swal("Dosya Başarılı Bir Şekilde Silindi", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Dosya Güvende");
+                }
+            })
+    }
+</script>
+<script>
+    $(".sortable").sortable();
+    $(".sortable").on("sortupdate", function (event, ui) {
+        var $data = $(this).sortable("serialize");
+        var $data_url = $(this).data("url");
+        $.post($data_url, {data: $data}, function (response) {
+        })
+    })
+</script>
+
+<script>
+    function add_sign(anchor) {
+        var formId = anchor.getAttribute('form-id');
+        var divId = $("#" + formId).attr("div");
+        var formAction = $("#" + formId).attr("action");
+        var formData = $("#" + formId).serialize();
+
+        $.post(formAction, formData, function (response) {
+            $("." + divId).html(response);
+            $(".sortable").sortable();
+            $(".sortable").on("sortupdate", function (event, ui) {
+                var $data = $(this).sortable("serialize");
+                var $data_url = $(this).data("url");
+                $.post($data_url, {data: $data}, function (response) {
+                })
+            })
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#report_table').DataTable({
+            "initComplete": function (settings, json) {
+                // Sıra numaralarını güncelle
+                $('#report_table').DataTable().column(0, {
+                    search: 'applied',
+                    order: 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }
+        });
+    });
+</script>
+<script>
     function add_group(anchor) {
         var $url = anchor.getAttribute('url');
 
@@ -261,6 +339,7 @@
     }
 </script>
 
+
 <script>
     function sendFormData() {
         // Seçili ay ve yılı al
@@ -361,4 +440,122 @@
             }
         });
     }
+</script>
+
+<script>
+    function add_stock(anchor) {
+        // Formun ID'sini almak
+        var formId = $(anchor).attr('form_id');
+        var form = $('#' + formId);
+        var formData = new FormData(form[0]);
+        var url = anchor.getAttribute('url');
+
+        // AJAX isteğini başlatma
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,  // Cache'i engelle
+            success: function (response) {
+                console.log(response);
+                $('#stock-list').html(response); // Tablonun doğru şekilde güncellenmesini sağlar
+                $('#addStockModal').modal('hide'); // Modal'ı kapat
+                $('.modal-backdrop').remove(); // Fade katmanını temizle
+                form[0].reset(); // Formu temizle
+            },
+            error: function (xhr, status, error) {
+                console.error('Bir hata oluştu: ' + xhr.responseText);
+            }
+        });
+
+        // AJAX isteği yapılırken modal'ın kapalı kalması için return false
+        return false;
+    }
+</script>
+
+<script>
+    document.querySelectorAll('.exit-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var stockId = this.getAttribute('data-id');
+            var stockName = this.getAttribute('data-stock_name');
+            var unit = this.getAttribute('data-unit');
+            var stockIn = this.getAttribute('data-stock_in');
+
+            // Modal HTML yapısını oluştur
+            var modalHtml = `
+                <div class="modal fade" id="stockExitModal" tabindex="-1" aria-labelledby="stockExitModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="stockExitModalLabel">Malzeme Çıkış Yap</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Malzeme Adı:</strong> ${stockName}</p>
+                                <p><strong>Birim:</strong> ${unit}</p>
+                                <p><strong>Giriş Miktarı:</strong> ${stockIn}</p>
+                                <div class="mb-3">
+                                    <label for="exit-quantity" class="form-label">Çıkış Miktarı</label>
+                                    <input type="number" class="form-control" id="exit-quantity" name="stock_out" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exit-date" class="form-label">Çıkış Tarihi</label>
+                                    <input type="date" class="form-control" id="exit-date" name="exit_date" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="notes" class="form-label">Açıklama</label>
+                                    <textarea class="form-control" id="notes" name="notes"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                <button type="button" class="btn btn-primary save-exit" data-id="${stockId}">Gönder</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Modal HTML yapısını sayfaya ekle
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Modalı göster
+            var modal = new bootstrap.Modal(document.getElementById('stockExitModal'));
+            modal.show();
+
+            // Modal kapandığında yapıyı temizle
+            modal._element.addEventListener('hidden.bs.modal', function () {
+                document.getElementById('stockExitModal').remove();
+            });
+
+            // Gönder butonuna tıklama işlemi
+            document.querySelector('.save-exit').addEventListener('click', function () {
+                var stockId = this.getAttribute('data-id');
+                var stockOut = document.getElementById('exit-quantity').value;
+                var exitDate = document.getElementById('exit-date').value;
+                var notes = document.getElementById('notes').value;
+
+                // AJAX isteği ile verileri gönder
+                $.ajax({
+                    url: `<?php echo base_url("Site/stock_exit/"); ?>${stockId}`,
+                    type: 'POST',
+                    data: {
+                        stock_out: stockOut,
+                        exit_date: exitDate,
+                        notes: notes
+                    },
+                    success: function (response) {
+                        modal.hide();
+                        // Tabloyu AJAX ile yenile
+                        $('#stock-list').html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    });
 </script>

@@ -5,7 +5,7 @@
      aria-labelledby="workgroup-tab">
     <div class="card mb-0">
         <div class="card-header d-flex">
-            <h6 class="mb-0">Depo Hareketleri</h6>
+            <h6 class="mb-0">Cüzdan Hareketleri</h6>
             <ul>
                 <li>
                     <a class="pager-btn btn btn-info btn-outline"
