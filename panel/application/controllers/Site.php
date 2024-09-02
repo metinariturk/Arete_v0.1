@@ -1289,11 +1289,9 @@ class Site extends CI_Controller
         }
     }
 
-    public function stock_exit($stock_id)
+    public function exit_stock($site_id)
     {
 
-        $stock = $this->Sitestock_model->get(array("id"=>$stock_id));
-        $site = $this->Site_model->get(array("id"=>$stock->site_id));
 
         $this->load->library("form_validation");
 
@@ -1319,8 +1317,8 @@ class Site extends CI_Controller
 
             $insert = $this->Sitestock_model->add(
                 array(
-                    "site_id" => $site->id,
-                    "parent_id" => $stock->id,
+                    "site_id" => $site_id,
+                    "parent_id" => $this->input->post('stock_id'),
                     "notes" => $this->input->post("notes"),
                     "stock_out" => $this->input->post("stock_out"),
                     "exit_date" => $exit_date,
@@ -1338,15 +1336,16 @@ class Site extends CI_Controller
 
             $viewData = new stdClass();
             /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site->id));
+            $item = $this->Site_model->get(array("id" => $site_id));
+            $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
 
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
+            $viewData->site_stocks =$site_stocks;
             $viewData->item = $item;
-            $viewData->sitestocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
-            $viewData->form_error = true;
+            $viewData->sitestocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/stock_list", $viewData);
         } else {

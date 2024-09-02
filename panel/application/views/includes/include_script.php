@@ -23,7 +23,6 @@
 
 <script src="<?php echo base_url("assets"); ?>/js/tree/jstree.min.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/tree/tree.js"></script>
-<script src="<?php echo base_url("assets"); ?>/js/tooltip-init.js"></script>
 
 
 <script src="<?php echo base_url("assets"); ?>/js/script.js"></script>

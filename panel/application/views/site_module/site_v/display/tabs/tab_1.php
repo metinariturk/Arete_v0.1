@@ -64,24 +64,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Şantiye Şefi</td>
-                        <td>
-                            <?php if (!empty($item->santiye_sefi)) { ?>
-                                <span data-tooltip-location="top"
-                                      data-tooltip="<?php echo full_name($item->santiye_sefi); ?>">
-                                            <a href="<?php echo base_url("user/file_form/$item->santiye_sefi"); ?>">
-                                                <img
-                                                        class="img-50 rounded-circle" <?php echo get_avatar($item->santiye_sefi); ?>
-                                                        alt=""
-                                                        data-original-title=""
-                                                        title="<?php echo full_name($item->santiye_sefi); ?>">
-                                            </a>
-                                            </span>
-                            <?php } ?>
-                            <?php echo full_name($item->santiye_sefi); ?>
-                        </td>
-                    </tr>
-                    <tr>
                         <td>Teknik Personeller</td>
                         <td>
                             <?php if (!empty($item->teknik_personel)) { ?>

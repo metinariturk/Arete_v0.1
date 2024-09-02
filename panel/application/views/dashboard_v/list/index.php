@@ -157,7 +157,7 @@
     </style>
 
 </head>
-<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
+<body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <div class="loader-wrapper">
     <div class="loader-index"><span></span></div>
     <svg>

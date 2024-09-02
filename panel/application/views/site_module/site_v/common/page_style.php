@@ -158,3 +158,61 @@
         border: 1px solid #a8b5cf;
     }
 </style>
+
+<style>
+    .btn-download {
+        border-radius: 50%; /* Yuvarlak köşeler */
+        width: 27px; /* Buton genişliği */
+        height: 27px; /* Buton yüksekliği */
+        display: flex; /* İçerikleri ortalamak için flex kullan */
+        align-items: center; /* Yatayda ortala */
+        justify-content: center; /* Dikeyde ortala */
+        font-size: 16px; /* İkon boyutu */
+        color: #fff; /* İkon rengi */
+        background-color: #50ba25; /* Buton arka plan rengi */
+        text-decoration: none; /* Link alt çizgisini kaldır */
+        transition: background-color 0.3s; /* Hover efekti için geçiş */
+    }
+    .btn-download:hover {
+        color: #07296c; /* Hover rengi */
+        background-color: #50ba25; /* Hover rengi */
+    }
+
+    .btn-display {
+        border-radius: 50%; /* Yuvarlak köşeler */
+        width: 27px; /* Buton genişliği */
+        height: 27px; /* Buton yüksekliği */
+        display: flex; /* İçerikleri ortalamak için flex kullan */
+        align-items: center; /* Yatayda ortala */
+        justify-content: center; /* Dikeyde ortala */
+        font-size: 16px; /* İkon boyutu */
+        color: #fff; /* İkon rengi */
+        background-color: #2548ba; /* Buton arka plan rengi */
+        text-decoration: none; /* Link alt çizgisini kaldır */
+        transition: background-color 0.3s; /* Hover efekti için geçiş */
+    }
+    .btn-display:hover {
+        background-color: #07296c; /* Hover rengi */
+    }
+
+</style>
+
+<style>
+    .table td input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .table .input-cell {
+        position: relative;
+    }
+    .table .save-btn {
+        display: none;
+    }
+    .table .edit-mode .save-btn {
+        display: inline-block;
+    }
+    .table .edit-mode td input {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>

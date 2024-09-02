@@ -2,7 +2,7 @@
     echo "active show";
 } ?>"
      id="sitewallet" role="tabpanel"
-     aria-labelledby="workgroup-tab">
+     aria-labelledby="sitewallet-tab">
     <div class="card mb-0">
         <div class="card-header d-flex">
             <h6 class="mb-0">Cüzdan Hareketleri</h6>

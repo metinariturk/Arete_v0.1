@@ -3,7 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
 </head>
-<body onload="startTime()">
+<body >
 <div class="page-body-wrapper">
     <div class="page-body">
         <!-- tap on top starts-->

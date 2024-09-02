@@ -2,7 +2,7 @@
     echo "active show";
 } ?>"
      id="puntaj" role="tabpanel"
-     aria-labelledby="workgroup-tab">
+     aria-labelledby="puantaj-tab">
     <div class="card mb-0">
         <div class="card-body">
             <div class="puantaj_list">

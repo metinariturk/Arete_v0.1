@@ -3,32 +3,12 @@
 <head>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
-    <style>
-        .table td input {
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .table .input-cell {
-            position: relative;
-        }
-        .table .save-btn {
-            display: none;
-        }
-        .table .edit-mode .save-btn {
-            display: inline-block;
-        }
-        .table .edit-mode td input {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-    </style>
-
     <?php $this->load->view("includes/head"); ?>
     <!-- Plugins css start-->
 
     <!-- Plugins css Ends-->
 </head>
-<body onload="startTime()" class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
+<body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
