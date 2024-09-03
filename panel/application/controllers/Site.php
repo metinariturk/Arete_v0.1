@@ -398,14 +398,14 @@ class Site extends CI_Controller
             }
         }
 
-        $project_id = project_id_site($id);
         $item = $this->Site_model->get(
             array(
                 "id" => $id
             )
         );
 
-        $project = $this->Project_model->get(array("id" => $project_id));
+
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
 
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/main/";
