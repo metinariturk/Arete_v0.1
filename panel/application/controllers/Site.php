@@ -404,10 +404,6 @@ class Site extends CI_Controller
             )
         );
 
-        print_r($item);
-        die();
-
-
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
 
