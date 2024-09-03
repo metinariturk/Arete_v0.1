@@ -89,6 +89,10 @@ class Dashboard extends CI_Controller
 
     public function delete($id)
     {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
         $delete = $this->Notes_model->delete(
             array(
                 "id" => $id,

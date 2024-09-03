@@ -711,6 +711,10 @@ class Costinc extends CI_Controller
 
     public function delete($id)
     {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
         //Bağlı teminat silme işlemleri
         $contract_id = contract_id_module("costinc", $id);
         $project_id = project_id_cont($contract_id);

@@ -426,6 +426,10 @@ class user extends CI_Controller
     public function delete($id)
     {
 
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+        
         $path = "$this->File_Dir_Prefix/$id";
         echo $path;
 

@@ -238,6 +238,11 @@ class Emailsettings extends CI_Controller
 
     public function delete($id){
 
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+
         $delete = $this->Emailsettings_model->delete(
             array(
                 "id"    => $id

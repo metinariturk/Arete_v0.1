@@ -1341,6 +1341,10 @@ class Bond extends CI_Controller
     public function delete($id)
     {
 
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
         $contract_id = contract_id_module("bond", $id);
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);

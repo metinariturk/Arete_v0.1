@@ -311,7 +311,6 @@ class Site extends CI_Controller
         }
 
     }
-
     public function sitewallet($site_id, $type)
     {
         if ($this->input->post("expense_date")) {
@@ -548,6 +547,10 @@ class Site extends CI_Controller
 
     public function delete($id)
     {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
         $site_code = get_from_id("site", "dosya_no", $id);
         $project_id = get_from_id("site", "proje_id", $id);
         $project_code = project_code($project_id);
@@ -602,7 +605,6 @@ class Site extends CI_Controller
         redirect(base_url("project/file_form/$project_id"));
     }
 
-
     public function file_upload($id)
     {
 
@@ -654,7 +656,6 @@ class Site extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
-
     public function fileDelete_java($id)
     {
         if (!isAdmin()) {
@@ -672,7 +673,6 @@ class Site extends CI_Controller
 
         unlink("$path/$fileName");
     }
-
     public function expense_delete($expense_id)
     {
 
@@ -722,7 +722,6 @@ class Site extends CI_Controller
 
     }
 
-
     public function duplicate_code_check($file_name)
     {
         $file_name = "SNT-" . $file_name;
@@ -734,7 +733,6 @@ class Site extends CI_Controller
             return TRUE;
         }
     }
-
     public function site_contractday($sitedal_day, $contract_day)
     {
         $date_diff = date_minus($sitedal_day, $contract_day);
@@ -744,7 +742,6 @@ class Site extends CI_Controller
             return TRUE;
         }
     }
-
     public function add_group($site_id, $group_id)
     {
 
@@ -793,7 +790,6 @@ class Site extends CI_Controller
         echo $render_html;
 
     }
-
     public function delete_group($site_id, $group_id)
     {
 
@@ -847,7 +843,6 @@ class Site extends CI_Controller
         echo $render_html;
 
     }
-
     public function add_machine_group($site_id, $machine_id)
     {
 
@@ -899,7 +894,6 @@ class Site extends CI_Controller
         echo $render_html;
 
     }
-
     public function delete_machine_group($site_id, $machine_id)
     {
 
@@ -1189,8 +1183,6 @@ class Site extends CI_Controller
             );
         }
     }
-
-
     public function add_stock($site_id)
     {
         $site = $this->Site_model->get(array("id" => $site_id));
@@ -1290,7 +1282,6 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/stock_list", $viewData);
         }
     }
-
     public function exit_stock($site_id)
     {
 
@@ -1376,7 +1367,6 @@ class Site extends CI_Controller
 
 
     }
-
 
     public function save_personel($site_id)
     {
