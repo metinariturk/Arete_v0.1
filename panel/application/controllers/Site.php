@@ -404,11 +404,17 @@ class Site extends CI_Controller
             )
         );
 
+        print_r($item);
+        die();
+
 
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
 
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/main/";
+
+        !is_dir($path) && mkdir($path, 0777, TRUE);
+
 
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
