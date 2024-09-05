@@ -1,9 +1,4 @@
-<?php if ((!empty($item->provision_date)) and ($item->provision_date != "0000-00-00")) { ?>
-    <div class="fade tab-pane <?php if ($active_tab == "final") {
-        echo "active show";
-    } ?>"
-         id="final" role="tabpanel"
-         aria-labelledby="final-tab">
+
         <div class="card mb-0">
             <div class="card-header d-flex">
                 <h6 class="mb-0">Kesin Kabul Evrakları</h6>
@@ -74,23 +69,3 @@
             </div>
         </div>
     </div>
-<?php } else { ?>
-
-    <div class="fade tab-pane <?php if ($active_tab == "final") {
-        echo "active show";
-    } ?>"
-         id="final" role="tabpanel"
-         aria-labelledby="final-tab">
-        <div class="card mb-0">
-            <div class="card-header d-flex">
-                <h6 class="mb-0">Kesin Kabul Evrakları</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    Kesin Kabul İşlemleri İçin Geçici Kabulün Yapılmış Olması Gerekmektedir
-                </div>
-            </div>
-        </div>
-    </div>
-
-<?php } ?>

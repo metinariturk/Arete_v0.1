@@ -1,8 +1,4 @@
-<div class="fade tab-pane <?php if ($active_tab == "drawings") {
-    echo "active show";
-} ?>"
-     id="drawings" role="tabpanel"
-     aria-labelledby="drawings-tab">
+
     <div class="card mb-0">
         <div class="card-header d-flex">
             <h6 class="mb-0">Dokümanlar</h6>
@@ -19,4 +15,3 @@
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/drawings"); ?>
         </div>
     </div>
-</div>

@@ -178,6 +178,8 @@ class Advance extends CI_Controller
 
     public function save($contract_id)
     {
+        $contract = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -271,25 +273,115 @@ class Advance extends CI_Controller
             }
             // İşlemin Sonucunu Session'a yazma işlemi...
             $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
+            redirect(base_url("Contract/file_form/$contract_id/Advance"));
             //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
         } else {
 
+            $item = $this->Contract_model->get(array("id" => $contract->id));
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
+
+            $this->load->model("Advance_model");
+            $this->load->model("Bond_model");
+            $this->load->model("City_model");
+            $this->load->model("Company_model");
+            $this->load->model("Contract_model");
+            $this->load->model("Contract_price_model");
+            $this->load->model("Costinc_model");
+            $this->load->model("Collection_model");
+            $this->load->model("Delete_model");
+            $this->load->model("District_model");
+            $this->load->model("Extime_model");
+            $this->load->model("Favorite_model");
+            $this->load->model("Newprice_model");
+            $this->load->model("Order_model");
+            $this->load->model("Payment_model");
+            $this->load->model("Project_model");
+            $this->load->model("Settings_model");
+            $this->load->model("Site_model");
+            $this->load->model("User_model");
+
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
+
+            $item = $this->Contract_model->get(array("id" => $contract->id));
+
+            $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+
+            $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+            $companys = $this->Company_model->get_all(array());
+
+            if ($item->offer == 1) {
+                redirect(base_url("contract/file_form_offer/$contract->id"));
+            }
+
+
+            $fav = $this->Favorite_model->get(array(
+                "user_id" => active_user_id(),
+                "module" => "contract",
+                "view" => "file_form",
+                "module_id" => $contract->id,
+            ));
+
             $viewData = new stdClass();
-            $viewData->contract_id = $contract_id;
+
+            $collections = $this->Collection_model->get_all(array('contract_id' => $contract->id), "tahsilat_tarih ASC");
+            $advances = $this->Advance_model->get_all(array('contract_id' => $contract->id));
+            $bonds = $this->Bond_model->get_all(array('contract_id' => $contract->id));
+            $costincs = $this->Costinc_model->get_all(array('contract_id' => $contract->id));
+            $extimes = $this->Extime_model->get_all(array('contract_id' => $contract->id));
+            $main_bond = $this->Bond_model->get(array('contract_id' => $contract->id, 'teminat_gerekce' => 'contract'));
+            $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
+            $payments = $this->Payment_model->get_all(array('contract_id' => $contract->id));
+            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+            $sites = $this->Site_model->get_all(array('contract_id' => $contract->id));
             $settings = $this->Settings_model->get();
-            $project_id = project_id_cont("$contract_id");
+            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1));
+            $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, 'leader' => 1));
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Add_Folder";
+            $viewData->viewFolder = "contract_v";
+            $viewData->companys = $companys;
+            $viewData->project = $project;
+            $viewData->upload_function = $upload_function;
+            $viewData->path = $path;
+            $viewData->advances = $advances;
+            $viewData->collections = $collections;
+            $viewData->bonds = $bonds;
+            $viewData->leaders = $leaders;
+            $viewData->costincs = $costincs;
+            $viewData->extimes = $extimes;
+            $viewData->fav = $fav;
+            $viewData->main_bond = $main_bond;
+            $viewData->main_groups = $main_groups;
+            $viewData->newprices = $newprices;
             $viewData->form_error = true;
-            $viewData->contract_id = $contract_id;
-            $viewData->project_id = $project_id;
+            $viewData->payments = $payments;
+            $viewData->prices_main_groups = $prices_main_groups;
             $viewData->settings = $settings;
+            $viewData->sites = $sites;
+            $viewData->active_module = "Advance";
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+            $form_errors = $this->session->flashdata('form_errors');
+
+            if (!empty($form_errors)) {
+                $viewData->form_errors = $form_errors;
+            } else {
+                $viewData->form_errors = null;
+            }
+
+            $viewData->item = $item;
+
+            $this->load->view("{$viewData->viewModule}/contract_v/display/index", $viewData);
         }
     }
 

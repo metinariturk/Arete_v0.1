@@ -60,7 +60,7 @@
                     <ol class="breadcrumb">
                         <li>
                             <a class="btn btn-success"
-                               href="<?php echo base_url("contract/file_form/$item->contract_id/payment"); ?>">
+                               href="<?php echo base_url("contract/file_form/$item->contract_id"); ?>">
                                 <i class="fa fa-arrow-left"></i> Sözleşmeye Dön
                             </a>
                         </li>
@@ -90,14 +90,14 @@
                                                 <button class="btn btn-danger" type="button"
                                                         onclick="deleteConfirmationModule(this)"
                                                         data-text="<?php echo $this->Module_Title; ?> ve Hesapları"
-                                                        data-url="<?php echo base_url("payment/delete_calc/$item->id"); ?>">
+                                                        url="<?php echo base_url("payment/delete_calc/$item->id"); ?>">
                                                     <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i>
                                                     Hesaplar ile Birlikte Sil
                                                 </button> <?php } ?>
                                             <button class="btn btn-danger" type="button"
                                                     onclick="deleteConfirmationModule(this)"
-                                                    data-text="<?php echo $this->Module_Title; ?>"
-                                                    data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
+                                                    data-text="<?php echo $this->Module_Title; ?>burada"
+                                                    url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
                                                 <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i>
                                                 Sadece Hakedişi Sil
                                             </button>

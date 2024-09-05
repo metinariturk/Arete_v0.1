@@ -30,6 +30,7 @@ class Payment extends CI_Controller
 
         $this->load->model("Contract_model");
         $this->load->model("Company_model");
+        $this->load->model("Favorite_model");
         $this->load->model("Contract_price_model");
         $this->load->model("Project_model");
         $this->load->model("Boq_model");
@@ -57,7 +58,7 @@ class Payment extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
 
-        
+
         $this->Common_Files = "common";
         $module_unique_name = module_name($this->Module_Name);
     }
@@ -269,32 +270,137 @@ class Payment extends CI_Controller
 
         } else {
 
+            $this->load->model("Advance_model");
+            $this->load->model("Bond_model");
+            $this->load->model("City_model");
+            $this->load->model("Company_model");
+            $this->load->model("Contract_model");
+            $this->load->model("Contract_price_model");
+            $this->load->model("Costinc_model");
+            $this->load->model("Collection_model");
+            $this->load->model("Delete_model");
+            $this->load->model("District_model");
+            $this->load->model("Extime_model");
+            $this->load->model("Favorite_model");
+            $this->load->model("Newprice_model");
+            $this->load->model("Order_model");
+            $this->load->model("Payment_model");
+            $this->load->model("Project_model");
+            $this->load->model("Settings_model");
+            $this->load->model("Site_model");
+            $this->load->model("User_model");
+
+            $alert = array(
+            "title" => "İşlem Başarısız",
+            "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
+            "type" => "danger"
+        );
+            $this->session->set_flashdata("alert", $alert);
+
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
+
+            $item = $this->Contract_model->get(array("id" => $contract->id));
+            $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
+            $collection_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection";
+            $advance_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance";
+            $offer_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer";
+            $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
+
+            $companys = $this->Company_model->get_all(array());
+
+            !is_dir($path) && mkdir($path, 0777, TRUE);
+            !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
+            !is_dir($advance_path) && mkdir($advance_path, 0777, TRUE);
+            !is_dir($offer_path) && mkdir($offer_path, 0777, TRUE);
+            !is_dir($payment_path) && mkdir($payment_path, 0777, TRUE);
+
+
+            if ($item->offer == 1) {
+                redirect(base_url("contract/file_form_offer/$contract->id"));
+            }
+
+
+            if (count_payments($contract->id) == 0) {
+                $payment_no = 1;
+            } else {
+                $payment_no = last_payment($contract->id) + 1;
+            }
+
+            $fav = $this->Favorite_model->get(array(
+                "user_id" => active_user_id(),
+                "module" => "contract",
+                "view" => "file_form",
+                "module_id" => $contract->id,
+            ));
+
+
             $viewData = new stdClass();
 
-            $contract = $this->Contract_model->get(array(
-                    "id" => $contract_id
-                )
-            );
-
+            $collections = $this->Collection_model->get_all(array('contract_id' => $contract->id), "tahsilat_tarih ASC");
+            $advances = $this->Advance_model->get_all(array('contract_id' => $contract->id));
+            $bonds = $this->Bond_model->get_all(array('contract_id' => $contract->id));
+            $costincs = $this->Costinc_model->get_all(array('contract_id' => $contract->id));
+            $extimes = $this->Extime_model->get_all(array('contract_id' => $contract->id));
+            $main_bond = $this->Bond_model->get(array('contract_id' => $contract->id, 'teminat_gerekce' => 'contract'));
+            $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
+            $payments = $this->Payment_model->get_all(array('contract_id' => $contract->id));
+            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+            $sites = $this->Site_model->get_all(array('contract_id' => $contract->id));
             $settings = $this->Settings_model->get();
+            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1));
+            $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, 'leader' => 1));
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Add_Folder";
-            $viewData->form_error = true;
-            $viewData->contract = $contract;
-            $viewData->payment_no = $this->input->post('hakedis_no');
-            $viewData->contract_id = $contract_id;
-            $viewData->project_id = $project_id;
-            $viewData->settings = $settings;
-
-            if ($this->form_validation->run() === false) {
-                $form_errors = validation_errors();
-                $this->session->set_flashdata('form_errors', $form_errors);
-                redirect(base_url("contract/file_form/$contract_id/payment/payment"));
+            $viewData->viewFolder = "contract_v";
+            if ($item->offer == 1) {
+                $viewData->subViewFolder = "display_offer";
+            } else {
+                $viewData->subViewFolder = "display";
             }
-        }
+
+            $viewData->companys = $companys;
+            $viewData->project = $project;
+            $viewData->upload_function = $upload_function;
+            $viewData->path = $path;
+            $viewData->advances = $advances;
+            $viewData->collections = $collections;
+            $viewData->bonds = $bonds;
+            $viewData->leaders = $leaders;
+            $viewData->costincs = $costincs;
+            $viewData->extimes = $extimes;
+            $viewData->fav = $fav;
+            $viewData->main_bond = $main_bond;
+            $viewData->main_groups = $main_groups;
+            $viewData->newprices = $newprices;
+            $viewData->form_error = true;
+            $viewData->payment_no = $payment_no;
+            $viewData->payments = $payments;
+            $viewData->prices_main_groups = $prices_main_groups;
+            $viewData->settings = $settings;
+            $viewData->sites = $sites;
+            $viewData->active_module = "Payment";
+
+
+            $form_errors = $this->session->flashdata('form_errors');
+
+            if (!empty($form_errors)) {
+                $viewData->form_errors = $form_errors;
+            } else {
+                $viewData->form_errors = null;
+
+            }
+
+            $viewData->item = $this->Contract_model->get(array("id" => $contract->id));
+
+
+            $this->load->view("{$viewData->viewModule}/contract_v/display/index", $viewData);
+            }
+
     }
 
     public
@@ -490,24 +596,26 @@ class Payment extends CI_Controller
     }
 
     public
-    function delete($id)
+    function delete($payment_id)
     {
+        $payment = $this->Payment_model->get(array("id"=>$payment_id));
 
-        $hakedis_no = get_from_id("payment", "hakedis_no", "$id");
-        $last_payment = last_payment(get_from_any("payment", "contract_id", "id", $id));
+        $hakedis_no = $payment->hakedis_no;
+        $last_payment = last_payment("$payment->contract_id");
 
         if ($hakedis_no == $last_payment) {
 
-            $contract_id = get_from_id($this->Module_Table, "contract_id", $id);
-            $project_id = project_id_cont($contract_id);
-            $project_code = project_code($project_id);
-            $contract_code = get_from_id("contract", "dosya_no", get_from_id($this->Module_Table, "contract_id", $id));
+            $contract = $this->Contract_model->get(array("id"=>$payment->contract_id));
+            $project = $this->Project_model->get(array("id"=>$contract->proje_id));
+
+            $project_code = $project->project_code;
+            $contract_code = $contract->dosya_no;
 
             $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/";
 
             $sil = deleteDirectory($path);
 
-            $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
+            $file_order_id = get_from_any_and("file_order", "connected_module_id", $payment_id, "module", $this->Module_Name);
             $update_file_order = $this->Order_model->update(
                 array(
                     "id" => $file_order_id
@@ -520,13 +628,13 @@ class Payment extends CI_Controller
 
             $delete2 = $this->Payment_model->delete(
                 array(
-                    "id" => $id
+                    "id" => $payment_id
                 )
             );
 
 
             // TODO Alert Sistemi Eklenecek...
-            if ($delete1 and $delete2) {
+            if ($delete2) {
                 $alert = array(
                     "title" => "İşlem Başarılı",
                     "text" => "Hakediş başarılı bir şekilde silindi",
@@ -535,12 +643,12 @@ class Payment extends CI_Controller
             } else {
                 $alert = array(
                     "title" => "İşlem Başarısız",
-                    "text" => "Hakeiş silme sırasında bir problem oluştu",
+                    "text" => "Hakediş silme sırasında bir problem oluştu",
                     "type" => "danger"
                 );
             }
             $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$contract_id"));
+            redirect(base_url("Contract/file_form/$contract->id"));
 
         } else {
 
@@ -551,7 +659,7 @@ class Payment extends CI_Controller
             );
 
             $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
+            redirect(base_url("$this->Module_Name/$this->Display_route/$contract->id"));
         }
     }
 
@@ -2734,7 +2842,7 @@ class Payment extends CI_Controller
                     "id" => $id
                 )
             );
-            
+
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
             echo $render_html;
@@ -2760,7 +2868,7 @@ class Payment extends CI_Controller
                 )
             );
 
-            
+
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
             print_r(validation_errors());

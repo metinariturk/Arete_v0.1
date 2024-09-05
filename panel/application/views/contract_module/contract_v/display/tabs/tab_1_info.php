@@ -1,0 +1,112 @@
+<div class="card-body">
+    <div class="row">
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <table class="table table-bordered table-striped">
+                        <tbody>
+                        <tr>
+                            <td><strong>Proje</strong></td>
+                            <td>
+                                <a href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
+                                    <?php echo project_code_name($item->proje_id); ?>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Şantiye</strong></td>
+                            <td>
+                                <?php $site = $this->Site_model->get(array("contract_id" => $item->id)); ?>
+                                <?php if (isset($site)) { ?>
+                                    <a href="<?php echo base_url("site/file_form/$site->id"); ?>">
+                                        <?php echo site_code_name($site->id); ?>
+                                    </a>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yüklenici Adı:</strong></td>
+                            <td><?php echo company_name($item->yuklenici); ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>İşveren:</strong></td>
+                            <td><?php echo company_name($item->isveren); ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>İşin Türü:</strong></td>
+                            <td><?php echo $item->isin_turu; ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Teklif Türü:</strong></td>
+                            <td><?php echo $item->sozlesme_turu; ?></td>
+                        </tr>
+
+                        <?php if ($item->parent == 0 || $item->parent == null) { ?>
+                            <?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
+                            <tr>
+                                <td><strong>Alt Sözleşmeler</strong>
+                                    <a href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>"><i
+                                                class="fa fa-plus-circle fa-lg"></i></a>
+                                </td>
+                                <td colspan="3">
+                                    <?php foreach ($sub_contracts as $sub_contract) { ?>
+                                        <p><a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
+                                                <?php echo $sub_contract->contract_name; ?>
+                                            </a></p>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <table class="table table-bordered table-striped">
+                        <tbody>
+                        <tr>
+                            <td style="width: 20%;"><strong>Sözleşme İmza Tarihi:</strong></td>
+                            <td>
+                                <?php echo $item->sozlesme_tarih == null ? null : dateFormat('d-m-Y', $item->sozlesme_tarih); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sözleşme Bitiş Tarihi:</strong></td>
+                            <td>
+                                <?php echo $item->sozlesme_bitis == null ? null : dateFormat('d-m-Y', $item->sozlesme_bitis); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>İşin Süresi:</strong></td>
+                            <td><?php echo $item->isin_suresi; ?> Gün</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yer Teslimi Tarihi:</strong></td>
+                            <td>
+                                <?php if (date_control($item->sitedel_date)) { ?>
+                                    <?php echo $item->sitedel_date == null ? null : dateFormat('d-m-Y', $item->sitedel_date); ?>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>İşin Türü:</strong></td>
+                            <td><?php echo $item->isin_turu; ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Teklif Türü:</strong></td>
+                            <td><?php echo $item->sozlesme_turu; ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sözleşme Bedeli:</strong></td>
+                            <td>
+                                <?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

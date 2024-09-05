@@ -1,0 +1,1 @@
+Buraya özet durum raporu eklenecek

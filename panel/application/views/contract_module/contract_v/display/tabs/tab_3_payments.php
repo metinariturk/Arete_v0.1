@@ -1,8 +1,3 @@
-<button class="btn btn-pill btn-outline-success" onclick="paymentToExcel('xlsx')"
-        type="button"><i class="fa fa-share-square-o"></i> EXCEL
-</button>
-
-
 <table class="table" id="payment_table">
     <thead>
     <tr>
@@ -17,22 +12,22 @@
         <?php foreach ($payments as $payment) { ?>
             <tr id="center_row">
                 <td class="d-none d-sm-table-cell">
-                    <a href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
+                    <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <?php echo str_pad($payment->hakedis_no, 2, "0", STR_PAD_LEFT); ?>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">
-                    <a href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
+                    <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <?php echo dateFormat_dmy($payment->imalat_tarihi); ?>
                     </a>
                 </td>
                 <td>
-                    <a href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
+                    <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <?php echo money_format($payment->E); ?><?php echo "$item->para_birimi"; ?>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">
-                    <a href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
+                    <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <?php echo money_format($payment->balance); ?><?php echo "$item->para_birimi"; ?>
                     </a>
                 </td>
@@ -61,12 +56,3 @@
     </tfoot>
 </table>
 
-<script>
-    function paymentToExcel(type, fn, dl) {
-        var elt = document.getElementById('payment_table');
-        var wb = XLSX.utils.table_to_book(elt, {sheet: "Sayfa1"});
-        return dl ?
-            XLSX.write(wb, {bookType: type, bookSST: true, type: 'base64'}) :
-            XLSX.writeFile(wb, fn || ('<?php echo $item->contract_name; ?> Hakediş.' + (type || 'xlsx')));
-    }
-</script>

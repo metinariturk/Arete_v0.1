@@ -167,7 +167,7 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function file_form($id = null, $active_tab = null, $error = null)
+    public function file_form($id = null, $active_module = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -193,17 +193,6 @@ class Contract extends CI_Controller
 
         if ($item->offer == 1) {
             redirect(base_url("contract/file_form_offer/$id"));
-        }
-
-        if (empty($id)) {
-            $id = $this->input->post("contract_id");
-            $active_tab = "payment";
-        }
-
-        if (count_payments($id) == 0) {
-            $payment_no = 1;
-        } else {
-            $payment_no = last_payment($id) + 1;
         }
 
         $fav = $this->Favorite_model->get(array(
@@ -234,7 +223,6 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->companys = $companys;
-        $viewData->active_tab = $active_tab;
         $viewData->project = $project;
         $viewData->upload_function = $upload_function;
         $viewData->path = $path;
@@ -248,11 +236,12 @@ class Contract extends CI_Controller
         $viewData->main_bond = $main_bond;
         $viewData->main_groups = $main_groups;
         $viewData->newprices = $newprices;
-        $viewData->payment_no = $payment_no;
         $viewData->payments = $payments;
         $viewData->prices_main_groups = $prices_main_groups;
         $viewData->settings = $settings;
+        $viewData->form_error = null;
         $viewData->sites = $sites;
+        $viewData->active_module = $active_module;
 
         $form_errors = $this->session->flashdata('form_errors');
 
@@ -260,21 +249,11 @@ class Contract extends CI_Controller
             $viewData->form_errors = $form_errors;
         } else {
             $viewData->form_errors = null;
-
-        }
-
-        if ($active_tab == "workplan" && isset($error)) {
-            $viewData->error_workplan = "Ödenek Dilimleri Toplamı Sözleşme Toplam Bedeli ile Aynı Olmalıdır<br>Fark Tutar = " . money_format($error);
-        } elseif ($active_tab == "sitedel" && isset($error)) {
-            $viewData->error = "Yer Teslimi Tarihi, Sözleşme Tarihinden Önce Olamaz";
-        } elseif ($active_tab == "provision" && isset($error)) {
-            $viewData->error = "Geçici Kabul Tarihi, Sözleşme Tarihinden Önce Olamaz";
         }
 
         $viewData->item = $this->Contract_model->get(array("id" => $id));
 
-
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/index", $viewData);
     }
 
     public function file_form_offer($id = null, $active_tab = null)
@@ -848,7 +827,7 @@ class Contract extends CI_Controller
         }
     }
 
-    public function update($id)
+    public function update($id , $active_module = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -952,7 +931,6 @@ class Contract extends CI_Controller
             redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
 
         } else {
-            $active_tab = null;
 
             $alert = array(
                 "title" => "İşlem Başarısız",
@@ -1023,7 +1001,6 @@ class Contract extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Display_Folder";
             $viewData->companys = $companys;
-            $viewData->active_tab = $active_tab;
             $viewData->project = $project;
             $viewData->upload_function = $upload_function;
             $viewData->path = $path;
@@ -1043,6 +1020,7 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->sites = $sites;
             $viewData->form_error = true;
+            $viewData->active_module = "Update";
 
 
             $form_errors = $this->session->flashdata('form_errors');
@@ -1051,15 +1029,6 @@ class Contract extends CI_Controller
                 $viewData->form_errors = $form_errors;
             } else {
                 $viewData->form_errors = null;
-
-            }
-
-            if ($active_tab == "workplan" && isset($error)) {
-                $viewData->error_workplan = "Ödenek Dilimleri Toplamı Sözleşme Toplam Bedeli ile Aynı Olmalıdır<br>Fark Tutar = " . money_format($error);
-            } elseif ($active_tab == "sitedel" && isset($error)) {
-                $viewData->error = "Yer Teslimi Tarihi, Sözleşme Tarihinden Önce Olamaz";
-            } elseif ($active_tab == "provision" && isset($error)) {
-                $viewData->error = "Geçici Kabul Tarihi, Sözleşme Tarihinden Önce Olamaz";
             }
 
             $viewData->item = $this->Contract_model->get(array("id" => $id));

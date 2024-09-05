@@ -1,9 +1,4 @@
-<div class="fade tab-pane <?php if ($active_tab == "provision") {
-    echo "active show";
-} ?>"
-     id="provision" role="tabpanel"
-     aria-labelledby="provision-tab">
-    <div class="card mb-0">
+
         <div class="card-header d-flex">
             <h6 class="mb-0">Geçici Kabul Evrakları</h6>
         </div>
@@ -70,8 +65,6 @@
             </div>
 
         </div>
-    </div>
-</div>
 
 
 

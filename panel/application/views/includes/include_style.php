@@ -1,7 +1,7 @@
 <link rel="icon" href="<?php echo base_url("assets"); ?>/images/favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="<?php echo base_url("assets"); ?>/images/favicon.png" type="image/x-icon">
 
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Web Site Adı">
 <link rel="apple-touch-icon" href="<?php echo base_url("assets"); ?>/images/favicon.png"
 <link rel="shortcut icon" href="<?php echo base_url("assets"); ?>/images/favicon.png" type="image/x-icon">
