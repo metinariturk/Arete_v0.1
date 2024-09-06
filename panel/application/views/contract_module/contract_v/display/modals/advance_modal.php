@@ -56,15 +56,17 @@
                     <div class="mb-2">
                         <div class="col-form-label">Avans Tutar
                             <?php if (isset($form_error)) { ?>
-                                <?php if (!empty(form_error("avans_miktar"))) { ?>
+                                <?php
+                                // Tahsilat miktarı alanı boş değilse ve sözleşme bedelinden fazla girildiyse kontrol yap
+                                if (!empty(set_value("avans_miktar")) && form_error("avans_miktar")) { ?>
                                     <div style="color: red">*** Sözleşme bedelinden fazla avans ödemesi yapılamaz. Özel bir gerekçe ile fazla avans verilmesi gerekiyorsa aşağıdaki onay kutusunu işaretleyiniz.
                                         <br><input  name="onay" type="checkbox" id="cb-10"> Sözleşme bedelinden fazla avans ödemesi yapmak istiyorum!</div>
                                 <?php } ?>
                             <?php } ?>
                         </div>
 
-                        <input type="integer" id="calA" onblur="calcular()" onfocus="calcular()"
-                               onChange="myFunction(calA)" class="form-control" name="avans_miktar"
+                        <input type="integer" class="form-control <?php cms_isset(form_error("avans_miktar"), "is-invalid", ""); ?>"
+                               name="avans_miktar"
                                placeholder="Avans Tutar"
                                value="<?php echo isset($form_error) ? set_value("avans_miktar") : ""; ?>">
                         <?php if (isset($form_error)) { ?>

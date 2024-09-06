@@ -66,21 +66,7 @@
     }
 </script>
 
-<script>
-    // Checkbox öğesini seçiyoruz
-    var checkbox = document.getElementById("toggleCheckbox");
 
-    // Checkbox durumunu takip ediyoruz
-    checkbox.addEventListener("change", function () {
-        // Tüm input öğelerini seçiyoruz
-        var inputElements = document.querySelectorAll("input[type='text']");
-
-        // Checkbox işaretlendiğinde veya kaldırıldığında tüm input öğelerini etkinleştir veya devre dışı bırak
-        for (var i = 0; i < inputElements.length; i++) {
-            inputElements[i].disabled = !checkbox.checked;
-        }
-    });
-</script>
 
 
 <script>
@@ -201,50 +187,12 @@
         $.post(formAction, formData, function (response) {
             $(".price_update").html(response);
             hesaplaT();
-            activateDragAndDrop();
             addInputListeners("q");
             addInputListeners("p");
         });
     }
 </script>
-<script>
-    function addLeader() {
-        $("#add_leader_btn").click(function (e) {
-            e.preventDefault();
 
-            var leader_code = $("#leader_code").val();
-            var leader_name = $("#leader_name").val();
-            var leader_unit = $("#leader_unit").val();
-            var leader_price = $("#leader_price").val();
-
-            $.ajax({
-                type: "POST",
-                url: "<?php echo base_url("contract/add_leader/$item->id"); ?>",
-                data: {
-                    leader_code: leader_code,
-                    leader_name: leader_name,
-                    leader_unit: leader_unit,
-                    leader_price: leader_price
-                },
-                success: function (response) {
-                    // Sunucudan gelen yanıtı alarak price_update div'ini güncelle
-                    $(".price_update").html(response);
-                    hesaplaT();
-                    activateDragAndDrop();
-                    addLeader();
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        });
-        hesaplaT();
-        activateDragAndDrop();
-    }
-
-    // Fonksiyonu çağırarak çalıştırabilirsiniz
-    addLeader();
-</script>
 <script>
     function delete_price_item(element) {
         var itemId = element.id;
@@ -253,7 +201,6 @@
         $.post(formAction, function (response) {
             $(".price_update").html(response);
             hesaplaT();
-            activateDragAndDrop();
             addInputListeners("q");
             addInputListeners("p");
             addLeader()
@@ -262,7 +209,6 @@
                 // Hata durumunda bu fonksiyon çalışır
                 console.error('Error:', error.responseText);
                 hesaplaT();
-                activateDragAndDrop();
                 addInputListeners("q");
                 addInputListeners("p");
                 addLeader();
@@ -271,55 +217,6 @@
     }
 </script>
 
-<script>
-    function activateDragAndDrop() {
-        // Sürükleyici öğeleri seç
-        var dragSources = document.querySelectorAll('#dragSource');
-        // Hedef alanları seç
-        var dropTargets = document.querySelectorAll('.dropTarget');
-
-        // Her bir sürükleyici öğe için sürükleme başlatma olayını ekle
-        dragSources.forEach(function (dragSource) {
-            dragSource.addEventListener('dragstart', function (event) {
-                // Veri aktarımı sırasında taşınacak veriyi belirt
-                event.dataTransfer.setData('text/plain', event.target.dataset.info);
-            });
-        });
-
-        // Her bir hedef alanı için bırakma olayını ekle
-        dropTargets.forEach(function (dropTarget) {
-            dropTarget.addEventListener('drop', function (event) {
-                // Varsayılan davranışı engelle (örneğin, bağlantıyı açmayı engelle)
-                event.preventDefault();
-                // Sürüklenen öğenin veri bilgisini al
-                var draggedItemData = event.dataTransfer.getData('text/plain');
-                // Hedef alanın veri bilgisini al
-                var dropTargetData = dropTarget.dataset.info;
-                // Alert ile bilgileri ekrana bastır
-
-                var formAction = '<?php echo base_url("contract/drag_drop_price/$item->id/"); ?>' + draggedItemData + "/" + dropTargetData;
-
-                $.post(formAction, function (response) {
-                    $(".price_update").html(response);
-                    hesaplaT();
-                    addLeader();
-                    activateDragAndDrop();
-                    addInputListeners("q");
-                    addInputListeners("p");
-                    activateDragAndDrop();
-                });
-
-            });
-
-            // Bırakma olayının varsayılan davranışını engelle
-            dropTarget.addEventListener('dragover', function (event) {
-                event.preventDefault();
-            });
-        });
-    }
-    // Sürükleyici ve bırakma işlevselliğini etkinleştir
-    activateDragAndDrop();
-</script>
 
 <script>
     $(document).ready(function() {
@@ -669,3 +566,64 @@
     });
 </script>
 
+<script>// Displayde add_bond modal_form automatic calculation
+    function calcular(){
+        var valorA = parseFloat(document.getElementById('calA').value, 10); //A Hücresi Veri Giriş
+        var valorB = parseFloat(document.getElementById('calB').value, 10); //B Hücresi Veri Giriş
+        var valorC = valorA/valorB*100; //C Hücresi Hesaplama
+        var valorD = valorA/valorB*100; //C Hücresi Hesaplama
+        if (valorB > 0 ) {
+            document.getElementById('calC').innerHTML= valorC.toFixed(2);
+            document.getElementById('calD').value = valorD.toFixed(2);
+        } else {
+            document.getElementById('calC').innerHTML= 0;
+            document.getElementById('calD').value = 0;
+        }
+    }
+
+    function myFunction(e) {
+        e.value=e.value.replace(/,/g, '.')
+    }
+
+</script>
+
+<script> function enable() {
+        document.getElementById('bond_control').onchange = function() {
+            document.getElementById('bond_limit').disabled = this.checked;
+        };
+
+    }
+</script>
+
+<script> //Birim fiyat kısmında grupları açıp kapatmaya yarıyor
+    function toggleDivs(id) {
+        var targetDiv = document.querySelector('.dropTarget[data-info="' + id + '"]');
+        var toggleIcon = document.getElementById('toggle-icon-' + id);
+
+        if (targetDiv.style.display === 'none') {
+            targetDiv.style.display = 'block';
+            toggleIcon.classList.remove('fa-plus-circle');
+            toggleIcon.classList.add('fa-minus-circle');
+        } else {
+            targetDiv.style.display = 'none';
+            toggleIcon.classList.remove('fa-minus-circle');
+            toggleIcon.classList.add('fa-plus-circle');
+        }
+    }
+</script>
+
+<script>
+    // Checkbox öğesini seçiyoruz
+    var checkbox = document.getElementById("toggleCheckbox");
+
+    // Checkbox durumunu takip ediyoruz
+    checkbox.addEventListener("change", function () {
+        // Tüm input öğelerini seçiyoruz
+        var inputElements = document.querySelectorAll("input[type='text']");
+
+        // Checkbox işaretlendiğinde veya kaldırıldığında tüm input öğelerini etkinleştir veya devre dışı bırak
+        for (var i = 0; i < inputElements.length; i++) {
+            inputElements[i].disabled = !checkbox.checked;
+        }
+    });
+</script>

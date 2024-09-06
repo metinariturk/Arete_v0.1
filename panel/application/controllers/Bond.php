@@ -1443,7 +1443,6 @@ class Bond extends CI_Controller
     {
         
 
-        $bond_id = get_from_id("bond_files", "bond_id", $id);
         $contract_id = contract_id_module("bond", $bond_id);
         $project_id = project_id_cont($contract_id);
         $project_code = project_code($project_id);

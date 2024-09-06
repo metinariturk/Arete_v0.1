@@ -1,8 +1,0 @@
-sözde teşvik için duruyor
-
-
-
-
-
-
-

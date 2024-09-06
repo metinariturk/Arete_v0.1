@@ -29,16 +29,13 @@
                                         <li>
                                             <hr>
                                         </li>
-                                        <li class="nav-item"><span class="main-title"> Sözleşme Süreç</span>
+                                        <li class="nav-item"><span class="main-title"> Sözleşme Süreçleri</span>
                                         </li>
                                         <li><a id="pills-info-tab" data-bs-toggle="pill"
                                                href="#pills-info" role="tab" aria-controls="pills-info"
                                                aria-selected="true"><span
                                                         class="title"> Genel Bilgiler</span></a></li>
-                                        <li><a class="show" id="pills-uploads-tab" data-bs-toggle="pill"
-                                               href="#pills-uploads" role="tab" aria-controls="pills-uploads"
-                                               aria-selected="false"><span
-                                                        class="title">Yüklemeler</span></a></li>
+
                                         <li><a class="show" id="pills-report-tab" data-bs-toggle="pill"
                                                href="#pills-report" role="tab"
                                                aria-controls="pills-report" aria-selected="false"><span
@@ -52,40 +49,40 @@
                                                href="#pills-collection" role="tab" aria-controls="pills-collection"
                                                aria-selected="false"><span class="title">Tahsilatlar</span></a>
                                         </li>
-
-
-
-
-
                                         <li><a class="show" id="pills-advance-tab" data-bs-toggle="pill"
                                                href="#pills-advance" role="tab" aria-controls="pills-advance"
                                                aria-selected="false"><span class="title">Avans</span></a>
                                         </li>
-                                        <li><a class="show" id="pills-assigned-tab" data-bs-toggle="pill"
-                                               href="#pills-assigned" role="tab" aria-controls="pills-assigned"
-                                               aria-selected="false"><span
-                                                        class="title">Assigned to me</span></a></li>
-                                        <li><a class="show" id="pills-tasks-tab" data-bs-toggle="pill"
-                                               href="#pills-tasks" role="tab" aria-controls="pills-tasks"
-                                               aria-selected="false"><span class="title">My tasks</span></a>
+                                        <li><a class="show" id="pills-bond-tab" data-bs-toggle="pill"
+                                               href="#pills-bond" role="tab" aria-controls="pills-bond"
+                                               aria-selected="false"><span class="title">Teminatlar</span></a>
                                         </li>
+
                                         <li>
                                             <hr>
                                         </li>
                                         <li>
-                                            <span class="main-title"> Tags<span class="pull-right"></span></span>
+                                            <span class="main-title">İş Kalemleri ve Birim Fiyatlar<span class="pull-right"></span></span>
                                         </li>
-                                        <li><a class="show" id="pills-notification-tab" data-bs-toggle="pill"
-                                               href="#pills-notification" role="tab"
-                                               aria-controls="pills-notification" aria-selected="false"><span
-                                                        class="title"> notification</span></a></li>
-                                        <li><a class="show" id="pills-newsletter-tab" data-bs-toggle="pill"
-                                               href="#pills-newsletter" role="tab"
-                                               aria-controls="pills-newsletter" aria-selected="false"><span
-                                                        class="title"> Newsletter</span></a></li>
+                                        <li><a class="show" id="pills-price_group-tab" data-bs-toggle="pill"
+                                               href="#pills-price_group" role="tab"
+                                               aria-controls="pills-price_group" aria-selected="false"><span
+                                                        class="title"> İş Grupları</span></a></li>
+
+                                        <li><a class="show" id="pills-price-tab" data-bs-toggle="pill"
+                                               href="#pills-price" role="tab"
+                                               aria-controls="pills-price" aria-selected="false"><span
+                                                        class="title"> Birim Fiyatlar</span></a></li>
+
+                                        <li><a class="show" id="pills-contract_price-tab" data-bs-toggle="pill"
+                                               href="#pills-contract_price" role="tab"
+                                               aria-controls="pills-contract_price" aria-selected="false"><span
+                                                        class="title"> Sözleşme Fiyatları</span></a></li>
+
+
                                         <li><a class="show" id="pills-business-tab" data-bs-toggle="pill"
                                                href="#" role="tab" aria-selected="false"><span
-                                                        class="title"> Business</span></a>
+                                                        class="title"> Yeni Birim Fiyat</span></a>
                                         </li>
                                         <li><a class="show" id="pills-holidays-tab" data-bs-toggle="pill"
                                                href="#" role="tab" aria-selected="false"><span
@@ -120,18 +117,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="fade tab-pane" id="pills-uploads" role="tabpanel"
-                                 aria-labelledby="pills-uploads-tab">
-                                <div class="card mb-0">
-                                    <div class="card-header d-flex">
-                                        <h6 class="mb-0">Yüklemeler</h6><a href="#">
-                                            <i class="fa fa-download fa-2x"></i></a>
-                                    </div>
-                                    <div class="card-body">
-                                        <?php $this->load->view("{$viewModule}/{$viewFolder}/common/add_document"); ?>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="fade tab-pane" id="pills-report" role="tabpanel"
                                  aria-labelledby="pills-report-tab">
                                 <div class="card mb-0">
@@ -197,7 +183,7 @@
                                  aria-labelledby="pills-advance-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">This Month Tasks</h6>
+                                        <h6 class="mb-0">Avans Yönetimi</h6>
                                         <div>
                                             <i class="fa fa-plus fa-2x text-primary"
                                                style="cursor: pointer;"
@@ -205,68 +191,94 @@
                                                data-bs-target="#modalAdvance"
                                                title="Yeni Hakediş Oluştur"></i>
                                             <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a href="#" target="_blank"><i
-                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                            <a href="#" target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a>
                                         </div>
                                         <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/advance_modal"); ?>
-
                                     </div>
                                     <div class="card-body">
                                         <div class="details-bookmark text-center">
                                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_advance"); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fade tab-pane" id="pills-bond" role="tabpanel"
+                                 aria-labelledby="pills-bond-tab">
+                                <div class="card mb-0">
+                                    <div class="card-header d-flex">
+                                        <h6 class="mb-0">Teminatlar</h6>
+                                        <div>
+                                            <i class="fa fa-plus fa-2x text-primary"
+                                               style="cursor: pointer;"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#modalBond"
+                                               title="Yeni Hakediş Oluştur"></i>
+                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="#" target="_blank"><i
+                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                        </div>
+                                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/bond_modal"); ?>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="details-bookmark text-center">
+                                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_bond"); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="fade tab-pane" id="pills-price_group" role="tabpanel"
+                                 aria-labelledby="pills-price_group-tab">
+                                <div class="card mb-0">
+                                    <div class="card-header d-flex">
+                                        <h6 class="mb-0">İş Grupları</h6>  <div>
+                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="#" target="_blank"><i
+                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="fade tab-pane" id="pills-assigned" role="tabpanel"
-                                 aria-labelledby="pills-assigned-tab">
-                                <div class="card mb-0">
-                                    <div class="card-header d-flex">
-                                        <h6 class="mb-0">Assigned to me</h6><a href="#"><i class="me-2"
-                                                                                           data-feather="printer"></i>Print</a>
-                                    </div>
-                                    <div class="card-body p-0">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="fade tab-pane" id="pills-tasks" role="tabpanel"
-                                 aria-labelledby="pills-tasks-tab">
-                                <div class="card mb-0">
-                                    <div class="card-header d-flex">
-                                        <h6 class="mb-0">My tasks</h6><a href="#"><i class="me-2"
-                                                                                     data-feather="printer"></i>Print</a>
-                                    </div>
-                                    <div class="card-body p-0">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="fade tab-pane" id="pills-notification" role="tabpanel"
-                                 aria-labelledby="pills-notification-tab">
-                                <div class="card mb-0">
-                                    <div class="card-header d-flex">
-                                        <h6 class="mb-0">Notification</h6><a href="#"><i class="me-2"
-                                                                                         data-feather="printer"></i>Print</a>
                                     </div>
                                     <div class="card-body">
-                                        <div class="details-bookmark text-center"><span>No tasks found.</span>
+                                        <div class="details-bookmark text-center">
+                                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_7_price_group"); ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="fade tab-pane" id="pills-newsletter" role="tabpanel"
-                                 aria-labelledby="pills-newsletter-tab">
+                            <div class="fade tab-pane" id="pills-price" role="tabpanel"
+                                 aria-labelledby="pills-price-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">Newsletter</h6><a href="#"><i class="me-2"
-                                                                                       data-feather="printer"></i>Print</a>
+                                        <h6 class="mb-0">İş Grupları</h6>  <div>
+                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="#" target="_blank"><i
+                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                        </div>
                                     </div>
                                     <div class="card-body">
-                                        <div class="details-bookmark text-center"><span>No tasks found.</span>
+                                        <div class="details-bookmark text-center">
+                                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_8_price"); ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="fade tab-pane" id="pills-contract_price" role="tabpanel"
+                                 aria-labelledby="pills-contract_price-tab">
+                                <div class="card mb-0">
+                                    <div class="card-header d-flex">
+                                        <h6 class="mb-0">İş Grupları</h6>  <div>
+                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="#" target="_blank"><i
+                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="details-bookmark text-center">
+                                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_9_contract_price"); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="modal fade modal-bookmark" id="createtag" tabindex="-1" role="dialog"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">

@@ -1,4 +1,3 @@
-
 <div class="modal fade" id="modalCollection" tabindex="-1"
      role="dialog"
      aria-labelledby="modalCollection" aria-hidden="true">
@@ -20,13 +19,15 @@
                         <div class="input-group"><span class="input-group-text" id="inputGroupPrepend">TA</span>
                             <?php if (!empty(get_last_fn("collection"))) { ?>
                                 <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                                       type="number" placeholder="Proje Kodu" aria-describedby="inputGroupPrepend" readonly
+                                       type="number" placeholder="Proje Kodu" aria-describedby="inputGroupPrepend"
+                                       readonly
                                        data-bs-original-title="" title="" name="dosya_no"
                                        value="<?php echo isset($form_error) ? set_value("dosya_no") : increase_code_suffix("collection"); ?>">
                                 <?php
                             } else { ?>
                                 <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                                       type="number" placeholder="Username" aria-describedby="inputGroupPrepend" readonly
+                                       type="number" placeholder="Username" aria-describedby="inputGroupPrepend"
+                                       readonly
                                        required="" data-bs-original-title="" title="" name="dosya_no"
                                        value="<?php echo isset($form_error) ? set_value("dosya_no") : fill_empty_digits() . "1" ?>">
                             <?php } ?>
@@ -57,7 +58,8 @@
                         <select id="select2-demo-1" style="width: 100%;"
                                 class="form-control <?php cms_isset(form_error("tahsilat_turu"), "is-invalid", ""); ?>"
                                 data-plugin="select2" name="tahsilat_turu">
-                            <option selected="selected" value="<?php echo isset($form_error) ? set_value("tahsilat_turu") : ""; ?>"><?php echo isset($form_error) ? set_value("tahsilat_turu") : "Seçiniz"; ?>
+                            <option selected="selected"
+                                    value="<?php echo isset($form_error) ? set_value("tahsilat_turu") : ""; ?>"><?php echo isset($form_error) ? set_value("tahsilat_turu") : "Seçiniz"; ?>
                             </option>
                             <?php $odeme_turleri = get_as_array($settings->odeme_turu);
                             foreach ($odeme_turleri as $odeme_turu) {
@@ -70,25 +72,26 @@
                     </div>
                     <div class="mb-2">
                         <div class="col-form-label">Tahsilat Tutar</div>
-                            <?php if (isset($form_error)) { ?>
-                                <?php
-                                // Tahsilat miktarı alanı boş değilse ve sözleşme bedelinden fazla girildiyse kontrol yap
-                                if (!empty(set_value("tahsilat_miktar")) && form_error("tahsilat_miktar")) { ?>
-                                    <div style="color: red">
-                                        *** Sözleşme bedelinden fazla tahsilat yapılamaz. Özel bir gerekçe ile fazla tahsilat yapılması gerekiyorsa aşağıdaki onay kutusunu işaretleyiniz.
-                                        <br>
-                                        <input name="onay" type="checkbox" id="cb-10"> Sözleşme bedelinden fazla tahsilat yapmak istiyorum!
-                                    </div>
-                                <?php } ?>
-
+                        <?php if (isset($form_error)) { ?>
+                            <?php
+                            // Tahsilat miktarı alanı boş değilse ve sözleşme bedelinden fazla girildiyse kontrol yap
+                            if (!empty(set_value("tahsilat_miktar")) && form_error("tahsilat_miktar")) { ?>
+                                <div style="color: red">
+                                    *** Sözleşme bedelinden fazla tahsilat yapılamaz. Özel bir gerekçe ile fazla
+                                    tahsilat yapılması gerekiyorsa aşağıdaki onay kutusunu işaretleyiniz.
+                                    <br>
+                                    <input name="onay" type="checkbox" id="cb-10"> Sözleşme bedelinden fazla tahsilat
+                                    yapmak istiyorum!
+                                </div>
                             <?php } ?>
-
-                        <input  class="form-control <?php cms_isset(form_error("tahsilat_miktar"), "is-invalid", ""); ?>" name="tahsilat_miktar"
+                        <?php } ?>
+                        <input class="form-control <?php cms_isset(form_error("tahsilat_miktar"), "is-invalid", ""); ?>"
+                               name="tahsilat_miktar"
                                placeholder="Tahsilat Tutar"
                                value="<?php echo isset($form_error) ? set_value("tahsilat_miktar") : ""; ?>">
-                            <?php if (isset($form_error)) { ?>
-                                <div class="invalid-feedback"><?php echo form_error("tahsilat_miktar"); ?></div>
-                            <?php } ?>
+                        <?php if (isset($form_error)) { ?>
+                            <div class="invalid-feedback"><?php echo form_error("tahsilat_miktar"); ?></div>
+                        <?php } ?>
                     </div>
                     <div class="mb-2">
                         <div class="col-form-label">Vade Tarihi</div>

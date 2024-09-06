@@ -1,9 +1,3 @@
-<a class="pager-btn btn btn-info btn-outline"
-   href="<?php echo base_url("advance/new_form/$item->id"); ?>" target="_blank">
-    <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
-    Avans Ödemesi Ekle
-</a>
-
 <table class="table" id="advance_table">
     <thead>
     <tr>

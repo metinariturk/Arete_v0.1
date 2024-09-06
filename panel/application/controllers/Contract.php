@@ -827,7 +827,7 @@ class Contract extends CI_Controller
         }
     }
 
-    public function update($id , $active_module = null)
+    public function update($id, $active_module = null)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -2155,42 +2155,82 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
-        // Form verilerini doğru şekilde alma
-        $leader_code = $this->input->post('leader_code');
-        $leader_name = $this->input->post('leader_name');
-        $leader_unit = $this->input->post('leader_unit');
-        $leader_price = $this->input->post('leader_price');
+        $this->load->library("form_validation");
 
-        // Lider bilgilerini ekleyin
-        $update = $this->Contract_price_model->add(
+        // Form Validation Kuralları
+        $this->form_validation->set_rules("leader_code", "İmalat Kodu", "required|trim");
+        $this->form_validation->set_rules("leader_name", "İmalat Adı", "required|trim");
+        $this->form_validation->set_rules("leader_unit", "İmalat Birim", "required|trim");
+        $this->form_validation->set_rules("leader_price", "Fiyat", "required|trim");
+
+
+        // Form Validation Hatalarını Tanımla
+        $this->form_validation->set_message(
             array(
-                "contract_id" => $contract_id,
-                "code" => $leader_code,
-                "name" => $leader_name,
-                "unit" => $leader_unit,
-                "price" => $leader_price,
-                "leader" => 1,
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
             )
         );
 
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
 
-        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
+        $validate = $this->form_validation->run();
 
-        $viewData = new stdClass();
-        $viewData->leaders = $leaders;
+        if ($validate) {
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->subViewFolder = "display";
-        $viewData->item = $item;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/price_update", $viewData, true);
+            // Form verilerini doğru şekilde alma
+            $leader_code = $this->input->post('leader_code');
+            $leader_name = $this->input->post('leader_name');
+            $leader_unit = $this->input->post('leader_unit');
+            $leader_price = $this->input->post('leader_price');
 
-        echo $render_html;
+            // Lider bilgilerini ekleyin
+            $update = $this->Contract_price_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "code" => $leader_code,
+                    "name" => $leader_name,
+                    "unit" => $leader_unit,
+                    "price" => $leader_price,
+                    "leader" => 1,
+                )
+            );
+
+            $item = $this->Contract_model->get(array("id" => $contract_id));
+            $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
+
+            $viewData = new stdClass();
+            $viewData->leaders = $leaders;
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->prices_main_groups = $prices_main_groups;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
+            echo $render_html;
+
+        } else {
+
+            $item = $this->Contract_model->get(array("id" => $contract_id));
+            $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
+
+            $viewData = new stdClass();
+            $viewData->leaders = $leaders;
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->prices_main_groups = $prices_main_groups;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+            $viewData->form_error = true;
+
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
+            echo $render_html;
+
+        }
     }
 
     public
@@ -2235,7 +2275,7 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/price_update", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
 
         echo $render_html;
 
@@ -2285,7 +2325,7 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/price_update", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
 
         echo $render_html;
 

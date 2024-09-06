@@ -85,7 +85,6 @@
                                 <input type="text" name="groups[<?php echo $main_group->id; ?>][new_sub][name]"
                                        class="form-control" placeholder="Alt Grup Adı">
                             </div>
-
                         </div>
                     </div>
                     <hr>

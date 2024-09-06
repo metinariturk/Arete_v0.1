@@ -34,7 +34,9 @@ $tabMapping = [
     "Payment" => ['tab' => '#pills-payments-tab', 'modal' => '#modalPayment'],
     "Collection" => ['tab' => '#pills-collection-tab', 'modal' => '#modalCollection'],
     "Advance" => ['tab' => '#pills-advance-tab', 'modal' => '#modalAdvance'],
-    "Update" => ['tab' => '#pills-info-tab', 'modal' => '#updateFormModal']
+    "Update" => ['tab' => '#pills-info-tab', 'modal' => '#updateFormModal'],
+    "Bond" => ['tab' => '#pills-bond-tab', 'modal' => '#modalBond'],
+    "Price" => ['tab' => '#pills-price-tab', 'modal' => null]
 ];
 
 // Aktif modül için tab ve modal ayarlarını belirleyin

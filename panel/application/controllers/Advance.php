@@ -13,6 +13,10 @@ class Advance extends CI_Controller
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
+
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+        include($uploader);
+
         $this->Theme_mode = get_active_user()->mode;
         if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
@@ -277,9 +281,6 @@ class Advance extends CI_Controller
             //kaydedilen elemanın id nosunu döküman ekleme sayfasına post ediyoruz
         } else {
 
-            $item = $this->Contract_model->get(array("id" => $contract->id));
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
-
             $this->load->model("Advance_model");
             $this->load->model("Bond_model");
             $this->load->model("City_model");
@@ -312,17 +313,31 @@ class Advance extends CI_Controller
             }
 
             $item = $this->Contract_model->get(array("id" => $contract->id));
-
             $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-
             $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
+            $collection_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection";
+            $advance_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance";
+            $offer_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer";
+            $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
 
             $companys = $this->Company_model->get_all(array());
+
+            !is_dir($path) && mkdir($path, 0777, TRUE);
+            !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
+            !is_dir($advance_path) && mkdir($advance_path, 0777, TRUE);
+            !is_dir($offer_path) && mkdir($offer_path, 0777, TRUE);
+            !is_dir($payment_path) && mkdir($payment_path, 0777, TRUE);
 
             if ($item->offer == 1) {
                 redirect(base_url("contract/file_form_offer/$contract->id"));
             }
 
+            if (count_payments($contract->id) == 0) {
+                $payment_no = 1;
+            } else {
+                $payment_no = last_payment($contract->id) + 1;
+            }
 
             $fav = $this->Favorite_model->get(array(
                 "user_id" => active_user_id(),
@@ -350,6 +365,12 @@ class Advance extends CI_Controller
             // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = "contract_v";
+            if ($item->offer == 1) {
+                $viewData->subViewFolder = "display_offer";
+            } else {
+                $viewData->subViewFolder = "display";
+            }
+
             $viewData->companys = $companys;
             $viewData->project = $project;
             $viewData->upload_function = $upload_function;
@@ -365,11 +386,13 @@ class Advance extends CI_Controller
             $viewData->main_groups = $main_groups;
             $viewData->newprices = $newprices;
             $viewData->form_error = true;
+            $viewData->payment_no = $payment_no;
             $viewData->payments = $payments;
             $viewData->prices_main_groups = $prices_main_groups;
             $viewData->settings = $settings;
             $viewData->sites = $sites;
             $viewData->active_module = "Advance";
+
 
             $form_errors = $this->session->flashdata('form_errors');
 
@@ -377,6 +400,7 @@ class Advance extends CI_Controller
                 $viewData->form_errors = $form_errors;
             } else {
                 $viewData->form_errors = null;
+
             }
 
             $viewData->item = $item;
