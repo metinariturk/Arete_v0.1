@@ -26,7 +26,6 @@
 </script>
 
 
-
 <script>
     function changeIcon(anchor) {
         var $url = anchor.getAttribute('url');
@@ -65,8 +64,6 @@
         });
     }
 </script>
-
-
 
 
 <script>
@@ -199,27 +196,21 @@
         var formAction = '<?php echo base_url("contract/delete_contract_price/"); ?>' + itemId;
 
         $.post(formAction, function (response) {
-            $(".price_update").html(response);
-            hesaplaT();
-            addInputListeners("q");
-            addInputListeners("p");
-            addLeader()
+            if (response) { // Yanıtın boş olmadığını kontrol et
+                $(".leader_list").html(response);
+            } else {
+                console.error("AJAX isteği başarılı ancak boş yanıt alındı.");
+            }
         })
-            .fail(function (error) {
-                // Hata durumunda bu fonksiyon çalışır
-                console.error('Error:', error.responseText);
-                hesaplaT();
-                addInputListeners("q");
-                addInputListeners("p");
-                addLeader();
+            .fail(function() {
+                console.error("AJAX isteği başarısız oldu.");
             });
-
     }
 </script>
 
 
-<script>
-    $(document).ready(function() {
+<script> //Dosya Yükleme Scripti
+    $(document).ready(function () {
         // enable fileuploader plugin
         $('input[name="dfiles"]').fileuploader({
             changeInput: '<div class="fileuploader-input">' +
@@ -239,7 +230,7 @@
                 start: true,
                 synchron: true,
                 beforeSend: null,
-                onSuccess: function(result, item) {
+                onSuccess: function (result, item) {
                     var data = {};
 
                     // get data
@@ -268,14 +259,14 @@
                     }
 
                     item.html.find('.fileuploader-action-remove').addClass('fileuploader-action-success');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         item.html.find('.progress-bar2').fadeOut(400);
                     }, 400);
                 },
-                onError: function(item) {
+                onError: function (item) {
                     var progressBar = item.html.find('.progress-bar2');
 
-                    if(progressBar.length) {
+                    if (progressBar.length) {
                         progressBar.find('span').html(0 + "%");
                         progressBar.find('.fileuploader-progressbar .bar').width(0 + "%");
                         item.html.find('.progress-bar2').fadeOut(400);
@@ -285,10 +276,10 @@
                         '<button type="button" class="fileuploader-action fileuploader-action-retry" title="Retry"><i class="fileuploader-icon-retry"></i></button>'
                     ) : null;
                 },
-                onProgress: function(data, item) {
+                onProgress: function (data, item) {
                     var progressBar = item.html.find('.progress-bar2');
 
-                    if(progressBar.length > 0) {
+                    if (progressBar.length > 0) {
                         progressBar.show();
                         progressBar.find('span').html(data.percentage + "%");
                         progressBar.find('.fileuploader-progressbar .bar').width(data.percentage + "%");
@@ -296,7 +287,7 @@
                 },
                 onComplete: null,
             },
-            onRemove: function(item, listEl, parentEl, newInputEl, inputEl) {
+            onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
                 // AJAX isteği ile dosyanın sunucudan silinmesi
                 $.ajax({
                     url: "<?php echo base_url("Cpntract/fileDeleteContract_drawings_java/$item->id/"); ?>", // Silme işlemini gerçekleştirecek endpoint
@@ -304,7 +295,7 @@
                     data: {
                         fileName: item.name // Dosyanın adı
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             // Sunucu silme işlemini başarıyla tamamladı
                             console.log('Dosya başarıyla silindi:', item.name);
@@ -313,7 +304,7 @@
                             console.error(item.id, response.message);
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         // AJAX isteği başarısız oldu
                         console.error('Bir hata oluştu:', error);
                     }
@@ -334,8 +325,8 @@
     });
 </script>
 
-<script>
-    $(document).ready(function() {
+<script>//Dosya Yükleme Scripti
+    $(document).ready(function () {
         // enable fileuploader plugin
         $('input[name="cfiles"]').fileuploader({
             changeInput: '<div class="fileuploader-input">' +
@@ -355,7 +346,7 @@
                 start: true,
                 synchron: true,
                 beforeSend: null,
-                onSuccess: function(result, item) {
+                onSuccess: function (result, item) {
                     var data = {};
 
                     // get data
@@ -384,14 +375,14 @@
                     }
 
                     item.html.find('.fileuploader-action-remove').addClass('fileuploader-action-success');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         item.html.find('.progress-bar2').fadeOut(400);
                     }, 400);
                 },
-                onError: function(item) {
+                onError: function (item) {
                     var progressBar = item.html.find('.progress-bar2');
 
-                    if(progressBar.length) {
+                    if (progressBar.length) {
                         progressBar.find('span').html(0 + "%");
                         progressBar.find('.fileuploader-progressbar .bar').width(0 + "%");
                         item.html.find('.progress-bar2').fadeOut(400);
@@ -401,10 +392,10 @@
                         '<button type="button" class="fileuploader-action fileuploader-action-retry" title="Retry"><i class="fileuploader-icon-retry"></i></button>'
                     ) : null;
                 },
-                onProgress: function(data, item) {
+                onProgress: function (data, item) {
                     var progressBar = item.html.find('.progress-bar2');
 
-                    if(progressBar.length > 0) {
+                    if (progressBar.length > 0) {
                         progressBar.show();
                         progressBar.find('span').html(data.percentage + "%");
                         progressBar.find('.fileuploader-progressbar .bar').width(data.percentage + "%");
@@ -412,7 +403,7 @@
                 },
                 onComplete: null,
             },
-            onRemove: function(item, listEl, parentEl, newInputEl, inputEl) {
+            onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
                 // AJAX isteği ile dosyanın sunucudan silinmesi
                 $.ajax({
                     url: "<?php echo base_url("Collection/fileDeleteContract_java/$item->id/"); ?>", // Silme işlemini gerçekleştirecek endpoint
@@ -420,7 +411,7 @@
                     data: {
                         fileName: item.name // Dosyanın adı
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             // Sunucu silme işlemini başarıyla tamamladı
                             console.log('Dosya başarıyla silindi:', item.name);
@@ -429,7 +420,7 @@
                             console.error(item.id, response.message);
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         // AJAX isteği başarısız oldu
                         console.error('Bir hata oluştu:', error);
                     }
@@ -450,8 +441,8 @@
     });
 </script>
 
-<script>
-    $(document).ready(function() {
+<script>//Dosya Yükleme Scripti
+    $(document).ready(function () {
         // enable fileuploader plugin
         $('input[name="files"]').fileuploader({
             changeInput: '<div class="fileuploader-input">' +
@@ -471,7 +462,7 @@
                 start: true,
                 synchron: true,
                 beforeSend: null,
-                onSuccess: function(result, item) {
+                onSuccess: function (result, item) {
                     var data = {};
 
                     // get data
@@ -500,14 +491,14 @@
                     }
 
                     item.html.find('.fileuploader-action-remove').addClass('fileuploader-action-success');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         item.html.find('.progress-bar2').fadeOut(400);
                     }, 400);
                 },
-                onError: function(item) {
+                onError: function (item) {
                     var progressBar = item.html.find('.progress-bar2');
 
-                    if(progressBar.length) {
+                    if (progressBar.length) {
                         progressBar.find('span').html(0 + "%");
                         progressBar.find('.fileuploader-progressbar .bar').width(0 + "%");
                         item.html.find('.progress-bar2').fadeOut(400);
@@ -517,10 +508,10 @@
                         '<button type="button" class="fileuploader-action fileuploader-action-retry" title="Retry"><i class="fileuploader-icon-retry"></i></button>'
                     ) : null;
                 },
-                onProgress: function(data, item) {
+                onProgress: function (data, item) {
                     var progressBar = item.html.find('.progress-bar2');
 
-                    if(progressBar.length > 0) {
+                    if (progressBar.length > 0) {
                         progressBar.show();
                         progressBar.find('span').html(data.percentage + "%");
                         progressBar.find('.fileuploader-progressbar .bar').width(data.percentage + "%");
@@ -528,7 +519,7 @@
                 },
                 onComplete: null,
             },
-            onRemove: function(item, listEl, parentEl, newInputEl, inputEl) {
+            onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
                 // AJAX isteği ile dosyanın sunucudan silinmesi
                 $.ajax({
                     url: "<?php echo base_url("$this->Module_Name/filedelete_java/$item->id/"); ?>", // Silme işlemini gerçekleştirecek endpoint
@@ -536,7 +527,7 @@
                     data: {
                         fileName: item.name // Dosyanın adı
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             // Sunucu silme işlemini başarıyla tamamladı
                             console.log('Dosya başarıyla silindi:', item.name);
@@ -545,7 +536,7 @@
                             console.error(item.id, response.message);
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         // AJAX isteği başarısız oldu
                         console.error('Bir hata oluştu:', error);
                     }
@@ -567,28 +558,28 @@
 </script>
 
 <script>// Displayde add_bond modal_form automatic calculation
-    function calcular(){
+    function calcular() {
         var valorA = parseFloat(document.getElementById('calA').value, 10); //A Hücresi Veri Giriş
         var valorB = parseFloat(document.getElementById('calB').value, 10); //B Hücresi Veri Giriş
-        var valorC = valorA/valorB*100; //C Hücresi Hesaplama
-        var valorD = valorA/valorB*100; //C Hücresi Hesaplama
-        if (valorB > 0 ) {
-            document.getElementById('calC').innerHTML= valorC.toFixed(2);
+        var valorC = valorA / valorB * 100; //C Hücresi Hesaplama
+        var valorD = valorA / valorB * 100; //C Hücresi Hesaplama
+        if (valorB > 0) {
+            document.getElementById('calC').innerHTML = valorC.toFixed(2);
             document.getElementById('calD').value = valorD.toFixed(2);
         } else {
-            document.getElementById('calC').innerHTML= 0;
+            document.getElementById('calC').innerHTML = 0;
             document.getElementById('calD').value = 0;
         }
     }
 
     function myFunction(e) {
-        e.value=e.value.replace(/,/g, '.')
+        e.value = e.value.replace(/,/g, '.')
     }
 
 </script>
 
 <script> function enable() {
-        document.getElementById('bond_control').onchange = function() {
+        document.getElementById('bond_control').onchange = function () {
             document.getElementById('bond_limit').disabled = this.checked;
         };
 
@@ -626,4 +617,90 @@
             inputElements[i].disabled = !checkbox.checked;
         }
     });
+</script>
+<script>
+    function save_leader(formId) {
+        event.preventDefault(); // Formun normal submit edilmesini engeller
+        var form = document.getElementById(formId);
+        var formData = new FormData(form);
+
+        // Ajax isteği
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Gelen cevabı leader_list div'ine yerleştir
+                document.getElementById('leader_list').innerHTML = xhr.responseText;
+            }
+        };
+        xhr.send(formData);
+    }
+</script>
+<script>//Ana gruba imalat ekleme deneyimi
+
+    // Modal açıldığında grubu belirle
+    let selectedGroupId = null;
+
+    function openSearchModal(grupId) {
+        selectedGroupId = grupId;
+        $('#searchModal').modal('show');
+    }
+
+    function toLowerTurkish(str) {
+        return str.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase();
+    }
+
+    // Arama kutusuna yazıldığında filtreleme işlemi
+    $('#searchInput').on('keyup', function() {
+        let query = toLowerTurkish($(this).val());  // Arama terimini küçük harfe çevir (Türkçe karakter desteğiyle)
+
+        // Tablo satırlarını döngüye al ve arama kriterine göre göster/gizle
+        $('#imalatKalemList tbody tr').each(function() {
+            let kalemText = toLowerTurkish($(this).text());  // Satırdaki metni küçük harfe çevir (Türkçe karakter desteğiyle)
+            if (kalemText.includes(query)) {
+                $(this).show();  // Eşleşen satırı göster
+            } else {
+                $(this).hide();  // Eşleşmeyeni gizle
+            }
+        });
+    });
+
+    // Tümünü Seç/Deselect Et Fonksiyonu
+    let allSelected = false;  // Varsayılan olarak tümü seçili değil
+    $('#selectAllBtn').on('click', function() {
+        allSelected = !allSelected;  // Seçim durumunu değiştir
+
+        $('input[name="leaders[]"]').each(function() {
+            $(this).prop('checked', allSelected);  // Hepsini işaretle veya işareti kaldır
+        });
+
+        // Buton metnini güncelle
+        if (allSelected) {
+            $('#selectAllBtn').text('Seçimleri Kaldır');
+        } else {
+            $('#selectAllBtn').text('Tümünü Seç');
+        }
+    });
+
+    function saveSelection() {
+        let selectedIds = [];
+        $('input[name="leaders[]"]:checked').each(function() {
+            selectedIds.push($(this).val());
+        });
+
+        $.ajax({
+            url: "<?php echo base_url('controller/save_leader_group'); ?>",
+            type: "POST",
+            data: {
+                grup_id: selectedGroupId,
+                leader_ids: selectedIds
+            },
+            success: function(response) {
+                alert('Seçimler başarıyla kaydedildi!');
+                $('#searchModal').modal('hide');
+            }
+        });
+    }
+
+
 </script>

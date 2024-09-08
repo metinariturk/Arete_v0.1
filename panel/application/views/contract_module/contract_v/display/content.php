@@ -67,12 +67,12 @@
                                         <li><a class="show" id="pills-price_group-tab" data-bs-toggle="pill"
                                                href="#pills-price_group" role="tab"
                                                aria-controls="pills-price_group" aria-selected="false"><span
-                                                        class="title"> İş Grupları</span></a></li>
+                                                        class="title"> Sözleşme İş Grupları</span></a></li>
 
                                         <li><a class="show" id="pills-price-tab" data-bs-toggle="pill"
                                                href="#pills-price" role="tab"
                                                aria-controls="pills-price" aria-selected="false"><span
-                                                        class="title"> Birim Fiyatlar</span></a></li>
+                                                        class="title"> Sözleşme Poz Kitabı</span></a></li>
 
                                         <li><a class="show" id="pills-contract_price-tab" data-bs-toggle="pill"
                                                href="#pills-contract_price" role="tab"

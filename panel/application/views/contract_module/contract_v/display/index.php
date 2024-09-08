@@ -20,8 +20,8 @@
             <?php $this->load->view("{$viewModule}/{$viewFolder}/display/content"); ?>
         </div>
     </div>
-    <?php $this->load->view("includes/footer"); ?>
 </div>
+<?php $this->load->view("includes/footer"); ?>
 
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>

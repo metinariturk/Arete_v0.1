@@ -2156,6 +2156,7 @@ class Contract extends CI_Controller
         }
 
         $this->load->library("form_validation");
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
 
         // Form Validation Kuralları
         $this->form_validation->set_rules("leader_code", "İmalat Kodu", "required|trim");
@@ -2175,7 +2176,6 @@ class Contract extends CI_Controller
         $validate = $this->form_validation->run();
 
         if ($validate) {
-
 
             // Form verilerini doğru şekilde alma
             $leader_code = $this->input->post('leader_code');
@@ -2204,9 +2204,10 @@ class Contract extends CI_Controller
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewFolder = $this->viewFolder;
             $viewData->viewModule = $this->moduleFolder;
-            $viewData->prices_main_groups = $prices_main_groups;
             $viewData->subViewFolder = "display";
             $viewData->item = $item;
+            $viewData->main_groups = $main_groups;
+
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
             echo $render_html;
@@ -2222,9 +2223,10 @@ class Contract extends CI_Controller
             /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewFolder = $this->viewFolder;
             $viewData->viewModule = $this->moduleFolder;
-            $viewData->prices_main_groups = $prices_main_groups;
+
             $viewData->subViewFolder = "display";
             $viewData->item = $item;
+            $viewData->main_groups = $main_groups;
             $viewData->form_error = true;
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
@@ -2288,7 +2290,9 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
+        echo $item_id;
         $contract_price = $this->Contract_price_model->get(array("id" => $item_id));
+
         $contract_id = $contract_price->contract_id;
         $delete = $this->Contract_price_model->delete(
             array(
@@ -2311,7 +2315,8 @@ class Contract extends CI_Controller
         }
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
+
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
 
         $viewData = new stdClass();
@@ -2321,7 +2326,7 @@ class Contract extends CI_Controller
 
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
-        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->main_groups = $main_groups;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
 

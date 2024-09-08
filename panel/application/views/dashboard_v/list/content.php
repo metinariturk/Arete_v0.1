@@ -13,13 +13,7 @@
                                         <hr>
 
                                         <li>
-                                            <span class="main-title">Projeler
-                                                <span class="pull-right">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createtag">
-                                                        <i data-feather="plus-circle"></i>
-                                                    </a>
-                                                </span>
-                                            </span>
+                                            <span class="main-title">Projeler</span>
                                         </li>
 
                                         <?php foreach ($favorites as $favorite) { ?>
@@ -38,13 +32,7 @@
                                         <hr>
 
                                         <li>
-                                            <span class="main-title">Sözleşmeler
-                                                <span class="pull-right">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createtag">
-                                                        <i data-feather="plus-circle"></i>
-                                                    </a>
-                                                </span>
-                                            </span>
+                                            <span class="main-title">Sözleşmeler</span>
                                         </li>
 
                                         <?php foreach ($favorites as $favorite) { ?>
@@ -63,11 +51,6 @@
 
                                         <li>
                                             <span class="main-title">Şantiyeler
-                                                <span class="pull-right">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createtag">
-                                                        <i data-feather="plus-circle"></i>
-                                                    </a>
-                                                </span>
                                             </span>
                                         </li>
 
@@ -75,6 +58,23 @@
                                             <?php if ($favorite->module == "site") { ?>
                                                 <li>
                                                     <a href="<?php echo base_url("$favorite->module/$favorite->view/$favorite->module_id"); ?>"
+                                                       role="tab"
+                                                       aria-controls="pills-<?php echo $favorite->module_id; ?>"
+                                                       aria-selected="false"><span
+                                                                class="title"> <?php echo $favorite->title; ?></span></a>
+                                                </li>
+                                            <?php } ?>
+                                        <?php } ?>
+                                        <hr>
+
+                                        <li>
+                                            <span class="main-title">Hızlı Günlük Rapor</span>
+                                        </li>
+
+                                        <?php foreach ($favorites as $favorite) { ?>
+                                            <?php if ($favorite->module == "site") { ?>
+                                                <li>
+                                                    <a href="<?php echo base_url("Report/new_form/$favorite->module_id"); ?>"
                                                        role="tab"
                                                        aria-controls="pills-<?php echo $favorite->module_id; ?>"
                                                        aria-selected="false"><span
