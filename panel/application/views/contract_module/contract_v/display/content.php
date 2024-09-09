@@ -272,7 +272,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body">
-                                        <div class="details-bookmark text-center">
+                                        <div class="details-bookmark">
                                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_9_contract_price"); ?>
                                         </div>
                                     </div>

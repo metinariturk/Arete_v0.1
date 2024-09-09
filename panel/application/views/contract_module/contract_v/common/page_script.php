@@ -25,7 +25,7 @@
     }
 </script>
 
-
+<!-- Favori İşareti-->
 <script>
     function changeIcon(anchor) {
         var $url = anchor.getAttribute('url');
@@ -37,6 +37,7 @@
         icon.classList.toggle('fa-star-o');
     }
 </script>
+<!-- Favori İşareti Son-->
 
 <script>
 
@@ -54,13 +55,50 @@
 </script>
 
 <script>
-    function delete_group(element) {
+    function delete_group(element, groupType) {
         var itemId = element.id;
         var formAction = '<?php echo base_url("contract/delete_group/"); ?>' + itemId;
+        var title, text;
 
-        $.post(formAction, function (response) {
-            $(".refresh_group").html(response);
+        // Silme türüne göre başlık ve metni ayarla
+        if (groupType === 'main') {
+            title = 'Silmek Üzeresiniz!';
+            text = 'Bu grubu silerseniz, alt gruplar ve alt gruplara bağlı pozların hakedişlerdeki yaptığınız tüm metrajları da silinecektir? Emin misiniz?';
+        } else if (groupType === 'sub') {
+            title = 'Silmek Üzeresiniz!';
+            text = 'Bu alt grubu silerseniz, hakedişlerdeki bu alt gruba dair yaptığınız tüm metrajlar da silinecektir? Emin misiniz?';
+        }
 
+        // SweetAlert ile onay penceresi
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'Hayır, iptal et'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Onay verildiyse silme işlemini gerçekleştir
+                $.post(formAction, function (response) {
+                    // Silme işleminden sonra sayfayı güncelle
+                    $(".refresh_group").html(response);
+                    Swal.fire(
+                        'Silindi!',
+                        'Grup başarıyla silindi.',
+                        'success'
+                    );
+                }).fail(function() {
+                    // Silme işleminde bir hata oluşursa kullanıcıyı bilgilendir
+                    Swal.fire(
+                        'Hata!',
+                        'Silme işlemi sırasında bir hata oluştu.',
+                        'error'
+                    );
+                });
+            }
         });
     }
 </script>
@@ -635,72 +673,4 @@
         };
         xhr.send(formData);
     }
-</script>
-<script>//Ana gruba imalat ekleme deneyimi
-
-    // Modal açıldığında grubu belirle
-    let selectedGroupId = null;
-
-    function openSearchModal(grupId) {
-        selectedGroupId = grupId;
-        $('#searchModal').modal('show');
-    }
-
-    function toLowerTurkish(str) {
-        return str.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase();
-    }
-
-    // Arama kutusuna yazıldığında filtreleme işlemi
-    $('#searchInput').on('keyup', function() {
-        let query = toLowerTurkish($(this).val());  // Arama terimini küçük harfe çevir (Türkçe karakter desteğiyle)
-
-        // Tablo satırlarını döngüye al ve arama kriterine göre göster/gizle
-        $('#imalatKalemList tbody tr').each(function() {
-            let kalemText = toLowerTurkish($(this).text());  // Satırdaki metni küçük harfe çevir (Türkçe karakter desteğiyle)
-            if (kalemText.includes(query)) {
-                $(this).show();  // Eşleşen satırı göster
-            } else {
-                $(this).hide();  // Eşleşmeyeni gizle
-            }
-        });
-    });
-
-    // Tümünü Seç/Deselect Et Fonksiyonu
-    let allSelected = false;  // Varsayılan olarak tümü seçili değil
-    $('#selectAllBtn').on('click', function() {
-        allSelected = !allSelected;  // Seçim durumunu değiştir
-
-        $('input[name="leaders[]"]').each(function() {
-            $(this).prop('checked', allSelected);  // Hepsini işaretle veya işareti kaldır
-        });
-
-        // Buton metnini güncelle
-        if (allSelected) {
-            $('#selectAllBtn').text('Seçimleri Kaldır');
-        } else {
-            $('#selectAllBtn').text('Tümünü Seç');
-        }
-    });
-
-    function saveSelection() {
-        let selectedIds = [];
-        $('input[name="leaders[]"]:checked').each(function() {
-            selectedIds.push($(this).val());
-        });
-
-        $.ajax({
-            url: "<?php echo base_url('controller/save_leader_group'); ?>",
-            type: "POST",
-            data: {
-                grup_id: selectedGroupId,
-                leader_ids: selectedIds
-            },
-            success: function(response) {
-                alert('Seçimler başarıyla kaydedildi!');
-                $('#searchModal').modal('hide');
-            }
-        });
-    }
-
-
 </script>

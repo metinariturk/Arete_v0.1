@@ -97,6 +97,32 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
+    public function add_contract_price($sub_group_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $viewData = new stdClass();
+        /** Tablodan Verilerin Getirilmesi.. */
+       $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
+       $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
+       $leaders = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, 'leader' => 1));
+
+
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "add_contract_price";
+        $viewData->sub_group = $sub_group;
+        $viewData->main_group = $main_group;
+        $viewData->leaders = $leaders;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+    }
+
+
     public function offer_list()
     {
         if (!isAdmin()) {
@@ -1941,7 +1967,9 @@ class Contract extends CI_Controller
             $viewData->form_error = true;
 
         }
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
+
         echo $render_boq;
 
     }
@@ -2032,7 +2060,8 @@ class Contract extends CI_Controller
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
+
         echo $render_boq;
 
     }
@@ -2062,7 +2091,7 @@ class Contract extends CI_Controller
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
         echo $render_boq;
 
     }
@@ -2084,7 +2113,7 @@ class Contract extends CI_Controller
         );
         $viewData->item = $item;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/boq_list_v", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
 
         echo $render_html;
 
