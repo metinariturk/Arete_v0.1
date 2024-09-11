@@ -105,10 +105,10 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
-       $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
-       $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
-       $leaders = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, 'leader' => 1));
-
+        $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
+        $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
+        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, 'leader' => 1));
+        $contract = $this->Contract_model->get(array('id' => $sub_group->contract_id));
 
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
@@ -117,6 +117,7 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "add_contract_price";
         $viewData->sub_group = $sub_group;
         $viewData->main_group = $main_group;
+        $viewData->contract = $contract;
         $viewData->leaders = $leaders;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
@@ -2265,51 +2266,40 @@ class Contract extends CI_Controller
     }
 
     public
-    function drag_drop_price($contract_id, $leader_id, $sub_id)
+    function update_leader_selection()
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        $leader = $this->Contract_price_model->get(array("id" => $leader_id));
-        $sub = $this->Contract_price_model->get(array("id" => $sub_id));
-        $main = $this->Contract_price_model->get(array("id" => $sub->parent));
-        $control = $this->Contract_price_model->get(array("contract_id" => $contract_id, "sub_id" => $sub_id, "leader_id" => $leader_id));
+        echo $leader_id = $this->input->post('leader_id');
+       echo $sub_group_id = $this->input->post('sub_group_id');
+        echo $situation = $this->input->post('is_checked');
 
-        if (empty($control)) {
+        $boq = $this->Contract_price_model->get(array("leader_id" => $leader_id, "sub_id" => $sub_group_id));
+        $leader = $this->Contract_price_model->get(array("id" => $leader_id));
+        $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
+        $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
+
+
+        if ($situation == 1) {
             $insert = $this->Contract_price_model->add(
                 array(
-                    "contract_id" => $contract_id,
-                    "code" => $main->code . "." . $sub->code . "." . $leader->code,
-                    "sub_id" => $sub_id,
-                    "main_id" => $main->id,
-                    "leader_id" => $leader_id,
+                    "contract_id" => $sub_group->contract_id,
+                    "code" => $main_group->code . "." . $sub_group->code . "." . $leader->code,
+                    "sub_id" => $sub_group->id,
+                    "main_id" => $main_group->id,
+                    "leader_id" => $leader->id,
                     "name" => $leader->name,
                     "unit" => $leader->unit,
                     "price" => $leader->price,
                 ));
+        } elseif ($situation == 0){
+            $delete = $this->Contract_price_model->delete(
+                array(
+                    "id" => $boq->id,
+                ));
         }
-
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
-        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
-
-
-        $viewData = new stdClass();
-
-        $viewData->leaders = $leaders;
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->subViewFolder = "display";
-        $viewData->item = $item;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
-
-        echo $render_html;
-
     }
 
     public

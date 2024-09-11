@@ -178,7 +178,7 @@
       <workItem from="1725632326970" duration="15979000" />
       <workItem from="1725800336960" duration="11738000" />
       <workItem from="1725901862569" duration="10432000" />
-      <workItem from="1726085856248" duration="690000" />
+      <workItem from="1726085856248" duration="4861000" />
     </task>
     <servers />
   </component>
@@ -208,7 +208,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1736</line>
+          <line>1737</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="ProvisionfileDelete" />

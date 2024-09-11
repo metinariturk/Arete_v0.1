@@ -77,16 +77,16 @@
                                         <li><a class="show" id="pills-contract_price-tab" data-bs-toggle="pill"
                                                href="#pills-contract_price" role="tab"
                                                aria-controls="pills-contract_price" aria-selected="false"><span
-                                                        class="title"> Sözleşme Fiyatları</span></a></li>
+                                                        class="title"> Sözleşme Pozları</span></a></li>
 
 
                                         <li><a class="show" id="pills-business-tab" data-bs-toggle="pill"
                                                href="#" role="tab" aria-selected="false"><span
-                                                        class="title"> Yeni Birim Fiyat</span></a>
+                                                        class="title"> Birim Fiyatlar</span></a>
                                         </li>
                                         <li><a class="show" id="pills-holidays-tab" data-bs-toggle="pill"
                                                href="#" role="tab" aria-selected="false"><span
-                                                        class="title"> Holidays</span></a>
+                                                        class="title"> Yeni Birim Fiyat Oluru</span></a>
                                         </li>
                                     </ul>
                                 </div>

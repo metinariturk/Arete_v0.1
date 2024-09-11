@@ -50,26 +50,35 @@
     });
 
     // Seçimleri Kaydet
-    function saveSelection() {
-        let selectedLeaders = [];
-        $('input[name="leaders[]"]:checked').each(function() {
-            selectedLeaders.push($(this).val());
-        });
 
-        // AJAX ile verileri gönder
-        $.ajax({
-            url: '<?php echo base_url("controller/save_leader_selection"); ?>',
-            type: 'POST',
-            data: {leaders: selectedLeaders},
-            success: function(response) {
-                // Başarı mesajı veya başka bir işlem
-                alert('Seçimler kaydedildi!');
-            },
-            error: function() {
-                alert('Bir hata oluştu.');
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        // Tüm checkbox'ları dinleyelim
+        document.querySelectorAll('.form-check-input').forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                var leaderId = this.value;
+                var isChecked = this.checked;
+                var subGroupId = '<?php echo $sub_group->id; ?>';
+
+                // AJAX ile backend'e durumu gönderelim
+                $.ajax({
+                    url: '<?php echo base_url("contract/update_leader_selection"); ?>',  // İşlemi yapacak URL
+                    method: 'POST',
+                    data: {
+                        leader_id: leaderId,
+                        is_checked: isChecked ? 1 : 0,  // 1 = checked, 0 = unchecked
+                        sub_group_id: subGroupId
+                    },
+                    success: function (response) {
+                        console.log('İşlem başarılı: ', response);
+                    },
+                    error: function (error) {
+                        console.error('Hata oluştu: ', error);
+                    }
+                });
+            });
         });
-    }
+    });
+
 </script>
 </body>
 </html>

@@ -36,7 +36,8 @@ $tabMapping = [
     "Advance" => ['tab' => '#pills-advance-tab', 'modal' => '#modalAdvance'],
     "Update" => ['tab' => '#pills-info-tab', 'modal' => '#updateFormModal'],
     "Bond" => ['tab' => '#pills-bond-tab', 'modal' => '#modalBond'],
-    "Price" => ['tab' => '#pills-price-tab', 'modal' => null]
+    "Price" => ['tab' => '#pills-price-tab', 'modal' => null],
+    "Contract_price" => ['tab' => '#ppills-contract_price-tab', 'modal' => '#modalAdvance']
 ];
 
 // Aktif modül için tab ve modal ayarlarını belirleyin
@@ -56,8 +57,8 @@ $activeModal = isset($tabMapping[$active_module]) ? $tabMapping[$active_module][
             tabTrigger.show();
         }
 
-        // Modal'ı göster
-        if (errorForm === '1' && modalId) {
+        // Modal'ı göster (sadece modalId null değilse)
+        if (errorForm === '1' && modalId && modalId !== 'null') {
             if ($(modalId).length) {
                 $(modalId).modal('show');
             } else {
