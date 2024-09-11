@@ -102,6 +102,8 @@ class Contract extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+        $this->load->model("Boq_model");
+
 
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
@@ -2299,7 +2301,14 @@ class Contract extends CI_Controller
                 array(
                     "id" => $boq->id,
                 ));
+            $delete_boq = $this->Boq_model->delete(
+                array(
+                    "boq_id" => $boq->id,
+                    "contract_id" => $sub_group->contract_id,
+                ));
         }
+
+
     }
 
     public

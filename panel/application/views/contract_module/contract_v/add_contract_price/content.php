@@ -32,6 +32,11 @@
                         <label class="form-check-label">
                             <?php echo $leader->code; ?> - <?php echo $leader->name; ?> - <?php echo $leader->unit; ?> - <?php echo $leader->price; ?>
                         </label>
+                        <span>
+
+                            <?php $paymnent_boqs = $this->Boq_model->get_all(array('leader_id' => $leader->id, "sub_id" => $sub_group->id, "contract_id" => $contract->id)); ?>
+                            <?php echo count($paymnent_boqs); ?>
+                        </span>
                     </div>
                 <?php } ?>
             </div>

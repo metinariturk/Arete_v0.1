@@ -57,24 +57,65 @@
             checkbox.addEventListener('change', function () {
                 var leaderId = this.value;
                 var isChecked = this.checked;
+                var contractId = '<?php echo $contract->id; ?>';
                 var subGroupId = '<?php echo $sub_group->id; ?>';
 
-                // AJAX ile backend'e durumu gönderelim
-                $.ajax({
-                    url: '<?php echo base_url("contract/update_leader_selection"); ?>',  // İşlemi yapacak URL
-                    method: 'POST',
-                    data: {
-                        leader_id: leaderId,
-                        is_checked: isChecked ? 1 : 0,  // 1 = checked, 0 = unchecked
-                        sub_group_id: subGroupId
-                    },
-                    success: function (response) {
-                        console.log('İşlem başarılı: ', response);
-                    },
-                    error: function (error) {
-                        console.error('Hata oluştu: ', error);
-                    }
-                });
+                // Checkbox işaretlendiyse hemen AJAX ile veriyi gönder
+                if (isChecked) {
+                    $.ajax({
+                        url: '<?php echo base_url("contract/update_leader_selection"); ?>',  // İşlemi yapacak URL
+                        method: 'POST',
+                        data: {
+                            leader_id: leaderId,
+                            is_checked: 1,  // Checkbox işaretli
+                            contract_id: contractId,
+                            sub_group_id: subGroupId
+                        },
+                        success: function (response) {
+                            console.log('İşlem başarılı: ', response);
+                        },
+                        error: function (error) {
+                            console.error('Hata oluştu: ', error);
+                        }
+                    });
+                } else {
+                    // Checkbox işareti kaldırıldıysa, onay almak için SweetAlert'i göster
+                    Swal.fire({
+                        title: 'Silmek İstediğinize Emin Misiniz?',
+                        text: "Bu işlem geri alınamaz!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Evet, sil!',
+                        cancelButtonText: 'Hayır, iptal et'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Kullanıcı onayladıysa, AJAX ile veriyi gönder
+                            $.ajax({
+                                url: '<?php echo base_url("contract/update_leader_selection"); ?>',  // İşlemi yapacak URL
+                                method: 'POST',
+                                data: {
+                                    leader_id: leaderId,
+                                    is_checked: 0,  // Checkbox işareti kaldırıldı
+                                    contract_id: contractId,
+                                    sub_group_id: subGroupId
+                                },
+                                success: function (response) {
+                                    console.log('İşlem başarılı: ', response);
+                                },
+                                error: function (error) {
+                                    console.error('Hata oluştu: ', error);
+                                    // Checkbox'ı tekrar işaretleyin
+                                    checkbox.checked = false;
+                                }
+                            });
+                        } else {
+                            // Kullanıcı onaylamazsa, checkbox işaretini geri yükle
+                            checkbox.checked = true;
+                        }
+                    });
+                }
             });
         });
     });
