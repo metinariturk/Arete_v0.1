@@ -26,8 +26,12 @@
                                     <?php foreach ($boq_items as $boq_item) { ?>
                                         <li>
                                             <span class="num"><?php echo $boq_item->code; ?></span>
-                                            <a href="#"> <?php echo $boq_item->name; ?>
-                                                - <?php echo $boq_item->unit; ?></a>
+                                            <span><?php echo $boq_item->name; ?>
+                                                - <?php echo $boq_item->unit; ?></span>
+                                            <a onclick="delete_price_item(this)" id="<?php echo $boq_item->id; ?>">
+                                                <i  class="fa fa-minus-circle fa-lg"
+                                                   aria-hidden="true"></i>
+                                            </a>
                                         </li>
                                     <?php } ?>
                                 <?php } ?>

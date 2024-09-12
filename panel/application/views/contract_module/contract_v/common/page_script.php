@@ -233,18 +233,49 @@
         var itemId = element.id;
         var formAction = '<?php echo base_url("contract/delete_contract_price/"); ?>' + itemId;
 
-        $.post(formAction, function (response) {
-            if (response) { // Yanıtın boş olmadığını kontrol et
-                $(".leader_list").html(response);
-            } else {
-                console.error("AJAX isteği başarılı ancak boş yanıt alındı.");
+        // SweetAlert ile onay kutusu ekleyelim
+        Swal.fire({
+            title: 'Bu öğeyi silmek istediğinizden emin misiniz?',
+            text: "Bu işlemi geri alamazsınız!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'Hayır, vazgeç'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kullanıcı onaylarsa, AJAX isteğini yapalım
+                $.post(formAction, function (response) {
+                    if (response) { // Yanıtın boş olmadığını kontrol et
+                        $(".leader_list").html(response);
+                        Swal.fire(
+                            'Silindi!',
+                            'Öğe başarıyla silindi.',
+                            'success'
+                        );
+                    } else {
+                        console.error("AJAX isteği başarılı ancak boş yanıt alındı.");
+                        Swal.fire(
+                            'Hata!',
+                            'Yanıt boş döndü.',
+                            'error'
+                        );
+                    }
+                })
+                    .fail(function() {
+                        console.error("AJAX isteği başarısız oldu.");
+                        Swal.fire(
+                            'Hata!',
+                            'Silme işlemi başarısız oldu.',
+                            'error'
+                        );
+                    });
             }
-        })
-            .fail(function() {
-                console.error("AJAX isteği başarısız oldu.");
-            });
+        });
     }
 </script>
+
 
 
 <script> //Dosya Yükleme Scripti

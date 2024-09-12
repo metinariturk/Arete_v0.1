@@ -125,7 +125,7 @@
                                         <h6 class="mb-0">Durum Raporu</h6>
                                         <div>
                                             <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a target="_blank" href="<?php echo base_url("contract/print_report/$item->id/0"); ?>">
+                                            <a target="_blank" href="<?php echo base_url("Export/print_report/$item->id/0"); ?>">
                                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                                             </a>
                                         </div>
@@ -232,9 +232,8 @@
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
                                         <h6 class="mb-0">İş Grupları</h6>  <div>
-                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a href="#" target="_blank"><i
-                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                            <a href="<?php echo base_url("Export/group_download_excel/$item->id"); ?>"> <i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="<?php echo base_url("Export/group_download_pdf/$item->id"); ?>" target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -248,15 +247,15 @@
                                  aria-labelledby="pills-price-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">İş Grupları</h6>  <div>
-                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a href="#" target="_blank"><i
-                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                        <h6 class="mb-0">Poz Kitabı</h6>  <div>
+                                            <a href="<?php echo base_url("Export/book_download_excel/$item->id"); ?>"> <i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="<?php echo base_url("Export/book_download_pdf/$item->id"); ?>" target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a>
+
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="details-bookmark text-center">
-                                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_8_price"); ?>
+                                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_8_price_book"); ?>
                                         </div>
                                     </div>
                                 </div>

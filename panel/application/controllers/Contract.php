@@ -1,5 +1,10 @@
 <?php
 
+require 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+
 class Contract extends CI_Controller
 {
     public $viewFolder = "";
@@ -124,7 +129,6 @@ class Contract extends CI_Controller
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
-
 
     public function offer_list()
     {
@@ -1067,7 +1071,6 @@ class Contract extends CI_Controller
         }
     }
 
-
     public function update_payment_form($id)
     {
         if (!isAdmin()) {
@@ -1083,7 +1086,6 @@ class Contract extends CI_Controller
         ));
 
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
-
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -1102,7 +1104,6 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
     }
-
 
     public function sitedel_date($id)
     {
@@ -1173,267 +1174,6 @@ class Contract extends CI_Controller
             $this->session->set_flashdata("alert", $alert);
 
             redirect(base_url("$this->Module_Name/file_form/$id/sitedel/error"));
-
-        }
-    }
-
-    public function workplan_date($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$id"));
-
-        $this->load->library("form_validation");
-
-        $this->form_validation->set_rules("workplan_date", "Program Teslim Tarihi", "callback_workplan_contractday[$sozlesme_tarihi]|required|trim");
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-            )
-        );
-
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-
-            $work_plan = dateFormat('Y-m-d', $this->input->post("workplan_date"));
-
-            $update = $this->Contract_model->update(
-                array(
-                    "id" => $id
-                ),
-                array(
-                    "workplan_date" => $work_plan,
-                )
-            );
-
-
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/file_form/$id/workplan"));
-
-        } else {
-
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Yer Teslim Tarihi,$sozlesme_tarihi olan Sözleşme Tarihinden Önce Olamaz",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            redirect(base_url("$this->Module_Name/file_form/$id/workplan/error"));
-
-        }
-    }
-
-    public function workplan_payment($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        if (!empty($this->input->post("old_payment[]"))) {
-
-            $payments_array = $this->input->post("workplan_payment[]");
-            $payments_old_array = $this->input->post("old_payment[]");
-
-            $clear_array = array();
-            foreach ($payments_array as $payments) {
-                foreach ($payments as $payment) {
-                    $clear_array[] = $payment;
-                }
-            }
-
-            $data_payment = json_encode(array_filter(array_merge($payments_old_array, $clear_array), 'strlen'));
-        } else {
-            $payments_array = $this->input->post("workplan_payment[]");
-            $clear_array = array();
-            foreach ($payments_array as $payments) {
-                foreach ($payments as $payment) {
-                    $clear_array[] = $payment;
-                }
-            }
-            print_r($clear_array);
-
-            $data_payment = json_encode(array_filter($clear_array, 'strlen'));
-        }
-
-        if ((array_sum(json_decode($data_payment))) != (limit_cost($id))) {
-            $check = array_sum(json_decode($data_payment)) - limit_cost($id);
-        }
-
-        $update = $this->Contract_model->update(
-            array(
-                "id" => $id
-            ),
-            array(
-                "workplan_payment" => $data_payment,
-            )
-        );
-
-        // TODO Alert sistemi eklenecek...
-        if ($update) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde güncellendi",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Güncelleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-        }
-
-        $this->session->set_flashdata("alert", $alert);
-        redirect(base_url("$this->Module_Name/file_form/$id/workplan/$check"));
-    }
-
-    public function provision_date($id)
-    {
-
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$id"));
-
-        $this->load->library("form_validation");
-
-        $this->form_validation->set_rules("provision_date", "Geçici Kabul Tarihi", "callback_provision_contractday[$sozlesme_tarihi]|required|trim");
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-            )
-        );
-
-
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-
-            $provision_date = dateFormat('Y-m-d', $this->input->post("provision_date"));
-
-            $update = $this->Contract_model->update(
-                array(
-                    "id" => $id
-                ),
-                array(
-                    "provision_date" => $provision_date,
-                )
-            );
-
-
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/file_form/$id/provision"));
-
-        } else {
-
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Yer Teslim Tarihi,$sozlesme_tarihi olan Sözleşme Tarihinden Önce Olamaz",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            redirect(base_url("$this->Module_Name/file_form/$id/provision/error"));
-
-        }
-    }
-
-    public function final_date($id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $gecici_kabul_tarihi = dateFormat('d-m-Y', get_from_any("contract", "provision_date", "id", "$id"));
-
-        $this->load->library("form_validation");
-
-        $this->form_validation->set_rules("final_date", "Geçici Kabul Tarihi", "callback_final_contractday[$gecici_kabul_tarihi]|required|trim");
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-            )
-        );
-
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-
-            $final_date = dateFormat('Y-m-d', $this->input->post("final_date"));
-
-            $update = $this->Contract_model->update(
-                array(
-                    "id" => $id
-                ),
-                array(
-                    "final_date" => $final_date,
-                )
-            );
-
-
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/file_form/$id/final"));
-
-        } else {
-
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kesin Kabul Tarihi,$gecici_kabul_tarihi olan Geçici Kabul Tarihinden Önce Olamaz",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            redirect(base_url("$this->Module_Name/file_form/$id/final/error"));
 
         }
     }
@@ -1842,36 +1582,6 @@ class Contract extends CI_Controller
         }
     }
 
-    public function workplan_contractday($workplan_date, $contract_day)
-    {
-        $date_diff = date_minus($workplan_date, $contract_day);
-        if (($date_diff < 0)) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-
-    public function provision_contractday($provision_date, $contract_day)
-    {
-        $date_diff = date_minus($provision_date, $contract_day);
-        if (($date_diff < 0)) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-
-    public function final_contractday($final_date, $contract_day)
-    {
-        $date_diff = date_minus($final_date, $contract_day);
-        if (($date_diff < 0)) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-
     public function favorite($id)
     {
         $fav_id = get_from_any_and_and("favorite", "module", "contract", "user_id", active_user_id(), "module_id", "$id");
@@ -2099,88 +1809,6 @@ class Contract extends CI_Controller
 
     }
 
-    public
-    function delete_boq($contract_id, $boq_id)
-    {
-
-        $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-
-        $item = $this->Contract_model->get(
-            array(
-                "id" => $contract_id
-            )
-        );
-        $viewData->item = $item;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
-
-        echo $render_html;
-
-    }
-
-    public
-    function save_price($contract_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $boqs = $this->input->post("boq[]");
-
-        foreach ($boqs as $id => $data) {
-            $update = $this->Contract_price_model->update(
-                array(
-                    "id" => $id
-                ),
-                array(
-                    "qty" => $data['qty'],
-                    "total" => $data['total']
-                )
-            );
-
-            // Hata kontrolü yapmak isterseniz
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-        }
-
-        // TODO Alert sistemi eklenecek...
-
-
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
-        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
-
-        $viewData = new stdClass();
-        $viewData->leaders = $leaders;
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->subViewFolder = "display";
-        $viewData->item = $item;
-
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/price_update", $viewData, true);
-
-        echo $render_html;
-
-    }
-
     public function add_leader($contract_id)
     {
         if (!isAdmin()) {
@@ -2241,7 +1869,7 @@ class Contract extends CI_Controller
             $viewData->main_groups = $main_groups;
 
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
             echo $render_html;
 
         } else {
@@ -2261,7 +1889,7 @@ class Contract extends CI_Controller
             $viewData->main_groups = $main_groups;
             $viewData->form_error = true;
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
             echo $render_html;
 
         }
@@ -2273,9 +1901,10 @@ class Contract extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+        $this->load->model("Boq_model");
 
         echo $leader_id = $this->input->post('leader_id');
-       echo $sub_group_id = $this->input->post('sub_group_id');
+        echo $sub_group_id = $this->input->post('sub_group_id');
         echo $situation = $this->input->post('is_checked');
 
         $boq = $this->Contract_price_model->get(array("leader_id" => $leader_id, "sub_id" => $sub_group_id));
@@ -2296,7 +1925,7 @@ class Contract extends CI_Controller
                     "unit" => $leader->unit,
                     "price" => $leader->price,
                 ));
-        } elseif ($situation == 0){
+        } elseif ($situation == 0) {
             $delete = $this->Contract_price_model->delete(
                 array(
                     "id" => $boq->id,
@@ -2311,55 +1940,55 @@ class Contract extends CI_Controller
 
     }
 
-    public
-    function delete_contract_price($item_id)
+    public function delete_contract_price($boq_id)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+        $this->load->model("Boq_model");
 
-        echo $item_id;
-        $contract_price = $this->Contract_price_model->get(array("id" => $item_id));
+        $contract_price = $this->Contract_price_model->get(array("id" => $boq_id));
 
         $contract_id = $contract_price->contract_id;
-        $delete = $this->Contract_price_model->delete(
-            array(
-                "id" => $item_id,
-            ));
 
-        // TODO Alert sistemi eklenecek...
-        if ($delete) {
+        $delete = $this->Contract_price_model->delete(array("id" => $boq_id));
+        $delete_leader = $this->Contract_price_model->delete(array("leader_id" => $boq_id));
+        $delete_boq = $this->Boq_model->delete(array("leader_id" => $boq_id));
+
+        // Silme işlemi başarılıysa başarılı mesajını, başarısızsa hata mesajını JSON olarak döndürelim
+        if ($delete && $delete_boq && $delete_leader) {
             $alert = array(
+                "status" => "success",
                 "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde güncellendi",
-                "type" => "success"
+                "message" => "Kayıt ve metrajlar başarılı bir şekilde silindi"
+            );
+        } elseif ($delete) {
+            $alert = array(
+                "status" => "success",
+                "title" => "İşlem Başarılı",
+                "message" => "Kayıt başarılı bir şekilde silindi"
             );
         } else {
             $alert = array(
+                "status" => "error",
                 "title" => "İşlem Başarısız",
-                "text" => "Güncelleme sırasında bir problem oluştu",
-                "type" => "danger"
+                "message" => "Silme işlemi sırasında bir hata oluştu"
             );
         }
 
+        // Yeniden render edilecek HTML'yi oluştur
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "rank ASC");
-
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
 
         $viewData = new stdClass();
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->leaders = $leaders;
 
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
-        $viewData->main_groups = $main_groups;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price", $viewData, true);
-
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
         echo $render_html;
 
     }
@@ -2508,467 +2137,129 @@ class Contract extends CI_Controller
 
     }
 
-    function print_report($contract_id, $P_or_D = null)
+    public function upload_book_excel($contract_id)
     {
-        $contract = $this->Contract_model->get(array("id" => $contract_id));
-        $extimes = $this->Extime_model->get_all(array("contract_id" => $contract_id));
-        $costincs = $this->Costinc_model->get_all(array("contract_id" => $contract_id));
-        $payments = $this->Payment_model->get_all(array("contract_id" => $contract_id));
-        $advances = $this->Advance_model->get_all(array("contract_id" => $contract_id));
-        $bonds = $this->Bond_model->get_all(array("contract_id" => $contract_id));
-        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id), "tahsilat_tarih ASC");
-
-        $viewData = new stdClass();
-
-        $viewData->contract = $contract;
-
-        $advance_given = sum_from_table("advance", "avans_miktar", $contract->id);
-
-        $total_payment_A = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "A");
-        $total_payment_B = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "B");
-        $total_payment_F = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "F");
-        $total_payment_G = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "G");
-        $total_payment_H = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "H");
-        $total_payment_I = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "I");
-        $total_payment_Kes_e = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "Kes_e");
-        $total_payment_balance = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "balance");
-        $total_collections = $this->Collection_model->sum_all(array('contract_id' => $contract->id), "tahsilat_miktar");
-
-        $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
-        $owner = $this->Company_model->get(array("id" => $contract->isveren));
-
-        $viewData->contractor = $contractor;
-        $viewData->owner = $owner;
-
-        $yuklenici = company_name($contract->yuklenici);
-        $this->load->library('pdf_creator');
-
-        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
-        $pdf->SetPageOrientation('P');
-
-        $page_width = $pdf->getPageWidth();
-
-
-        $pdf->SetPrintHeader(false);
-        $pdf->SetPrintFooter(false);
-        $pdf->AddPage();
-
-
-// Çerçeve için boşlukları belirleme
-        $topMargin = 20;  // 4 cm yukarıdan
-        $bottomMargin = 20;  // 4 cm aşağıdan
-        $rightMargin = 10;  // 2 cm sağdan
-        $leftMargin = 10;  // 2 cm soldan
-
-// Çerçeve renk ve kalınlığını ayarla
-        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
-        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
-
-// Çerçeve çizme
-        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
-
-        $pdf->SetFont('dejavusans', 'B', 12);
-
-// Metin eklemek (örnek olarak ilk satır)
-        $yPosition = $topMargin; // 5 cm yukarıdan başla
-        $xPosition = $leftMargin; // 2 cm soldan başla
-        $pdf->SetXY($xPosition, $yPosition);
-        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı
-        $pdf->Cell(190, 10, 'SÖZLEŞME RAPORU', 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-
-        $pdf->SetX(20);
-        $pdf->SetFont('dejavusans', 'B', 8);
-        $pdf->Cell(170, 7, mb_strtoupper($contract->contract_name), 0, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-
-        $pdf->SetX(25);
-        $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(32, 5, "Sözleşme Bedeli", 1, 0, "C", 0);
-        $pdf->Cell(32, 5, "Sözleşme Tarihi", 1, 0, "C", 0);
-        $pdf->Cell(32, 5, "Yer Teslim Tarihi", 1, 0, "C", 0);
-        $pdf->Cell(32, 5, "Süresi", 1, 0, "C", 0);
-        $pdf->Cell(32, 5, "Bitiş Tarihi", 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(25);
-        $pdf->SetFont('dejavusans', 'N', 6);
-        $pdf->Cell(32, 5, money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi, 1, 0, "C", 0);
-        $pdf->Cell(32, 5, dateFormat_dmy($contract->sozlesme_tarih), 1, 0, "C", 0);
-        $pdf->Cell(32, 5, dateFormat_dmy($contract->sitedel_date), 1, 0, "C", 0);
-        $pdf->Cell(32, 5, $contract->isin_suresi . " Gün", 1, 0, "C", 0);
-        $pdf->Cell(32, 5, dateFormat_dmy($contract->sozlesme_bitis), 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(20);
-        $pdf->Cell(170, 3, "", 0, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(20);
-        $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(170, 6, 'SÜREYE GÖRE İLERLEME', 0, 0, "C", 0);
-        $pdf->SetFont('dejavusans', 'N', 6);
-        $pdf->Ln(); // Yeni satıra geç
-
-        $sonSatirY = $pdf->GetY();
-
-        $contrac_start_y = $sonSatirY;
-        $bar_height = 8;
-        $start_x = 25;
-        $bar_width = 70;
-        $last_x = $start_x + $bar_width;
-        $row_height = 8;
-
-        $elapsed_Day = fark_gun($contract->sozlesme_tarih);
-        $total_day = $contract->isin_suresi;
-        $percantage = $elapsed_Day / $total_day * 100;
-        $pdf->progress_bar($percantage, $bar_height, $bar_width, $contrac_start_y, $start_x, $last_x); // Yeni satıra geç
-        $remain_day = ($total_day - $elapsed_Day);
-        if ($elapsed_Day > $total_day) {
-            $elapsed_Day = " -";
+        if (!isAdmin()) {
+            redirect(base_url("error"));
         }
-        if ($remain_day < 0) {
-            $remain_day = " -";
-        }
-        $pdf->SetY($contrac_start_y); // Yeni satıra geç
-        $pdf->SetX(95); // Yeni satıra geç
-        $pdf->Cell(30, 4, "Sözleşme Süresi", 1, 0, "C", 0);
-        $pdf->Cell(30, 4, 'Geçen Süre', 1, 0, "C", 0);
-        $pdf->Cell(30, 4, 'Kalan Süre', 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(95); // Yeni satıra geç
-        $pdf->Cell(30, 4, $contract->isin_suresi . " Gün", 1, 0, "C", 0);
-        $pdf->Cell(30, 4, $elapsed_Day . " Gün", 1, 0, "C", 0);
-        $pdf->Cell(30, 4, $remain_day . " Gün", 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(30, 2, "", 0, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
 
-        $contract_time_end_Y = $pdf->GetY();
+        $tempFolderPath = 'uploads/temp/';
 
-        $extime_start_y = $contract_time_end_Y;
-        $i = 1;
-        foreach ($extimes as $extime) {
-            $elapsed_Day = fark_gun($extime->baslangic_tarih);
-            $total_day = $extime->uzatim_miktar;
-            $percantage = $elapsed_Day / $total_day * 100;
-            $pdf->progress_bar($percantage, $bar_height, $bar_width, $extime_start_y, $start_x, $last_x); // Yeni satıra geç
-            $remain_day = ($total_day - $elapsed_Day);
-            if ($elapsed_Day > $total_day) {
-                $elapsed_Day = " -";
+        // Temp klasör yoksa oluştur
+        if (!is_dir($tempFolderPath)) {
+            if (!mkdir($tempFolderPath, 0777, true)) {
+                die('Temp klasör oluşturulamadı...');
             }
-            if ($remain_day < 0) {
-                $remain_day = " -";
-            }
-            $pdf->SetY($extime_start_y); // Yeni satıra geç
-            $pdf->SetX(95); // Yeni satıra geç
-            $pdf->Cell(30, 4, $i . "- Süre Uzatımı", 1, 0, "C", 0);
-            $pdf->Cell(30, 4, 'Geçen Süre', 1, 0, "C", 0);
-            $pdf->Cell(30, 4, 'Kalan Süre', 1, 0, "C", 0);
-            $pdf->Ln(); // Yeni satıra geç
-            $pdf->SetX(95); // Yeni satıra geç
-            $pdf->Cell(30, 4, $extime->uzatim_miktar . " Gün", 1, 0, "C", 0);
-            $pdf->Cell(30, 4, $elapsed_Day . " Gün", 1, 0, "C", 0);
-            $pdf->Cell(30, 4, $remain_day . " Gün", 1, 0, "C", 0);
-            $pdf->Ln(); // Yeni satıra geç
-            $extime_start_y += 10;
-
-        }
-        $pdf->Cell(30, 2, "", 0, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-
-
-        $pdf->SetX(20); // Yeni satıra geç
-        $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(170, 6, 'FİNANSAL İLERLEME', 0, 0, "C", 0);
-        $pdf->SetFont('dejavusans', 'N', 6);
-        $pdf->Ln(); // Yeni satıra geç
-
-        $extime_end_Y = $pdf->GetY();
-
-        $contract_price_start_Y = $extime_end_Y;
-
-        $total_payment = $total_payment_A;
-        $contract_price = $contract->sozlesme_bedel;
-
-        $percantage = $total_payment / $contract_price * 100;
-        $pdf->progress_bar($percantage, $bar_height, $bar_width, $contract_price_start_Y, $start_x, $last_x); // Yeni satıra geç
-        if ($total_payment > $contract_price) {
-            $remain_contract = "0";
-        } else {
-            $remain_contract = $contract_price - $total_payment;
         }
 
-        $pdf->SetY($contract_price_start_Y); // Yeni satıra geç
-        $pdf->SetX(95); // Yeni satıra geç
-        $pdf->Cell(30, 4, "Sözleşme Bedel", 1, 0, "C", 0);
-        $pdf->Cell(30, 4, "Hakediş Toplam", 1, 0, "C", 0);
-        $pdf->Cell(30, 4, "Sözleşmeden Kalan", 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(95); // Yeni satıra geç
-        $pdf->Cell(30, 4, money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi, 1, 0, "C", 0);
-        $pdf->Cell(30, 4, money_format($total_payment) . " " . $contract->para_birimi, 1, 0, "C", 0);
-        $pdf->Cell(30, 4, money_format($remain_contract) . " " . $contract->para_birimi . " Gün", 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(30, 2, "", 0, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
+        // Dosya yükleme
+        if (!empty($_FILES['excel_file']['name'])) {
+            $tempFilePath = $_FILES['excel_file']['tmp_name'];
+            $targetFilePath = $tempFolderPath . $_FILES['excel_file']['name'];
 
-        $contract_price_end_y = $pdf->GetY();
+            // Dosyayı yükle
+            if (move_uploaded_file($tempFilePath, $targetFilePath)) {
+                $workbook = IOFactory::load($targetFilePath);
+                $worksheet = $workbook->getActiveSheet();
 
-        $costinc_start_y = $contract_price_end_y;
-        $i = 1;
-        foreach ($costincs as $costinc) {
-            $total_payment = $total_payment_A - $contract_price;
-            $total_costinc = +$costinc->artis_miktar;
-            $percantage = $total_payment / $total_costinc * 100;
-            $pdf->progress_bar($percantage, $bar_height, $bar_width, $costinc_start_y, $start_x, $last_x); // Yeni satıra geç
-            if ($total_payment > $total_costinc) {
-                $used_costinc = $costinc->artis_miktar;
-                $remain_costinc = "0";
+                $dataArray = array();
+                $startRow = 5;
+                $endRow = 1500; // 3000 satır daha eklendiğini varsayıyorum
+
+                // Boş satır sayacını tanımlayın
+                $emptyRowCount = 0;
+
+                // Her bir satır için döngü oluşturun
+                for ($row = $startRow; $row <= $endRow; $row++) {
+                    // Her bir satırdaki C'den F'ye kadar olan hücrelerden veriyi alarak bir dizi oluşturun
+                    $rowData = array(
+                        'code' => $worksheet->getCell('C' . $row)->getValue(),
+                        'name' => $worksheet->getCell('D' . $row)->getValue(),
+                        'unit' => $worksheet->getCell('E' . $row)->getValue(),
+                        'price' => $worksheet->getCell('F' . $row)->getValue(),
+                    );
+
+                    // Satırın boş olup olmadığını kontrol edin
+                    $isEmptyRow = true;
+                    foreach ($rowData as $cellValue) {
+                        if (!empty($cellValue)) {
+                            $isEmptyRow = false;
+                            break;
+                        }
+                    }
+
+                    // Eğer satır boşsa boş satır sayacını artır, aksi takdirde sıfırla
+                    if ($isEmptyRow) {
+                        $emptyRowCount++;
+                    } else {
+                        $emptyRowCount = 0;
+                    }
+
+                    // Boş satır sayacı 5 ise döngüyü durdur
+                    if ($emptyRowCount >= 5) {
+                        break;
+                    }
+
+                    // Eğer herhangi bir veri boşsa bu satırı atla
+                    if (empty($rowData['code']) || empty($rowData['name']) || empty($rowData['unit']) || empty($rowData['price'])) {
+                        continue;
+                    }
+
+                    // Oluşturulan dizi, ana diziye eklenir
+                    $dataArray[] = $rowData;
+                }
+
+                // Verileri veritabanına ekleme
+                foreach ($dataArray as $data) {
+                    $exist_leader = $this->Contract_price_model->get(array(
+                            "contract_id" => $contract_id,
+                            "name" => $data['name'],
+                            "unit" => $data['unit']
+                        )
+                    );
+                    if (!$exist_leader) {
+                        $insert = $this->Contract_price_model->add(
+                            array(
+                                "contract_id" => $contract_id,
+                                "code" => $data['code'],
+                                "name" => $data['name'],
+                                "unit" => $data['unit'],
+                                "price" => $data['price'],
+                                "leader" => 1, // 'leader' değeri her zaman 1 olarak ayarlanmış
+                            )
+                        );
+
+                        if ($insert) {
+                            $updateCount++;
+                        }
+                    }
+                }
+
+                // İşlemin Sonucunu kontrol etme ve kullanıcıya bildirme
+                if ($updateCount > 0) {
+                    $alert = array(
+                        "title" => "İşlem Başarılı",
+                        "text" => "$updateCount veri başarılı bir şekilde eklendi",
+                        "type" => "success"
+                    );
+                } else {
+                    $alert = array(
+                        "title" => "İşlem Başarısız",
+                        "text" => "Veri ekleme sırasında bir problem oluştu veya eklenecek veri bulunamadı",
+                        "type" => "danger"
+                    );
+                }
+
+                // İşlemin Sonucunu Session'a yazma işlemi
+                $this->session->set_flashdata("alert", $alert);
+                redirect(base_url("some_success_page")); // Başarılı işlem sonrası yönlendirme
             } else {
-                $used_costinc = $contract_price + $total_costinc - $total_payment_A;
-                $remain_costinc = $total_costinc - ($contract_price + $total_costinc - $total_payment_A);
+                die('Dosya yüklenemedi...');
             }
-            $pdf->SetX(95); // Yeni satıra geç
-            $pdf->Cell(30, 4, $i++ . " No'lu Keşif Artışı", 1, 0, "C", 0);
-            $pdf->Cell(30, 4, "Hakediş Toplam", 1, 0, "C", 0);
-            $pdf->Cell(30, 4, "Sözleşmeden Kalan", 1, 0, "C", 0);
-            $pdf->Ln(); // Yeni satıra geç
-            $pdf->SetX(95); // Yeni satıra geç
-            $pdf->Cell(30, 4, money_format($costinc->artis_miktar) . " " . $contract->para_birimi, 1, 0, "C", 0);
-            $pdf->Cell(30, 4, money_format($used_costinc) . " " . $contract->para_birimi, 1, 0, "C", 0);
-            $pdf->Cell(30, 4, money_format($remain_costinc) . " " . $contract->para_birimi . " Gün", 1, 0, "C", 0);
-            $pdf->Ln(); // Yeni satıra geç
-            $pdf->Ln(); // Yeni satıra geç
-            $costinc_start_y += 10;
-        }
-        $costinc_end_y = $pdf->GetY();
-
-        $graph_y_start = $costinc_end_y;
-        $pdf->SetX(10); // Yeni satıra geç
-        $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->Cell(190, 6, 'HAKEDİŞ DURUMU', 0, 0, "C", 1);
-        $pdf->SetFont('dejavusans', 'N', 6);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(10);
-        $pdf->SetFont('dejavusans', 'B', 6);
-        $pdf->Cell(8, 5, "No", 1, 0, "C", 0);
-        $pdf->Cell(28, 5, "Hakediş Tutar", 1, 0, "C",);
-        $pdf->Cell(25, 5, "Fiyat Farkı", 1, 0, "C", 0);
-        $pdf->Cell(25, 5, "Tahhuk Tutarı", 1, 0, "C", 0);
-        $pdf->Cell(25, 5, "Teminat", 1, 0, "C", 0);
-        $pdf->Cell(25, 5, "Kesinti", 1, 0, "C", 0);
-        $pdf->Cell(25, 5, "Avans Mahsubu", 1, 0, "C", 0);
-        $pdf->Cell(29, 5, "Net Bedel", 1, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetFont('dejavusans', 'N', 6);
-
-        foreach ($payments as $payment) {
-            $pdf->SetX(10);
-            $pdf->Cell(8, 5, "$payment->hakedis_no", 1, 0, "C", 0);
-            $pdf->Cell(28, 5, money_format($payment->A) . " " . $contract->para_birimi, 1, 0, "R",);
-            $pdf->Cell(25, 5, money_format($payment->B) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 5, money_format($payment->G) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 5, money_format($payment->Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 5, money_format($payment->H - $payment->Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 5, money_format($payment->I) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(29, 5, money_format($payment->balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Ln(); // Yeni satıra geç
-        }
-        $pdf->SetFont('dejavusans', 'B', 6);
-
-        $pdf->SetX(10);
-        $pdf->Cell(8, 5, "∑", 1, 0, "C", 0);
-        $pdf->Cell(28, 5, money_format($total_payment_A) . " " . $contract->para_birimi, 1, 0, "R",);
-        $pdf->Cell(25, 5, money_format($total_payment_B) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        $pdf->Cell(25, 5, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        $pdf->Cell(25, 5, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        $pdf->Cell(25, 5, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        $pdf->Cell(25, 5, money_format($total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        $pdf->Cell(29, 5, money_format($total_payment_balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(32, 2, "", 0, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(10);
-        $pdf->SetFont('dejavusans', 'B', 5);
-
-        $pdf->Cell(60, 4, "*Teminat Kesintisi : " . money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 0, 0, "L", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetX(10);
-        $pdf->Cell(60, 4, "*Toplam KDV : " . money_format($total_payment_F) . " " . $contract->para_birimi, 0, 0, "L", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(60, 4, "", 0, 0, "L", 0);
-        $pdf->Ln(); // Yeni satıra geç
-
-        $pdf->SetX(25); // Yeni satıra geç
-        $pdf->SetFont('dejavusans', 'B', 7);
-        if (!empty($advances)) {
-            $pdf->Cell(40, 6, 'AVANS DURUMU', 0, 0, "C", 0);
-        }
-        $pdf->Cell(9, 6, "", 0, 0, "C", 0);
-
-        if (!empty($bonds)) {
-            $pdf->Cell(111, 6, 'TEMİNAT DURUMU', 0, 0, "C", 0);
-        }
-        $pdf->SetFont('dejavusans', 'B', 6);
-        $pdf->Ln(); // Yeni satıra geç
-        $bonds_start_y = $pdf->GetY();
-        if (!empty($advances)) {
-            $pdf->SetX(25);
-            $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
-            $pdf->Cell(15, 6, 'Avans Tarih', 1, 0, "C", 0);
-            $pdf->Cell(20, 6, 'Avans Miktar', 1, 0, "C", 0);
-            $pdf->Ln(); // Yeni satıra geç
-
-            $pdf->SetFont('dejavusans', 'N', 6);
-
-            $i = 1;
-            foreach ($advances as $advance) {
-                $pdf->SetX(25);
-                $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
-                $pdf->Cell(15, 6, dateFormat_dmy($advance->avans_tarih), 1, 0, "C", 0);
-                $pdf->Cell(20, 6, money_format($advance->avans_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
-                $pdf->Ln(); // Yeni satıra geç
-            }
-            $pdf->SetX(25);
-            $pdf->SetFont('dejavusans', 'B', 6);
-
-            $pdf->Cell(20, 4, "TOPLAM", 1, 0, "L", 0);
-            $pdf->Cell(20, 4, money_format($advance_given) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Ln(); // Yeni satıra geç
-            $pdf->SetX(25);
-
-            $pdf->Cell(20, 4, "Mahsup Edilen", 1, 0, "L", 0);
-            $pdf->Cell(20, 4, money_format($total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Ln(); // Yeni satıra geç
-            $pdf->SetX(25);
-
-            $pdf->Cell(20, 4, "Kalan Avans", 1, 0, "L", 0);
-            $pdf->Cell(20, 4, money_format($advance_given - $total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
-        }
-        $last_advance_y = $pdf->GetY();
-
-
-        if (!empty($bonds)) {
-            $pdf->SetFont('dejavusans', 'B', 6);
-            if (empty($advancesi)) {
-                $pdf->SetXY(25, $bonds_start_y);
-            } else {
-                $pdf->SetXY(74, $bonds_start_y);
-            }
-            $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
-            $pdf->Cell(18, 6, 'Tür', 1, 0, "C", 0);
-            $pdf->Cell(12, 6, 'Gerekçe', 1, 0, "C", 0);
-            $pdf->Cell(19, 6, 'Teminat Miktar', 1, 0, "C", 0);
-            $pdf->Cell(19, 6, 'Veriliş Tarihi', 1, 0, "C", 0);
-            $pdf->Cell(19, 6, 'Vade Tarih', 1, 0, "C", 0);
-            $pdf->Cell(19, 6, 'İade Durumu', 1, 0, "C", 0);
-            $pdf->Ln(); // Yeni satıra geç
-            $pdf->SetFont('dejavusans', 'N', 6);
-
-            $i = 1;
-            foreach ($bonds as $bond) {
-                if (empty($advancesi)) {
-                    $pdf->SetX(25);
-                } else {
-                    $pdf->SetX(74);
-                }
-                $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
-                $pdf->Cell(18, 6, $bond->teminat_turu, 1, 0, "C", 0);
-                $pdf->Cell(12, 6, module_name($bond->teminat_gerekce), 1, 0, "C", 0);
-                $pdf->Cell(19, 6, money_format($bond->teminat_miktar) . " " . $contract->para_birimi, 1, 0, "C", 0);
-                $pdf->Cell(19, 6, dateFormat_dmy($bond->teslim_tarihi), 1, 0, "C", 0);
-                $pdf->Cell(19, 6, dateFormat_dmy($bond->gecerlilik_tarihi), 1, 0, "C", 0);
-                if ($bond->teminat_durumu == 1) {
-                    $durum = "İade Edildi";
-                } else {
-                    $durum = "İşveren";
-                }
-                $pdf->Cell(19, 6, $durum, 1, 0, "C", 0);
-                $pdf->Ln(); // Yeni satıra geç
-            }
-        }
-
-        $last_bond_y = $pdf->GetY();
-        if ($last_bond_y > $last_advance_y) {
-            $pdf->SetY($last_bond_y); // Yeni satıra geç
         } else {
-            $pdf->SetY($last_advance_y); // Yeni satıra geç
-        }
-
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->SetFont('dejavusans', 'B', 7);
-        $pdf->SetX(25);
-        if (!empty($collections)) {
-            $pdf->Cell(160, 6, 'ÖDEME DURUMU', 0, 0, "C", 0);
-        }
-        $pdf->SetFont('dejavusans', 'B', 6);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(160, 4, '', 0, 0, "C", 0);
-        $pdf->Ln(); // Yeni satıra geç
-        $bonds_start_y = $pdf->GetY();
-        if (!empty($collections)) {
-            $pdf->SetX(25);
-            $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
-            $pdf->Cell(15, 6, 'Tarih', 1, 0, "C", 0);
-            $pdf->Cell(25, 6, 'Miktar', 1, 0, "C", 0);
-            $pdf->Cell(35, 6, 'Türü', 1, 0, "C", 0);
-            $pdf->Cell(90, 6, 'Aciklama', 1, 0, "C", 0);
-            $collection_y = $pdf->GetY();
-            $pdf->Ln(); // Yeni satıra geç
-
-            $pdf->SetFont('dejavusans', 'N', 6);
-
-            $i = 1;
-            foreach ($collections as $collection) {
-                if ($collection->tahsilat_turu == "Çek") {
-                    $notice_date = "/ " . dateFormat_dmy($collection->vade_tarih);
-                } else {
-                    $notice_date = "";
-                }
-                $pdf->SetX(25);
-                $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
-                $pdf->Cell(15, 6, dateFormat_dmy($collection->tahsilat_tarih), 1, 0, "C", 0);
-                $pdf->Cell(25, 6, money_format($collection->tahsilat_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
-                $pdf->Cell(35, 6, $collection->tahsilat_turu . $notice_date, 1, 0, "C", 0);
-                $pdf->Cell(90, 6, $collection->aciklama, 1, 0, "L", 0);
-                $pdf->Cell(4, 6, "", 0, 0, "C", 0);
-                $pdf->Ln(); // Yeni satıra geç
-            }
-        }
-        $pdf->Ln(); // Yeni satıra geç
-
-        $last_collection_y = $pdf->GetY();
-
-        $pdf->SetY($last_collection_y); // Yeni satıra geç
-
-        if (!empty($collections)) {
-            $pdf->SetX(25);
-            $pdf->Cell(25, 6, "ALACAK", 1, 0, "C", 0);
-            $pdf->Cell(25, 6, "TAHSİLAT", 1, 0, "C", 0);
-            $pdf->Cell(25, 6, "TEMİNAT", 1, 0, "C", 0);
-            $pdf->Cell(25, 6, "DİĞER KESİNTİ", 1, 0, "C", 0);
-            $pdf->Cell(25, 6, "KALAN", 1, 0, "C", 0);
-
-            $pdf->SetFont('dejavusans', 'N', 6);
-            $pdf->Ln(); // Yeni satıra geç
-
-            $pdf->SetX(25);
-            $pdf->Cell(25, 6, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 6, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 6, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 6, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 6, money_format($total_payment_Kes_e + $total_payment_balance - $total_collections - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Ln(); // Yeni satıra geç
-        }
-
-
-        $file_name = contract_name($contract->id) . "-İlerlerme Raporu";
-
-        if ($P_or_D == 0) {
-            $pdf->Output("$file_name.pdf");
-        } else {
-            $pdf->Output("$file_name.pdf", "D");
+            die('Dosya bulunamadı...');
         }
     }
-
 }
 
 

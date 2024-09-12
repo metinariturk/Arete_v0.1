@@ -46,11 +46,23 @@
     </form>
     <div class="row">
         <div class="col-12">
+            <div class="container">
+                <h1 class="mt-5">Excel Dosyasını Yükleyin</h1>
+                <form action="<?php echo base_url("Contract/upload_book_excel/$item->id"); ?>" method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="excelFile">Excel Dosyasını Seçin:</label>
+                        <input type="file" class="form-control-file" id="excelFile" name="excel_file" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Yükle</button>
+                </form>
+            </div>
             <h5>Poz Listesi</h5>
             <table class="table">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>Sıra</th>
+                    <th>Kodu</th>
                     <th>Poz Adı</th>
                     <th>Birimi</th>
                     <th>Fiyat</th>
@@ -58,8 +70,10 @@
                 </tr>
                 </thead>
                 <tbody>
+                <?php $i = 1; ?>
                 <?php foreach ($leaders as $leader) { ?>
                     <tr>
+                        <td><?php echo $i++; ?></td>
                         <td><?php echo $leader->code; ?></td>
                         <td><?php echo $leader->name; ?> </td>
                         <td><?php echo $leader->unit; ?></td>
