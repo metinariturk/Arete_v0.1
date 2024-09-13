@@ -90,7 +90,7 @@
                         'Grup başarıyla silindi.',
                         'success'
                     );
-                }).fail(function() {
+                }).fail(function () {
                     // Silme işleminde bir hata oluşursa kullanıcıyı bilgilendir
                     Swal.fire(
                         'Hata!',
@@ -229,7 +229,7 @@
 </script>
 
 <script>
-    function delete_price_item(element) {
+    function delete_leader(element) {
         var itemId = element.id;
         var formAction = '<?php echo base_url("contract/delete_contract_price/"); ?>' + itemId;
 
@@ -263,7 +263,7 @@
                         );
                     }
                 })
-                    .fail(function() {
+                    .fail(function () {
                         console.error("AJAX isteği başarısız oldu.");
                         Swal.fire(
                             'Hata!',
@@ -275,7 +275,6 @@
         });
     }
 </script>
-
 
 
 <script> //Dosya Yükleme Scripti
@@ -704,4 +703,107 @@
         };
         xhr.send(formData);
     }
+</script>
+
+<!--Bu script poz kitabına eklenen poz üzerinde düzenleme yapmamızı sağlıyor.-->
+<script>
+    function update_leader_form(element) {
+
+        <?php echo base_url('contract/update_leader'); ?>
+        // Tıklanan satırdaki verileri bul
+        var row = $(element).closest('tr');
+        var leaderId = $(element).attr('id');
+        var leaderCode = row.find('td:eq(1)').text(); // 1. sütundaki Kodu
+        var leaderName = row.find('td:eq(2)').text(); // 2. sütundaki Poz Adı
+        var leaderUnit = row.find('td:eq(3)').text(); // 3. sütundaki Birimi
+        var leaderPrice = row.find('td:eq(4)').text(); // 4. sütundaki Fiyat
+
+        // Bu verileri düzenleme formuna yerleştir (örneğin, bir modal açabilirsiniz)
+        $('#edit_leader_id').val(leaderId);
+        $('#edit_leader_code').val(leaderCode);
+        $('#edit_leader_name').val(leaderName);
+        $('#edit_leader_unit').val(leaderUnit);
+        $('#edit_leader_price').val(leaderPrice);
+
+        // Modal'ı açmak için:
+        $('#editLeaderModal').modal('show');
+    }
+</script>
+
+<script>
+    function update_leader(element) {
+        // Form verilerini al
+        var formData = $('#edit_leader_form').serialize();
+
+        $.ajax({
+            url: '<?php echo base_url("contract/update_leader"); ?>',  // Controller URL'si
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                // Başarılı olursa modalı kapat ve formu sıfırla
+                $('#editLeaderModal').modal('hide');
+                $('#edit_leader_form')[0].reset();
+
+                // Gelen cevabı direkt leader_list div'ine yerleştir
+                $('#leader_list').html(response);
+            },
+            error: function (xhr, status, error) {
+                // Hata varsa burada işlem yapılabilir
+                alert('Bir hata oluştu: ' + error);
+            }
+        });
+    }
+</script>
+
+<!--birim fiyatların toplandığı tablo-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Kaydet butonuna tıklama olayını dinleyin
+        document.getElementById('save-button-top').addEventListener('click', saveData);
+        document.getElementById('save-button-bottom').addEventListener('click', saveData);
+
+        // Miktar ve birim fiyat değiştiğinde toplamı güncelle
+        document.querySelectorAll('.qty, .unit-price').forEach(function(element) {
+            element.addEventListener('input', updateTotals);
+        });
+
+        function updateTotals() {
+            document.querySelectorAll('.qty').forEach(function(qtyInput) {
+                const rowId = qtyInput.getAttribute('data-row-id');
+                const unitPrice = parseFloat(document.querySelector(`.unit-price[data-row-id="${rowId}"]`).textContent);
+                const qty = parseFloat(qtyInput.value) || 0;
+                const total = (unitPrice * qty).toFixed(2);
+                document.querySelector(`.total[data-row-id="${rowId}"]`).textContent = total;
+            });
+        }
+
+        function saveData() {
+            const data = [];
+            document.querySelectorAll('.qty').forEach(function(input) {
+                const rowId = input.getAttribute('data-row-id');
+                const qty = parseFloat(input.value) || 0;
+                data.push({ id: rowId, qty: qty });
+            });
+
+            fetch('<?php echo base_url("contract/update_boqs"); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        alert('Veriler başarıyla güncellendi.');
+                    } else {
+                        alert('Bir hata oluştu.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                });
+        }
+    });
+
 </script>

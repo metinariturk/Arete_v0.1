@@ -57,12 +57,12 @@
                                                href="#pills-bond" role="tab" aria-controls="pills-bond"
                                                aria-selected="false"><span class="title">Teminatlar</span></a>
                                         </li>
-
                                         <li>
                                             <hr>
                                         </li>
                                         <li>
-                                            <span class="main-title">İş Kalemleri ve Birim Fiyatlar<span class="pull-right"></span></span>
+                                            <span class="main-title">İş Kalemleri ve Birim Fiyatlar<span
+                                                        class="pull-right"></span></span>
                                         </li>
                                         <li><a class="show" id="pills-price_group-tab" data-bs-toggle="pill"
                                                href="#pills-price_group" role="tab"
@@ -79,15 +79,11 @@
                                                aria-controls="pills-contract_price" aria-selected="false"><span
                                                         class="title"> Sözleşme Pozları</span></a></li>
 
+                                        <li><a class="show" id="pills-contract_price_table-tab" data-bs-toggle="pill"
+                                               href="#pills-contract_price_table" role="tab"
+                                               aria-controls="pills-contract_price_table" aria-selected="false"><span
+                                                        class="title">Birim Fiyat Tablo</span></a></li>
 
-                                        <li><a class="show" id="pills-business-tab" data-bs-toggle="pill"
-                                               href="#" role="tab" aria-selected="false"><span
-                                                        class="title"> Birim Fiyatlar</span></a>
-                                        </li>
-                                        <li><a class="show" id="pills-holidays-tab" data-bs-toggle="pill"
-                                               href="#" role="tab" aria-selected="false"><span
-                                                        class="title"> Yeni Birim Fiyat Oluru</span></a>
-                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -125,7 +121,8 @@
                                         <h6 class="mb-0">Durum Raporu</h6>
                                         <div>
                                             <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a target="_blank" href="<?php echo base_url("Export/print_report/$item->id/0"); ?>">
+                                            <a target="_blank"
+                                               href="<?php echo base_url("Export/print_report/$item->id/0"); ?>">
                                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                                             </a>
                                         </div>
@@ -231,9 +228,12 @@
                                  aria-labelledby="pills-price_group-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">İş Grupları</h6>  <div>
-                                            <a href="<?php echo base_url("Export/group_download_excel/$item->id"); ?>"> <i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a href="<?php echo base_url("Export/group_download_pdf/$item->id"); ?>" target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a>
+                                        <h6 class="mb-0">İş Grupları</h6>
+                                        <div>
+                                            <a href="<?php echo base_url("Export/group_download_excel/$item->id"); ?>">
+                                                <i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="<?php echo base_url("Export/group_download_pdf/$item->id"); ?>"
+                                               target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -247,9 +247,12 @@
                                  aria-labelledby="pills-price-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">Poz Kitabı</h6>  <div>
-                                            <a href="<?php echo base_url("Export/book_download_excel/$item->id"); ?>"> <i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a href="<?php echo base_url("Export/book_download_pdf/$item->id"); ?>" target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a>
+                                        <h6 class="mb-0">Poz Kitabı</h6>
+                                        <div>
+                                            <a href="<?php echo base_url("Export/book_download_excel/$item->id"); ?>">
+                                                <i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="<?php echo base_url("Export/book_download_pdf/$item->id"); ?>"
+                                               target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a>
 
                                         </div>
                                     </div>
@@ -260,11 +263,13 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="fade tab-pane" id="pills-contract_price" role="tabpanel"
                                  aria-labelledby="pills-contract_price-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">İş Grupları</h6>  <div>
+                                        <h6 class="mb-0">İş Grupları</h6>
+                                        <div>
                                             <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
                                             <a href="#" target="_blank"><i
                                                         class="fa fa-file-pdf-o fa-2x"></i></a>
@@ -277,42 +282,34 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="modal fade modal-bookmark" id="createtag" tabindex="-1" role="dialog"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Create Tag</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                            <div class="fade tab-pane" id="pills-contract_price_table" role="tabpanel"
+                                 aria-labelledby="pills-contract_price_table-tab">
+                                <div class="card mb-0">
+                                    <div class="card-header d-flex">
+                                        <h6 class="mb-0">İş Grupları</h6>
+                                        <div>
+                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="#" target="_blank"><i
+                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
                                         </div>
-                                        <div class="modal-body">
-                                            <form class="form-bookmark needs-validation" novalidate="">
-                                                <div class="row">
-                                                    <div class="mb-3 mt-0 col-md-12">
-                                                        <label>Tag Name</label>
-                                                        <input class="form-control" type="text" required=""
-                                                               autocomplete="off">
-                                                    </div>
-                                                    <div class="mt-0 col-md-12">
-                                                        <label>Tag color</label>
-                                                        <input class="form-color d-block" type="color"
-                                                               value="#563d7c">
-                                                    </div>
-                                                </div>
-                                                <button class="btn btn-secondary" type="button">Save</button>
-                                                <button class="btn btn-primary" type="button"
-                                                        data-bs-dismiss="modal">Cancel
-                                                </button>
-                                            </form>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="details-bookmark">
+                                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_10_contract_price_table"); ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+
+
+
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

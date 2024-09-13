@@ -289,57 +289,6 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/index", $viewData);
     }
 
-    public function file_form_offer($id = null, $active_tab = null)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-
-        $item = $this->Contract_model->get(array("id" => $id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
-        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/";
-        $draw_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer/Drawings/";
-        !is_dir($path) && mkdir($path, 0777, TRUE);
-        !is_dir($draw_path) && mkdir($draw_path, 0777, TRUE);
-
-        $fav = $this->Favorite_model->get(array(
-            "user_id" => active_user_id(),
-            "module" => "contract",
-            "view" => "file_form",
-            "module_id" => $id,
-        ));
-
-
-        $viewData = new stdClass();
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "rank ASC");
-        $settings = $this->Settings_model->get();
-        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
-        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $id, 'leader' => 1));
-        $form_errors = $this->session->flashdata('form_errors');
-
-        // View'e gönderilecek Değişkenlerin Set Edilmesi
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display_offer";
-        $viewData->active_tab = $active_tab;
-        $viewData->form_errors = $form_errors;
-        $viewData->project = $project;
-        $viewData->path = $path;
-        $viewData->draw_path = $draw_path;
-        $viewData->leaders = $leaders;
-        $viewData->fav = $fav;
-        $viewData->main_groups = $main_groups;
-        $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->settings = $settings;
-
-
-        $viewData->item = $this->Contract_model->get(array("id" => $id));
-
-        // İlgili dosya verilerini al
-
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-    }
-
     public function new_form_main($project_id = null)
     {
         if (!isAdmin()) {
@@ -1814,6 +1763,7 @@ class Contract extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+        $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
@@ -1868,6 +1818,8 @@ class Contract extends CI_Controller
             $viewData->item = $item;
             $viewData->main_groups = $main_groups;
 
+            $viewData->settings = $settings;
+
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
             echo $render_html;
@@ -1888,6 +1840,8 @@ class Contract extends CI_Controller
             $viewData->item = $item;
             $viewData->main_groups = $main_groups;
             $viewData->form_error = true;
+            $viewData->settings = $settings;
+
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
             echo $render_html;
@@ -1895,6 +1849,65 @@ class Contract extends CI_Controller
         }
     }
 
+    public function update_leader()
+    {
+
+        $leader_id = $this->input->post('leader_id');
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $settings = $this->Settings_model->get();
+
+        $this->load->library("form_validation");
+
+        $leader = $this->Contract_price_model->get(array("id" => $leader_id));
+
+        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $leader->contract_id, "main_group" => 1));
+
+        $validate = $this->form_validation->run();
+
+
+        // Form verilerini doğru şekilde alma
+        $leader_code = $this->input->post('leader_code');
+        $leader_name = $this->input->post('leader_name');
+        $leader_unit = $this->input->post('leader_unit');
+        $leader_price = $this->input->post('leader_price');
+
+        // Lider bilgilerini ekleyin
+        $update = $this->Contract_price_model->update(
+            array(
+                "id" => $leader_id
+            ),
+            array(
+                "code" => $leader_code,
+                "name" => $leader_name,
+                "unit" => $leader_unit,
+                "price" => $leader_price,
+            )
+        );
+
+        $item = $this->Contract_model->get(array("id" => $leader->contract_id));
+        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $leader->contract_id, 'leader' => 1));
+
+        $viewData = new stdClass();
+        $viewData->leaders = $leaders;
+
+        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->main_groups = $main_groups;
+
+        $viewData->settings = $settings;
+
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
+        echo $render_html;
+
+
+    }
     public
     function update_leader_selection()
     {
@@ -2252,7 +2265,7 @@ class Contract extends CI_Controller
 
                 // İşlemin Sonucunu Session'a yazma işlemi
                 $this->session->set_flashdata("alert", $alert);
-                redirect(base_url("some_success_page")); // Başarılı işlem sonrası yönlendirme
+                redirect(base_url("contract/file_form/$contract_id/Price")); // Başarılı işlem sonrası yönlendirme
             } else {
                 die('Dosya yüklenemedi...');
             }
@@ -2260,8 +2273,41 @@ class Contract extends CI_Controller
             die('Dosya bulunamadı...');
         }
     }
-}
 
+    public function update_boqs()
+    {
+        // JSON verilerini al
+        $data = file_get_contents('php://input');
+
+        // JSON verilerini diziye dönüştür
+        $data_array = json_decode($data, true);
+
+        // Verileri kontrol etmek için
+        if ($data_array) {
+            // Her bir öğeyi güncelle
+            foreach ($data_array as $values) {
+                // Veritabanında güncelleme yapmak için model metodunu kullanın
+                $update = $this->Contract_price_model->update(
+                    array("id" => $values['id']), // Güncellenecek satırın ID'si
+                    array("qty" => $values['qty']) // Güncellenecek veriler
+                );
+
+                // Güncellemenin başarılı olup olmadığını kontrol et (Opsiyonel)
+                if ($update) {
+                    log_message('info', 'Güncelleme başarılı: ID ' . $values['id']);
+                } else {
+                    log_message('error', 'Güncelleme başarısız: ID ' . $values['id']);
+                }
+            }
+
+            // JSON yanıt
+            echo json_encode(array('success' => true));
+        } else {
+            echo json_encode(array('success' => false, 'message' => 'Gelen veri boş veya geçersiz formatta.'));
+        }
+    }
+
+}
 
 
 

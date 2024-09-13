@@ -31,13 +31,13 @@
 <?php
 // Modül adları ve karşılık gelen tab ve modal ID'lerini tanımlayın
 $tabMapping = [
-    "Payment" => ['tab' => '#pills-payments-tab', 'modal' => '#modalPayment'],
-    "Collection" => ['tab' => '#pills-collection-tab', 'modal' => '#modalCollection'],
-    "Advance" => ['tab' => '#pills-advance-tab', 'modal' => '#modalAdvance'],
-    "Update" => ['tab' => '#pills-info-tab', 'modal' => '#updateFormModal'],
-    "Bond" => ['tab' => '#pills-bond-tab', 'modal' => '#modalBond'],
-    "Price" => ['tab' => '#pills-price-tab', 'modal' => null],
-    "Contract_price" => ['tab' => '#ppills-contract_price-tab', 'modal' => '#modalAdvance']
+    "Payment"           => ['tab' => '#pills-payments-tab',         'modal' => '#modalPayment'],
+    "Collection"        => ['tab' => '#pills-collection-tab',       'modal' => '#modalCollection'],
+    "Advance"           => ['tab' => '#pills-advance-tab',          'modal' => '#modalAdvance'],
+    "Update"            => ['tab' => '#pills-info-tab',             'modal' => '#updateFormModal'],
+    "Bond"              => ['tab' => '#pills-bond-tab',             'modal' => '#modalBond'],
+    "Price"             => ['tab' => '#pills-price-tab',            'modal' => null],
+    "Contract_price"    => ['tab' => '#pills-contract_price-tab',   'modal' => null]
 ];
 
 // Aktif modül için tab ve modal ayarlarını belirleyin
@@ -67,8 +67,6 @@ $activeModal = isset($tabMapping[$active_module]) ? $tabMapping[$active_module][
         }
     });
 </script>
-
-
 
 
 </body>

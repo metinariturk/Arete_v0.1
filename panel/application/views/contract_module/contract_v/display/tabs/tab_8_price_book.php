@@ -21,16 +21,23 @@
         </div>
         <div class="col-md-3 col-sm-6 col-12 position-relative mb-2">
             <div class="col-form-label d-none d-md-block">Birimi</div>
-            <input id="select2-demo-1" style="width: 100%;" type="text" placeholder="Birimi"
-                   class="form-control <?php cms_isset(form_error("leader_unit"), "is-invalid", ""); ?>"
-                   data-plugin="select2" name="leader_unit">
+            <select id="select2-demo-1" style="width: 100%;"
+                    class="form-control <?php cms_isset(form_error("leader_unit"), "is-invalid", ""); ?>"
+                    data-plugin="select2" name="leader_unit">
+                <option value="">Birimi Seçin</option>
+                <?php foreach ((get_as_array($settings->units)) as $unit) { ?>
+                    <option value="<?php echo $unit; ?>">
+                        <?php echo $unit; ?>
+                    </option>
+                <?php } ?>
+            </select>
             <?php if (isset($form_error)) { ?>
                 <div class="invalid-feedback"><?php echo form_error("leader_unit"); ?></div>
             <?php } ?>
         </div>
         <div class="col-md-3 col-sm-6 col-12 position-relative mb-2">
             <div class="col-form-label d-none d-md-block">Fiyat</div>
-            <input id="select2-demo-1" style="width: 100%;" type="text" placeholder="Fiyat"
+            <input id="select2-demo-1" style="width: 100%;" type="number" placeholder="Fiyat"
                    class="form-control <?php cms_isset(form_error("leader_price"), "is-invalid", ""); ?>"
                    data-plugin="select2" name="leader_price">
             <?php if (isset($form_error)) { ?>
@@ -79,15 +86,61 @@
                         <td><?php echo $leader->unit; ?></td>
                         <td><?php echo $leader->price; ?></td>
                         <td>
-                            <a onclick="delete_price_item(this)" id="<?php echo $leader->id; ?>">
-                                <i style="color: tomato" class="fa fa-minus-circle fa-2x"
-                                   aria-hidden="true"></i>
+                            <a onclick="delete_leader(this)" id="<?php echo $leader->id; ?>">
+                                <i class="fa fa-trash fa-lg"></i>
+                            </a>
+                            <a onclick="update_leader_form(this)" id="<?php echo $leader->id; ?>">
+                                <i class="fa fa-edit fa-lg"></i>
                             </a>
                         </td>
                     </tr>
                 <?php }; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+<!-- Düzenleme Modalı -->
+<div class="modal fade" id="editLeaderModal" tabindex="-1" role="dialog" aria-labelledby="editLeaderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLeaderModalLabel">Pozu Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit_leader_form" method="post" action="<?php echo base_url('contract/update_leader'); ?>">
+                    <input type="hidden" id="edit_leader_id" name="leader_id">
+                    <div class="form-group">
+                        <label for="edit_leader_code">Kodu</label>
+                        <input type="text" class="form-control" id="edit_leader_code" name="leader_code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_leader_name">Poz Adı</label>
+                        <input type="text" class="form-control" id="edit_leader_name" name="leader_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_leader_unit">Birimi</label>
+                        <select style="width: 100%;" id="edit_leader_unit" name="leader_unit"
+                                class="form-control <?php cms_isset(form_error("leader_unit"), "is-invalid", ""); ?>"
+                                data-plugin="select2" >
+                            <option value="">Birimi Seçin</option>
+                            <?php foreach ((get_as_array($settings->units)) as $unit) { ?>
+                                <option value="<?php echo $unit; ?>">
+                                    <?php echo $unit; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_leader_price">Fiyat</label>
+                        <input type="number" class="form-control" id="edit_leader_price" name="leader_price">
+                    </div>
+                    <button type="button" onclick="update_leader()" class="btn btn-primary">Kaydet</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
