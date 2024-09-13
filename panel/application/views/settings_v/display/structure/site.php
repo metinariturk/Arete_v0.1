@@ -15,9 +15,14 @@ $site_input3 = array(
     "width" => "col-sm-4",
     "tag" => "Ödeme Belge Türleri",
 );
+$site_input4 = array(
+    "name" => "units",
+    "width" => "col-sm-4",
+    "tag" => "Birimler",
+);
 
 $site_input_rows = array(
-    "row1" => array($site_input1, $site_input2, $site_input3)
+    "row1" => array($site_input1, $site_input2, $site_input3, $site_input4)
 )
 ?>
 

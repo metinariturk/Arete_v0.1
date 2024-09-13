@@ -116,6 +116,7 @@ class Settings extends CI_Controller
                     "sozlesme_taraflari" => $this->input->post("sozlesme_taraflari"), //27
                     "teknik_cizim" => $this->input->post("teknik_cizim"), //28
                     "isg_main" => $this->input->post("isg_main"), //28
+                    "units" => $this->input->post("units"), //28
                     "createdAt" => date("Y-m-d H:i:s") //29
                 )
             );
@@ -273,6 +274,7 @@ class Settings extends CI_Controller
                 "harcama_tur" => $this->input->post("harcama_tur"), //30
                 "odeme_tur" => $this->input->post("odeme_tur"), //30
                 "belge_tur" => $this->input->post("belge_tur"), //30
+                "units" => $this->input->post("units"), //30
                 "theme_colour" => $this->input->post("theme_colour"), //28
                 "theme_panelfold" => $this->input->post("theme_panelfold"), //28
 
