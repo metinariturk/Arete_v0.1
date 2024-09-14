@@ -286,11 +286,12 @@
                                  aria-labelledby="pills-contract_price_table-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">İş Grupları</h6>
+                                        <h6 class="mb-0">Birim Fiyat Tablosu</h6>
                                         <div>
-                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a href="#" target="_blank"><i
-                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                            <a href="<?php echo base_url("Export/contract_price_download_excel/$item->id"); ?>">
+                                                <i class="fa fa-file-excel-o fa-2x"></i></a>
+                                            <a href="<?php echo base_url("Export/contract_price_download_pdf/$item->id"); ?>">
+                                                <i class="fa fa-file-pdf-o fa-2x"></i></a>
                                         </div>
                                     </div>
                                     <div class="card-body">
