@@ -77,7 +77,7 @@
                                         <li><a class="show" id="pills-contract_price-tab" data-bs-toggle="pill"
                                                href="#pills-contract_price" role="tab"
                                                aria-controls="pills-contract_price" aria-selected="false"><span
-                                                        class="title"> Sözleşme Pozları</span></a></li>
+                                                        class="title"> İmalat Listesi (Grup)</span></a></li>
 
                                         <li><a class="show" id="pills-contract_price_table-tab" data-bs-toggle="pill"
                                                href="#pills-contract_price_table" role="tab"
@@ -268,11 +268,14 @@
                                  aria-labelledby="pills-contract_price-tab">
                                 <div class="card mb-0">
                                     <div class="card-header d-flex">
-                                        <h6 class="mb-0">İş Grupları</h6>
+                                        <h6 class="mb-0">İmalat Listesi (Gruplara Göre)</h6>
                                         <div>
-                                            <a href="#" target="_blank"><i class="fa fa-file-excel-o fa-2x"></i></a>
-                                            <a href="#" target="_blank"><i
-                                                        class="fa fa-file-pdf-o fa-2x"></i></a>
+                                            <div>
+                                                <a href="<?php echo base_url("Export/group_boq_download_excel/$item->id"); ?>">
+                                                    <i class="fa fa-file-excel-o fa-2x"></i></a>
+                                                <a href="<?php echo base_url("Export/group_boq_download_pdf/$item->id"); ?>">
+                                                    <i class="fa fa-file-pdf-o fa-2x"></i></a>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -301,12 +304,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
-
                         </div>
                     </div>
                 </div>

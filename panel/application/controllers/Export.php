@@ -550,115 +550,236 @@ class Export extends CI_Controller
         }
     }
 
+
     public function group_download_excel($contract_id)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        // Model yükleme
-        $this->load->model("Company_model");
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setRight(0);     // 0 cm
 
-        // Sözleşme ve ana grup bilgilerini al
+        $sheet->getStyle('A1:Z1000')->applyFromArray([
+            'font' => [
+                'size' => 8, // Yazı büyüklüğü 8 punto
+            ],
+        ]);
+
+        // Logo dosyasının yolu
+        $logoPath = realpath("assets\images\logo\logo.png");
+
+// Logo'
+//yu ekleyin
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is your logo');
+        $drawing->setPath($logoPath); // Resim dosyasının yolu
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
+        $drawing->setHeight(60); // Resmin yüksekliği (piksel)
+        $drawing->setWorksheet($sheet);
+
+
+        // Sütun genişlikleri ayarlanıyor
+        $sheet->getColumnDimension('A')->setWidth(3); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('B')->setWidth(3); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('C')->setWidth(10); // 35 piksel (yaklaşık)
+        $sheet->getColumnDimension('D')->setWidth(55); // 220 piksel (yaklaşık)
+        $sheet->getColumnDimension('E')->setWidth(12); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('F')->setWidth(12); // 65 piksel (yaklaşık)
+        $rowNum = 2;
+
         $contract = $this->Contract_model->get(array('id' => $contract_id));
-        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
 
-        // Excel şablonunu yükle
-        $templatePath = 'uploads/Templates/Excel_Group_Template.xlsx';
-
-
-        try {
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
-            $sheet = $spreadsheet->getActiveSheet();
-        } catch (\Exception $e) {
-            die('Şablon dosyası yüklenemedi: ' . $e->getMessage());
-        }
-
-
-        // Sözleşme bilgilerini başlık kısmına ekleyelim
-        $sheet->setCellValue('B1', company_name($contract->isveren));
-        $sheet->setCellValue('B2', $contract->contract_name);
-
-// Başlangıç satır numarasını belirleyelim
-        $currentRow = 3;
-
-// Stil tanımlamaları
-        $mainGroupStyle = [
+        $sheet->setCellValue("E{$rowNum}", "Tarih :");
+        $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([
             'font' => [
                 'bold' => true,
-                'size' => 12, // Büyük font boyutu
-            ],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FF808080'] // Koyu gri arka plan
+                'size' => 10,
+                // Yazıyı koyu yap
             ],
             'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT
-            ]
-        ];
+                'horizontal' => Alignment::HORIZONTAL_RIGHT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
 
-        $subGroupStyle = [
+        $sheet->setCellValue("F{$rowNum}", dateFormat_dmy($contract->sozlesme_tarih));
+
+        $rowNum++;
+        $rowNum++;
+
+        // Sözleşme ve ana grup bilgilerini al
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+
+        $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "SÖZLEŞME GRUPLAR ÖZETİ");
+        // Satır yüksekliğini ayarlayın (örneğin, varsayılan yüksekliğin 2 katı)
+        $sheet->getRowDimension($rowNum)->setRowHeight(30); // Varsayılan 15 px olduğu varsayımıyla 30 px
+
+// Hücre stilini uygulayın
+        $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([
             'font' => [
-                'italic' => true,
-                'size' => 10, // Küçük font boyutu
-            ],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FFD3D3D3'] // Açık gri arka plan
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 14,         // Yazı büyüklüğü 12 punto
             ],
             'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT
-            ]
-        ];
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
 
-        foreach ($main_groups as $main_group) {
-            // Ana grup bilgilerini ekleyelim
-            $sheet->setCellValue('A' . $currentRow, $main_group->id);
-            $sheet->setCellValue('C' . $currentRow, $main_group->code);
-            $sheet->setCellValue('D' . $currentRow, $main_group->name);
 
-            // Ana grup için stil uygula
-            $sheet->getStyle('A' . $currentRow . ':D' . $currentRow)->applyFromArray($mainGroupStyle);
+        $rowNum++;
+        $rowNum++;
 
-            $currentRow += 1; // Ana grup bilgileri eklenince 1 satır aşağı iniyoruz
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "İşin Adı :");
+        $sheet->getStyle("B{$rowNum}:C{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $sheet->mergeCells("D{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
+
+        $sheet->setCellValue("D{$rowNum}", $contract->contract_name);
+        $sheet->getStyle("D{$rowNum}:F{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $rowNum++;
+        $rowNum++;
+
+
+// Öncelikle tüm ana grupların genel toplamını bulalım
+        $general_total = 0;
+
+// Tüm ana ve alt grupları gezip genel toplamı hesaplayalım
+        foreach ($prices_main_groups as $prices_main_group) {
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+
+            foreach ($sub_groups as $sub_group) {
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+
+                foreach ($boq_items as $boq_item) {
+                    $general_total += $boq_item->qty * $boq_item->price;
+                }
+            }
+        }
+
+// Şimdi ana grup ve alt grupları tekrar gezerek her ana grup ve alt grup için yüzdelik oran hesaplayalım
+        foreach ($prices_main_groups as $prices_main_group) {
+
+            $main_groups_total = 0; // Ana grup toplamı
+
+            // Ana grup satırını yazdır
+            $sheet->mergeCells("B{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
+            $sheet->setCellValue("B{$rowNum}", "{$prices_main_group->code} {$prices_main_group->name}");
+            $sheet->setCellValue("F{$rowNum}", ""); // Toplamı en son dolduracağız
+            $sheet->setCellValue("G{$rowNum}", ""); // Ana grubun yüzdesi buraya yazacağız
+            $sheet->getStyle("B{$rowNum}:G{$rowNum}")->applyFromArray([  // B-G sütunları stil uygulanıyor
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['argb' => '808080'],
+                ],
+                'font' => [
+                    'bold' => true,
+                    'color' => ['argb' => 'FFFFFFFF'],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'],
+                    ],
+                ],
+            ]);
+
+            $mainGroupRowNum = $rowNum; // Ana grup toplamını sonra yazmak için satır numarasını sakla
+            $rowNum++;
 
             // Alt grupları al
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1, "parent" => $main_group->id));
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
 
-            if (!empty($sub_groups)) {
-                foreach ($sub_groups as $sub_group) {
-                    // Alt grup bilgilerini ekleyelim
-                    $sheet->setCellValue('A' . $currentRow, $sub_group->id);
-                    $sheet->setCellValue('C' . $currentRow, $main_group->code . "." . $sub_group->code);
-                    $sheet->setCellValue('D' . $currentRow, $sub_group->name);
+            foreach ($sub_groups as $sub_group) {
+                $sub_group_total = 0;
+                // Alt grup içindeki BOQ öğelerini al
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
 
-                    // Alt grup için stil uygula
-                    $sheet->getStyle('A' . $currentRow . ':D' . $currentRow)->applyFromArray($subGroupStyle);
-
-                    $currentRow += 1; // Her alt grup için 1 satır aşağı iniyoruz
+                foreach ($boq_items as $boq_item) {
+                    // Alt grup toplamını hesapla
+                    $sub_group_total += $boq_item->qty * $boq_item->price;
                 }
-            } else {
-                // Alt grup yoksa 3 satır boşluk bırak
-                $currentRow += 3;
+
+                // Alt grup toplamını ana grup toplamına ekle
+                $main_groups_total += $sub_group_total;
+
+                // Alt grup satırını yazdır
+                $sheet->mergeCells("B{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
+                $sheet->setCellValue("B{$rowNum}", "{$prices_main_group->code}.{$sub_group->code} {$sub_group->name}");
+                $sheet->setCellValue("F{$rowNum}", $sub_group_total);
+
+                // Alt grup yüzdesini hesaplayıp yazdır
+                $sub_group_percentage = ($sub_group_total / $general_total) * 100;
+                $sheet->setCellValue("G{$rowNum}", round($sub_group_percentage, 2) . '%');
+
+                $sheet->getStyle("F{$rowNum}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+                $sheet->getStyle("B{$rowNum}:G{$rowNum}")->applyFromArray([
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['argb' => 'D0CECE'],
+                    ],
+                    'font' => [
+                        'bold' => true,
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_LEFT,
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $rowNum++;
             }
 
-            // Bir sonraki ana grup öncesi bir satır boşluk bırak
-            $currentRow++;
+            // Ana grup toplamını ilgili hücreye yazdır
+            $sheet->setCellValue("F{$mainGroupRowNum}", $main_groups_total);
+            $sheet->getStyle("F{$mainGroupRowNum}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+
+            // Ana grup yüzdesini hesaplayıp yazdır
+            $main_group_percentage = ($main_groups_total / $general_total) * 100;
+            $sheet->setCellValue("G{$mainGroupRowNum}", round($main_group_percentage, 2) . '%');
+
+            $rowNum++; // Boş satır için bir satır ekleyelim (isteğe bağlı)
         }
 
-        // Dosyayı indirme işlemi
-        $writer = new Xlsx($spreadsheet);
-        $downloadFileName = "$contract->contract_name - Ödeme Raporu.xlsx";
+        $filename = "$contract->contract_name"." Sözleşme Grup İcmali.xlsx";
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
 
-        try {
-            $writer->save('php://output');
-        } catch (\Exception $e) {
-            die('Dosya yazma hatası: ' . $e->getMessage());
-        }
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
     }
 
     function group_download_pdf($contract_id)
@@ -673,62 +794,61 @@ class Export extends CI_Controller
         $viewData->contract = $contract;
 
         $this->load->library('pdf_creator');
-        $pdf = new Pdf_creator();
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
         $pdf->SetPageOrientation('P');
-        $pdf->SetPrintHeader(false);
-        $pdf->SetPrintFooter(false);
+
+        // Sayfa Ayarları
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         $pdf->AddPage();
 
-        // Çerçeve boşlukları
-        $topMargin = 20;  // 4 cm yukarıdan
-        $bottomMargin = 20;  // 4 cm aşağıdan
-        $rightMargin = 10;  // 2 cm sağdan
-        $leftMargin = 10;  // 2 cm soldan
+        // Font Ayarları
+        $pdf->SetFont('dejavusans', '', 8);
+
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+        $pdf->Cell(0, 3, 'Tarih : ' . dateFormat_dmy($contract->sozlesme_tarih), 0, 1, 'R');
+        $pdf->Ln();
+
+        // Başlık
+        $pdf->SetFont('dejavusans', 'B', 12);
+        $pdf->Cell(0, 3, 'SÖZLEŞME İŞ GRUPLARI', 0, 1, 'C');
+        $pdf->Ln();
+
+        // İşin Adı
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(30, 3, 'İşin Adı :', 0, 0, 'L');
+        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->Cell(0, 3, $contract->contract_name, 0, 1, 'L');
+        $pdf->Ln();
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(30, 3, 'İşveren :', 0, 0, 'L');
+        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->Cell(0, 3, company_name($contract->isveren), 0, 1, 'L');
+        $pdf->Ln();
 
         // Çerçeve çizme
         $pdf->SetDrawColor(0, 0, 0);
         $pdf->SetLineWidth(0.5);
-        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
 
         $pdf->SetFont('dejavusans', 'B', 12);
-
-        // İlk satır (şirket adı)
-        $yPosition = $topMargin;
-        $xPosition = $leftMargin;
-        $pdf->SetXY($xPosition, $yPosition);
-        $pdf->SetLineWidth(0.1);
-        $pdf->Cell(190, 8, company_name($contract->isveren), 1, 0, "C", 0);
-        $pdf->Ln();
 
         // Ana grup fontu
         $mainGroupFont = [
             'style' => 'B',
             'size' => 11,
-            'fillColor' => [128, 128, 128],
+            'fillColor' => [211, 211, 211],
         ];
 
         // Alt grup fontu
         $subGroupFont = [
             'style' => 'I',
             'size' => 9,
-            'fillColor' => [211, 211, 211],
         ];
-
-        // Ana grup ve alt gruplar için boşluk ayarları
-        $mainGroupX = $leftMargin + 10; // Ana grup için 1 cm boşluk ekliyoruz
-        $subGroupX = $mainGroupX + 10;  // Alt gruplar için 1 cm daha boşluk
-
-        $pdf->SetLineWidth(0.1);
-        $pdf->Cell(190, 6, $contract->contract_name, 1, 0, "C", 0);
-        $pdf->Ln();
-        $pdf->SetLineWidth(0.1);
-        $pdf->Cell(190, 6, "İmalat Grupları", 1, 0, "C", 0);
-        $pdf->Ln();
 
         // Ana grup ve alt grup yazdırma
         foreach ($main_groups as $main_group) {
             // Ana grup yazdırma
-            $pdf->SetX($mainGroupX);  // 1 cm boşluk ekliyoruz
             $pdf->SetFont('dejavusans', $mainGroupFont['style'], $mainGroupFont['size']);
             $pdf->SetFillColorArray($mainGroupFont['fillColor']);
             $pdf->Cell(0, 6, $main_group->code . ' - ' . $main_group->name, 0, 1, 'L', 1);
@@ -738,10 +858,9 @@ class Export extends CI_Controller
 
             if (!empty($sub_groups)) {
                 foreach ($sub_groups as $sub_group) {
-                    $pdf->SetX($subGroupX);  // Alt grup için 1 cm daha sağa kaydırıyoruz
                     $pdf->SetFont('dejavusans', $subGroupFont['style'], $subGroupFont['size']);
-                    $pdf->SetFillColorArray($subGroupFont['fillColor']);
-                    $pdf->Cell(0, 6, $main_group->code . '.' . $sub_group->code . ' - ' . $sub_group->name, 0, 1, 'L', 1);
+                    $pdf->Cell(10, 6, '', 0, 0); // 10 birimlik boşluk ekler
+                    $pdf->Cell(0, 6, $main_group->code . '.' . $sub_group->code . ' - ' . $sub_group->name, 0, 1, 'L');
                 }
             } else {
                 // Alt grup yoksa 3 boş satır ekleyelim
@@ -772,34 +891,150 @@ class Export extends CI_Controller
         $contract = $this->Contract_model->get(array('id' => $contract_id));
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "leader" => 1));
 
-        // Excel şablonunu yükle
-        $templatePath = 'uploads/Templates/Excel_Book_Template.xlsx';
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setRight(0);     // 0 cm
+
+        $sheet->getStyle('A1:Z1000')->applyFromArray([
+            'font' => [
+                'size' => 8, // Yazı büyüklüğü 8 punto
+            ],
+        ]);
+
+        // Logo dosyasının yolu
+        $logoPath = realpath("assets\images\logo\logo.png");
+
+// Logo'
+//yu ekleyin
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is your logo');
+        $drawing->setPath($logoPath); // Resim dosyasının yolu
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
+        $drawing->setHeight(60); // Resmin yüksekliği (piksel)
+        $drawing->setWorksheet($sheet);
 
 
-        try {
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
-            $sheet = $spreadsheet->getActiveSheet();
-        } catch (\Exception $e) {
-            die('Şablon dosyası yüklenemedi: ' . $e->getMessage());
-        }
+        // Sütun genişlikleri ayarlanıyor
+        $sheet->getColumnDimension('A')->setWidth(3); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('B')->setWidth(5); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('C')->setWidth(10); // 35 piksel (yaklaşık)
+        $sheet->getColumnDimension('D')->setWidth(62); // 220 piksel (yaklaşık)
+        $sheet->getColumnDimension('E')->setWidth(7); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('F')->setWidth(12); // 65 piksel (yaklaşık)
+        $rowNum = 2;
+
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+
+        $sheet->setCellValue("E{$rowNum}", "Tarih :");
+        $sheet->getStyle("B{$rowNum}:H{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+        $sheet->setCellValue("F{$rowNum}", dateFormat_dmy($contract->sozlesme_tarih));
+
+        $rowNum++;
+        $rowNum++;
+
+        // Sözleşme ve ana grup bilgilerini al
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+
+        $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "POZ LİSTESİ");
+        // Satır yüksekliğini ayarlayın (örneğin, varsayılan yüksekliğin 2 katı)
+        $sheet->getRowDimension($rowNum)->setRowHeight(30); // Varsayılan 15 px olduğu varsayımıyla 30 px
+
+// Hücre stilini uygulayın
+        $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
 
 
-        // Sözleşme bilgilerini başlık kısmına ekleyelim
-        $sheet->setCellValue('B1', company_name($contract->isveren));
-        $sheet->setCellValue('B2', $contract->contract_name);
-        $sheet->setCellValue('F4', "Birim Fiyat (" . $contract->para_birimi . ")");
+        $rowNum++;
+        $rowNum++;
+
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "İşin Adı :");
+        $sheet->getStyle("B{$rowNum}:C{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 10,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $sheet->mergeCells("D{$rowNum}:H{$rowNum}");  // B-F sütunları birleştirildi
+
+        $sheet->setCellValue("D{$rowNum}", $contract->contract_name);
+        $sheet->getStyle("D{$rowNum}:H{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 10,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $rowNum++;
+        $rowNum++;
+
+        $sheet->setCellValue('B' . $rowNum, "No");
+        $sheet->setCellValue('C' . $rowNum, "Poz No");
+        $sheet->setCellValue('D' . $rowNum, "İmalat Adı");
+        $sheet->setCellValue('E' . $rowNum, "Birim");
+        $sheet->setCellValue('F' . $rowNum, "Fiyat");
+
+        $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([  // B-H sütunları stil uygulanıyor
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => '808080'],
+            ],
+            'font' => [
+                'bold' => true,
+                'color' => ['argb' => 'FFFFFFFF'],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ]);
+        $rowNum++;
+
+
 
 // Başlangıç satır numarasını belirleyelim
-        $currentRow = 5;
         $i = 1;
 
         foreach ($leaders as $leader) {
             // Ana grup bilgilerini ekleyelim
-            $sheet->setCellValue('B' . $currentRow, $i++);
-            $sheet->setCellValueExplicit('C' . $currentRow, $leader->code, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $currentRow, $leader->name);
-            $sheet->setCellValue('E' . $currentRow, $leader->unit);
-            $sheet->setCellValue('F' . $currentRow, $leader->price);
+            $sheet->setCellValue('B' . $rowNum, $i++);
+            $sheet->setCellValueExplicit('C' . $rowNum, $leader->code, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('D' . $rowNum, $leader->name);
+            $sheet->setCellValue('E' . $rowNum, $leader->unit);
+            $sheet->setCellValue('F' . $rowNum, $leader->price);
 
             // Kenarlık stili oluştur
             $styleArray = [
@@ -812,7 +1047,7 @@ class Export extends CI_Controller
             ];
 
             // Hücrelere kenarlık uygula
-            $sheet->getStyle('B' . $currentRow . ':F' . $currentRow)->applyFromArray($styleArray);
+            $sheet->getStyle('B' . $rowNum . ':F' . $rowNum)->applyFromArray($styleArray);
 
             // Para birimi formatını belirle
             $currencyFormat = '';
@@ -832,16 +1067,16 @@ class Export extends CI_Controller
             }
 
             // F sütunundaki hücrelere para birimi formatı uygula
-            $sheet->getStyle('F' . $currentRow)->getNumberFormat()->setFormatCode($currencyFormat);
+            $sheet->getStyle('F' . $rowNum)->getNumberFormat()->setFormatCode($currencyFormat);
 
             // Satır numarasını artır
-            $currentRow++;
+            $rowNum++;
         }
 
 
         // Dosyayı indirme işlemi
         $writer = new Xlsx($spreadsheet);
-        $downloadFileName = "$contract->contract_name - Ödeme Raporu.xlsx";
+        $downloadFileName = "$contract->contract_name - Poz Listesi.xlsx";
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
@@ -866,60 +1101,73 @@ class Export extends CI_Controller
         $viewData->contract = $contract;
 
         $this->load->library('pdf_creator');
-        $pdf = new Pdf_creator();
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
         $pdf->SetPageOrientation('P');
-        $pdf->SetPrintHeader(false);
-        $pdf->SetPrintFooter(false);
+
+        // Sayfa Ayarları
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         $pdf->AddPage();
 
-        // Çerçeve boşlukları
-        $topMargin = 20;  // 4 cm yukarıdan
-        $bottomMargin = 20;  // 4 cm aşağıdan
-        $rightMargin = 10;  // 2 cm sağdan
-        $leftMargin = 10;  // 2 cm soldan
-
-        // Çerçeve çizme
-        $pdf->SetDrawColor(0, 0, 0);
-        $pdf->SetLineWidth(0.5);
-        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
-
-        $pdf->SetFont('dejavusans', 'B', 8);
-
-        $set_height = 6;
-        // İlk satır (şirket adı)
-        $yPosition = $topMargin;
-        $xPosition = $leftMargin;
-        $pdf->SetXY($xPosition, $yPosition);
-        $pdf->SetLineWidth(0.1);
-        $pdf->Cell(190, $set_height, company_name($contract->isveren), 1, 0, "C", 0);
-        $pdf->Ln();
-        $pdf->Cell(190, $set_height, $contract->contract_name, 1, 0, "C", 0);
-        $pdf->Ln();
-        $pdf->Cell(190, $set_height, "İmalat Poz Listesi", 1, 0, "C", 0);
-        $pdf->Ln();
-
-        $headers = ['No', 'Kod', 'Ad', 'Birim', 'Birim Fiyat'];
-        $widths = [8, 17, 127, 15, 23]; // Sütun genişlikleri
-
-// Tablo başlıklarını dejavusans
-        $pdf->SetFont('dejavusans', 'B', 8);
-        $pdf->SetFillColor(192, 192, 192);
-        $pdf->Cell($widths[0], $set_height, $headers[0], 1, 0, 'C', 1);
-        $pdf->Cell($widths[1], $set_height, $headers[1], 1, 0, 'C', 1);
-        $pdf->Cell($widths[2], $set_height, $headers[2], 1, 0, 'C', 1);
-        $pdf->Cell($widths[3], $set_height, $headers[3], 1, 0, 'C', 1);
-        $pdf->Cell($widths[4], $set_height, $headers[4], 1, 1, 'C', 1);
-
-// Verileri ekle
+        // Font Ayarları
         $pdf->SetFont('dejavusans', '', 8);
-        $i = 1;
 
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+        $pdf->Cell(0, 3, 'Tarih : ' . dateFormat_dmy($contract->sozlesme_tarih), 0, 1, 'R');
+        $pdf->Ln();
+
+        // Başlık
+        $pdf->SetFont('dejavusans', 'B', 12);
+        $pdf->Cell(0, 3, 'SÖZLEŞME BİRİM FİYATLARI', 0, 1, 'C');
+        $pdf->Ln();
+
+        // İşin Adı
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(30, 3, 'İşin Adı :', 0, 0, 'L');
+        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->Cell(0, 3, $contract->contract_name, 0, 1, 'L');
+        $pdf->Ln();
+
+        $default_line_height = 6;
+
+        // Table header
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(10, $default_line_height, 'No', 1);
+        $pdf->Cell(20, $default_line_height, 'Poz No', 1);
+        $pdf->Cell(125, $default_line_height, 'İmalat Adı', 1);
+        $pdf->Cell(12, $default_line_height, 'Birim', 1);
+        $pdf->Cell(22, $default_line_height, 'Fiyat', 1);
+        $pdf->Ln();
+
+// Table data
+        $pdf->SetFont('dejavusans', '', 8);
+
+        $i = 1;
         foreach ($leaders as $leader) {
-            $pdf->Cell($widths[0], $set_height, $i++, 1, 0, 'C');
-            $pdf->Cell($widths[1], $set_height, $leader->code, 1);
-            $pdf->Cell($widths[2], $set_height, $leader->name, 1);
-            $pdf->Cell($widths[3], $set_height, $leader->unit, 1, 0, 'C');
-            $pdf->Cell($widths[4], $set_height, number_format($leader->price, 2), 1, 1, 'R');
+            $pdf->Cell(10, $default_line_height, $i++, 1);
+            $pdf->Cell(20, $default_line_height, $leader->code, 1);
+            $pdf->Cell(125, $default_line_height, $leader->name, 1);
+            $pdf->Cell(12, $default_line_height, $leader->unit, 1);
+
+            // Format price
+            $price = $leader->price;
+            switch ($contract->para_birimi) {
+                case 'Dolar':
+                    $price = '$' . number_format($price, 2);
+                    break;
+                case 'Euro':
+                    $price = '€' . number_format($price, 2);
+                    break;
+                case 'TL':
+                    $price = '₺' . number_format($price, 2);
+                    break;
+                default:
+                    $price = number_format($price, 2);
+                    break;
+            }
+
+            $pdf->Cell(22, $default_line_height, $price, 1);
+            $pdf->Ln();
         }
 
         // Ana grup ile alt gruplar arasında bir boşluk bırak
@@ -928,6 +1176,325 @@ class Export extends CI_Controller
         // PDF çıktısını ver
         $pdf->Output('İmalat Grubu Raporu.pdf', 'I');
     }
+
+
+    public function group_boq_download_excel($contract_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setRight(0);     // 0 cm
+
+        $sheet->getStyle('A1:Z1000')->applyFromArray([
+            'font' => [
+                'size' => 8, // Yazı büyüklüğü 8 punto
+            ],
+        ]);
+
+        // Logo dosyasının yolu
+        $logoPath = realpath("assets\images\logo\logo.png");
+
+// Logo'
+//yu ekleyin
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is your logo');
+        $drawing->setPath($logoPath); // Resim dosyasının yolu
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
+        $drawing->setHeight(60); // Resmin yüksekliği (piksel)
+        $drawing->setWorksheet($sheet);
+
+
+        // Sütun genişlikleri ayarlanıyor
+        $sheet->getColumnDimension('A')->setWidth(3); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('B')->setWidth(3); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('C')->setWidth(10); // 35 piksel (yaklaşık)
+        $sheet->getColumnDimension('D')->setWidth(65); // 220 piksel (yaklaşık)
+        $sheet->getColumnDimension('E')->setWidth(7); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('F')->setWidth(9); // 65 piksel (yaklaşık)
+        $rowNum = 2;
+
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+
+        $sheet->setCellValue("E{$rowNum}", "Tarih :");
+        $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+        $sheet->setCellValue("F{$rowNum}", dateFormat_dmy($contract->sozlesme_tarih));
+
+        $rowNum++;
+        $rowNum++;
+
+        // Sözleşme ve ana grup bilgilerini al
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+
+        $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "İŞ GRUPLARINA GÖRE İMALAT LİSTESİ");
+        // Satır yüksekliğini ayarlayın (örneğin, varsayılan yüksekliğin 2 katı)
+        $sheet->getRowDimension($rowNum)->setRowHeight(30); // Varsayılan 15 px olduğu varsayımıyla 30 px
+
+// Hücre stilini uygulayın
+        $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "İşin Adı :");
+        $sheet->getStyle("B{$rowNum}:C{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 10,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $sheet->mergeCells("D{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
+
+        $sheet->setCellValue("D{$rowNum}", $contract->contract_name);
+        $sheet->getStyle("D{$rowNum}:F{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 10,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $rowNum++;
+        $rowNum++;
+
+
+        foreach ($prices_main_groups as $prices_main_group) {
+            // Ana grup satırı
+            $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
+            $sheet->setCellValue("B{$rowNum}", "{$prices_main_group->code} {$prices_main_group->name}");
+            $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([  // B-H sütunları stil uygulanıyor
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['argb' => '808080'],
+                ],
+                'font' => [
+                    'bold' => true,
+                    'color' => ['argb' => 'FFFFFFFF'],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'],
+                    ],
+                ],
+            ]);
+            $rowNum++;
+
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+
+            foreach ($sub_groups as $sub_group) {
+                // Alt grup satırı
+                $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
+                $sheet->setCellValue("B{$rowNum}", "{$prices_main_group->code}.{$sub_group->code} {$sub_group->name}");
+                $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([  // B-F sütunları stil uygulanıyor
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['argb' => 'D0CECE'],
+                    ],
+                    'font' => [
+                        'bold' => true,
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_LEFT,
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $rowNum++;
+
+                // Başlık satırı
+                $sheet->setCellValue("B{$rowNum}", 'No');
+                $sheet->setCellValue("C{$rowNum}", 'Kod');
+                $sheet->setCellValue("D{$rowNum}", 'İsim');
+                $sheet->setCellValue("E{$rowNum}", 'Birim');
+                $sheet->setCellValue("F{$rowNum}", 'Birim Fiyat');
+                $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([  // B-F sütunları stil uygulanıyor
+                    'font' => [
+                        'bold' => true,
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+                $rowNum++;
+
+                // Alt grup ürünleri ve alt grup toplamını hesaplamak için toplam değişkeni
+                // Alt grup ürünleri ve alt grup toplamını hesaplamak için toplam değişkeni
+                $sub_group_total = 0;
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+                $i = 1;
+                $startRow = $rowNum; // Alt grup ürünlerinin başladığı satır numarası
+
+                foreach ($boq_items as $boq_item) {
+                    $sheet->setCellValue("B{$rowNum}", $i++);
+                    $sheet->setCellValue("C{$rowNum}", $boq_item->code);
+                    $sheet->setCellValue("D{$rowNum}", $boq_item->name);
+                    $sheet->setCellValue("E{$rowNum}", $boq_item->unit);
+                    $sheet->setCellValue("F{$rowNum}", $boq_item->price);
+
+                    // H hücresinde qty * price formülü
+                    $sheet->getStyle("F{$rowNum}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+
+                    $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([
+                        'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => Border::BORDER_THIN,
+                                'color' => ['argb' => '000000'],
+                            ],
+                        ],
+                    ]);
+
+                    $rowNum++;
+                }
+                $rowNum++;
+            }
+        }
+
+        $filename = "$contract->contract_name"."- Poz Listesi (Gruplara Göre).xlsx";
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
+    public function group_boq_download_pdf($contract_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $this->load->library('pdf_creator');
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->SetPageOrientation('P');
+
+        // Sayfa Ayarları
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->AddPage();
+
+        // Font Ayarları
+        $pdf->SetFont('dejavusans', '', 8);
+
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+        $pdf->Cell(0, 3, 'Tarih : ' . dateFormat_dmy($contract->sozlesme_tarih), 0, 1, 'R');
+        $pdf->Ln();
+
+        // Başlık
+        $pdf->SetFont('dejavusans', 'B', 12);
+        $pdf->Cell(0, 3, 'İŞ GRUPLARINA GÖRE İMALAT LİSTESİ', 0, 1, 'C');
+        $pdf->Ln();
+
+        // İşin Adı
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(30, 3, 'İşin Adı :', 0, 0, 'L');
+        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->Cell(0, 3, $contract->contract_name, 0, 1, 'L');
+        $pdf->Ln();
+
+        // Başlık Satırı
+
+        // Veri Satırları
+        $this->load->model('Contract_price_model');
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+
+        foreach ($prices_main_groups as $prices_main_group) {
+            $pdf->SetFont('dejavusans', 'B', 8);
+            $pdf->SetFillColor(128, 128, 128);
+            $pdf->SetTextColor(255, 255, 255);
+            $pdf->Cell(185, 6, "{$prices_main_group->code} {$prices_main_group->name}", 1, 0, 'L', 1);
+            $pdf->Ln();
+
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+
+            foreach ($sub_groups as $sub_group) {
+
+
+
+                $pdf->SetFont('dejavusans', 'B', 8);
+                $pdf->SetFillColor(208, 206, 206);
+                $pdf->SetTextColor(0, 0, 0);
+                $pdf->Cell(185, 6, "{$prices_main_group->code}.{$sub_group->code} {$sub_group->name}", 1, 0, 'L', 1);
+                $pdf->Ln();
+
+                $pdf->SetFont('dejavusans', 'B', 8);
+                $pdf->Cell(10, 6, 'No', 1, 0, 'C');
+                $pdf->Cell(20, 6, 'Kod', 1, 0, 'C');
+                $pdf->Cell(123, 6, 'İsim', 1, 0, 'C');
+                $pdf->Cell(12, 6, 'Birim', 1, 0, 'C');
+                $pdf->Cell(20, 6, 'Birim Fiyat', 1, 0, 'C');
+                $pdf->Ln();
+
+                // Alt grup ürünlerini ekle
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+
+                $pdf->SetFont('dejavusans', '', 8);
+                $sub_group_total = 0;
+                foreach ($boq_items as $index => $boq_item) {
+                    $pdf->Cell(10, 6, $index + 1, 1);
+                    $pdf->Cell(20, 6, $boq_item->code, 1);
+                    $pdf->Cell(123, 6, $boq_item->name, 1);
+                    $pdf->Cell(12, 6, $boq_item->unit, 1,"","C");
+                    $pdf->Cell(20, 6, number_format($boq_item->price, 2), 1, 0, 'R');
+                    $pdf->Ln();
+
+                }
+            }
+            $pdf->Ln();
+        }
+
+        // PDF'yi gönder
+
+        $filename =  "$contract->contract_name"."- Poz Listesi (Gruplara Göre).pdf";
+        $pdf->Output($filename, 'I');
+    }
+
 
 
     public function contract_price_download_excel($contract_id)
@@ -957,7 +1524,7 @@ class Export extends CI_Controller
         $drawing->setName('Logo');
         $drawing->setDescription('This is your logo');
         $drawing->setPath($logoPath); // Resim dosyasının yolu
-        $drawing->setCoordinates('A1'); // Resmin yerleştirileceği hücre
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
         $drawing->setHeight(60); // Resmin yüksekliği (piksel)
         $drawing->setWorksheet($sheet);
 
