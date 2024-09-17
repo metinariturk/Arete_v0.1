@@ -62,7 +62,7 @@
                 <div class="col-sm-4 col-md-3">
                     <div class="col-form-label">Mahsup Oran (%)</div>
                     <div>
-                        % <?php echo get_from_any("contract", "avans_mahsup_oran", "id", "$contract_id"); ?>
+                        % <?php echo $payment_settings->avans_oran; ?>
                     </div>
                 </div>
                 <div class="col-sm-4 col-md-3">
@@ -74,8 +74,8 @@
                 </div>
                 <div class="col-sm-4 col-md-3">
                     <div class="col-form-label">Sözleşme Tutarı</div>
-                    <input hidden id="calB" value="<?php echo get_from_id("contract", "sozlesme_bedel", $contract_id); ?>">
-                    <span><?php echo money_format(get_from_id("contract", "sozlesme_bedel", $contract_id)) . " " . get_currency($contract_id); ?></span>
+                    <input hidden id="calB" value="<?php echo $contract->sozlesme_bedel; ?>">
+                    <span><?php echo money_format($contract->sozlesme_bedel)." ".$contract->para_birimi;  ?></span>
                 </div>
             </div>
 

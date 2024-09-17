@@ -26,6 +26,7 @@ class Advance extends CI_Controller
         $this->viewFolder = "advance_v";
         $this->load->model("Advance_model");
         $this->load->model("Contract_model");
+        $this->load->model("Payment_settings_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
@@ -117,13 +118,16 @@ class Advance extends CI_Controller
     public function update_form($id)
     {
 
-        $contract_id = contract_id_module("advance", $id);
+        $item = $this->Advance_model->get(array("id"=>$id));
+        $contract = $this->Contract_model->get(array("id"=>$item->contract_id));
+        $project = $this->Project_model->get(array("id"=>$contract->proje_id));
+        $payment_settings = $this->Payment_settings_model->get(array("contract_id"=>$contract->id));
+        $settings = $this->Settings_model->get();
+
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
 
-        $project_id = project_id_cont("$contract_id");
-        $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();
 
@@ -131,17 +135,12 @@ class Advance extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
-        $viewData->contract_id = $contract_id;
-        $viewData->project_id = $project_id;
+        $viewData->contract = $contract;
+        $viewData->project = $project;
+        $viewData->payment_settings = $payment_settings;
         $viewData->settings = $settings;
+        $viewData->item = $item;
 
-        $viewData->item = $this->Advance_model->get(
-            array(
-                "id" => $id
-            )
-        );
-
-        
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
 
