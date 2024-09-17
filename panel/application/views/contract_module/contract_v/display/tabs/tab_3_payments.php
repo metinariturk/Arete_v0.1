@@ -50,7 +50,9 @@
             <?php echo "$item->para_birimi"; ?>
         </td>
         <td class="d-none d-sm-table-cell">
-            <?php echo money_format(sum_anything("payment", "balance", "contract_id", $item->id)); ?><?php echo "$item->para_birimi"; ?>
+            <?php echo money_format(sum_anything("payment", "balance", "contract_id", $item->id)); ?>
+
+            <?php echo "$item->para_birimi"; ?>
         </td>
     </tr>
     </tfoot>

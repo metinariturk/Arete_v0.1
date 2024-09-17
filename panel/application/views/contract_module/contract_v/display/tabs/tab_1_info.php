@@ -29,8 +29,7 @@
                 <tr>
                     <td><strong>Şantiye</strong></td>
                     <td>
-                        <?php $site = $this->Site_model->get(array("contract_id" => $item->id)); ?>
-                        <?php if (isset($site)) { ?>
+                        <?php if ($site) { ?>
                             <a href="<?php echo base_url("site/file_form/$site->id"); ?>">
                                 <?php echo site_code_name($site->id); ?>
                             </a>
@@ -62,11 +61,13 @@
                                         class="fa fa-plus-circle fa-lg"></i></a>
                         </td>
                         <td colspan="3">
+                            <?php $i = 1; ?>
                             <?php foreach ($sub_contracts as $sub_contract) { ?>
                                 <p>
                                     <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
-                                        <?php echo $sub_contract->contract_name; ?>
-                                    </a></p>
+                                        <?php echo $i++; ?> - <?php echo $sub_contract->contract_name; ?>
+                                    </a>
+                                </p>
                             <?php } ?>
                         </td>
                     </tr>

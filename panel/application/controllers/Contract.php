@@ -207,6 +207,9 @@ class Contract extends CI_Controller
         }
 
         $item = $this->Contract_model->get(array("id" => $id));
+        if ($item->parent > 0) {
+            $main_contract = $this->Contract_model->get(array("id" => $item->parent));
+        }
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
@@ -249,6 +252,14 @@ class Contract extends CI_Controller
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
+
+        if (isset($main_contract)) {
+            $site = $this->Site_model->get(array("contract_id" => $item->parent));
+        } else {
+            $site = $this->Site_model->get(array("contract_id" => $item->id));
+        }
+
+
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $id, 'leader' => 1));
 
         // View'e gönderilecek Değişkenlerin Set Edilmesi
@@ -257,6 +268,7 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->companys = $companys;
         $viewData->project = $project;
+
         $viewData->upload_function = $upload_function;
         $viewData->path = $path;
         $viewData->advances = $advances;
@@ -265,6 +277,7 @@ class Contract extends CI_Controller
         $viewData->leaders = $leaders;
         $viewData->costincs = $costincs;
         $viewData->extimes = $extimes;
+        $viewData->site = $site;
         $viewData->fav = $fav;
         $viewData->main_bond = $main_bond;
         $viewData->main_groups = $main_groups;
@@ -275,6 +288,9 @@ class Contract extends CI_Controller
         $viewData->form_error = null;
         $viewData->sites = $sites;
         $viewData->active_module = $active_module;
+        if ($item->parent > 0) {
+            $viewData->main_contract = $main_contract;
+        }
 
         $form_errors = $this->session->flashdata('form_errors');
 
@@ -1908,6 +1924,7 @@ class Contract extends CI_Controller
 
 
     }
+
     public
     function update_leader_selection()
     {
