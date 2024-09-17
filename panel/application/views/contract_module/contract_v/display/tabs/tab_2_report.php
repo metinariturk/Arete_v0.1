@@ -85,6 +85,7 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
         <p>Toplam Hakediş: <?= money_format($total_payment); ?> <?php echo $item->para_birimi; ?> / Sözleşme
             Bedeli: <?= money_format($item->sozlesme_bedel); ?> <?php echo $item->para_birimi; ?></p>
     </div>
+    <?php if ($advance_given>0) { ?>
     <div class="mt-4">
         <h6>AVANS İLERLEME</h6>
         <div class="progress">
@@ -96,6 +97,7 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
         </div>
         <p>Mahsup Edilen: <?= money_format($advance_admission); ?> <?php echo $item->para_birimi; ?> / Verilen Avans: <?= money_format($advance_given); ?> <?php echo $item->para_birimi; ?></p>
     </div>
+    <?php } ?>
 
     <div class="mt-4">
         <h6>ÖDEME DURUMU</h6>
