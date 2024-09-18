@@ -299,6 +299,7 @@ class Advance extends CI_Controller
             $this->load->model("Settings_model");
             $this->load->model("Site_model");
             $this->load->model("User_model");
+            $this->load->model("Site_model");
 
             $alert = array(
                 "title" => "İşlem Başarısız",
@@ -351,6 +352,7 @@ class Advance extends CI_Controller
             $advances = $this->Advance_model->get_all(array('contract_id' => $contract->id));
             $bonds = $this->Bond_model->get_all(array('contract_id' => $contract->id));
             $costincs = $this->Costinc_model->get_all(array('contract_id' => $contract->id));
+            $site = $this->Site_model->get(array("contract_id" => $item->id));
             $extimes = $this->Extime_model->get_all(array('contract_id' => $contract->id));
             $main_bond = $this->Bond_model->get(array('contract_id' => $contract->id, 'teminat_gerekce' => 'contract'));
             $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
@@ -376,6 +378,7 @@ class Advance extends CI_Controller
             $viewData->path = $path;
             $viewData->advances = $advances;
             $viewData->collections = $collections;
+            $viewData->site = $site;
             $viewData->bonds = $bonds;
             $viewData->leaders = $leaders;
             $viewData->costincs = $costincs;

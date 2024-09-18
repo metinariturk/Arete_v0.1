@@ -109,10 +109,15 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-0">
+                                        <?php if ($item->parent == 0 || $item->parent == null) { ?>
                                         <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
+                                        <?php } else { ?>
+                                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info_sub"); ?>
+                                       <?php } ?>
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="fade tab-pane" id="pills-report" role="tabpanel"
                                  aria-labelledby="pills-report-tab">

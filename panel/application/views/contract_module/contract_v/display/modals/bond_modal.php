@@ -25,7 +25,7 @@
                                 <?php
                             } else { ?>
                                 <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                                       type="number" placeholder="Username" aria-describedby="inputGroupPrepend"
+                                       type="number" placeholder="Dosya Numarası" aria-describedby="inputGroupPrepend"
                                        required="" data-bs-original-title="" title="" name="dosya_no"
                                        value="<?php echo isset($form_error) ? set_value("dosya_no") : fill_empty_digits() . "1" ?>">
                             <?php } ?>

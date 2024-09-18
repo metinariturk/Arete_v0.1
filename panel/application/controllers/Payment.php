@@ -348,8 +348,8 @@ class Payment extends CI_Controller
             $main_bond = $this->Bond_model->get(array('contract_id' => $contract->id, 'teminat_gerekce' => 'contract'));
             $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
             $payments = $this->Payment_model->get_all(array('contract_id' => $contract->id));
+            $site = $this->Site_model->get(array('contract_id' => $contract->id));
             $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
-            $sites = $this->Site_model->get_all(array('contract_id' => $contract->id));
             $settings = $this->Settings_model->get();
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1));
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, 'leader' => 1));
@@ -382,7 +382,7 @@ class Payment extends CI_Controller
             $viewData->payments = $payments;
             $viewData->prices_main_groups = $prices_main_groups;
             $viewData->settings = $settings;
-            $viewData->sites = $sites;
+            $viewData->site = $site;
             $viewData->active_module = "Payment";
 
 

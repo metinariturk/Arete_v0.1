@@ -1,10 +1,10 @@
-<table class="table" id="payment_table">
+<table class="table-lg" id="payment_table">
     <thead>
     <tr>
-        <th class="d-none d-sm-table-cell">Hakediş No</th>
-        <th class="d-none d-sm-table-cell">Hakediş İtibar Tarihi</th>
-        <th> Hakediş Tutar</th>
-        <th class="d-none d-sm-table-cell">Net Ödenecek</th>
+        <th class="d-none d-sm-table-cell"><p>Hakediş No</p></th>
+        <th class="d-none d-sm-table-cell"><p>Hakediş İtibar Tarihi</p></th>
+        <th><p>Hakediş Tutar</p></th>
+        <th class="d-none d-sm-table-cell"><p>Net Ödenecek</p></th>
     </tr>
     </thead>
     <tbody>
@@ -13,26 +13,23 @@
             <tr id="center_row">
                 <td class="d-none d-sm-table-cell">
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                        <?php echo str_pad($payment->hakedis_no, 2, "0", STR_PAD_LEFT); ?>
+                        <p><?php echo str_pad($payment->hakedis_no, 2, "0", STR_PAD_LEFT); ?></p>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                        <?php echo dateFormat_dmy($payment->imalat_tarihi); ?>
+                        <p><?php echo dateFormat_dmy($payment->imalat_tarihi); ?></p>
                     </a>
                 </td>
                 <td>
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                        <?php echo money_format($payment->E); ?><?php echo "$item->para_birimi"; ?>
+                        <p><?php echo money_format($payment->E); ?> <?php echo "$item->para_birimi"; ?></p>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
-                        <?php echo money_format($payment->balance); ?><?php echo "$item->para_birimi"; ?>
+                        <p><?php echo money_format($payment->balance); ?> <?php echo "$item->para_birimi"; ?></p>
                     </a>
-                </td>
-                <td>
-
                 </td>
             </tr>
         <?php } ?>
@@ -40,21 +37,14 @@
     </tbody>
     <tfoot>
     <tr>
-        <td class="d-none d-sm-table-cell">
-            TOPLAM
-        </td>
-        <td class="d-none d-sm-table-cell">
-        </td>
+        <td class="d-none d-sm-table-cell"><p>TOPLAM</p></td>
+        <td class="d-none d-sm-table-cell"></td>
         <td>
-            <?php echo money_format(sum_anything("payment", "E", "contract_id", $item->id)); ?>
-            <?php echo "$item->para_birimi"; ?>
+            <p><?php echo money_format(sum_anything("payment", "E", "contract_id", $item->id)); ?> <?php echo "$item->para_birimi"; ?></p>
         </td>
         <td class="d-none d-sm-table-cell">
-            <?php echo money_format(sum_anything("payment", "balance", "contract_id", $item->id)); ?>
-
-            <?php echo "$item->para_birimi"; ?>
+            <p><?php echo money_format(sum_anything("payment", "balance", "contract_id", $item->id)); ?> <?php echo "$item->para_birimi"; ?></p>
         </td>
     </tr>
     </tfoot>
 </table>
-
