@@ -47,7 +47,7 @@ class Collection extends CI_Controller
         $this->List_Folder = "list";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
-        
+
         $this->Common_Files = "common";
     }
 
@@ -141,7 +141,7 @@ class Collection extends CI_Controller
             )
         );
 
-        
+
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
 
@@ -376,6 +376,7 @@ class Collection extends CI_Controller
             $advances = $this->Advance_model->get_all(array('contract_id' => $contract->id));
             $bonds = $this->Bond_model->get_all(array('contract_id' => $contract->id));
             $costincs = $this->Costinc_model->get_all(array('contract_id' => $contract->id));
+            $site = $this->Site_model->get(array('contract_id' => $contract->id));
             $extimes = $this->Extime_model->get_all(array('contract_id' => $contract->id));
             $main_bond = $this->Bond_model->get(array('contract_id' => $contract->id, 'teminat_gerekce' => 'contract'));
             $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
@@ -395,6 +396,7 @@ class Collection extends CI_Controller
                 $viewData->subViewFolder = "display";
             }
 
+            $viewData->site = $site;
             $viewData->companys = $companys;
             $viewData->project = $project;
             $viewData->upload_function = $upload_function;
@@ -564,7 +566,7 @@ class Collection extends CI_Controller
                 )
             );
 
-            
+
 
             $viewData->contract_id = $contract_id;
             $viewData->project_id = $project_id;

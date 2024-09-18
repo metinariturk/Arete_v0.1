@@ -14,10 +14,8 @@
 
                         <li>
                             <span class="num"><?php echo $prices_main_group->code; ?>.<?php echo $sub_group->code; ?></span>
-                            <a href="#"><?php echo upper_tr($sub_group->name); ?>
-                                <a href="<?php echo base_url("contract/add_contract_price/$sub_group->id"); ?>">
-                                     <i class="fa fa-plus-circle fa-lg"></i>
-                                </a>
+                            <a href="<?php echo base_url("contract/add_contract_price/$sub_group->id"); ?>">
+                                <?php echo upper_tr($sub_group->name); ?> <i class="fa fa-plus-circle fa-lg"></i>
                             </a>
                             <ol>
                                 <?php
@@ -28,10 +26,7 @@
                                             <span class="num"><?php echo $boq_item->code; ?></span>
                                             <span><?php echo $boq_item->name; ?>
                                                 - <?php echo $boq_item->unit; ?></span>
-                                            <a onclick="delete_price_item(this)" id="<?php echo $boq_item->id; ?>">
-                                                <i  class="fa fa-minus-circle fa-lg"
-                                                   aria-hidden="true"></i>
-                                            </a>
+
                                         </li>
                                     <?php } ?>
                                 <?php } ?>

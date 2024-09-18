@@ -1,18 +1,42 @@
-<script src="<?php echo base_url("assets"); ?>/js/jquery.repeater.js"></script><!--Form Inputs-->
+<?php
+// Modül adları ve karşılık gelen tab ve modal ID'lerini tanımlayın
+$tabMapping = [
+    "Payment"           => ['tab' => '#pills-payments-tab',         'modal' => '#modalPayment'],
+    "Collection"        => ['tab' => '#pills-collection-tab',       'modal' => '#modalCollection'],
+    "Advance"           => ['tab' => '#pills-advance-tab',          'modal' => '#modalAdvance'],
+    "Update"            => ['tab' => '#pills-info-tab',             'modal' => '#updateFormModal'],
+    "Bond"              => ['tab' => '#pills-bond-tab',             'modal' => '#modalBond'],
+    "Price"             => ['tab' => '#pills-price-tab',            'modal' => null],
+    "Contract_price"    => ['tab' => '#pills-contract_price-tab',   'modal' => null]
+];
 
-<script src="<?php echo base_url("assets"); ?>/js/datepicker/date-picker/datepicker.js"></script><!--Form Inputs-->
-<script src="<?php echo base_url("assets"); ?>/js/datepicker/date-picker/datepicker.en.js"></script><!--Form Inputs-->
-<script src="<?php echo base_url("assets"); ?>/js/datepicker/date-picker/datepicker.custom.js"></script><!--Form Inputs-->
-<!-- Plugins JS start-->
+// Aktif modül için tab ve modal ayarlarını belirleyin
+$activeTab = isset($tabMapping[$active_module]) ? $tabMapping[$active_module]['tab'] : null;
+$activeModal = isset($tabMapping[$active_module]) ? $tabMapping[$active_module]['modal'] : null;
+?>
 
-<script src="<?php echo base_url("assets"); ?>/js/tooltip-init.js"></script>
-<!-- Plugins JS Ends-->
-<!-- scrollbar js-->
-<script src="<?php echo base_url("assets"); ?>/js/scrollbar/simplebar.js"></script>
-<script src="<?php echo base_url("assets"); ?>/js/scrollbar/custom.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tabId = '<?php echo $activeTab; ?>';
+        var modalId = '<?php echo $activeModal; ?>';
+        var errorForm = '<?php echo $form_error; ?>';
 
-<script src="<?php echo base_url("assets"); ?>/js/editor/ckeditor/ckeditor.js"></script>
+        // Tab'ı göster
+        if (tabId) {
+            var tabTrigger = new bootstrap.Tab(document.querySelector(tabId));
+            tabTrigger.show();
+        }
 
+        // Modal'ı göster (sadece modalId null değilse)
+        if (errorForm === '1' && modalId && modalId !== 'null') {
+            if ($(modalId).length) {
+                $(modalId).modal('show');
+            } else {
+                console.error('Modal not found:', modalId);
+            }
+        }
+    });
+</script>
 
 <script> function enable() {
         document.getElementById("change").disabled = false;
@@ -671,21 +695,6 @@
     }
 </script>
 
-<script>
-    // Checkbox öğesini seçiyoruz
-    var checkbox = document.getElementById("toggleCheckbox");
-
-    // Checkbox durumunu takip ediyoruz
-    checkbox.addEventListener("change", function () {
-        // Tüm input öğelerini seçiyoruz
-        var inputElements = document.querySelectorAll("input[type='text']");
-
-        // Checkbox işaretlendiğinde veya kaldırıldığında tüm input öğelerini etkinleştir veya devre dışı bırak
-        for (var i = 0; i < inputElements.length; i++) {
-            inputElements[i].disabled = !checkbox.checked;
-        }
-    });
-</script>
 <script>
     function save_leader(formId) {
         event.preventDefault(); // Formun normal submit edilmesini engeller
