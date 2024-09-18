@@ -39,9 +39,10 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
     <div class="mt-4">
         <h6>SÜREYE GÖRE İLERLEME</h6>
         <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <?= ($elapsed_Day / $total_day) * 100; ?>%;"
+            <div class="progress-bar" role="progressbar"
+                 style="width: <?= ($total_day != 0) ? ($elapsed_Day / $total_day) * 100 : 0; ?>%;"
                  aria-valuenow="<?= $elapsed_Day; ?>" aria-valuemin="0" aria-valuemax="<?= $total_day; ?>">
-                <?= round(($elapsed_Day / $total_day) * 100, 2); ?>%
+                <?= ($total_day != 0) ? round(($elapsed_Day / $total_day) * 100, 2) : 0; ?>%
             </div>
         </div>
         <p>Geçen Süre: <?= $elapsed_Day; ?> Gün | Kalan Süre: <?= $remain_day; ?> Gün</p>
@@ -77,35 +78,35 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
         <h6>FİNANSAL İLERLEME</h6>
         <div class="progress">
             <div class="progress-bar" role="progressbar"
-                 style="width: <?= ($total_payment / $item->sozlesme_bedel) * 100; ?>%;"
+                 style="width: <?= ($item->sozlesme_bedel != 0) ? ($total_payment / $item->sozlesme_bedel) * 100 : 0; ?>%;"
                  aria-valuenow="<?= $total_payment; ?>" aria-valuemin="0" aria-valuemax="<?= $item->sozlesme_bedel; ?>">
-                <?= round(($total_payment / $item->sozlesme_bedel) * 100, 2); ?>%
+                <?= ($item->sozlesme_bedel != 0) ? round(($total_payment / $item->sozlesme_bedel) * 100, 2) : 0; ?>%
             </div>
         </div>
         <p>Toplam Hakediş: <?= money_format($total_payment); ?> <?php echo $item->para_birimi; ?> / Sözleşme
             Bedeli: <?= money_format($item->sozlesme_bedel); ?> <?php echo $item->para_birimi; ?></p>
     </div>
-    <?php if ($advance_given>0) { ?>
+
     <div class="mt-4">
         <h6>AVANS İLERLEME</h6>
         <div class="progress">
             <div class="progress-bar" role="progressbar"
-                 style="width: <?= ($advance_admission / $advance_given) * 100; ?>%;"
+                 style="width: <?= ($advance_given != 0) ? ($advance_admission / $advance_given) * 100 : 0; ?>%;"
                  aria-valuenow="<?= $advance_admission; ?>" aria-valuemin="0" aria-valuemax="<?= $advance_given; ?>">
-                <?= round(($advance_admission / $advance_given) * 100, 2); ?>%
+                <?= ($advance_given != 0) ? round(($advance_admission / $advance_given) * 100, 2) : 0; ?>%
             </div>
         </div>
         <p>Mahsup Edilen: <?= money_format($advance_admission); ?> <?php echo $item->para_birimi; ?> / Verilen Avans: <?= money_format($advance_given); ?> <?php echo $item->para_birimi; ?></p>
     </div>
-    <?php } ?>
 
     <div class="mt-4">
         <h6>ÖDEME DURUMU</h6>
         <div class="progress">
             <div class="progress-bar" role="progressbar"
-                 style="width: <?= ($total_collection / $total_payment) * 100; ?>%;"
+                 style="width: <?= ($total_payment != 0) ? ($total_collection / $total_payment) * 100 : 0; ?>%;"
                  aria-valuenow="<?= $total_collection; ?>" aria-valuemin="0" aria-valuemax="<?= $total_payment; ?>">
-                <?= round(($total_collection / $total_payment) * 100, 2); ?> <?php echo $item->para_birimi; ?>%
+                <?= ($total_payment != 0) ? round(($total_collection / $total_payment) * 100, 2) : 0; ?>
+                <?php echo $item->para_birimi; ?>%
             </div>
         </div>
         <p>Toplam Ödeme: <?= money_format($total_collection); ?><?php echo $item->para_birimi; ?> / Toplam
