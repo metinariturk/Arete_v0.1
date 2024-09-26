@@ -26184,7 +26184,8 @@ body.dark-only .apexcharts-tooltip.light .apexcharts-tooltip-title {
 }
 
 body.dark-only .card {
-    background-color: #262932
+    background-color: #262932; /* Koyu arka plan rengi */
+    color: #a7a8ac; /* Açık mavi metin rengi */
 }
 
 body.dark-only .ecommerce-widget {

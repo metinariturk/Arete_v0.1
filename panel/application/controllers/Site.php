@@ -432,7 +432,7 @@ class Site extends CI_Controller
         $settings = $this->Settings_model->get();
 
 
-        $reports = $this->Report_model->get_all(array("site_id" => $id), "report_date DESC");
+        $reports = $this->Report_model->get_all(array("site_id" => $id));
 
         $contractor_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "contractor_sign"));
         $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "contractor_staff"));

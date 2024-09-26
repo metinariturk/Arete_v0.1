@@ -192,7 +192,7 @@
       <workItem from="1726932208338" duration="10666000" />
       <workItem from="1727097830421" duration="13560000" />
       <workItem from="1727209119058" duration="5597000" />
-      <workItem from="1727373939284" duration="2996000" />
+      <workItem from="1727373939284" duration="12649000" />
     </task>
     <servers />
   </component>
@@ -246,6 +246,15 @@
             <option name="methodName" value="fileDelete_java" />
           </properties>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Export.php</url>
+          <line>556</line>
+          <properties>
+            <option name="className" value="\Export" />
+            <option name="methodName" value="group_download_excel" />
+          </properties>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

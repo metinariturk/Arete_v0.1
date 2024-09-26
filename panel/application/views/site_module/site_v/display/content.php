@@ -14,8 +14,8 @@ $tabs = [
         'active' => false,
         'view' => 'tab_2_report',
         'new_form' => 'report/new_form/',
-        'excel' => 'export/',
-        'pdf' => 'export/'
+        'excel' => 'export/report_download_excel',
+        'pdf' => 'export/report_download_pdf'
     ],
     [
         'id' => 'tab3',

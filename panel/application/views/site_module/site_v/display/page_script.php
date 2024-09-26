@@ -67,12 +67,12 @@
                     data: {
                         id: stockId // Silinecek stok ID'sini gönder
                     },
-                    success: function(response) {
+                    success: function (response) {
                         alert("başarılı silindi");
                         // tab_3_sitestock div'ini yenile
                         $('#tab_3_sitestock').html(response);
                     },
-                    error: function() {
+                    error: function () {
                         Swal.fire({
                             title: 'Hata',
                             text: 'Silme işlemi sırasında bir hata oluştu.',
@@ -106,4 +106,54 @@
             confirmButtonText: 'Tamam'
         });
     }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#report_table').DataTable({
+            "columnDefs": [
+                { "type": "date", "targets": [1] } // Burada 1, "report_date" sütununun index numarasıdır
+            ],
+            "order": [[1, "desc"]], // İstenilen sıralama
+            language: {
+                "sEmptyTable":     "Hiç kayıt yok",
+                "sInfo":           "_TOTAL_ kayıttan _START_ - _END_ arası gösteriliyor",
+                "sInfoEmpty":      "Kayıt yok",
+                "sInfoFiltered":   "(_MAX_ kayıt içinden filtrelendi)",
+                "sLengthMenu":     "Sayfa başına _MENU_ kayıt",
+                "sLoadingRecords": "Yükleniyor...",
+                "sProcessing":     "İşleniyor...",
+                "sSearch":         "Ara:",
+                "sZeroRecords":    "Eşleşen kayıt bulunamadı",
+                "oPaginate": {
+                    "sFirst":      "İlk",
+                    "sLast":       "Son",
+                    "sNext":       "Sonraki",
+                    "sPrevious":   "Önceki"
+                },
+                "oAria": {
+                    "sSortAscending":  ": artan sıralamak için aktif hale getir",
+                    "sSortDescending": ": azalan sıralamak için aktif hale getir"
+                }
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#stock-table').DataTable({
+
+            "responsive": true, // Mobil uyumluluk
+            "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
+            "language": {
+                "search": "Ara:",
+                "lengthMenu": "Göster _MENU_ kayıt",
+                "info": "_TOTAL_ kayıt arasından _START_ - _END_ arası gösteriliyor",
+                "paginate": {
+                    "next": "Sonraki",
+                    "previous": "Önceki"
+                }
+            }
+        });
+    });
 </script>

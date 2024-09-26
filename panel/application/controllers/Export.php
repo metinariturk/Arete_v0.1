@@ -61,6 +61,8 @@ class Export extends CI_Controller
         $this->load->model("Site_model");
         $this->load->model("User_model");
         $this->load->model("Sitestock_model");
+        $this->load->model("Report_workgroup_model");
+        $this->load->model("Report_workmachine_model");
 
         // Modül bilgileri
         $this->Module_Name = "Contract";
@@ -773,7 +775,7 @@ class Export extends CI_Controller
             $rowNum++; // Boş satır için bir satır ekleyelim (isteğe bağlı)
         }
 
-        $filename = "$contract->contract_name"." Sözleşme Grup İcmali.xlsx";
+        $filename = "$contract->contract_name" . " Sözleşme Grup İcmali.xlsx";
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
@@ -1023,7 +1025,6 @@ class Export extends CI_Controller
             ],
         ]);
         $rowNum++;
-
 
 
 // Başlangıç satır numarasını belirleyelim
@@ -1394,7 +1395,7 @@ class Export extends CI_Controller
             }
         }
 
-        $filename = "$contract->contract_name"."- Poz Listesi (Gruplara Göre).xlsx";
+        $filename = "$contract->contract_name" . "- Poz Listesi (Gruplara Göre).xlsx";
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
@@ -1457,7 +1458,6 @@ class Export extends CI_Controller
             foreach ($sub_groups as $sub_group) {
 
 
-
                 $pdf->SetFont('dejavusans', 'B', 8);
                 $pdf->SetFillColor(208, 206, 206);
                 $pdf->SetTextColor(0, 0, 0);
@@ -1481,7 +1481,7 @@ class Export extends CI_Controller
                     $pdf->Cell(10, 6, $index + 1, 1);
                     $pdf->Cell(20, 6, $boq_item->code, 1);
                     $pdf->Cell(123, 6, $boq_item->name, 1);
-                    $pdf->Cell(12, 6, $boq_item->unit, 1,"","C");
+                    $pdf->Cell(12, 6, $boq_item->unit, 1, "", "C");
                     $pdf->Cell(20, 6, number_format($boq_item->price, 2), 1, 0, 'R');
                     $pdf->Ln();
 
@@ -1492,10 +1492,9 @@ class Export extends CI_Controller
 
         // PDF'yi gönder
 
-        $filename =  "$contract->contract_name"."- Poz Listesi (Gruplara Göre).pdf";
+        $filename = "$contract->contract_name" . "- Poz Listesi (Gruplara Göre).pdf";
         $pdf->Output($filename, 'I');
     }
-
 
 
     public function contract_price_download_excel($contract_id)
@@ -1832,7 +1831,6 @@ class Export extends CI_Controller
             foreach ($sub_groups as $sub_group) {
 
 
-
                 $pdf->SetFont('dejavusans', 'B', 8);
                 $pdf->SetFillColor(208, 206, 206);
                 $pdf->SetTextColor(0, 0, 0);
@@ -1858,7 +1856,7 @@ class Export extends CI_Controller
                     $pdf->Cell(10, 6, $index + 1, 1);
                     $pdf->Cell(20, 6, $boq_item->code, 1);
                     $pdf->Cell(90, 6, $boq_item->name, 1);
-                    $pdf->Cell(12, 6, $boq_item->unit, 1,"","C");
+                    $pdf->Cell(12, 6, $boq_item->unit, 1, "", "C");
                     $pdf->Cell(12, 6, number_format($boq_item->qty, 2), 1, 0, 'C');
                     $pdf->Cell(20, 6, number_format($boq_item->price, 2), 1, 0, 'R');
                     $total = $boq_item->qty * $boq_item->price;
@@ -1870,7 +1868,7 @@ class Export extends CI_Controller
 
                 // Alt grup toplamını yazma
                 $pdf->SetFont('dejavusans', 'B', 8);
-                $pdf->Cell(164, 6, 'TOPLAM', 1,"0","R");
+                $pdf->Cell(164, 6, 'TOPLAM', 1, "0", "R");
                 $pdf->Cell(21, 6, number_format($sub_group_total, 2), 1, 0, 'R');
                 $pdf->Ln();
                 $pdf->Ln();
@@ -1935,8 +1933,7 @@ class Export extends CI_Controller
         $rowNum = 2;
 
 
-
-        $sheet->setCellValue("H{$rowNum}", "Tarih :".dateFormat_dmy($contract->sozlesme_tarih));
+        $sheet->setCellValue("H{$rowNum}", "Tarih :" . dateFormat_dmy($contract->sozlesme_tarih));
         $sheet->getStyle("H{$rowNum}")->applyFromArray([
             'font' => [
                 'bold' => true,       // Yazıyı koyu yap
@@ -1976,7 +1973,7 @@ class Export extends CI_Controller
         $rowNum++;
 
         $sheet->mergeCells("B{$rowNum}:H{$rowNum}");  // B-F sütunları birleştirildi
-        $sheet->setCellValue("B{$rowNum}", "İşin Adı : ".$site->santiye_ad);
+        $sheet->setCellValue("B{$rowNum}", "İşin Adı : " . $site->santiye_ad);
         $sheet->getStyle("B{$rowNum}:H{$rowNum}")->applyFromArray([
             'font' => [
                 'bold' => true,       // Yazıyı koyu yap
@@ -2065,9 +2062,7 @@ class Export extends CI_Controller
         }
 
 
-
-
-        $filename = "$site->santiye_ad"."- Depo Stok Raporu.xlsx";
+        $filename = "$site->santiye_ad" . "- Depo Stok Raporu.xlsx";
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
@@ -2142,10 +2137,10 @@ class Export extends CI_Controller
             // Stok verilerini tabloya ekle
             $pdf->Cell(10, 6, $i++, 1);
             $pdf->Cell(90, 6, $site_stock->stock_name, 1);
-            $pdf->Cell(20, 6, $site_stock->unit, 1,"","C");
-            $pdf->Cell(20, 6, money_format($site_stock->stock_in), 1,"","R");
-            $pdf->Cell(20, 6, money_format($kalan), 1,"","R");
-            $pdf->Cell(25, 6, dateFormat_dmy($site_stock->arrival_date), 1,"","C");
+            $pdf->Cell(20, 6, $site_stock->unit, 1, "", "C");
+            $pdf->Cell(20, 6, money_format($site_stock->stock_in), 1, "", "R");
+            $pdf->Cell(20, 6, money_format($kalan), 1, "", "R");
+            $pdf->Cell(25, 6, dateFormat_dmy($site_stock->arrival_date), 1, "", "C");
             $pdf->Cell(90, 6, !empty($site_stock->from) ? site_name($site_stock->from) . ' Şantiyesinden Transfer' : $site_stock->notes, 1, 1);
 
             // Hareket satırlarını ekleyelim
@@ -2159,9 +2154,9 @@ class Export extends CI_Controller
                 $pdf->Cell(110, 6, 'Çıkış', 1, 0, 'R', 1); // Transparan kırmızı dolgu ile hücre
 
                 $pdf->SetAlpha(1); // Transparanlığı sıfırla (Normal opaklık)                $pdf->Cell(110, 6, 'Çıkış', 1,"","L","1");
-                $pdf->Cell(20, 6, money_format(($stock_movement->stock_out)*-1), 1,"","R");
+                $pdf->Cell(20, 6, money_format(($stock_movement->stock_out) * -1), 1, "", "R");
                 $pdf->Cell(20, 6, '', 1);
-                $pdf->Cell(25, 6, dateFormat_dmy($stock_movement->exit_date), 1,"","C");
+                $pdf->Cell(25, 6, dateFormat_dmy($stock_movement->exit_date), 1, "", "C");
                 $pdf->Cell(90, 6, $stock_movement->notes, 1, 1);
             }
         }
@@ -2170,7 +2165,207 @@ class Export extends CI_Controller
         $pdf->Output($site->santiye_ad . '- Depo Stok Raporu.pdf', 'D');
     }
 
+    public function report_download_excel($site_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
 
+
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+        $all_workgroups = $this->Report_workgroup_model->get_unique_workgroups($site->id);
+        $all_workmachines = $this->Report_workmachine_model->get_unique_workmachine($site->id);
+
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setRight(0);     // 0 cm
+
+        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+        $sheet->getStyle('A1:Z1000')->applyFromArray([
+            'font' => [
+                'size' => 8, // Yazı büyüklüğü 8 punto
+            ],
+        ]);
+
+        // Logo dosyasının yolu
+        $logoPath = realpath("assets\images\logo\logo.png");
+
+// Logo'
+//yu ekleyin
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is your logo');
+        $drawing->setPath($logoPath); // Resim dosyasının yolu
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
+        $drawing->setHeight(60); // Resmin yüksekliği (piksel)
+        $drawing->setWorksheet($sheet);
+
+
+        // Sütun genişlikleri ayarlanıyor
+        $sheet->getColumnDimension('A')->setWidth(3); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('B')->setWidth(30); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('C')->setWidth(20); // 35 piksel (yaklaşık)
+        $sheet->getColumnDimension('D')->setWidth(10); // 220 piksel (yaklaşık)
+        $sheet->getColumnDimension('E')->setWidth(10); // 45 piksel (yaklaşık)
+
+        $rowNum = 2;
+
+        $sheet->mergeCells("D{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("D{$rowNum}", "Tarih :" . dateFormat_dmy($contract->sozlesme_tarih));
+        $sheet->getStyle("D{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+
+        $sheet->mergeCells("B{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "ŞANTİYE STOK/DEPO ENVANTERİ");
+        // Satır yüksekliğini ayarlayın (örneğin, varsayılan yüksekliğin 2 katı)
+        $sheet->getRowDimension($rowNum)->setRowHeight(30); // Varsayılan 15 px olduğu varsayımıyla 30 px
+
+// Hücre stilini uygulayın
+        $sheet->getStyle("B{$rowNum}:E{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+        $sheet->mergeCells("B{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "İşin Adı : " . $site->santiye_ad);
+        $sheet->getStyle("B{$rowNum}:E{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 10,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $rowNum++;
+
+        $sheet->setCellValue("B{$rowNum}", 'Çalışma Grubu / Makinesi');
+        $sheet->setCellValue("C{$rowNum}", 'Toplam Çalışan Sayısı');
+
+        $rowNum++;
+
+// Verileri ekle
+
+// Çalışma Gruplarını ekle
+        foreach ($all_workgroups as $subgroup) {
+            $sheet->setCellValue('B' . $rowNum, htmlspecialchars(group_name($subgroup['workgroup'])));
+            $sheet->setCellValue('C' . $rowNum, sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']));
+            $rowNum++;
+        }
+
+// Çalışma Makinelerini ekle
+        foreach ($all_workmachines as $submachine) {
+            $sheet->setCellValue('B' . $rowNum, htmlspecialchars(machine_name($submachine['workmachine'])));
+            $sheet->setCellValue('C' . $rowNum, sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']));
+            $rowNum++;
+        }
+
+
+        $filename = "$site->santiye_ad" . "- Şantiye Çalışma Raporu.xlsx";
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
+    public function report_download_pdf($site_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+        $all_workgroups = $this->Report_workgroup_model->get_unique_workgroups($site->id);
+        $all_workmachines = $this->Report_workmachine_model->get_unique_workmachine($site->id);
+
+        $this->load->library('pdf_creator');
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->SetPageOrientation('P');
+
+        // PDF Bilgilerini ayarla
+        $pdf->SetAuthor('Şirket İsmi');
+        $pdf->SetTitle('Depo Stok Raporu');
+        $pdf->SetSubject('Stok');
+        $pdf->SetKeywords('stok, depo, envanter, rapor');
+
+        // Margin ayarları
+        $pdf->SetMargins(10, 6, 10);
+        $pdf->SetAutoPageBreak(TRUE, 10);
+
+        // Sayfa ekle
+        $pdf->AddPage();
+
+
+        // Yazı tipi ayarla
+        $pdf->SetFont('dejavusans', 'B', 12);
+
+        // Başlık
+        $pdf->Cell(0, 6, 'ŞANTİYE STOK/DEPO ENVANTERİ', 0, 1, 'C');
+
+        // Sözleşme Bilgileri
+        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->Cell(30, 6, 'Tarih: ' . dateFormat_dmy($contract->sozlesme_tarih), 0, 1);
+        $pdf->Cell(30, 6, 'İşin Adı: ' . $site->santiye_ad, 0, 1);
+
+        // Boşluk bırak
+        $pdf->Ln(10);
+
+        // Tablo başlıkları
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(80, 10, 'Çalışma Grubu / Makinesi', 1, 0, 'C');
+        $pdf->Cell(80, 10, 'Toplam Çalışan Sayısı', 1, 1, 'C');
+
+        // Verileri ekle
+        $pdf->SetFont('helvetica', '', 10);
+
+        // Çalışma Gruplarını ekle
+        foreach ($all_workgroups as $subgroup) {
+            $pdf->Cell(80, 10, htmlspecialchars(group_name($subgroup['workgroup'])), 1);
+            $pdf->Cell(80, 10, sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']), 1, 1);
+        }
+
+        // Çalışma Makinelerini ekle
+        foreach ($all_workmachines as $submachine) {
+            $pdf->Cell(80, 10, htmlspecialchars(machine_name($submachine['workmachine'])), 1);
+            $pdf->Cell(80, 10, sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']), 1, 1);
+        }
+
+        // PDF dosyasını oluştur ve kullanıcıya gönder
+        $pdf->Output($site->santiye_ad . '- Depo Stok Raporu.pdf', 'D');
+    }
 }
 
 
