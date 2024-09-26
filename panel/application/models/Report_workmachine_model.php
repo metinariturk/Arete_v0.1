@@ -45,4 +45,13 @@ class Report_workmachine_model extends CI_Model
         return $this->db->where($where)->delete($this->tableName);
     }
 
+    public function get_unique_workmachine($site_id) {
+        $this->db->distinct();
+        $this->db->select('workmachine');
+        $this->db->from('report_workmachine');
+        $this->db->where('site_id', $site_id);
+        $query = $this->db->get();
+        return $query->result_array(); // Dizi döndür
+    }
+
 }

@@ -311,6 +311,7 @@ class Site extends CI_Controller
         }
 
     }
+
     public function sitewallet($site_id, $type)
     {
         if ($this->input->post("expense_date")) {
@@ -404,6 +405,8 @@ class Site extends CI_Controller
         );
 
         $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $sites = $this->Site_model->get_all(array("is_Active" => 1));
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
 
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/main/";
@@ -459,6 +462,12 @@ class Site extends CI_Controller
             'main_category' => 1
         ));
 
+        $all_workroups = $this->Report_workgroup_model->get_unique_workgroups($id);
+        $all_workmachines = $this->Report_workmachine_model->get_unique_workmachine($id);
+        $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+        $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
+        $users = $this->User_model->get_all(array());
+
 
         $month = date('n');
         $year = date('Y');
@@ -470,31 +479,38 @@ class Site extends CI_Controller
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->path = $path;
         $viewData->upload_function = $upload_function;
-        $viewData->reports = $reports;
-        $viewData->site_stocks = $site_stocks;
         $viewData->active_tab = $active_tab;
-        $viewData->settings = $settings;
-        $viewData->all_expenses = $all_expenses;
+
         $viewData->all_deposites = $all_deposites;
-        $viewData->personel_datas = $personel_datas;
+        $viewData->all_expenses = $all_expenses;
+        $viewData->all_workgroups = $all_workroups;
+        $viewData->all_workmachines = $all_workmachines;
+        $viewData->contract = $contract;
+        $viewData->contractor_sign = $contractor_sign;
+        $viewData->contractor_staff = $contractor_staff;
+        $viewData->sites = $sites;
+        $viewData->fav = $fav;
+        $viewData->item = $item;
         $viewData->main_categories = $main_categories;
         $viewData->main_categories_workmachine = $main_categories_workmachine;
-        $viewData->item = $item;
         $viewData->month = $month;
-        $viewData->year = $year;
+        $viewData->owner_sign = $owner_sign;
+        $viewData->owner_staff = $owner_staff;
+        $viewData->personel_datas = $personel_datas;
+        $viewData->project = $project;
         $viewData->puantaj = $puantaj;
         if (!empty($puantaj->puantaj)) {
             $viewData->puantaj_data = json_decode($puantaj->puantaj, true);
         }
-        $viewData->contractor_sign = $contractor_sign;
-        $viewData->contractor_staff = $contractor_staff;
-        $viewData->owner_sign = $owner_sign;
-        $viewData->owner_staff = $owner_staff;
+        $viewData->reports = $reports;
+        $viewData->settings = $settings;
+        $viewData->site_stocks = $site_stocks;
+        $viewData->total_expense = $total_expense;
+        $viewData->total_deposit = $total_deposit;
+        $viewData->users = $users;
         $viewData->workgroups = json_decode($item->active_group, true);
-        $viewData->all_workgroups = $this->Report_workgroup_model->get_unique_workgroups($id);
         $viewData->workmachines = json_decode($item->active_machine, true);
-        $viewData->fav = $fav;
-
+        $viewData->year = $year;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -656,6 +672,7 @@ class Site extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
+
     public function fileDelete_java($id)
     {
         if (!isAdmin()) {
@@ -673,6 +690,7 @@ class Site extends CI_Controller
 
         unlink("$path/$fileName");
     }
+
     public function expense_delete($expense_id)
     {
 
@@ -733,6 +751,7 @@ class Site extends CI_Controller
             return TRUE;
         }
     }
+
     public function site_contractday($sitedal_day, $contract_day)
     {
         $date_diff = date_minus($sitedal_day, $contract_day);
@@ -742,6 +761,7 @@ class Site extends CI_Controller
             return TRUE;
         }
     }
+
     public function add_group($site_id, $group_id)
     {
 
@@ -790,6 +810,7 @@ class Site extends CI_Controller
         echo $render_html;
 
     }
+
     public function delete_group($site_id, $group_id)
     {
 
@@ -843,6 +864,7 @@ class Site extends CI_Controller
         echo $render_html;
 
     }
+
     public function add_machine_group($site_id, $machine_id)
     {
 
@@ -894,6 +916,7 @@ class Site extends CI_Controller
         echo $render_html;
 
     }
+
     public function delete_machine_group($site_id, $machine_id)
     {
 
@@ -1183,6 +1206,7 @@ class Site extends CI_Controller
             );
         }
     }
+
     public function add_stock($site_id)
     {
         $site = $this->Site_model->get(array("id" => $site_id));
@@ -1239,7 +1263,6 @@ class Site extends CI_Controller
             );
             $this->session->set_flashdata("alert", $alert);
 
-
             $viewData = new stdClass();
             /** Tablodan Verilerin Getirilmesi.. */
             $item = $this->Site_model->get(array("id" => $site_id));
@@ -1251,9 +1274,9 @@ class Site extends CI_Controller
             $viewData->subViewFolder = "display";
             $viewData->item = $item;
             $viewData->site_stocks = $site_stocks;
-            $viewData->form_error = true;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/stock_list", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+
         } else {
 
             $alert = array(
@@ -1263,7 +1286,6 @@ class Site extends CI_Controller
             );
 
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
-
 
             $this->session->set_flashdata("alert", $alert);
 
@@ -1279,46 +1301,131 @@ class Site extends CI_Controller
             $viewData->site_stocks = $site_stocks;
             $viewData->form_error = true;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/stock_list", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
         }
     }
+
     public function exit_stock($site_id)
     {
-
+        // Verilerin getirilmesi
+        $item = $this->Site_model->get(array("id" => $site_id));
+        $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
+        $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
         $this->load->library("form_validation");
 
         $this->form_validation->set_rules('stock_out', 'Çıkan Miktar', 'numeric');
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
-                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
-            )
-        );
+        $this->form_validation->set_message(array(
+            "required" => "<b>{field}</b> alanı doldurulmalıdır",
+            "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+            "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+        ));
 
         $validate = $this->form_validation->run();
 
         if ($validate) {
+            // Çıkış tarihi alınıyor, format doğru değilse null atanıyor
+            $exit_date = dateFormat('Y-m-d', $this->input->post("exit_date"));
 
-            if ($this->input->post("exit_date")) {
-                $exit_date = dateFormat('Y-m-d', $this->input->post("exit_date"));
+            $insert = $this->Sitestock_model->add(array(
+                "site_id" => $site_id,
+                "parent_id" => $this->input->post('stock_id'),
+                "notes" => $this->input->post("notes"),
+                "stock_out" => $this->input->post("stock_out"),
+                "exit_date" => $exit_date,
+                "transfer" => $this->input->post("transfer"),
+                "createdAt" => date("Y-m-d"),
+                "createdBy" => active_user_id(),
+            ));
+
+            if ($insert) {
+                $inserted_id = $this->db->insert_id(); // Eklemeden sonra ID'yi al
+
+                // Transfer işlemi varsa, transfer edilen stoğu yeni siteye ekleme
+                if ($this->input->post("transfer")) {
+                    $transfered_item = $this->Sitestock_model->get(array("id" => $this->input->post('stock_id')));
+                    $this->Sitestock_model->add(array(
+                        "site_id" => $this->input->post("transfer"),
+                        "stock_name" => $transfered_item->stock_name,
+                        "unit" => $transfered_item->unit,
+                        "stock_in" => $this->input->post("stock_out"),
+                        "arrival_date" => $exit_date,
+                        "notes" => $this->input->post("notes"),
+                        "site_from" => $site_id,
+                        "connection" => $inserted_id, // Buraya uygun değeri ekleyin
+                        "createdAt" => date("Y-m-d"),
+                        "createdBy" => active_user_id(),
+                    ));
+                }
+
+                // Başarılı mesajı
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Kayıt başarılı bir şekilde eklendi",
+                    "type" => "success"
+                );
+                $this->session->set_flashdata("alert", $alert);
             } else {
-                $exit_date = null;
+                // Kayıt ekleme başarısızsa hata mesajı
+                $alert = array(
+                    "title" => "Hata",
+                    "text" => "Kayıt eklenirken bir hata oluştu.",
+                    "type" => "error"
+                );
+                $this->session->set_flashdata("alert", $alert);
             }
 
-            $insert = $this->Sitestock_model->add(
-                array(
-                    "site_id" => $site_id,
-                    "parent_id" => $this->input->post('stock_id'),
-                    "notes" => $this->input->post("notes"),
-                    "stock_out" => $this->input->post("stock_out"),
-                    "exit_date" => $exit_date,
-                    "createdAt" => date("Y-m-d"),
-                    "createdBy" => active_user_id()
-                    ));
+            // Görünüm için değişkenlerin set edilmesi
+            $viewData = new stdClass();
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->site_stocks = $site_stocks;
+            $viewData->item = $item;
+            $viewData->sites = $sites;
 
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+
+        } else {
+            // Başarısız form validation mesajı
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Kayıt ekleme sırasında bir problem oluştu",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+            // Hata varsa formu tekrar doldurmak için görünüm
+            $viewData = new stdClass();
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->site_stocks = $site_stocks;
+            $viewData->item = $item;
+            $viewData->sites = $sites;
+            $viewData->form_error = true;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+        }
+    }
+
+    public function delete_stock()
+    {
+        // Verilerin getirilmesi
+        $stock = $this->Sitestock_model->get(array("id" => $this->input->post("id")));
+
+
+
+        $delete_stock = $this->Sitestock_model->delete(array(
+            "id" => $stock->id,
+        ));
+
+        $delete_connected_stock = $this->Sitestock_model->delete(array(
+            "connection" => $stock->id,
+        ));
+
+
+        if ($delete_stock) {
             $alert = array(
                 "title" => "İşlem Başarılı",
                 "text" => "Kayıt başarılı bir şekilde eklendi",
@@ -1326,49 +1433,43 @@ class Site extends CI_Controller
             );
             $this->session->set_flashdata("alert", $alert);
 
+            $item = $this->Site_model->get(array("id" => $stock->site_id));
+            $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
+            $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
+            // Görünüm için değişkenlerin set edilmesi
             $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site_id));
-            $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
-            $viewData->site_stocks =$site_stocks;
+            $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
-            $viewData->sitestocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
+            $viewData->sites = $sites;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/stock_list", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
         } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-
             $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site->id));
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $item = $this->Site_model->get(array("id" => $stock->site_id));
+            $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
+            $sites = $this->Site_model->get_all(array("is_Active" => 1));
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
+            $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
-            $viewData->sitestocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
-            $viewData->form_error = true;
+            $viewData->sites = $sites;
+            $viewData->warning = "Veri Silinemedi";
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/stock_list", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+
         }
-
-
     }
 
-    public function save_personel($site_id)
+
+    public
+    function save_personel($site_id)
     {
 
         $this->load->library("form_validation");
@@ -1464,7 +1565,8 @@ class Site extends CI_Controller
 
     }
 
-    public function update_personel($worker_id, $site_id)
+    public
+    function update_personel($worker_id, $site_id)
     {
 
         $this->load->library("form_validation");
@@ -1565,7 +1667,8 @@ class Site extends CI_Controller
 
     }
 
-    public function update_personel_form()
+    public
+    function update_personel_form()
     {
 
         $workerId = $this->input->post('workerId');
@@ -1591,7 +1694,8 @@ class Site extends CI_Controller
 
     }
 
-    public function update_puantaj($site_id)
+    public
+    function update_puantaj($site_id)
     {
 
         $workerId = $this->input->post('workerId');
@@ -1676,7 +1780,8 @@ class Site extends CI_Controller
 
     }
 
-    public function puantaj_date($site_id)
+    public
+    function puantaj_date($site_id)
     {
 
         $month = date($this->input->post('month'));
@@ -1713,7 +1818,8 @@ class Site extends CI_Controller
 
     }
 
-    public function check_end_date($end_date)
+    public
+    function check_end_date($end_date)
     {
         $start_date = $this->input->post('start_date'); // Başlangıç tarihini post verisinden alın
 
@@ -1732,7 +1838,8 @@ class Site extends CI_Controller
         return TRUE; // Kontrol yapılmadı veya geçerli
     }
 
-    public function name_control($user_name)
+    public
+    function name_control($user_name)
     {
         if (preg_match('/^([a-z üğışçöÜĞİŞÇÖ])*$/i', $user_name)) {
             return TRUE;
@@ -1741,7 +1848,8 @@ class Site extends CI_Controller
         }
     }
 
-    public function puantaj_print($site_id, $month, $year)
+    public
+    function puantaj_print($site_id, $month, $year)
     {
         $month = date($month);
         $year = date($year);
@@ -1841,7 +1949,8 @@ class Site extends CI_Controller
 
     }
 
-    public function personel_print($site_id, $is_active)
+    public
+    function personel_print($site_id, $is_active)
     {
         $viewData = new stdClass();
 

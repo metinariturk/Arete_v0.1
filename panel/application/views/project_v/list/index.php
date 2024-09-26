@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <?php $this->load->view("includes/head"); ?>
+        <?php $this->load->view("includes/include_datatable_css"); ?>
+
 </head>
 <body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 
@@ -21,10 +23,7 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_form_script"); ?>
-<?php $this->load->view("{$viewFolder}/common/page_script"); ?>
-
-<script src="<?php echo base_url("assets"); ?>/js/datatable/datatables/jquery.dataTables.min.js"></script>
+<?php $this->load->view("includes/include_datatable"); ?>
 <script>
     $('#project_list').DataTable();
 </script>
@@ -39,5 +38,3 @@
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>
-
-

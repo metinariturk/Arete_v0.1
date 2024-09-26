@@ -128,10 +128,10 @@
                         <select style="width: 100%;" id="edit_leader_unit" name="leader_unit"
                                 class="form-control <?php cms_isset(form_error("leader_unit"), "is-invalid", ""); ?>"
                                 data-plugin="select2">
-                            <option value=""><p>Birimi Seçin</p></option>
+                            <option value="">Birimi Seçin</option>
                             <?php foreach ((get_as_array($settings->units)) as $unit) { ?>
                                 <option value="<?php echo $unit; ?>">
-                                    <p><?php echo $unit; ?></p>
+                                    <?php echo $unit; ?>
                                 </option>
                             <?php } ?>
                         </select>

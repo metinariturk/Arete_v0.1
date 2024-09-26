@@ -22,7 +22,6 @@
                     </div>
                 <?php } ?>
             </div>
-
             <!-- İçerikler -->
             <div class="">
                 <?php if ($item->parent == 0 || $item->parent == null) { ?>

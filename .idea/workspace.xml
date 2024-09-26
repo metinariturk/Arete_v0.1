@@ -70,7 +70,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/tabs&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/site_module/site_v/display&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -81,11 +81,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\tabs" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\includes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\controllers" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modules" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modals" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
@@ -186,6 +186,13 @@
       <workItem from="1726425012769" duration="8470000" />
       <workItem from="1726512850273" duration="185000" />
       <workItem from="1726591451326" duration="6793000" />
+      <workItem from="1726751674126" duration="7657000" />
+      <workItem from="1726771371529" duration="2613000" />
+      <workItem from="1726929236986" duration="5000" />
+      <workItem from="1726932208338" duration="10666000" />
+      <workItem from="1727097830421" duration="13560000" />
+      <workItem from="1727209119058" duration="5597000" />
+      <workItem from="1727373939284" duration="2996000" />
     </task>
     <servers />
   </component>

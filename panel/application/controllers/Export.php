@@ -60,6 +60,7 @@ class Export extends CI_Controller
         $this->load->model("Settings_model");
         $this->load->model("Site_model");
         $this->load->model("User_model");
+        $this->load->model("Sitestock_model");
 
         // Modül bilgileri
         $this->Module_Name = "Contract";
@@ -1883,6 +1884,293 @@ class Export extends CI_Controller
         $filename = 'Contract_Price_' . date('Y-m-d') . '.pdf';
         $pdf->Output($filename, 'I');
     }
+
+
+    public function sitestock_download_excel($site_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setRight(0);     // 0 cm
+
+        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+        $sheet->getStyle('A1:Z1000')->applyFromArray([
+            'font' => [
+                'size' => 8, // Yazı büyüklüğü 8 punto
+            ],
+        ]);
+
+        // Logo dosyasının yolu
+        $logoPath = realpath("assets\images\logo\logo.png");
+
+// Logo'
+//yu ekleyin
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is your logo');
+        $drawing->setPath($logoPath); // Resim dosyasının yolu
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
+        $drawing->setHeight(60); // Resmin yüksekliği (piksel)
+        $drawing->setWorksheet($sheet);
+
+
+        // Sütun genişlikleri ayarlanıyor
+        $sheet->getColumnDimension('A')->setWidth(3); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('B')->setWidth(5); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('C')->setWidth(40); // 35 piksel (yaklaşık)
+        $sheet->getColumnDimension('D')->setWidth(10); // 220 piksel (yaklaşık)
+        $sheet->getColumnDimension('E')->setWidth(10); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('F')->setWidth(10); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('G')->setWidth(10); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('H')->setWidth(40); // 65 piksel (yaklaşık)
+        $rowNum = 2;
+
+
+
+        $sheet->setCellValue("H{$rowNum}", "Tarih :".dateFormat_dmy($contract->sozlesme_tarih));
+        $sheet->getStyle("H{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+        // Sözleşme ve ana grup bilgilerini al
+        $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
+
+        $sheet->mergeCells("B{$rowNum}:H{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "ŞANTİYE STOK/DEPO ENVANTERİ");
+        // Satır yüksekliğini ayarlayın (örneğin, varsayılan yüksekliğin 2 katı)
+        $sheet->getRowDimension($rowNum)->setRowHeight(30); // Varsayılan 15 px olduğu varsayımıyla 30 px
+
+// Hücre stilini uygulayın
+        $sheet->getStyle("B{$rowNum}:H{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+        $sheet->mergeCells("B{$rowNum}:H{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "İşin Adı : ".$site->santiye_ad);
+        $sheet->getStyle("B{$rowNum}:H{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 10,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $rowNum++;
+        $rowNum++;
+
+
+        $sheet->setCellValue("B{$rowNum}", '#');
+        $sheet->setCellValue("C{$rowNum}", 'Stok Adı');
+        $sheet->setCellValue("D{$rowNum}", 'Birim');
+        $sheet->setCellValue("E{$rowNum}", 'Gelen Miktar');
+        $sheet->setCellValue("F{$rowNum}", 'Kalan Miktar');
+        $sheet->setCellValue("G{$rowNum}", 'İşlem Tarihi');
+        $sheet->setCellValue("H{$rowNum}", 'Açıklama');
+
+        $sheet->getStyle("B{$rowNum}:H{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ]);
+        $rowNum++; // Sonraki satıra geçiyoruz
+
+        $i = 1;
+        foreach ($site_stocks as $site_stock) {
+            $kalan = $site_stock->stock_in - sum_anything("sitestock", "stock_out", "parent_id", "$site_stock->id");
+
+            // Verileri Excel'e ekleyelim
+            $sheet->setCellValue("B{$rowNum}", $i++); // İşlem kısmı
+            $sheet->setCellValue("C{$rowNum}", $site_stock->stock_name); // Stok Adı
+            $sheet->setCellValue("D{$rowNum}", $site_stock->unit); // Birim
+            $sheet->setCellValue("E{$rowNum}", $site_stock->stock_in); // Miktarı
+            $sheet->setCellValue("F{$rowNum}", number_format($kalan)); // Kalan
+            $sheet->setCellValue("G{$rowNum}", dateFormat_dmy($site_stock->arrival_date)); // Tarihi
+            $sheet->setCellValue("H{$rowNum}", !empty($site_stock->from) ? site_name($site_stock->from) . ' Şantiyesinden Transfer' : $site_stock->notes); // Açıklama
+
+            // Stil ekleyelim
+            $sheet->getStyle("B{$rowNum}:H{$rowNum}")->applyFromArray([
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'],
+                    ],
+                ],
+            ]);
+
+            $rowNum++;
+
+            // Hareket satırlarını ekleyelim
+            $stock_movements = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => $site_stock->id));
+            foreach ($stock_movements as $stock_movement) {
+                $sheet->setCellValue("B{$rowNum}", $i++); // Hareket sütunları
+                $sheet->setCellValue("C{$rowNum}", ''); // Boş stok adı
+                $sheet->setCellValue("C{$rowNum}", ''); // Boş stok adı
+                $sheet->setCellValue("D{$rowNum}", ''); // Miktarı
+                $sheet->setCellValue("E{$rowNum}", '-' . $stock_movement->stock_out); // Boş kalan
+                $sheet->setCellValue("F{$rowNum}", ''); // Boş kalan
+                $sheet->setCellValue("G{$rowNum}", dateFormat_dmy($stock_movement->exit_date)); // Hareket tarihi
+                $sheet->setCellValue("H{$rowNum}", $stock_movement->notes); // Hareket açıklaması
+
+                $sheet->getStyle("B{$rowNum}:H{$rowNum}")->applyFromArray([
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+
+                $rowNum++;
+            }
+        }
+
+
+
+
+        $filename = "$site->santiye_ad"."- Depo Stok Raporu.xlsx";
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
+    public function sitestock_download_pdf($site_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+
+        $this->load->library('pdf_creator');
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->SetPageOrientation('L');
+
+        // PDF Bilgilerini ayarla
+        $pdf->SetAuthor('Şirket İsmi');
+        $pdf->SetTitle('Depo Stok Raporu');
+        $pdf->SetSubject('Stok');
+        $pdf->SetKeywords('stok, depo, envanter, rapor');
+
+        // Margin ayarları
+        $pdf->SetMargins(10, 6, 10);
+        $pdf->SetAutoPageBreak(TRUE, 10);
+
+        // Sayfa ekle
+        $pdf->AddPage();
+
+
+        // Yazı tipi ayarla
+        $pdf->SetFont('dejavusans', 'B', 12);
+
+        // Başlık
+        $pdf->Cell(0, 6, 'ŞANTİYE STOK/DEPO ENVANTERİ', 0, 1, 'C');
+
+        // Sözleşme Bilgileri
+        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->Cell(30, 6, 'Tarih: ' . dateFormat_dmy($contract->sozlesme_tarih), 0, 1);
+        $pdf->Cell(30, 6, 'İşin Adı: ' . $site->santiye_ad, 0, 1);
+
+        // Boşluk bırak
+        $pdf->Ln(10);
+
+        // Tablo başlıkları
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->SetFillColor(200, 200, 200);
+        $pdf->Cell(10, 9, '#', 1, 0, 'C', 1);
+        $pdf->Cell(90, 9, 'Stok Adı', 1, 0, 'C', 1);
+        $pdf->Cell(20, 9, 'Birim', 1, 0, 'C', 1);
+        $pdf->MultiCell(20, 9, 'Gelen' . "\n" . 'Miktar', 1, 'C', 1, 0);
+        $pdf->MultiCell(20, 9, 'Kalan' . "\n" . 'Miktar', 1, 'C', 1, 0);
+        $pdf->Cell(25, 9, 'İşlem Tarihi', 1, 0, 'C', 1);
+        $pdf->Cell(90, 9, 'Açıklama', 1, 1, 'C', 1);
+
+        // Stok verilerini al
+        $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
+
+        $pdf->SetFont('dejavusans', '', 9); // Veriler için yazı tipi
+        $i = 1;
+
+        foreach ($site_stocks as $site_stock) {
+            $kalan = $site_stock->stock_in - sum_anything("sitestock", "stock_out", "parent_id", "$site_stock->id");
+
+            // Stok verilerini tabloya ekle
+            $pdf->Cell(10, 6, $i++, 1);
+            $pdf->Cell(90, 6, $site_stock->stock_name, 1);
+            $pdf->Cell(20, 6, $site_stock->unit, 1,"","C");
+            $pdf->Cell(20, 6, money_format($site_stock->stock_in), 1,"","R");
+            $pdf->Cell(20, 6, money_format($kalan), 1,"","R");
+            $pdf->Cell(25, 6, dateFormat_dmy($site_stock->arrival_date), 1,"","C");
+            $pdf->Cell(90, 6, !empty($site_stock->from) ? site_name($site_stock->from) . ' Şantiyesinden Transfer' : $site_stock->notes, 1, 1);
+
+            // Hareket satırlarını ekleyelim
+            $stock_movements = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => $site_stock->id));
+
+            foreach ($stock_movements as $stock_movement) {
+                $pdf->Cell(10, 6, $i++, 1);
+                $pdf->SetFillColor(255, 0, 0); // Kırmızı renk
+                $pdf->SetAlpha(0.2); // %50 şeffaflık
+
+                $pdf->Cell(110, 6, 'Çıkış', 1, 0, 'R', 1); // Transparan kırmızı dolgu ile hücre
+
+                $pdf->SetAlpha(1); // Transparanlığı sıfırla (Normal opaklık)                $pdf->Cell(110, 6, 'Çıkış', 1,"","L","1");
+                $pdf->Cell(20, 6, money_format(($stock_movement->stock_out)*-1), 1,"","R");
+                $pdf->Cell(20, 6, '', 1);
+                $pdf->Cell(25, 6, dateFormat_dmy($stock_movement->exit_date), 1,"","C");
+                $pdf->Cell(90, 6, $stock_movement->notes, 1, 1);
+            }
+        }
+
+        // PDF dosyasını oluştur ve kullanıcıya gönder
+        $pdf->Output($site->santiye_ad . '- Depo Stok Raporu.pdf', 'D');
+    }
+
+
 }
 
 

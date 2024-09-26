@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <?php $this->load->view("includes/head"); ?>
+    <?php $this->load->view("includes/include_datatable_css"); ?>
+
 </head>
 <body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -21,12 +23,10 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<?php $this->load->view("includes/include_datatable"); ?>
 <script>
     $('#contract_list').DataTable();
 </script>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>
-
-

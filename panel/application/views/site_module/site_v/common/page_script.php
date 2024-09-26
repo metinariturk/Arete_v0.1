@@ -306,62 +306,58 @@
 </script>
 
 <script>
+    // Tarih sıralama eklentisini tanımlama
+    $.fn.dataTable.ext.order['date-uk-reverse'] = function (data) {
+        return new Date(data).getTime(); // Negatif işareti ile büyükten küçüğe sıralama
+    };
+
     $(document).ready(function() {
-        // Handle form submission for adding stock
-        $('#addStockForm').submit(function(event) {
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                data: $(this).serialize(),
-                success: function(response) {
-                    $('#responseMessage').html(response);
-                    $('#AddStockModal').modal('hide');
-                },
-                error: function() {
-                    $('#responseMessage').html('Bir hata oluştu. Lütfen tekrar deneyin.');
+        var table = $('#report_table').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "lengthChange": true,
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/2.1.6/i18n/tr.json"
+            },
+            "columnDefs": [
+                {
+                    "targets": 0, // Tarih sütununun indeksini buraya yazın
+                    "type": "date-uk"
                 }
-            });
-        });
-
-        // Handle form submission for exiting stock
-        $('#exitStockForm').submit(function(event) {
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                data: $(this).serialize(),
-                success: function(response) {
-                    $('#responseMessage').html(response);
-                    $('#ExitModal').modal('hide');
-                },
-                error: function() {
-                    $('#responseMessage').html('Bir hata oluştu. Lütfen tekrar deneyin.');
-                }
-            });
-        });
-
-        // Show stock ID in exit modal
-        $('#ExitModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var stockId = button.data('id'); // Extract info from data-* attributes
-            $('#stock-id-display').text(stockId); // Update the modal's content
-            $('#stock_id').val(stockId);
-        });
-
-        // Reset form on modal hidden
-        $('#AddStockModal').on('hidden.bs.modal', function() {
-            $('#addStockForm')[0].reset();
-        });
-
-        $('#ExitModal').on('hidden.bs.modal', function() {
-            $('#exitStockForm')[0].reset();
-        });
-
-        // Initialize datepicker
-        $('.datepicker-here').datepicker({
-            format: 'dd-mm-yyyy',
-            language: 'tr'
+            ],
+            "order": [[0, 'desc']] // İlk sütunu büyükten küçüğe sıralama
         });
     });
 </script>
+
+<script>
+    function savePersonel(btn) {
+        var formId = "personel_form"; // doğru form ID'si olduğundan emin olun
+        var formData = new FormData(document.getElementById(formId));
+
+        var url = document.getElementById(formId).getAttribute('action');
+
+        // Send an AJAX POST request
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // Assuming the response contains the updated content
+                $(".personel_list").html(response);
+
+                // Clear input fields after successful submission
+                document.getElementById(formId).reset();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+
+

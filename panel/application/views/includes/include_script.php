@@ -1,33 +1,21 @@
-<!-- latest jquery-->
-<script src="<?php echo base_url("assets"); ?>/js/config.js"></script>
-<script src="<?php echo base_url("assets"); ?>/js/jquery-3.5.1.min.js"></script><!--Jquery-->
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="<?php echo base_url("assets"); ?>/js/jquery-3.5.1.min.js"></script>
 
-<!-- Bootstrap js-->
+<script src="<?php echo base_url("assets"); ?>/js/scrollbar/simplebar.js"></script>
+<script src="<?php echo base_url("assets"); ?>/js/scrollbar/custom.js"></script>
 
-<script src="<?php echo base_url("assets"); ?>/js/bootstrap/bootstrap.bundle.min.js"></script><!--Bootsrap Tema-->
-<script src="<?php echo base_url("assets"); ?>/js/notify/bootstrap-notify.min.js"></script><!--Bootstrap Notlar-->
-<!-- feather icon js-->
-<script src="<?php echo base_url("assets"); ?>/js/icons/feather-icon/feather.min.js"></script><!--Icon Pack-->
-<script src="<?php echo base_url("assets"); ?>/js/icons/feather-icon/feather-icon.js"></script><!--Icon Pack-->
-<script src="https://kit.fontawesome.com/c5e2f40b81.js" crossorigin="anonymous"></script>
-
-<!-- scrollbar js-->
-<script src="<?php echo base_url("assets"); ?>/js/scrollbar/simplebar.js"></script><!--Sidebar-->
-<script src="<?php echo base_url("assets"); ?>/js/scrollbar/custom.js"></script><!--Sidebar-->
-<!-- Sidebar jquery-->
-
-<script src="<?php echo base_url("assets"); ?>/js/sidebar-menu.js"></script><!--Sidebar Dropdown-->
-
-<script src="<?php echo base_url("assets"); ?>/js/fileuploader/jquery.fileuploader.js"></script><!--General Page Script -->
-
-<script src="<?php echo base_url("assets"); ?>/js/tree/jstree.min.js"></script>
-<script src="<?php echo base_url("assets"); ?>/js/tree/tree.js"></script>
-
-
+<script src="<?php echo base_url("assets"); ?>/js/sidebar-menu.js"></script>
+<script src="<?php echo base_url("assets"); ?>/js/fileuploader/jquery.fileuploader.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/script.js"></script>
 
-<?php $this->load->view("includes/alert"); ?>
+<script src="https://kit.fontawesome.com/c5e2f40b81.js" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<!-- Feather Icons -->
+<script src="<?php echo base_url("assets"); ?>/js/icons/feather-icon/feather.min.js"></script>
+<script src="<?php echo base_url("assets"); ?>/js/icons/feather-icon/feather-icon.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     function changeMode(anchor) {
@@ -51,7 +39,6 @@
     });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <script>

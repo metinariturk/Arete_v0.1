@@ -1,32 +1,22 @@
 <div class="row">
     <div class="col-12 col-md-8">
         <div class="text-center">
-            <table class="table" id="report_table">
+            <table class="table-sm" id="report_table">
                 <thead>
                 <tr>
-                    <th>Rapor Gün</th>
-                    <th>Çalışan/Makine Sayı</th>
-                    <th>İşlem</th>
+                    <th><p>Rapor Gün</p></th>
+                    <th><p>Çalışan/Makine Sayı</p></th>
+                    <th><p>İşlem</p></th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php if (!empty($reports)) { ?>
                     <?php foreach ($reports as $report) { ?>
                         <tr id="center_row">
-
                             <td>
                                 <a href="<?php echo base_url("report/file_form/$report->id"); ?>">
                                     <?php
-                                    $formatter = new IntlDateFormatter(
-                                        'tr_TR', // Locale
-                                        IntlDateFormatter::LONG, // Date format
-                                        IntlDateFormatter::NONE, // Time format
-                                        'Europe/Istanbul', // Timezone
-                                        IntlDateFormatter::GREGORIAN, // Calendar
-                                        'd MMMM yyyy EEEE' // Custom format: day month year weekday
-                                    );
-
-                                    echo $formatter->format(strtotime($report->report_date));
+                                    echo $report->report_date;
                                     ?>
                                 </a>
                             </td>
@@ -39,12 +29,13 @@
                                 </a>
                             </td>
                             <td>
-                                <div class="btn-group btn-group-pill" role="group"
-                                     aria-label="Basic example">
-                                    <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>" class="btn-download">
+                                <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
+                                    <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>"
+                                       class="btn-download">
                                         <i class="fa fa-download"></i>
                                     </a>
-                                    <a href="<?php echo base_url("report/print_report/$report->id/1/0"); ?>" class="btn-display">
+                                    <a href="<?php echo base_url("report/print_report/$report->id/1/0"); ?>"
+                                       class="btn-display">
                                         <i class="fa fa-desktop"></i>
                                     </a>
                                 </div>
@@ -65,21 +56,20 @@
                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <?php echo htmlspecialchars(group_name($subgroup['workgroup'])); ?>
                         <span class="badge bg-primary rounded-pill">
-                        <?php echo sum_anything_and("report_workgroup", "number", "site_id", $item->id, "workgroup", $subgroup['workgroup']); ?>
-                    </span>
+                            <?php echo sum_anything_and("report_workgroup", "number", "site_id", $item->id, "workgroup", $subgroup['workgroup']); ?>
+                        </span>
+                    </a>
+                <?php } ?>
+                <?php foreach ($all_workmachines as $submachine) { ?>
+                    <a href="#"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <?php echo htmlspecialchars(machine_name($submachine['workmachine'])); ?>
+                        <span class="badge bg-primary rounded-pill">
+                            <?php echo sum_anything_and("report_workmachine", "number", "site_id", $item->id, "workmachine", $submachine['workmachine']); ?>
+                        </span>
                     </a>
                 <?php } ?>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
