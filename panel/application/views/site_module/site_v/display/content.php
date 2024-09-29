@@ -30,8 +30,9 @@ $tabs = [
         'id' => 'tab4',
         'label' => 'Kasa',
         'active' => false,
+        'add_modal' => 'ExpenseModal',
         'view' => 'tab_4_sitewallet',
-         'excel' => 'export/sitestock_download_excel',
+        'excel' => 'export/sitestock_download_excel',
         'pdf' => 'sitestock_download_pdf'
     ],
     [
@@ -39,22 +40,22 @@ $tabs = [
         'label' => 'Personel',
         'active' => false,
         'view' => null,
-         'excel' => 'export/sitestock_download_excel',
+        'excel' => 'export/sitestock_download_excel',
         'pdf' => 'sitestock_download_pdf',
         'items' => [
             [
                 'id' => 'tab5-1',
                 'label' => 'Personel Liste',
                 'view' => 'tab_5_1_personel',
-                 'excel' => 'export/sitestock_download_excel',
-        'pdf' => 'sitestock_download_pdf'
+                'excel' => 'export/sitestock_download_excel',
+                'pdf' => 'sitestock_download_pdf'
             ],
             [
                 'id' => 'tab5-2',
                 'label' => 'Puantaj',
                 'view' => 'tab_5_2_puantaj',
-                 'excel' => 'export/sitestock_download_excel',
-        'pdf' => 'sitestock_download_pdf'
+                'excel' => 'export/sitestock_download_excel',
+                'pdf' => 'sitestock_download_pdf'
             ],
         ]
     ],
@@ -63,29 +64,29 @@ $tabs = [
         'label' => 'Rapor Ayarları',
         'active' => false,
         'view' => null,
-         'excel' => 'export/sitestock_download_excel',
+        'excel' => 'export/sitestock_download_excel',
         'pdf' => 'sitestock_download_pdf',
         'items' => [
             [
                 'id' => 'tab6-1',
                 'label' => 'İş Grupları',
                 'view' => 'tab_6_1_workgroup',
-                 'excel' => 'export/sitestock_download_excel',
-        'pdf' => 'sitestock_download_pdf'
+                'excel' => 'export/sitestock_download_excel',
+                'pdf' => 'sitestock_download_pdf'
             ],
             [
                 'id' => 'tab6-2',
                 'label' => 'İş Makineleri',
                 'view' => 'tab_6_2_workmachine',
-                 'excel' => 'export/sitestock_download_excel',
-        'pdf' => 'sitestock_download_pdf'
+                'excel' => 'export/sitestock_download_excel',
+                'pdf' => 'sitestock_download_pdf'
             ],
             [
                 'id' => 'tab6-3',
                 'label' => 'İmzalar',
                 'view' => 'tab_6_3_sign',
-                 'excel' => 'export/sitestock_download_excel',
-        'pdf' => 'sitestock_download_pdf'
+                'excel' => 'export/sitestock_download_excel',
+                'pdf' => 'sitestock_download_pdf'
             ],
         ]
     ]
@@ -157,7 +158,7 @@ $tabs = [
                             <?php endif; ?>
 
                             <?php if (isset($tab['new_form'])): ?>
-                                <a href="<?php echo base_url($tab['new_form']."/".$item->id); ?>">
+                                <a href="<?php echo base_url($tab['new_form'] . "/" . $item->id); ?>">
                                     <i class="fa fa-plus fa-2x text-primary me-0"></i>
                                 </a>
                             <?php endif; ?>

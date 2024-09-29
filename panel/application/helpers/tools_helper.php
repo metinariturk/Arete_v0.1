@@ -135,6 +135,33 @@ function dateFormat_dmy($givenDate = null)
     //gelen tarih verisini YY-mm-dd -> dd-mm-YYYY şekline çeviriyor
 }
 
+function YM_to_M($tarih) {
+    // Türkçe ay isimlerini ve sayıları içeren dizi
+    $aylar = array(
+        '01' => 'Ocak',
+        '02' => 'Şubat',
+        '03' => 'Mart',
+        '04' => 'Nisan',
+        '05' => 'Mayıs',
+        '06' => 'Haziran',
+        '07' => 'Temmuz',
+        '08' => 'Ağustos',
+        '09' => 'Eylül',
+        '10' => 'Ekim',
+        '11' => 'Kasım',
+        '12' => 'Aralık'
+    );
+
+    // Gelen tarih "Y-m" formatında, yılı ve ayı ayırma
+    list($yil, $ay) = explode('-', $tarih);
+
+    // Ay ismini al
+    $ayIsmi = $aylar[$ay];
+
+    // Sonucu döndür
+    return $ayIsmi . " " . $yil;
+}
+
 function gun_sayisi() {
     $ilk_gun = date('Y-m-01');
     $son_gun = date('Y-m-t');
