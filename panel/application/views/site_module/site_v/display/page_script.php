@@ -2,28 +2,46 @@
 
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script başı -->
 <script>
-    // Formu ve modal'ı işleyen fonksiyon
-    function submit_modal_form(formId, resultDivId, modalId) {
+    function submit_modal_form(formId, resultDivId, modalId, dataTableName = null) {
         const form = document.querySelector(`#${formId}`);
-        const resultDiv = document.querySelector(`#${resultDivId}`);
-
-        const formData = new FormData(form);  // Form verilerini toplar
-        const actionUrl = form.getAttribute('data-form-url');  // data-form-url değerini alır
+        const formData = new FormData(form);
+        const actionUrl = form.getAttribute('data-form-url');
 
         // AJAX isteği
         fetch(actionUrl, {
             method: 'POST',
             body: formData
         })
-            .then(response => response.text())  // Cevabı text olarak alır
+            .then(response => response.json()) // Cevabı JSON olarak al
             .then(data => {
-                resultDiv.innerHTML = data;  // Sonuç div'ini yeniler
+                if (data.form_error) {
+                    // Hata durumunda alert göster
+                    alert(data.errors);
+                    // Modalı tekrar aç
+                    const modal = new bootstrap.Modal(document.querySelector(`#${modalId}`));
+                    modal.show();
+                } else {
+                    // Başarı durumunda başarı mesajını göster
+                    alert(data.success_message);
+
+                    // DataTable'ı yeniden başlat
+                    if (dataTableName) {
+                        if ($.fn.DataTable.isDataTable(`#${dataTableName}`)) {
+                            $(`#${dataTableName}`).DataTable().destroy(); // Var olan DataTable'ı yok et
+                        }
+                        $(`#${dataTableName}`).DataTable(); // DataTable'ı yeniden başlat
+                    }
+
+                    // Modalı kapat
+                    const modalInstance = bootstrap.Modal.getInstance(document.querySelector(`#${modalId}`));
+                    modalInstance.hide();
+                    // Sonuç divini güncelle veya başka bir işlem yap
+                    document.querySelector(`#${resultDivId}`).innerHTML = data.success_message;
+                }
             })
             .catch(error => console.error('Hata:', error));
 
-        // Modal'ı kapatır
-        const modal = bootstrap.Modal.getInstance(document.querySelector(`#${modalId}`));
-        modal.hide();
+        // Formu sıfırla
         document.getElementById(formId).reset();
     }
 </script>
@@ -144,7 +162,6 @@
 <script>
     $(document).ready(function() {
         $('#stock-table').DataTable({
-
             "responsive": true, // Mobil uyumluluk
             "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
             "language": {

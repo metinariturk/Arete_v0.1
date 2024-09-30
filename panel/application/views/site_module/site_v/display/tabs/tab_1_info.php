@@ -4,16 +4,18 @@
             <!-- Sekmeler -->
             <div class="tabs">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
-                    <a class="text-blink" href="<?php echo base_url("project/file_form/$project->id"); ?>">Proje
+                    <a class="text-blink full-link" href="<?php echo base_url("project/file_form/$project->id"); ?>">Proje
                         <br><?php echo $project->project_code; ?>
                     </a>
                 </div>
                 <div class="tab-item" style="background-color: rgba(229,217,201,0.55);">
-                    <a class="text-blink" href="<?php echo base_url("contract/file_form/$contract->id"); ?>">Sözleşme
+                    <a class="text-blink full-link" href="<?php echo base_url("contract/file_form/$contract->id"); ?>">Sözleşme
                         <br><?php echo $contract->dosya_no; ?>
                     </a>
                 </div>
             </div>
+            <hr>
+
             <div class="custom-card-body">
                 <div class="table-responsive table-border-horizontal">
                     <table class="table-sm">
@@ -79,11 +81,11 @@
             <!-- Sekmeler -->
             <div class="tabs">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
-                    <a class="text-blink" href="<?php echo base_url("project/file_form/$project->id"); ?>">Proje
-                        <br>Son Raporlar
-                    </a>
+                    <h5>Son Raporlar</h5>
                 </div>
             </div>
+            <hr>
+
             <div class="custom-card-body">
                 <div class="table-responsive table-border-horizontal">
                     <table class="table-sm" style="width: 100%">

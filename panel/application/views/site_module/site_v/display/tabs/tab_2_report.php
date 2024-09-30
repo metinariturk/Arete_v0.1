@@ -1,6 +1,13 @@
 <div class="row">
     <div class="col-12 col-md-6"> <!-- Orta ve büyük ekranlarda 6, küçük ekranlarda 12 -->
         <div class="text-center">
+            <div class="tabs">
+                <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+                    <h5>Rapor Listesi</h5>
+                </div>
+            </div>
+            <hr>
+
             <table id="report_table">
                 <thead>
                 <tr>
@@ -51,7 +58,13 @@
     </div>
     <div class="col-12 col-md-6"> <!-- Orta ve büyük ekranlarda 6, küçük ekranlarda 12 -->
         <div class="container">
-            <h5 class="mb-4">Raporlar Özeti</h5>
+            <div class="tabs">
+                <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+                    <h5>Çalışma Özeti</h5>
+                </div>
+            </div>
+            <hr>
+
             <div class="list-group">
                 <?php foreach ($all_workgroups as $subgroup) { ?>
                     <a href="#"

@@ -314,78 +314,175 @@ class Site extends CI_Controller
 
     public function sitewallet($site_id, $type)
     {
-        if ($this->input->post("expense_date")) {
-            $date = dateFormat('Y-m-d', $this->input->post("expense_date"));
+
+
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules('price', 'Fiyat', 'required|numeric');
+        $this->form_validation->set_rules('payment_type', 'Ödeme Türü', 'required');
+        $this->form_validation->set_rules('payment_notes', 'Açıklama', 'required');
+        $this->form_validation->set_rules('date', 'Tarih', 'required');
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            )
+        );
+
+        $validate = $this->form_validation->run();
+
+        if ($this->input->post("date")) {
+            $date = dateFormat('Y-m-d', $this->input->post("date"));
         } else {
             $date = null;
         }
 
-        $site_code = get_from_id("site", "dosya_no", $site_id);
-        $proje_id = project_id_site($site_id);
-        $project_code = project_code($proje_id);
 
-        $path = "$this->File_Dir_Prefix/$project_code/$site_code/Sitewallet/$date";
+        if ($validate) {
 
-        if (!is_dir($path)) {
-            mkdir("$path", 0777, TRUE);
-            echo "oluştu";
-        } else {
-            echo "aynı isimde dosya mevcut";
-        }
+            $path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$date";
+
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+                echo "oluştu";
+            } else {
+                echo "aynı isimde dosya mevcut";
+            }
 
 
-        $insert = $this->Sitewallet_model->add(
-            array(
-                "site_id" => $site_id,
-                "date" => $date,
-                "price" => $this->input->post("price"),
-                "bill_code" => $this->input->post("bill_code"),
-                "payment_type" => $this->input->post("payment_type"),
-                "note" => $this->input->post("payment_notes"),
-                "type" => $type,
-                "createdAt" => date("Y-m-d"),
-                "createdBy" => active_user_id(),
-            )
-        );
+            $insert = $this->Sitewallet_model->add(
+                array(
+                    "site_id" => $site_id,
+                    "date" => $date,
+                    "price" => $this->input->post("price"),
+                    "bill_code" => $this->input->post("bill_code"),
+                    "payment_type" => $this->input->post("payment_type"),
+                    "note" => $this->input->post("payment_notes"),
+                    "type" => $type,
+                    "createdAt" => date("Y-m-d"),
+                    "createdBy" => active_user_id(),
+                )
+            );
 
-        $record_id = $this->db->insert_id();
+            $record_id = $this->db->insert_id();
 
-        $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
 
-        $size = $_FILES["file"]["size"];
+            $size = $_FILES["file"]["size"];
 
-        $config["allowed_types"] = "*";
-        $config["upload_path"] = "$path";
-        $config["file_name"] = $record_id;
+            $config["allowed_types"] = "*";
+            $config["upload_path"] = "$path";
+            $config["file_name"] = $record_id;
 
-        $this->load->library("upload", $config);
+            $this->load->library("upload", $config);
 
-        $upload = $this->upload->do_upload("file");
-
-        // TODO Alert sistemi eklenecek...
-        if ($insert) {
+            $upload = $this->upload->do_upload("file");
 
             $alert = array(
                 "title" => "İşlem Başarılı",
                 "text" => "Kayıt başarılı bir şekilde eklendi",
                 "type" => "success"
             );
+            $this->session->set_flashdata("alert", $alert);
+
+            $viewData = new stdClass();
+            /** Tablodan Verilerin Getirilmesi.. */
+            $item = $this->Site_model->get(array("id" => $site_id));
+            $all_expenses = $this->Sitewallet_model->get_all(array(
+                "site_id" => $site_id,
+                "type" => 1
+            ));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$site->id", "type", "1");
+
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+            $viewData->contract = $contract;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->total_expense = $total_expense;
+
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_4_1_expenses", $viewData);
 
         } else {
+
+
 
             $alert = array(
                 "title" => "İşlem Başarısız",
                 "text" => "Kayıt Ekleme sırasında bir problem oluştu",
                 "type" => "danger"
             );
+
+            $all_expenses = $this->Sitewallet_model->get_all(array(
+                "site_id" => $site_id,
+                "type" => 1
+            ));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$site->id", "type", "1");
+
+
+            $this->session->set_flashdata("alert", $alert);
+
+            $viewData = new stdClass();
+            /** Tablodan Verilerin Getirilmesi.. */
+            $item = $this->Site_model->get(array("id" => $site_id));
+
+            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->item = $item;
+            $viewData->contract = $contract;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->total_expense = $total_expense;
+
+            $viewData->form_error = true;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_4_1_expenses", $viewData);
         }
-
-        redirect(base_url("$this->Module_Name/$this->Display_route/$site_id/sitewallet"));
-
-
-        // İşlemin Sonucunu Session'a yazma işlemi...
-        $this->session->set_flashdata("alert", $alert);
     }
+
+
+    public function expense_delete($expense_id)
+    {
+
+        $date_folder = get_from_id("sitewallet", "date", "$expense_id");
+
+        $site_id = get_from_id("sitewallet", "site_id", $expense_id);
+        $site_code = site_code($site_id);
+        $project_id = project_id_site($site_id);
+        $project_code = project_code($project_id);
+
+        $file_path = "$this->File_Dir_Prefix/$project_code/$site_code/Sitewallet/$date_folder";
+
+        $delete1 = $this->Sitewallet_model->delete(
+            array(
+                "id" => $expense_id
+            )
+        );
+
+        if ($file_path && is_dir($file_path)) {
+            $files = scandir($file_path);
+
+            foreach ($files as $file) {
+                $file_name_without_extension = pathinfo($file, PATHINFO_FILENAME);
+                if ($expense_id == $file_name_without_extension) {
+                    $path = $file_path . "/" . $file;
+                    unlink($path);
+                }
+            }
+        }
+    }
+
 
     public function file_form($id, $active_tab = null)
     {
@@ -689,37 +786,6 @@ class Site extends CI_Controller
         $fileName = $this->input->post('fileName');
 
         unlink("$path/$fileName");
-    }
-
-    public function expense_delete($expense_id)
-    {
-
-        $date_folder = get_from_id("sitewallet", "date", "$expense_id");
-
-        $site_id = get_from_id("sitewallet", "site_id", $expense_id);
-        $site_code = site_code($site_id);
-        $project_id = project_id_site($site_id);
-        $project_code = project_code($project_id);
-
-        $file_path = "$this->File_Dir_Prefix/$project_code/$site_code/Sitewallet/$date_folder";
-
-        $delete1 = $this->Sitewallet_model->delete(
-            array(
-                "id" => $expense_id
-            )
-        );
-
-        if ($file_path && is_dir($file_path)) {
-            $files = scandir($file_path);
-
-            foreach ($files as $file) {
-                $file_name_without_extension = pathinfo($file, PATHINFO_FILENAME);
-                if ($expense_id == $file_name_without_extension) {
-                    $path = $file_path . "/" . $file;
-                    unlink($path);
-                }
-            }
-        }
     }
 
     public function download_all($site_id)
@@ -1413,7 +1479,6 @@ class Site extends CI_Controller
     {
         // Verilerin getirilmesi
         $stock = $this->Sitestock_model->get(array("id" => $this->input->post("id")));
-
 
 
         $delete_stock = $this->Sitestock_model->delete(array(

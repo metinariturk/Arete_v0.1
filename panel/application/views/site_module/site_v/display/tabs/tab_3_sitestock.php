@@ -34,7 +34,7 @@
                     <div class="d-flex justify-content-between">
                         <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>
                         <button type="button" class="btn btn-primary"
-                                onclick="submit_modal_form('addStockForm', 'tab_3_sitestock', 'AddStockModal')">Gönder
+                                onclick="submit_modal_form('addStockForm', 'tab_3_sitestock', 'AddStockModal', 'stock-table')">Gönder
                         </button>
                     </div>
                 </form>
@@ -42,8 +42,6 @@
         </div>
     </div>
 </div>
-
-
 <div class="modal fade" id="ExitModal" tabindex="-1" aria-labelledby="ExitModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -86,7 +84,7 @@
                     <div class="d-flex justify-content-between">
                         <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>
                         <button type="button" class="btn btn-primary"
-                                onclick="submit_modal_form('exitStockForm', 'tab_3_sitestock', 'ExitModal')">Gönder
+                                onclick="submit_modal_form('exitStockForm', 'tab_3_sitestock', 'ExitModal', 'stock-table')">Gönder
                         </button>
                     </div>
                 </form>
@@ -96,5 +94,11 @@
 </div>
 
 <div id="tab_3_sitestock">
+    <div class="tabs">
+        <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+            <h5>Depo/Stok Listesi</h5>
+        </div>
+    </div>
+    <hr>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tables/table_3_sitestock"); ?>
 </div>

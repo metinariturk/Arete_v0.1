@@ -49,3 +49,89 @@
 <link  href="<?php echo base_url("assets"); ?>/fonts/fileuploader/font-fileuploader.css" rel="stylesheet">
 <link href="<?php echo base_url("assets"); ?>/css/fileuploader.min.css" media="all" rel="stylesheet">
 <link href="<?php echo base_url("assets"); ?>/css/jquery.fileuploader-theme-dragdrop.css" media="all" rel="stylesheet">
+
+<style>
+    .tabs {
+        display: flex;
+    }
+
+    .tab-item {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        flex: 1;
+        border-radius: 15px 15px 0 0; /* Üst köşeleri pahlı yapmak için */
+        text-align: center;
+        border-bottom: none;
+        padding: 10px;
+    }
+
+    .tab-item a {
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .tab-item:not(:last-child) {
+        margin-right: -1px; /* Sekmeleri birbirine değdirmek için */
+    }
+
+    .tab-item:hover {
+        background-color: #e9ecef;
+    }
+
+    .custom-card {
+        border-radius: 0 0 15px 15px; /* Üst köşeleri pahlı yapmak için */
+        border: 1px solid #dcdcdc; /* İncecik ve çok açık gri çerçeve */
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    .custom-card-header {
+        font-size: 0.8rem; /* Başlık boyutu */
+        font-weight: bold;
+        border-radius: 15px 15px 0 0; /* Üst köşeleri pahlı yapmak için */
+        background-color: #f8f9fa; /* Başlık arka plan rengi */
+        padding: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .custom-card-body {
+        padding: 1rem;
+
+    }
+
+    .tab-item {
+        position: relative;
+    }
+
+    .full-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-align: center; /* İsteğe bağlı: Metni ortalamak için */
+    }
+
+    .full-link:hover {
+        cursor: pointer; /* Fare ile üzerine gelince imleç değişir */
+    }
+
+    .download_links {
+        display: flex;           /* Öğeleri yan yana dizmek için */
+        justify-content: flex-end; /* Öğeleri div'in en sağına yerleştir */
+        gap: 10px;               /* Öğeler arasında boşluk bırakmak için */
+        padding-right: 37px;     /* Sağdan 15px boşluk bırak */
+    }
+
+    .download_links a {
+        text-decoration: none;   /* Linklerin alt çizgisini kaldırmak için */
+    }
+
+    .download_links a:hover i,
+    .download_links i:hover {     /* İkonlara fareyle üzerine gelince renk değişimi */
+        color: #63a45b;           /* İkon rengini yeşil yapar */
+    }
+
+    .download_links i {
+        color: #007bff;           /* Normalde ikonların mavi olmasını sağlar */
+    }
+
+</style>
