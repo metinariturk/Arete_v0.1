@@ -16,7 +16,7 @@
                 <div class="col-6">
                     <div class="col-form-label">Para Birimi</div>
                     <select id="select2-demo-1" style="width: 100%;"
-                            class="form-control <?php cms_isset(form_error("sozlesme_tarih"), "is-invalid", ""); ?>"
+                            class="form-control <?php cms_isset(form_error("para_birimi"), "is-invalid", ""); ?>"
                             data-plugin="select2"
                             name="para_birimi">
                         <option selected="selected"

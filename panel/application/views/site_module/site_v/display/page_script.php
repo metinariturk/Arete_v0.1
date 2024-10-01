@@ -1,75 +1,77 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script başı -->
+
 <script>
-    function submit_modal_form(formId, resultDivId, modalId, dataTableName = null) {
-        const form = document.querySelector(`#${formId}`);
-        const formData = new FormData(form);
-        const actionUrl = form.getAttribute('data-form-url');
+    function submit_modal_form(formId, modalId, DivId, DataTable = null) {
+        var form = $('#' + formId);
+        var url = form.data('form-url');
 
-        // AJAX isteği
-        fetch(actionUrl, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json()) // Cevabı JSON olarak al
-            .then(data => {
-                if (data.form_error) {
-                    // Hata durumunda alert göster
-                    alert(data.errors);
-                    // Modalı tekrar aç
-                    const modal = new bootstrap.Modal(document.querySelector(`#${modalId}`));
-                    modal.show();
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: form.serialize(),
+            dataType: 'html', // Sunucudan HTML dönecek
+            success: function (response) {
+                $('#' + DivId).html(response); // Gelen yanıtı Div'e ekle
+                form[0].reset(); // Formu temizle
+
+                // HTML yanıtı içerisindeki form_error'u kontrol et
+                var formError = $('#form-error').val();
+
+                if (formError == "1") {
+                    $('#' + modalId).modal('show'); // Hata durumunda modalı tekrar aç
                 } else {
-                    // Başarı durumunda başarı mesajını göster
-                    alert(data.success_message);
+                    $('#' + modalId).modal('hide'); // Başarılıysa modalı kapat
+                    $('.modal-backdrop').remove();
 
-                    // DataTable'ı yeniden başlat
-                    if (dataTableName) {
-                        if ($.fn.DataTable.isDataTable(`#${dataTableName}`)) {
-                            $(`#${dataTableName}`).DataTable().destroy(); // Var olan DataTable'ı yok et
+                    // Eğer DataTable parametresi verilmişse
+                    if (DataTable) {
+                        // Eğer mevcut DataTable varsa, onu yok et
+                        if ($.fn.DataTable.isDataTable(DataTable)) {
+                            $(DataTable).DataTable().destroy();
                         }
-                        $(`#${dataTableName}`).DataTable(); // DataTable'ı yeniden başlat
+
+                        if (!$.fn.DataTable.isDataTable('#'+DataTable)) {
+                            $('#'+DataTable).DataTable({
+                                paging: true,
+                                searching: true,
+                                ordering: true,
+                                // Diğer DataTable ayarları
+                            });
+                        }
                     }
-
-                    // Modalı kapat
-                    const modalInstance = bootstrap.Modal.getInstance(document.querySelector(`#${modalId}`));
-                    modalInstance.hide();
-                    // Sonuç divini güncelle veya başka bir işlem yap
-                    document.querySelector(`#${resultDivId}`).innerHTML = data.success_message;
                 }
-            })
-            .catch(error => console.error('Hata:', error));
-
-        // Formu sıfırla
-        document.getElementById(formId).reset();
+            },
+            error: function (xhr, status, error) {
+                console.error('Form gönderiminde hata oluştu: ', error);
+                alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+        });
     }
 </script>
+
+
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script  sonu-->
 
 <!--// Stok Çıkışında ID yi modal'a gönderen sccript başı -->
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Modal açılmadan önce buton tıklama olayını dinle
-        var exitModal = document.getElementById('ExitModal');
-        exitModal.addEventListener('show.bs.modal', function (event) {
-            // Tıklanan butonu al
-            var button = event.relatedTarget;
-            // Butondaki data-id değerini al
-            var stockId = button.getAttribute('data-id');
-            // Modal içindeki span veya input gibi elementlere bu değeri ata
-            var stockIdDisplay = document.getElementById('stock-id-display');
-            var stockIdInput = document.getElementById('stock_id');
-            stockIdDisplay.textContent = stockId; // Span etiketine gösterim için
-            stockIdInput.value = stockId;         // Input hidden alanına formda göndermek için
-        });
-    });
+    function open_exit_stock_form(stockId, modalId) {
+        // Input değerini ayarla
+        $('#' + modalId).find('#stock_id').val(stockId);
+
+        // Modal'ı aç
+        $('#' + modalId).modal('show');
+
+    }
 </script>
+
 <!--// Stok Çıkışında ID yi modal'a gönderen sccript sonu -->
 
 <!--Stok verisi sil başı-->
 <script>
-    function confirmDelete(stockId, deleteUrl) {
+    function confirmDelete(stockId, deleteUrl, refreshDiv) {
         // Kullanıcıdan onay al
         Swal.fire({
             title: 'Silme İşlemi',
@@ -90,7 +92,7 @@
                     success: function (response) {
                         alert("başarılı silindi");
                         // tab_3_sitestock div'ini yenile
-                        $('#tab_3_sitestock').html(response);
+                        $(refreshDiv).html(response);
                     },
                     error: function () {
                         Swal.fire({

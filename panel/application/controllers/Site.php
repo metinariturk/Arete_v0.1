@@ -41,35 +41,26 @@ class Site extends CI_Controller
         $this->load->model("Workmachine_model");
         $this->load->model("Favorite_model");
 
-        $this->Upload_Folder = "uploads";
-        $this->Module_Name = "Site";
-        $this->Module_Title = "Şantiye Yönetimi";
-        $this->Module_Main_Dir = "project_v";
-        $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
+        $this->Upload_Folder = "uploads"; // Ana yükleme klasörü
+        $this->Module_Name = "Site"; // Modül adı
+        $this->Module_Title = "Şantiye Yönetimi"; // Modül başlığı
+        $this->Module_Main_Dir = "project_v"; // Ana modül dizini
+        $this->File_Dir_Prefix = "{$this->Upload_Folder}/{$this->Module_Main_Dir}"; // Dosya dizin ön eki
 
-        $this->Display_route = "file_form";
-        $this->Update_route = "update_form";
-        $this->Upload_Folder = "uploads";
-        $this->Dependet_id_key = "site_id";
-        $this->Module_Parent_Name = "contract";
+        $this->Display_route = "file_form"; // Görüntüleme rotası
+        $this->Update_route = "update_form"; // Güncelleme rotası
+        $this->Dependet_id_key = "site_id"; // Bağımlı ID anahtarı
+        $this->Module_Parent_Name = "contract"; // Modülün ana adı
 
-        //Folder Structure
-
-        $this->moduleFolder = "site_module";
-        $this->viewFolder = "site_v";
-        $this->Module_Title = "Şantiye";
-        $this->Display_route = "file_form";
-        $this->Display_Folder = "display";
-        $this->Add_Folder = "add";
-        $this->Update_route = "update_form";
-        $this->Upload_Folder = "uploads";
-
-        $this->List_Folder = "list";
-        $this->Dependet_id_key = "site_id";
-        $this->Common_Files = "common";
-
-        $this->Select_Folder = "select";
-        $this->Update_Folder = "update";
+        // Klasör yapısı
+        $this->moduleFolder = "site_module"; // Modül klasörü
+        $this->viewFolder = "site_v"; // Görünüm klasörü
+        $this->Display_Folder = "display"; // Görüntüleme klasörü
+        $this->Add_Folder = "add"; // Ekleme klasörü
+        $this->List_Folder = "list"; // Listeleme klasörü
+        $this->Select_Folder = "select"; // Seçim klasörü
+        $this->Update_Folder = "update"; // Güncelleme klasörü
+        $this->Common_Files = "common"; // Ortak dosyalar
 
     }
 
@@ -1276,6 +1267,7 @@ class Site extends CI_Controller
     public function add_stock($site_id)
     {
         $site = $this->Site_model->get(array("id" => $site_id));
+        $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
 
@@ -1284,6 +1276,7 @@ class Site extends CI_Controller
         $this->form_validation->set_rules('stock_in', 'Gelen Miktar', 'required|numeric');
         $this->form_validation->set_rules('stock_out', 'Çıkan Miktar', 'numeric');
         $this->form_validation->set_rules('arrival_date', 'Giriş Tarihi', 'required');
+        $this->form_validation->set_rules('notes', 'Açıklama', 'required');
 
         $this->form_validation->set_message(
             array(
@@ -1322,13 +1315,6 @@ class Site extends CI_Controller
                 )
             );
 
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
             $viewData = new stdClass();
             /** Tablodan Verilerin Getirilmesi.. */
             $item = $this->Site_model->get(array("id" => $site_id));
@@ -1339,21 +1325,13 @@ class Site extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
             $viewData->item = $item;
+            $viewData->settings = $settings;
             $viewData->site_stocks = $site_stocks;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
-
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
         } else {
 
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
-
-            $this->session->set_flashdata("alert", $alert);
 
             $viewData = new stdClass();
             /** Tablodan Verilerin Getirilmesi.. */
@@ -1364,10 +1342,13 @@ class Site extends CI_Controller
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
             $viewData->item = $item;
+            $viewData->settings = $settings;
             $viewData->site_stocks = $site_stocks;
             $viewData->form_error = true;
+            $viewData->error_modal = "AddStockModal";
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
+
         }
     }
 
@@ -1376,14 +1357,15 @@ class Site extends CI_Controller
         // Verilerin getirilmesi
         $item = $this->Site_model->get(array("id" => $site_id));
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
-        $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules('stock_out', 'Çıkan Miktar', 'numeric');
+        $this->form_validation->set_rules('stock_out', 'Çıkan Miktar', 'numeric|required');
+        $this->form_validation->set_rules('exit_date', 'Çıkış Tarihi', 'required');
+        $this->form_validation->set_rules('exit_notes', 'Açıklama', 'required');
+
         $this->form_validation->set_message(array(
             "required" => "<b>{field}</b> alanı doldurulmalıdır",
-            "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
             "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
         ));
 
@@ -1396,7 +1378,7 @@ class Site extends CI_Controller
             $insert = $this->Sitestock_model->add(array(
                 "site_id" => $site_id,
                 "parent_id" => $this->input->post('stock_id'),
-                "notes" => $this->input->post("notes"),
+                "notes" => $this->input->post("exit_notes"),
                 "stock_out" => $this->input->post("stock_out"),
                 "exit_date" => $exit_date,
                 "transfer" => $this->input->post("transfer"),
@@ -1416,7 +1398,7 @@ class Site extends CI_Controller
                         "unit" => $transfered_item->unit,
                         "stock_in" => $this->input->post("stock_out"),
                         "arrival_date" => $exit_date,
-                        "notes" => $this->input->post("notes"),
+                        "notes" => $this->input->post("exit_notes"),
                         "site_from" => $site_id,
                         "connection" => $inserted_id, // Buraya uygun değeri ekleyin
                         "createdAt" => date("Y-m-d"),
@@ -1424,22 +1406,8 @@ class Site extends CI_Controller
                     ));
                 }
 
-                // Başarılı mesajı
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-                $this->session->set_flashdata("alert", $alert);
-            } else {
-                // Kayıt ekleme başarısızsa hata mesajı
-                $alert = array(
-                    "title" => "Hata",
-                    "text" => "Kayıt eklenirken bir hata oluştu.",
-                    "type" => "error"
-                );
-                $this->session->set_flashdata("alert", $alert);
             }
+            $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
             // Görünüm için değişkenlerin set edilmesi
             $viewData = new stdClass();
@@ -1450,16 +1418,10 @@ class Site extends CI_Controller
             $viewData->item = $item;
             $viewData->sites = $sites;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
 
         } else {
-            // Başarısız form validation mesajı
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt ekleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
+            $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
             // Hata varsa formu tekrar doldurmak için görünüm
             $viewData = new stdClass();
@@ -1469,9 +1431,11 @@ class Site extends CI_Controller
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
             $viewData->sites = $sites;
+            $viewData->stock_id = $this->input->post("stock_id");
             $viewData->form_error = true;
+            $viewData->error_modal = "ExitModal";
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
         }
     }
 
@@ -1491,12 +1455,6 @@ class Site extends CI_Controller
 
 
         if ($delete_stock) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
 
             $item = $this->Site_model->get(array("id" => $stock->site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));

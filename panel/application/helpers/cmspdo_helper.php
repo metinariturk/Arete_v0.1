@@ -137,7 +137,6 @@ function get_currency($id)
 }
 
 
-
 function project_code($id)
 {
     $t = &get_instance();
@@ -224,11 +223,6 @@ function contract_id_module($module, $id)
 }
 
 
-
-
-
-
-
 function contract_code($id)
 {
     $ci =& get_instance();
@@ -282,9 +276,8 @@ function contract_code_name($id)
             $contract_code = $data->dosya_no;
         }
     }
-    return$contract_name. " / ". $contract_code;
+    return $contract_name . " / " . $contract_code;
 }
-
 
 
 function project_name($id)
@@ -307,18 +300,22 @@ function project_name($id)
 
 function site_name($id)
 {
-    $t = get_instance();
-    $site = $t->Site_model->get(
-        array(
-            'id' => $id
-        )
-    );
-    if (!empty($id)) {
-        return $site->santiye_ad;
-    } elseif ($id == 0) {
-        return "Bağımsız Şantiye";
+    if ($id == 0) {
+        return "Fire";
+    } elseif ($id == 99999) {
+        return "Depo";
     } else {
-        return "Bağımsız Şantiye";
+        $t = get_instance();
+        $site = $t->Site_model->get(
+            array(
+                'id' => $id
+            )
+        );
+        if (!empty($id)) {
+            return $site->santiye_ad;
+        } else {
+            return "Tanımsız Şantiye";
+        }
     }
 }
 
@@ -476,7 +473,6 @@ function vehicle_detail($id)
         }
     }
 }
-
 
 
 function full_name($id = null)
