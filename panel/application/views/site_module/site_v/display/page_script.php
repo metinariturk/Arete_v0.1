@@ -24,6 +24,8 @@
                 } else {
                     $('#' + modalId).modal('hide'); // Başarılıysa modalı kapat
                     $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', 'auto');
 
                     // Eğer DataTable parametresi verilmişse
                     if (DataTable) {
@@ -54,20 +56,26 @@
 
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script  sonu-->
 
-<!--// Stok Çıkışında ID yi modal'a gönderen sccript başı -->
-
 <script>
-    function open_exit_stock_form(stockId, modalId) {
-        // Input değerini ayarla
-        $('#' + modalId).find('#stock_id').val(stockId);
+    function open_exit_stock_form(FormURL) {
+        // AJAX ile modal içeriğini yenile
+        $.ajax({
+            url: FormURL,
+            type: 'GET',
+            success: function(response) {
+                // Modalın içeriğini güncelle
+                $('#site_stock_modal_form').html(response); // Gelen yanıtı modal içeriğine ekle
 
-        // Modal'ı aç
-        $('#' + modalId).modal('show');
-
+                // Modalı aç
+                $('#ExitModal').modal('show');
+            },
+            error: function() {
+                alert('Modal içeriği yüklenirken bir hata oluştu.');
+            }
+        });
     }
 </script>
 
-<!--// Stok Çıkışında ID yi modal'a gönderen sccript sonu -->
 
 <!--Stok verisi sil başı-->
 <script>
@@ -107,6 +115,7 @@
     }
 </script>
 <!--Stok verisi sil sonu-->
+
 
 <script>
     function delete_stock_enter() {

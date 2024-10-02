@@ -407,7 +407,6 @@ class Site extends CI_Controller
         } else {
 
 
-
             $alert = array(
                 "title" => "İşlem Başarısız",
                 "text" => "Kayıt Ekleme sırasında bir problem oluştu",
@@ -1357,16 +1356,21 @@ class Site extends CI_Controller
         // Verilerin getirilmesi
         $item = $this->Site_model->get(array("id" => $site_id));
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
+        $site_stock = $this->Sitestock_model->get(array("id" => $this->input->post('stock_id')));
+       $kalan = $site_stock->stock_in - sum_anything("sitestock", "stock_out", "parent_id", "$site_stock->id");
+        $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules('stock_out', 'Çıkan Miktar', 'numeric|required');
+        $this->form_validation->set_rules('transfer', 'Gideceği Bölge', "numeric|required");
+        $this->form_validation->set_rules('stock_out', 'Çıkan Miktar', "numeric|required|less_than_equal_to[$kalan]");
         $this->form_validation->set_rules('exit_date', 'Çıkış Tarihi', 'required');
         $this->form_validation->set_rules('exit_notes', 'Açıklama', 'required');
 
         $this->form_validation->set_message(array(
             "required" => "<b>{field}</b> alanı doldurulmalıdır",
             "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            "less_than_equal_to" => "<b>{field}ı</b> Kalan Miktarından Fazla Olamaz. <br>Kalan Stok (<b>{param}</b>)",
         ));
 
         $validate = $this->form_validation->run();
@@ -1416,7 +1420,9 @@ class Site extends CI_Controller
             $viewData->subViewFolder = "display";
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
+            $viewData->settings = $settings;
             $viewData->sites = $sites;
+            $viewData->site_stock = $site_stock;
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
 
@@ -1430,13 +1436,38 @@ class Site extends CI_Controller
             $viewData->subViewFolder = "display";
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
+            $viewData->settings = $settings;
             $viewData->sites = $sites;
-            $viewData->stock_id = $this->input->post("stock_id");
+            $viewData->site_stock = $site_stock;
             $viewData->form_error = true;
             $viewData->error_modal = "ExitModal";
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
         }
+    }
+
+    public function exit_stock_form($site_stok_id)
+    {
+        // Verilerin getirilmesi
+
+        $site_stock = $this->Sitestock_model->get(array("id" => $site_stok_id));
+        $item = $this->Site_model->get(array("id" => $site_stock->site_id));
+        $sites = $this->Site_model->get_all(array("is_Active" => 1));
+        $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
+
+        // Görünüm için değişkenlerin set edilmesi
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->site_stocks = $site_stocks;
+        $viewData->item = $item;
+        $viewData->site_stock = $site_stock;
+        $viewData->sites = $sites;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/exit_modal_form", $viewData);
+
+
     }
 
     public function delete_stock()
