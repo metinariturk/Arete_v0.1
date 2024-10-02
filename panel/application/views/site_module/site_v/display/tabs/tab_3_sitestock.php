@@ -20,10 +20,7 @@
             });
         }
 
-        $('.datepicker-here').datepicker({
-            format: 'DD-MM-YYYY',
-            language: 'tr'
-        });
+
     </script>
 <?php endif; ?>
 <div class="modal fade" id="AddStockModal" tabindex="-1" aria-labelledby="AddStockModal" aria-hidden="true">
@@ -81,11 +78,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="arrival_date" class="form-label">Geliş Tarihi</label>
-                        <input type="text"
-                               class="form-control datepicker-here <?php cms_isset(form_error("arrival_date"), "is-invalid", ""); ?>"
-                               id="arrival_date"
-                               value="<?php echo isset($form_error) ? set_value("arrival_date") : ""; ?>"
-                               name="arrival_date" data-options="{ format: 'DD-MM-YYYY' }" data-language="tr">
+                        <input type="date" name="arrival_date" id="arrival_date" value="<?php echo set_value('arrival_date'); ?>" class="form-control">
+
                         <?php if (isset($form_error)) { ?>
                             <div class="invalid-feedback"><?php echo form_error("arrival_date"); ?></div>
                         <?php } ?>
@@ -115,6 +109,7 @@
 <div id="site_stock_modal_form">
     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/exit_modal_form"); ?>
 </div>
+
 <div class="tabs">
     <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
         <h5>Depo/Stok Listesi</h5>
@@ -155,7 +150,7 @@
                     <?php $is_parent = $this->Sitestock_model->get(array("parent_id" => $site_stock->id)); ?>
                     <?php if (empty($is_parent)): ?>
                         <a href="javascript:void(0);"
-                           onclick="confirmDelete(<?php echo $site_stock->id; ?>, '<?php echo base_url('Site/delete_stock'); ?>', '#site_stock_table')"
+                           onclick="confirmDelete(<?php echo $site_stock->id; ?>, '<?php echo base_url('Site/delete_stock'); ?>', '#tab_sitestock','stock-table')"
                            title="Sil">
                             <i class="fa fa-trash-o fa-2x"></i>
                         </a>
@@ -201,5 +196,4 @@
         <?php endforeach; ?>
         </tbody>
     </table>
-
 </div>

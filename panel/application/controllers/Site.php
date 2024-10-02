@@ -40,6 +40,7 @@ class Site extends CI_Controller
         $this->load->model("Workgroup_model");
         $this->load->model("Workmachine_model");
         $this->load->model("Favorite_model");
+        $settings = $this->Settings_model->get();
 
         $this->Upload_Folder = "uploads"; // Ana yükleme klasörü
         $this->Module_Name = "Site"; // Modül adı
@@ -61,6 +62,8 @@ class Site extends CI_Controller
         $this->Select_Folder = "select"; // Seçim klasörü
         $this->Update_Folder = "update"; // Güncelleme klasörü
         $this->Common_Files = "common"; // Ortak dosyalar
+        $this->settings = $settings;
+
 
     }
 
@@ -375,12 +378,6 @@ class Site extends CI_Controller
 
             $upload = $this->upload->do_upload("file");
 
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
 
             $viewData = new stdClass();
             /** Tablodan Verilerin Getirilmesi.. */
@@ -400,27 +397,20 @@ class Site extends CI_Controller
             $viewData->contract = $contract;
             $viewData->all_expenses = $all_expenses;
             $viewData->total_expense = $total_expense;
+            $viewData->error_modal = "addExpenseForm";
 
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_4_1_expenses", $viewData);
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
 
         } else {
 
-
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
 
             $all_expenses = $this->Sitewallet_model->get_all(array(
                 "site_id" => $site_id,
                 "type" => 1
             ));
             $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$site->id", "type", "1");
-
-
-            $this->session->set_flashdata("alert", $alert);
 
             $viewData = new stdClass();
             /** Tablodan Verilerin Getirilmesi.. */
@@ -437,7 +427,7 @@ class Site extends CI_Controller
 
             $viewData->form_error = true;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_4_1_expenses", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
         }
     }
 
@@ -1357,7 +1347,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $site_id));
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site_id, "parent_id" => null));
         $site_stock = $this->Sitestock_model->get(array("id" => $this->input->post('stock_id')));
-       $kalan = $site_stock->stock_in - sum_anything("sitestock", "stock_out", "parent_id", "$site_stock->id");
+        $kalan = $site_stock->stock_in - sum_anything("sitestock", "stock_out", "parent_id", "$site_stock->id");
         $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
@@ -1473,21 +1463,20 @@ class Site extends CI_Controller
     public function delete_stock()
     {
         // Verilerin getirilmesi
-        $stock = $this->Sitestock_model->get(array("id" => $this->input->post("id")));
-
+        $site_stock = $this->Sitestock_model->get(array("id" => $this->input->post("id")));
 
         $delete_stock = $this->Sitestock_model->delete(array(
-            "id" => $stock->id,
+            "id" => $site_stock->id,
         ));
 
         $delete_connected_stock = $this->Sitestock_model->delete(array(
-            "connection" => $stock->id,
+            "connection" => $site_stock->id,
         ));
 
 
         if ($delete_stock) {
 
-            $item = $this->Site_model->get(array("id" => $stock->site_id));
+            $item = $this->Site_model->get(array("id" => $site_stock->site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
             $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
@@ -1496,27 +1485,29 @@ class Site extends CI_Controller
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
+            $viewData->site_stock = $site_stock;
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
             $viewData->sites = $sites;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
         } else {
             $viewData = new stdClass();
 
-            $item = $this->Site_model->get(array("id" => $stock->site_id));
+            $item = $this->Site_model->get(array("id" => $site_stock->site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
             $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
+            $viewData->site_stock = $site_stock;
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
             $viewData->sites = $sites;
             $viewData->warning = "Veri Silinemedi";
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tables/table_3_sitestock", $viewData);
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
 
         }
     }

@@ -7,11 +7,20 @@
         var form = $('#' + formId);
         var url = form.data('form-url');
 
+        $('#ExitModal').on('shown.bs.modal', function () {
+            $('#' + modalId).datepicker({
+                format: 'dd-mm-yyyy',
+                autoclose: true,
+                language: 'tr'
+            });
+        });
+
+
         $.ajax({
             type: 'POST',
             url: url,
             data: form.serialize(),
-            dataType: 'html', // Sunucudan HTML dönecek
+            dataType: 'html',
             success: function (response) {
                 $('#' + DivId).html(response); // Gelen yanıtı Div'e ekle
                 form[0].reset(); // Formu temizle
@@ -23,9 +32,10 @@
                     $('#' + modalId).modal('show'); // Hata durumunda modalı tekrar aç
                 } else {
                     $('#' + modalId).modal('hide'); // Başarılıysa modalı kapat
-                    $('.modal-backdrop').remove();
-                    $('body').removeClass('modal-open');
-                    $('body').css('overflow', 'auto');
+                    $('.modal-backdrop').remove(); // Modal arka planını kaldır
+                    $('body').removeClass('modal-open'); // Body'den modal sınıfını kaldır
+                    $('body').css('overflow', 'auto'); // Overflow'u sıfırla
+                    $('body').css('padding-right', ''); // Padding-right'ı sıfırla
 
                     // Eğer DataTable parametresi verilmişse
                     if (DataTable) {
@@ -34,6 +44,7 @@
                             $(DataTable).DataTable().destroy();
                         }
 
+                        // DataTable yoksa, yeni bir DataTable başlat
                         if (!$.fn.DataTable.isDataTable('#'+DataTable)) {
                             $('#'+DataTable).DataTable({
                                 paging: true,
@@ -51,9 +62,15 @@
             }
         });
     }
+
 </script>
 
-
+<script>
+    $(document).on('hidden.bs.modal', '.modal', function () {
+        $('body').css('padding-right', '');
+        $('body').css('overflow', 'auto');
+    });
+</script>
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script  sonu-->
 
 <script>
@@ -68,6 +85,10 @@
 
                 // Modalı aç
                 $('#ExitModal').modal('show');
+
+                // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
+                $('body').css('padding-right', '');
+                $('body').css('overflow', '');
             },
             error: function() {
                 alert('Modal içeriği yüklenirken bir hata oluştu.');
@@ -79,7 +100,7 @@
 
 <!--Stok verisi sil başı-->
 <script>
-    function confirmDelete(stockId, deleteUrl, refreshDiv) {
+    function confirmDelete(stockId, deleteUrl, refreshDiv,DataTable = null) {
         // Kullanıcıdan onay al
         Swal.fire({
             title: 'Silme İşlemi',
@@ -98,9 +119,22 @@
                         id: stockId // Silinecek stok ID'sini gönder
                     },
                     success: function (response) {
-                        alert("başarılı silindi");
-                        // tab_3_sitestock div'ini yenile
                         $(refreshDiv).html(response);
+
+                        if ($.fn.DataTable.isDataTable(DataTable)) {
+                            $(DataTable).DataTable().destroy();
+                        }
+
+                        // DataTable yoksa, yeni bir DataTable başlat
+                        if (!$.fn.DataTable.isDataTable('#'+DataTable)) {
+                            $('#'+DataTable).DataTable({
+                                paging: true,
+                                searching: true,
+                                ordering: true,
+                                // Diğer DataTable ayarları
+                            });
+                        }
+
                     },
                     error: function () {
                         Swal.fire({
