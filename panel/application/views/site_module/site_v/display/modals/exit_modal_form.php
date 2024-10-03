@@ -23,7 +23,7 @@
                     <!-- Transfer Region -->
                     <div class="mb-3">
                         <label for="transfer" class="form-label">Transfer Bölgesi</label>
-                        <select id="select2-demo-1" style="width: 100%;" class="form-control <?php echo isset($form_error) ? 'is-invalid' : ''; ?>" data-plugin="select2" name="transfer">
+                        <select id="select2-demo-1" style="width: 100%;" class="form-control <?php cms_isset(form_error("transfer"), "is-invalid", ""); ?>" data-plugin="select2" name="transfer">
                             <?php if (isset($form_error)) { ?>
                                 <option selected value="<?php echo set_value('transfer'); ?>"><?php echo site_name(set_value('transfer')); ?></option>
                             <?php } else { ?>
@@ -48,7 +48,7 @@
                     <!-- Stock Out Quantity -->
                     <div class="mb-3">
                         <label for="stock_out" class="form-label">Çıkış Miktarı</label>
-                        <input type="number" class="form-control <?php echo isset($form_error) ? 'is-invalid' : ''; ?>" value="<?php echo isset($form_error) ? set_value('stock_out') : ''; ?>" id="stock_out" name="stock_out" placeholder="Çıkış Miktarı" required>
+                        <input type="number" class="form-control <?php cms_isset(form_error("stock_out"), "is-invalid", ""); ?>" value="<?php echo isset($form_error) ? set_value('stock_out') : ''; ?>" id="stock_out" name="stock_out" placeholder="Çıkış Miktarı" required>
                         <?php if (isset($form_error)) { ?>
                             <div class="invalid-feedback"><?php echo form_error('stock_out'); ?></div>
                         <?php } ?>
@@ -57,7 +57,9 @@
                     <!-- Exit Date -->
                     <div class="mb-3">
                         <label for="exit_date" class="form-label">Çıkış Tarihi</label>
-                        <input type="date" name="exit_date" id="exit_date" value="<?php echo set_value('exit_date'); ?>" class="form-control">
+                        <input type="date" name="exit_date" id="exit_date"
+                               value="<?php echo set_value('exit_date'); ?>"
+                               class="form-control <?php cms_isset(form_error("exit_date"), "is-invalid", ""); ?>">
                         <?php if (isset($form_error)) { ?>
                             <div class="invalid-feedback"><?php echo form_error('exit_date'); ?></div>
                         <?php } ?>
@@ -66,7 +68,10 @@
                     <!-- Exit Notes -->
                     <div class="mb-3">
                         <label for="exit_notes" class="form-label">Açıklama</label>
-                        <input type="text" class="form-control <?php echo isset($form_error) ? 'is-invalid' : ''; ?>" value="<?php echo isset($form_error) ? set_value('exit_notes') : ''; ?>" id="exit_notes" name="exit_notes" placeholder="Açıklama">
+                        <input type="text"
+                               class="form-control <?php cms_isset(form_error("exit_notes"), "is-invalid", ""); ?>"
+                               value="<?php echo isset($form_error) ? set_value('exit_notes') : ''; ?>"
+                               id="exit_notes" name="exit_notes" placeholder="Açıklama">
                         <?php if (isset($form_error)) { ?>
                             <div class="invalid-feedback"><?php echo form_error('exit_notes'); ?></div>
                         <?php } ?>

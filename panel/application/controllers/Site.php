@@ -308,19 +308,33 @@ class Site extends CI_Controller
 
     public function sitewallet($site_id, $type)
     {
+        // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
+        $item = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id,"type" => 1));
+        $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
 
+        $viewData = new stdClass();
 
-        $site = $this->Site_model->get(array("id" => $site_id));
-        $contract = $this->Contract_model->get(array("id" => $site->contract_id));
-        $project = $this->Project_model->get(array("id" => $site->proje_id));
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->contract = $contract;
+        $viewData->all_expenses = $all_expenses;
+        $viewData->total_expense = $total_expense;
+        $viewData->item = $item;
 
+        // Form validation kütüphanesini yüklüyoruz
         $this->load->library("form_validation");
 
+        // Form doğrulama kuralları ekliyoruz
+        $this->form_validation->set_rules('expense_date', 'Tarih', 'required');
         $this->form_validation->set_rules('price', 'Fiyat', 'required|numeric');
         $this->form_validation->set_rules('payment_type', 'Ödeme Türü', 'required');
         $this->form_validation->set_rules('payment_notes', 'Açıklama', 'required');
-        $this->form_validation->set_rules('date', 'Tarih', 'required');
 
+        // Form doğrulama hatalarını özelleştiriyoruz
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
@@ -328,31 +342,29 @@ class Site extends CI_Controller
                 "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
             )
         );
-
+        // Formun doğrulama işlemi başlatılıyor
         $validate = $this->form_validation->run();
-
-        if ($this->input->post("date")) {
-            $date = dateFormat('Y-m-d', $this->input->post("date"));
+        // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
+        if ($this->input->post("expense_date")) {
+            $date = dateFormat('Y-m-d', $this->input->post("expense_date"));
         } else {
-            $date = null;
+            $date = null; // Eğer tarih girilmediyse, null değer atıyoruz
         }
-
-
+        // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
         if ($validate) {
-
-            $path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$date";
-
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$date";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
-                echo "oluştu";
+                echo "Klasör oluşturuldu";
             } else {
-                echo "aynı isimde dosya mevcut";
+                echo "Aynı isimde dosya mevcut"; // Aynı isimde dosya mevcutsa uyarı veriliyor
             }
-
-
+            // Yeni site cüzdanı kaydı veritabanına ekleniyor
             $insert = $this->Sitewallet_model->add(
                 array(
-                    "site_id" => $site_id,
+                    "site_id" => $item->id,
                     "date" => $date,
                     "price" => $this->input->post("price"),
                     "bill_code" => $this->input->post("bill_code"),
@@ -363,73 +375,31 @@ class Site extends CI_Controller
                     "createdBy" => active_user_id(),
                 )
             );
-
+            // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
             $record_id = $this->db->insert_id();
-
+            // Yüklenen dosyanın ismi SEO dostu hale getiriliyor
             $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-
+            // Dosya boyutu alınıyor
             $size = $_FILES["file"]["size"];
-
-            $config["allowed_types"] = "*";
-            $config["upload_path"] = "$path";
-            $config["file_name"] = $record_id;
-
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
             $this->load->library("upload", $config);
-
             $upload = $this->upload->do_upload("file");
 
-
-            $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site_id));
-            $all_expenses = $this->Sitewallet_model->get_all(array(
-                "site_id" => $site_id,
-                "type" => 1
-            ));
-            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$site->id", "type", "1");
-
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
-            $viewData->item = $item;
-            $viewData->contract = $contract;
-            $viewData->all_expenses = $all_expenses;
-            $viewData->total_expense = $total_expense;
-            $viewData->error_modal = "addExpenseForm";
-
-
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
-
+            if (!$upload) {
+                log_message('error', 'File upload failed: ' . $this->upload->display_errors());
+                $viewData->upload_error = $this->upload->display_errors(); // Hata mesajlarını kullanıcıya göstermek için
+            }
         } else {
-
-
-            $all_expenses = $this->Sitewallet_model->get_all(array(
-                "site_id" => $site_id,
-                "type" => 1
-            ));
-            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$site->id", "type", "1");
-
-            $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site_id));
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
-            $viewData->item = $item;
-            $viewData->contract = $contract;
-            $viewData->all_expenses = $all_expenses;
-            $viewData->total_expense = $total_expense;
-
-            $viewData->form_error = true;
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+            $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
+            $viewData->error_modal = "AddExpenseModal"; // Hata modali için set edilen değişken
         }
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
     }
+
 
 
     public function expense_delete($expense_id)

@@ -127,7 +127,9 @@
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_1_expenses"); ?>
+                        <div id="tab_expenses">
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_1_expenses"); ?>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
                         <div class="download_links mt-3">
@@ -140,7 +142,9 @@
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_2_deposits"); ?>
+                        <div id="tab_deposits">
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_2_deposits"); ?>
+                        </div>
                     </div>
                 </div>
             </div>
