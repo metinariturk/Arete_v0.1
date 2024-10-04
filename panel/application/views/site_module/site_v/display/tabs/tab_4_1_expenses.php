@@ -36,13 +36,12 @@
                     <form id="addExpenseForm"
                           data-form-url="<?php echo base_url("$this->Module_Name/sitewallet/$item->id/1"); ?>"
                           method="post" enctype="multipart/form-data" autocomplete="off">
-
                         <!-- Tarih -->
                         <div class="mb-3">
                             <label for="expense_date" class="form-label">Çıkış Tarihi</label>
                             <input type="date" name="expense_date" id="expense_date"
-                                   value="<?php echo set_value('expense_date'); ?>"
-                                   class="form-control <?php cms_isset(form_error("contract_name"), "is-invalid", ""); ?>">
+                                   value="<?php echo date(set_value('expense_date')); ?>"
+                                   class="form-control <?php cms_isset(form_error("expense_date"), "is-invalid", ""); ?>">
                             <?php if (isset($form_error)) { ?>
                                 <div class="invalid-feedback"><?php echo form_error('expense_date'); ?></div>
                             <?php } ?>
@@ -138,9 +137,9 @@
                 <thead>
                 <tr>
                     <th>Tarih</th>
-                    <th>Harcama Adı</th>
+                    <th>Açıklama</th>
                     <th>Miktar</th>
-                    <th>Harcama Türü</th>
+                    <th>Ödeme Türü</th>
                     <th>İndir</th>
                     <th>Sil</th>
                 </tr>
@@ -159,10 +158,10 @@
                             </a>
                         </td>
                         <td>
-                            <a onclick="deleteExpenseFile(this)"
-                               url="<?php echo base_url("site/expense_delete/$expense->id"); ?>"
-                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
-                               aria-hidden="true"></i>
+                            <a href="javascript:void(0);"
+                               onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$expense->id"); ?>', '#tab_expenses','expensesTable')"
+                               title="Sil">
+                                <i class="fa fa-trash-o fa-2x"></i>
                             </a>
                         </td>
                     </tr>
@@ -188,9 +187,6 @@
                 // Ayın toplamını güncelle
                 $monthly_expenses[$month] += $price;
             }
-
-            $chart_expense = json_encode($monthly_expenses);
-
 
             ?>
 
@@ -230,3 +226,53 @@
         </div>
     </div>
 </div>
+<?php echo json_encode($monthly_expenses); ?>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // PHP'den alınan harcama verisini JavaScript'te kullanmak için
+        var monthlyExpenses = <?php echo json_encode($monthly_expenses); ?>;
+
+        // Grafik verilerini hazırlama
+        var labels = Object.keys(monthlyExpenses); // Aylar
+        var data = Object.values(monthlyExpenses); // Toplam harcamalar
+
+        // Her çubuk için farklı renkler tanımlama
+        var colors = [
+            'rgba(75, 192, 192, 0.2)', // Ocak
+            'rgba(255, 99, 132, 0.2)', // Şubat
+            'rgba(255, 206, 86, 0.2)', // Mart
+            'rgba(75, 192, 192, 0.2)', // Nisan
+            'rgba(54, 162, 235, 0.2)', // Mayıs
+            'rgba(153, 102, 255, 0.2)', // Haziran
+            'rgba(255, 159, 64, 0.2)', // Temmuz
+            'rgba(255, 99, 132, 0.2)', // Ağustos
+            'rgba(75, 192, 192, 0.2)', // Eylül
+            'rgba(255, 206, 86, 0.2)', // Ekim
+            'rgba(54, 162, 235, 0.2)', // Kasım
+            'rgba(153, 102, 255, 0.2)'  // Aralık
+        ];
+
+        // Grafik oluşturma
+        var ctx = document.getElementById('expenseChart').getContext('2d');
+        var expenseChart = new Chart(ctx, {
+            type: 'bar', // Çubuk grafik
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Aylık Harcama (TL)',
+                    data: data,
+                    backgroundColor: colors.slice(0, data.length), // Her çubuğa farklı renk
+                    borderColor: colors.slice(0, data.length).map(color => color.replace('0.2', '1')), // Kenar rengi
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>

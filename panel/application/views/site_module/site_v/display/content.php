@@ -134,7 +134,7 @@
                     <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
                         <div class="download_links mt-3">
                             <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
-                               data-bs-target="#DepositModal"></i>
+                               data-bs-target="#AddDepositModal"></i>
                             <a href="<?php echo base_url('export/sitewallet_download_excel'); ?>">
                                 <i class="fa fa-file-excel-o fa-2x"></i>
                             </a>

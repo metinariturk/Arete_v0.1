@@ -150,7 +150,7 @@
                     <?php $is_parent = $this->Sitestock_model->get(array("parent_id" => $site_stock->id)); ?>
                     <?php if (empty($is_parent)): ?>
                         <a href="javascript:void(0);"
-                           onclick="confirmDelete(<?php echo $site_stock->id; ?>, '<?php echo base_url('Site/delete_stock'); ?>', '#tab_sitestock','stock-table')"
+                           onclick="confirmDelete('<?php echo base_url("Site/delete_stock/$site_stock->id"); ?>', '#tab_sitestock','stock-table')"
                            title="Sil">
                             <i class="fa fa-trash-o fa-2x"></i>
                         </a>

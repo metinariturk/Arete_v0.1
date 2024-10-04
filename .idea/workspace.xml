@@ -199,7 +199,8 @@
       <workItem from="1727852572011" duration="7503000" />
       <workItem from="1727894918660" duration="8492000" />
       <workItem from="1727959995801" duration="1463000" />
-      <workItem from="1727962008369" duration="4558000" />
+      <workItem from="1727962008369" duration="4559000" />
+      <workItem from="1728066647112" duration="9632000" />
     </task>
     <servers />
   </component>
@@ -265,7 +266,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>974</line>
+          <line>1064</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="sign_options" />
@@ -274,7 +275,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1115</line>
+          <line>1205</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="delete_sign" />
@@ -283,12 +284,30 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1170</line>
+          <line>1260</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="sign_rankSetter" />
           </properties>
           <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>154</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="save" />
+          </properties>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>308</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="sitewallet" />
+          </properties>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>
@@ -312,7 +331,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>976</line>
+          <line>1066</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>

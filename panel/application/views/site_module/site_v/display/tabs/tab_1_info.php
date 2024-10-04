@@ -21,6 +21,14 @@
                     <table class="table-sm">
                         <tbody>
                         <tr>
+                            <td><p>Şantiye Adı</p></td>
+                            <td>
+                                <p>
+                                   <?php echo $item->dosya_no." - ".$item->santiye_ad; ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
                             <td><p>Şantiye Sorumlusu</p></td>
                             <td>
                                 <p>
