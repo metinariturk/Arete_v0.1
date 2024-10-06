@@ -89,7 +89,7 @@
             <!-- Sekmeler -->
             <div class="tabs">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
-                    <h5>Son Raporlar</h5>
+                    <span><b>Son Raporlar</b><br>&nbsp;</span>
                 </div>
             </div>
             <hr>

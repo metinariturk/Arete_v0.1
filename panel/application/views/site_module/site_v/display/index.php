@@ -53,6 +53,38 @@
             color: white;               /* Hover durumundaki yazı rengi */
         }
 
+        .table-responsive {
+            overflow-x: auto; /* Yalnızca yatay kaydırma çubuğu göster */
+        }
+
+        .table-responsive table {
+            width: 100%; /* Tablonun genişliğini %100 yap */
+            border-collapse: collapse; /* Kenar boşluklarını kaldır */
+        }
+
+        .table-responsive th, .table-responsive td {
+            padding: 8px; /* Hücre içi boşluk */
+            text-align: left; /* Metni sola yasla */
+            border: 1px solid #ddd; /* Kenarlara sınır ekle */
+        }
+
+        .table-responsive th {
+            background-color: #f2f2f2; /* Başlık hücreleri için arka plan rengi */
+        }
+
+        .icon-group {
+            display: flex; /* Flexbox kullanarak yan yana hizalar */
+            align-items: center; /* Dikey olarak ortalar */
+        }
+
+        .icon-group a {
+            margin-right: 10px; /* İkonlar arasına boşluk ekler */
+        }
+
+        .icon-group a:last-child {
+            margin-right: 0; /* Son ikonun sağındaki boşluğu kaldır */
+        }
+
     </style>
     <!-- Plugins css start-->
 

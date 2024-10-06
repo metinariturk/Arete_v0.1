@@ -69,6 +69,47 @@
 </script>
 
 <script>
+    function delete_file(element) {
+        // Data-URL'den silme URL'sini al
+        var url = element.getAttribute("data-url");
+
+        // AJAX isteği yapıyoruz
+        fetch(url, {
+            method: 'POST',
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Başarıyla silindiğinde yeni bir input alanı ekle
+                    var fileUploadContainer = document.getElementById("file-upload-container");
+                    fileUploadContainer.innerHTML = ''; // Mevcut içeriği temizle
+
+                    // Yeni bir dosya yükleme alanı oluştur
+                    var label = document.createElement("label");
+                    label.className = "col-form-label";
+                    label.innerHTML = "Dosya Yükle:";
+
+                    var input = document.createElement("input");
+                    input.className = "form-control";
+                    input.name = "file";
+                    input.id = "file-input";
+                    input.type = "file";
+
+                    // Yeni alanları ekleyin
+                    fileUploadContainer.appendChild(label);
+                    fileUploadContainer.appendChild(input);
+                } else {
+                    alert(data.message); // Hata mesajını göster
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                alert('Bir hata oluştu!');
+            });
+    }
+</script>
+
+<script>
     $(document).on('hidden.bs.modal', '.modal', function () {
         $('body').css('padding-right', '');
         $('body').css('overflow', 'auto');
@@ -77,17 +118,17 @@
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script  sonu-->
 
 <script>
-    function open_exit_stock_form(FormURL) {
+    function edit_modal_form(FormURL, ModalForm, ModalId) {
         // AJAX ile modal içeriğini yenile
         $.ajax({
             url: FormURL,
             type: 'GET',
             success: function(response) {
                 // Modalın içeriğini güncelle
-                $('#site_stock_modal_form').html(response); // Gelen yanıtı modal içeriğine ekle
+                $('#'+ModalForm).html(response); // Gelen yanıtı modal içeriğine ekle
 
                 // Modalı aç
-                $('#ExitModal').modal('show');
+                $('#'+ModalId).modal('show');
 
                 // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
                 $('body').css('padding-right', '');

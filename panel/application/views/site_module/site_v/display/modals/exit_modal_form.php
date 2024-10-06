@@ -1,3 +1,5 @@
+<?php if (!empty($site_stock)) { ?>
+
 <div class="modal fade" id="ExitModal" tabindex="-1" aria-labelledby="ExitModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -88,3 +90,4 @@
         </div>
     </div>
 </div>
+<?php } ?>

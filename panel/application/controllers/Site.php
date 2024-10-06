@@ -24,23 +24,30 @@ class Site extends CI_Controller
         $uploader = APPPATH . 'libraries/FileUploader.php';
         include($uploader);
 
-        $this->load->model("Site_model");
-        $this->load->model("Contract_model");
-        $this->load->model("Project_model");
-        $this->load->model("Settings_model");
-        $this->load->model("Order_model");
-        $this->load->model("User_model");
-        $this->load->model("Report_model");
-        $this->load->model("Report_sign_model");
-        $this->load->model("Sitestock_model");
-        $this->load->model("Sitewallet_model");
-        $this->load->model("Extime_model");
-        $this->load->model("Costinc_model");
-        $this->load->model("Workman_model");
-        $this->load->model("Workgroup_model");
-        $this->load->model("Workmachine_model");
-        $this->load->model("Favorite_model");
-        $settings = $this->Settings_model->get();
+        $models = [
+            "Site_model" => 1,
+            "Contract_model" => 1,
+            "Project_model" => 1,
+            "Settings_model" => 1,
+            "Order_model" => 1,
+            "User_model" => 1,
+            "Report_model" => 1,
+            "Report_sign_model" => 1,
+            "Sitestock_model" => 1,
+            "Sitewallet_model" => 1,
+            "Extime_model" => 1,
+            "Costinc_model" => 1,
+            "Workman_model" => 1,
+            "Workgroup_model" => 1,
+            "Workmachine_model" => 1,
+            "Favorite_model" => 1
+        ];
+
+        foreach ($models as $model => $shouldLoad) {
+            if ($shouldLoad) {
+                $this->load->model($model);
+            }
+        }
 
         $this->Upload_Folder = "uploads"; // Ana yükleme klasörü
         $this->Module_Name = "Site"; // Modül adı
@@ -59,12 +66,9 @@ class Site extends CI_Controller
         $this->Display_Folder = "display"; // Görüntüleme klasörü
         $this->Add_Folder = "add"; // Ekleme klasörü
         $this->List_Folder = "list"; // Listeleme klasörü
-        $this->Select_Folder = "select"; // Seçim klasörü
         $this->Update_Folder = "update"; // Güncelleme klasörü
         $this->Common_Files = "common"; // Ortak dosyalar
-        $this->settings = $settings;
-
-
+        $this->settings = $this->Settings_model->get();;
     }
 
     public function index()
@@ -85,6 +89,7 @@ class Site extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
+
         $viewData->items = $items;
         $viewData->projects = $projects;
         $viewData->active_contracts = $active_contracts;
@@ -305,224 +310,6 @@ class Site extends CI_Controller
         }
 
     }
-
-    public function sitewallet($site_id, $type)
-    {
-
-        // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
-        $item = $this->Site_model->get(array("id" => $site_id));
-        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
-
-
-        // Form validation kütüphanesini yüklüyoruz
-        $this->load->library("form_validation");
-
-        // Form doğrulama kuralları ekliyoruz
-        if ($type == 1){
-            $this->form_validation->set_rules('expense_date', 'Tarih', 'required');
-        } elseif ($type == 0) {
-            $this->form_validation->set_rules('deposit_date', 'Tarih', 'required');
-        }
-
-        $this->form_validation->set_rules('price', 'Fiyat', 'required|numeric');
-        $this->form_validation->set_rules('payment_type', 'Ödeme Türü', 'required');
-        $this->form_validation->set_rules('payment_notes', 'Açıklama', 'required');
-
-        // Form doğrulama hatalarını özelleştiriyoruz
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
-                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
-            )
-        );
-        // Formun doğrulama işlemi başlatılıyor
-        $validate = $this->form_validation->run();
-
-        // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
-        if ($validate) {
-
-            if ($type == 1){
-                // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
-                if ($this->input->post("expense_date")) {
-                    $date = dateFormat('Y-m-d', $this->input->post("expense_date"));
-                } else {
-                    $date = null; // Eğer tarih girilmediyse, null değer atıyoruz
-                }
-            } elseif ($type == 0) {
-                // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
-                if ($this->input->post("deposit_date")) {
-                    $date = dateFormat('Y-m-d', $this->input->post("deposit_date"));
-                } else {
-                    $date = null; // Eğer tarih girilmediyse, null değer atıyoruz
-                }
-            }
-
-            $bill_code = $this->input->post("bill_code");
-            if (empty($bill_code)) {
-                $bill_code = NULL; // Eğer boşsa NULL ata
-            }
-
-            // Yeni site cüzdanı kaydı veritabanına ekleniyor
-            $insert = $this->Sitewallet_model->add(
-                array(
-                    "site_id" => $item->id,
-                    "date" => $date,
-                    "price" => $this->input->post("price"),
-                    "bill_code" => $bill_code,
-                    "payment_type" => $this->input->post("payment_type"),
-                    "note" => $this->input->post("payment_notes"),
-                    "type" => $type,
-                    "createdAt" => date("Y-m-d"),
-                    "createdBy" => active_user_id(),
-                )
-            );
-
-            // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
-            $record_id = $this->db->insert_id();
-
-            // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
-            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-            }
-
-            // Yüklenen dosyanın ismi SEO dostu hale getiriliyor
-            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-
-            // Dosya boyutu alınıyor
-            $size = $_FILES["file"]["size"];
-
-            // Yükleme ayarları belirleniyor
-            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
-            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
-            $config["max_size"] = 2048; // Maksimum dosya boyutu 2 MB (2048 KB)
-
-            // Yükleme kütüphanesi yükleniyor
-            $this->load->library("upload", $config);
-
-            // Dosya yükleme işlemi
-            if (!$this->upload->do_upload("file")) {
-                // Yükleme başarısız olduysa hata mesajı döndürülüyor
-                $error = $this->upload->display_errors();
-                echo "Dosya yüklenemedi: " . $error;
-            } else {
-                // Yükleme başarılıysa devam eden işlemler
-                $data = $this->upload->data();
-            }
-
-            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id,"type" => 1));
-            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id,"type" => 0));
-            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
-            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
-
-            $viewData = new stdClass();
-
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
-            $viewData->contract = $contract;
-            $viewData->all_deposits = $all_deposits;
-            $viewData->all_expenses = $all_expenses;
-            $viewData->total_expense = $total_expense;
-            $viewData->total_deposit = $total_deposit;
-            $viewData->item = $item;
-
-            if ($type == 1){
-                $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
-            } elseif ($type == 0) {
-                $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
-            }
-
-        } else {
-
-            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id,"type" => 1));
-            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id,"type" => 0));
-            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
-            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
-
-
-            $viewData = new stdClass();
-
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
-            $viewData->contract = $contract;
-            $viewData->all_expenses = $all_expenses;
-            $viewData->all_deposits = $all_deposits;
-            $viewData->total_expense = $total_expense;
-            $viewData->total_deposit = $total_deposit;
-            $viewData->item = $item;
-
-            $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
-
-            if ($type == 1){
-                $viewData->error_modal = "AddExpenseModal"; // Hata modali için set edilen değişken
-            } elseif ($type == 0) {
-                $viewData->error_modal = "AddDepositModal"; // Hata modali için set edilen değişken
-            }
-            if ($type == 1){
-                $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
-            } elseif ($type == 0) {
-                $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
-            }
-        }
-    }
-
-    public function delete_sitewallet($sitewallet_id)
-    {
-
-        $sitewallet = $this->Sitewallet_model->get(array("id" => $sitewallet_id));
-        $item = $this->Site_model->get(array("id" => $sitewallet->site_id));
-        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
-
-        $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$sitewallet->id";
-
-        $delete = $this->Sitewallet_model->delete(
-            array(
-                "id" => $sitewallet->id
-            )
-        );
-
-        if ($file_path && is_dir($file_path)) {
-            $files = scandir($file_path);
-            foreach ($files as $file) {
-                if ($file !== '.' && $file !== '..') {
-                    // Dosya adı ve uzantısını ayır
-                    $file_name_without_extension = pathinfo($file, PATHINFO_FILENAME);
-
-                    // Eğer dosya adı $expense_id ile eşleşiyorsa sil
-                    if ($sitewallet->id == $file_name_without_extension) {
-                        $path = $file_path . "/" . $file;
-                        if (!unlink($path)) {
-                            log_message('error', "Dosya silinemedi: $path");
-                        }
-                    }
-                }
-            }
-        }
-
-        $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $item->id,"type" => 1));
-        $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
-
-        $viewData = new stdClass();
-
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
-        $viewData->contract = $contract;
-        $viewData->all_expenses = $all_expenses;
-        $viewData->total_expense = $total_expense;
-        $viewData->item = $item;
-
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
-
-    }
-
 
     public function file_form($id, $active_tab = null)
     {
@@ -846,28 +633,189 @@ class Site extends CI_Controller
 
     }
 
-    public function duplicate_code_check($file_name)
+    public
+    function puantaj_print($site_id, $month, $year)
     {
-        $file_name = "SNT-" . $file_name;
+        $month = date($month);
+        $year = date($year);
+        $year_month = $year . "-" . $month;
+        $month_name = ay_isimleri($month);
 
-        $var = count_data("file_order", "file_order", $file_name);
-        if (($var > 0)) {
-            return FALSE;
+        $year_month = dateFormat('Y-m', $year_month);
+
+        $viewData = new stdClass();
+
+        $this->load->model("Attendance_model");
+        $puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "year_month" => "$year_month"));
+        $site = $this->Site_model->get(array("id" => $site_id));
+
+        if (isset($puantaj)) {
+            $puantaj_data = json_decode($puantaj->puantaj, true);
         } else {
-            return TRUE;
+            $puantaj_data = null;
         }
+
+        $this->load->library('pdf_creator');
+
+        // Yeni bir TCPDF nesnesi oluşturun
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+
+        $pdf->SetPageOrientation('L');
+
+        $pdf->headerSubText = "Şantiye Adı : $site->santiye_ad";
+
+        $pdf->headerText = "$month_name $year Puantaj Tablosu";
+
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+
+        $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
+
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(7, 6, '#', 1);
+        $pdf->Cell(40, 6, 'Adı Soyadı', 1);
+        $pdf->Cell(30, 6, 'Ekip', 1);
+        for ($j = 1; $j <= gun_sayisi(); $j++) {
+            $pdf->Cell(6, 6, $j, 1, "", "C");
+        }
+        $pdf->Cell(16, 6, 'Toplam', 1);
+        $pdf->Ln(); // Bir sonraki satıra geç
+
+// Tablo verilerini oluştur
+        $pdf->SetFont('dejavusans', '', 10);
+        $i = 1;
+        foreach ($personel_datas as $personel_data) {
+            $pdf->Cell(7, 6, $i++, 1);
+            $pdf->Cell(40, 6, $personel_data->name_surname, 1);
+            $pdf->Cell(30, 6, group_name($personel_data->group), 1);
+
+            for ($j = 1; $j <= gun_sayisi(); $j++) {
+                $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
+                $isChecked = (isset($puantaj_data[$j_double_digit]) && in_array($personel_data->id, $puantaj_data[$j_double_digit])) ? 'X' : '';
+                $pdf->Cell(6, 6, $isChecked, 1, "", "C");
+            }
+
+            $count_of_value = 0;
+            if (isset($puantaj_data)) {
+                $value_to_count = $personel_data->id;
+                foreach ($puantaj_data as $sub_array) {
+                    if (in_array($value_to_count, $sub_array)) {
+                        $count_of_value += array_count_values($sub_array)[$value_to_count];
+                    }
+                }
+            }
+            $pdf->SetFont('dejavusans', 'B', 10);
+
+            $pdf->Cell(16, 6, $count_of_value, 1);
+            $pdf->SetFont('dejavusans', '', 10);
+
+
+            $pdf->Ln(); // Bir sonraki satıra geç
+        }
+
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(77, 10, 'Toplam', 1, 0, 'C');
+        for ($j = 1; $j <= gun_sayisi(); $j++) {
+            $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
+            if (array_key_exists($j_double_digit, $puantaj_data)) {
+                $pdf->Cell(6, 10, count($puantaj_data[$j_double_digit]), 1, 0, 'C');
+            } else {
+                $pdf->Cell(6, 10, '0', 1, 0, 'C');
+            }
+        }
+        $total_keys = 0;
+        foreach ($puantaj_data as $sub_array) {
+            $total_keys += count($sub_array);
+        }
+        $pdf->Cell(16, 10, $total_keys, 1, 1, 'C'); // Yeni satıra geç
+
+        // PDF'yi görüntüleme veya indirme
+        $pdf->Output("$site->santiye_ad" . "-" . $month_name . " " . $year . ".pdf");
+
     }
 
-    public function site_contractday($sitedal_day, $contract_day)
+    public
+    function personel_print($site_id, $is_active)
     {
-        $date_diff = date_minus($sitedal_day, $contract_day);
-        if (($date_diff < 0)) {
-            return FALSE;
+        $viewData = new stdClass();
+
+        $this->load->model("Attendance_model");
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $puantaj = $this->Workman_model->get(array("site_id" => $site->id, "end_date" => NULL));
+
+
+        if (isset($puantaj)) {
+            $puantaj_data = json_decode($puantaj->puantaj, true);
         } else {
-            return TRUE;
+            $puantaj_data = null;
         }
+
+        $this->load->library('pdf_creator');
+
+        // Yeni bir TCPDF nesnesi oluşturun
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+
+        $pdf->SetPageOrientation('L');
+
+
+        $pdf->headerSubText = "Şantiye Adı : $site->santiye_ad";
+
+        $pdf->headerText = "Personel Tablosu";
+
+        if ($is_active == 1) {
+            $pdf->headerPaymentNo = "Aktif Çalışanlar Listesi";
+        } elseif ($is_active == 0) {
+            $pdf->headerPaymentNo = "Tüm Çalışanlar Listesi";
+        }
+
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+
+        if ($is_active == 1) {
+            $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "end_date" => NULL));
+        } elseif ($is_active == 0) {
+            $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id));
+        }
+        $pdf->SetFont('dejavusans', '', 8);
+
+        $pdf->Cell(10, 7, '#', 1, 0, 'C');
+        $pdf->Cell(40, 7, 'Adı Soyadı', 1, 0, 'C');
+        $pdf->Cell(28, 7, 'TC Kimlik No', 1, 0, 'C');
+        $pdf->Cell(30, 7, 'Branş', 1, 0, 'C');
+        $pdf->Cell(25, 7, 'İşe Giriş', 1, 0, 'C');
+        if ($is_active == 0) {
+            $pdf->Cell(25, 7, 'İşten Çıkış', 1, 0, 'C');
+        }
+
+        $pdf->Cell(60, 7, 'Hesap No', 1, 0, 'C');
+        $pdf->Cell(60, 7, 'Banka', 1, 0, 'C');
+        $pdf->Ln();
+
+// Table data
+        $i = 1;
+        foreach ($personel_datas as $personel_data) {
+            $pdf->Cell(10, 7, $i++, 1, 0, 'C');
+            $pdf->Cell(40, 7, $personel_data->name_surname, 1, 0, 'L');
+            $pdf->Cell(28, 7, $personel_data->social_id, 1, 0, 'C');
+            $pdf->Cell(30, 7, group_name($personel_data->group), 1, 0, 'C');
+            $pdf->Cell(25, 7, dateFormat_dmy($personel_data->start_date), 1, 0, 'C');
+            if ($is_active == 0) {
+                $pdf->Cell(25, 7, (!empty($personel_data->end_date) ? dateFormat_dmy($personel_data->end_date) : 'Çalışıyor'), 1, 0, 'C');
+            }
+            $pdf->Cell(60, 7, $personel_data->IBAN, 1, 0, 'C');
+            $pdf->Cell(60, 7, $personel_data->bank, 1, 0, 'C');
+            $pdf->Ln();
+        }
+
+        $name = $site->santiye_ad . "-" . "-Personel Listesi.pdf";
+        // PDF'yi görüntüleme veya indirme
+        $pdf->Output($name);
+
     }
 
+    /*----*/
+
+    /*Settings Start*/
     public function add_group($site_id, $group_id)
     {
 
@@ -1071,31 +1019,6 @@ class Site extends CI_Controller
 
         echo $render_html;
 
-    }
-
-    public function favorite($id)
-    {
-        $fav_id = get_from_any_and_and("favorite", "module", "site", "user_id", active_user_id(), "module_id", "$id");
-        if (!empty($fav_id)) {
-            $this->Favorite_model->delete(
-                array(
-                    "id" => $fav_id
-                )
-            );
-            echo "favoriden çıktı";
-        } else {
-
-            $insert = $this->Favorite_model->add(
-                array(
-                    "module" => "site",
-                    "view" => "file_form",
-                    "module_id" => $id,
-                    "user_id" => active_user_id(),
-                    "title" => site_code($id) . " - " . site_name($id)
-                )
-            );
-            echo "favoriye eklendi";
-        }
     }
 
     public function sign_options($site_id, $module)
@@ -1313,7 +1236,676 @@ class Site extends CI_Controller
         }
     }
 
-    public function add_stock($site_id)
+    public function favorite($id)
+    {
+        $fav_id = get_from_any_and_and("favorite", "module", "site", "user_id", active_user_id(), "module_id", "$id");
+        if (!empty($fav_id)) {
+            $this->Favorite_model->delete(
+                array(
+                    "id" => $fav_id
+                )
+            );
+            echo "favoriden çıktı";
+        } else {
+
+            $insert = $this->Favorite_model->add(
+                array(
+                    "module" => "site",
+                    "view" => "file_form",
+                    "module_id" => $id,
+                    "user_id" => active_user_id(),
+                    "title" => site_code($id) . " - " . site_name($id)
+                )
+            );
+            echo "favoriye eklendi";
+        }
+    }
+
+    /*Settings End*/
+
+    /*----*/
+
+    /*Sitewalllet Start*/
+
+    public
+    function check_end_date($end_date)
+    {
+        $start_date = $this->input->post('start_date'); // Başlangıç tarihini post verisinden alın
+
+        // Eğer end date boş değilse ve start date doluysa kontrol yap
+        if (!empty($end_date) && !empty($start_date)) {
+            // İki tarih arasındaki farkı hesaplayın
+            $date_diff = strtotime($end_date) - strtotime($start_date);
+
+            if ($date_diff < 0) {
+                // Eğer çıkış tarihi, giriş tarihinden önce ise hata mesajı ayarlayın
+                $this->form_validation->set_message('check_end_date', 'Çıkış tarihi, giriş tarihinden sonraki bir tarih olmalıdır.');
+                return FALSE;
+            }
+        }
+
+        return TRUE; // Kontrol yapılmadı veya geçerli
+    }
+
+    public function add_expense($site_id)
+    {
+
+        // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
+        $item = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+
+        // Form validation kütüphanesini yüklüyoruz
+        $this->load->library("form_validation");
+
+        // Form doğrulama kuralları ekliyoruz
+        $this->form_validation->set_rules('expense_date', 'Tarih', 'required');
+        $this->form_validation->set_rules('price', 'Fiyat', 'required|numeric');
+        $this->form_validation->set_rules('payment_type', 'Ödeme Türü', 'required');
+        $this->form_validation->set_rules('expense_notes', 'Açıklama', 'required');
+
+        // Form doğrulama hatalarını özelleştiriyoruz
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            )
+        );
+        // Formun doğrulama işlemi başlatılıyor
+        $validate = $this->form_validation->run();
+
+        // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
+        if ($validate) {
+
+            // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
+            if ($this->input->post("expense_date")) {
+                $date = dateFormat('Y-m-d', $this->input->post("expense_date"));
+            } else {
+                $date = null; // Eğer tarih girilmediyse, null değer atıyoruz
+            }
+
+
+            $bill_code = $this->input->post("bill_code");
+            if (empty($bill_code)) {
+                $bill_code = NULL; // Eğer boşsa NULL ata
+            }
+
+            // Yeni site cüzdanı kaydı veritabanına ekleniyor
+            $insert = $this->Sitewallet_model->add(
+                array(
+                    "site_id" => $item->id,
+                    "date" => $date,
+                    "price" => $this->input->post("price"),
+                    "bill_code" => $bill_code,
+                    "payment_type" => $this->input->post("payment_type"),
+                    "note" => $this->input->post("expense_notes"),
+                    "type" => 1,
+                    "createdAt" => date("Y-m-d"),
+                    "createdBy" => active_user_id(),
+                )
+            );
+
+            // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
+            $record_id = $this->db->insert_id();
+
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            // Yüklenen dosyanın ismi SEO dostu hale getiriliyor
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+            // Dosya boyutu alınıyor
+            $size = $_FILES["file"]["size"];
+
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+            // Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+            // Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+                // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+                echo "Dosya yüklenemedi: " . $error;
+            } else {
+                // Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
+
+            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 1));
+            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 0));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->all_deposits = $all_deposits;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->total_expense = $total_expense;
+            $viewData->total_deposit = $total_deposit;
+            $viewData->item = $item;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+
+        } else {
+
+            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 1));
+            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 0));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
+
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->all_deposits = $all_deposits;
+            $viewData->total_expense = $total_expense;
+            $viewData->total_deposit = $total_deposit;
+            $viewData->item = $item;
+            $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
+            $viewData->error_modal = "AddExpenseModal"; // Hata modali için set edilen değişken
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+
+        }
+    }
+
+    public function add_deposit($site_id)
+    {
+
+        // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
+        $item = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+
+        // Form validation kütüphanesini yüklüyoruz
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules('deposit_date', 'Tarih', 'required');
+        $this->form_validation->set_rules('price', 'Fiyat', 'required|numeric');
+        $this->form_validation->set_rules('payment_type', 'Ödeme Türü', 'required');
+        $this->form_validation->set_rules('deposit_notes', 'Açıklama', 'required');
+
+        // Form doğrulama hatalarını özelleştiriyoruz
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            )
+        );
+        // Formun doğrulama işlemi başlatılıyor
+        $validate = $this->form_validation->run();
+
+        // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
+        if ($validate) {
+
+
+            // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
+            if ($this->input->post("deposit_date")) {
+                $date = dateFormat('Y-m-d', $this->input->post("deposit_date"));
+            } else {
+                $date = null; // Eğer tarih girilmediyse, null değer atıyoruz
+            }
+
+            $bill_code = $this->input->post("bill_code");
+            if (empty($bill_code)) {
+                $bill_code = NULL; // Eğer boşsa NULL ata
+            }
+
+            // Yeni site cüzdanı kaydı veritabanına ekleniyor
+            $insert = $this->Sitewallet_model->add(
+                array(
+                    "site_id" => $item->id,
+                    "date" => $date,
+                    "price" => $this->input->post("price"),
+                    "bill_code" => $bill_code,
+                    "payment_type" => $this->input->post("payment_type"),
+                    "note" => $this->input->post("deposit_notes"),
+                    "type" => 0,
+                    "createdAt" => date("Y-m-d"),
+                    "createdBy" => active_user_id(),
+                )
+            );
+
+            // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
+            $record_id = $this->db->insert_id();
+
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            // Yüklenen dosyanın ismi SEO dostu hale getiriliyor
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+            // Dosya boyutu alınıyor
+            $size = $_FILES["file"]["size"];
+
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+            // Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+            // Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+                // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+                echo "Dosya yüklenemedi: " . $error;
+            } else {
+                // Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
+
+            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 1));
+            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 0));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->all_deposits = $all_deposits;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->total_expense = $total_expense;
+            $viewData->total_deposit = $total_deposit;
+            $viewData->item = $item;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
+
+        } else {
+
+            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 1));
+            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 0));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
+
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->all_deposits = $all_deposits;
+            $viewData->total_expense = $total_expense;
+            $viewData->total_deposit = $total_deposit;
+            $viewData->item = $item;
+
+            $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
+
+            $viewData->error_modal = "AddDepositModal"; // Hata modali için set edilen değişken
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
+        }
+    }
+
+    public function delete_sitewallet($sitewallet_id)
+    {
+
+        $sitewallet = $this->Sitewallet_model->get(array("id" => $sitewallet_id));
+        $item = $this->Site_model->get(array("id" => $sitewallet->site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$sitewallet->id";
+
+        $delete = $this->Sitewallet_model->delete(
+            array(
+                "id" => $sitewallet->id
+            )
+        );
+
+        if ($file_path && is_dir($file_path)) {
+            $files = scandir($file_path);
+            foreach ($files as $file) {
+                if ($file !== '.' && $file !== '..') {
+                    // Dosya adı ve uzantısını ayır
+                    $file_name_without_extension = pathinfo($file, PATHINFO_FILENAME);
+
+                    // Eğer dosya adı $expense_id ile eşleşiyorsa sil
+                    if ($sitewallet->id == $file_name_without_extension) {
+                        $path = $file_path . "/" . $file;
+                        if (!unlink($path)) {
+                            log_message('error', "Dosya silinemedi: $path");
+                        }
+                    }
+                }
+            }
+        }
+
+        $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 1));
+        $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->contract = $contract;
+        $viewData->project = $project;
+        $viewData->all_expenses = $all_expenses;
+        $viewData->total_expense = $total_expense;
+        $viewData->item = $item;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+
+    }
+
+    public function sitewallet_file_download($sitewallet_id)
+    {
+        // Sitewallet ve ilgili verileri al
+        $sitewallet = $this->Sitewallet_model->get(array("id" => $sitewallet_id));
+        $item = $this->Site_model->get(array("id" => $sitewallet->site_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        // Dosya yolunu ve arama desenini oluşturuyoruz (uzantısı bilinmiyor)
+        $file_path_pattern = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$sitewallet->id.*";
+
+        // Belirtilen desenle eşleşen dosyaları arıyoruz
+        $files = glob($file_path_pattern);
+
+        // Eğer dosya(lar) bulunduysa
+        if (!empty($files)) {
+            // Bulunan ilk dosyanın tam yolunu alıyoruz
+            $file_path = $files[0];
+
+            // CodeIgniter'ın helper fonksiyonlarını yükleyin
+            $this->load->helper('download');
+
+            // Dosyayı indiriyoruz
+            force_download($file_path, NULL);
+        } else {
+            // Dosya bulunamazsa, hata mesajı gösteriyoruz
+            $this->session->set_flashdata('error', 'Dosya bulunamadı!');
+            redirect($_SERVER['HTTP_REFERER']); // Kullanıcıyı önceki sayfaya geri yönlendiriyoruz
+        }
+    }
+
+    public function open_edit_expenses_modal($expense_id)
+    {
+        // Verilerin getirilmesi
+
+        $edit_expense = $this->Sitewallet_model->get(array("id" => $expense_id));
+        $item = $this->Site_model->get(array("id" => $edit_expense->site_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        // Görünüm için değişkenlerin set edilmesi
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->project = $project;
+        $viewData->edit_expense = $edit_expense;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_expense_modal_form", $viewData);
+    }
+
+    public function edit_expense($expense_id)
+    {
+
+        // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
+        $edit_expense = $this->Sitewallet_model->get(array("id" => $expense_id));
+        $item = $this->Site_model->get(array("id" => $edit_expense->site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+
+        // Form validation kütüphanesini yüklüyoruz
+        $this->load->library("form_validation");
+
+        // Form doğrulama kuralları ekliyoruz
+        $this->form_validation->set_rules('edit_expense_date', 'Tarih', 'required');
+        $this->form_validation->set_rules('edit_price', 'Fiyat', 'required|numeric');
+        $this->form_validation->set_rules('edit_payment_type', 'Ödeme Türü', 'required');
+        $this->form_validation->set_rules('edit_expense_notes', 'Açıklama', 'required');
+
+        // Form doğrulama hatalarını özelleştiriyoruz
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            )
+        );
+        // Formun doğrulama işlemi başlatılıyor
+        $validate = $this->form_validation->run();
+
+        // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
+        if ($validate) {
+
+            // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
+            if ($this->input->post("edit_expense_date")) {
+                $date = dateFormat('Y-m-d', $this->input->post("edit_expense_date"));
+            } else {
+                $date = null; // Eğer tarih girilmediyse, null değer atıyoruz
+            }
+
+
+            $bill_code = $this->input->post("edit_bill_code");
+            if (empty($bill_code)) {
+                $bill_code = NULL; // Eğer boşsa NULL ata
+            }
+
+
+            $update = $this->Sitewallet_model->update(
+                array("id" => $expense_id),
+                array(
+                    "date" => $date,
+                    "price" => $this->input->post("edit_price"),
+                    "bill_code" => $bill_code,
+                    "payment_type" => $this->input->post("edit_payment_type"),
+                    "note" => $this->input->post("edit_expense_notes"),
+                    "updatedAt" => date("Y-m-d"),
+                    "updatedBy" => active_user_id(),
+                )
+            );
+
+            // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
+            $record_id = $this->db->insert_id();
+
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $expense_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+            // Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+
+            // Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+                // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+                echo "Dosya yüklenemedi: " . $error;
+            } else {
+                // Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
+
+            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 1));
+            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 0));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->all_deposits = $all_deposits;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->total_expense = $total_expense;
+            $viewData->total_deposit = $total_deposit;
+            $viewData->item = $item;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+
+        } else {
+
+            $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 1));
+            $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 0));
+            $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+            $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->all_expenses = $all_expenses;
+            $viewData->all_deposits = $all_deposits;
+            $viewData->total_expense = $total_expense;
+            $viewData->total_deposit = $total_deposit;
+            $viewData->item = $item;
+            $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
+            $viewData->error_modal = "EditExpenseModal"; // Hata modali için set edilen değişken
+            $viewData->edit_expense = $edit_expense; // Hata modali için set edilen değişken
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+
+        }
+    }
+
+    public function sitewallet_file_delete($sitestock_id)
+    {
+        $site_stock = $this->Sitewallet_model->get(array("id" => $sitestock_id));
+        $item = $this->Site_model->get(array("id" => $site_stock->site_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        // Dosya yolu
+        $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+
+        // Klasördeki tüm dosyaları alıyoruz
+        $files = scandir($file_path);
+
+        // '.' ve '..' gibi klasörleri filtreleyip sadece dosya isimlerini almak için array_filter kullanıyoruz
+        $files = array_filter($files, function ($file) use ($file_path) {
+            return !is_dir($file_path . '/' . $file); // Klasörleri dahil etmiyoruz, sadece dosyalar
+        });
+
+        // Dosya isimlerini uzantıları olmadan yeni bir diziye alıyoruz
+        $file_names_without_extension = array_map(function ($file) {
+            return pathinfo($file, PATHINFO_FILENAME); // Sadece dosya adını (uzantısız) alıyoruz
+        }, $files);
+
+        // $sitestock_id ile eşleşen bir dosya olup olmadığını kontrol ediyoruz
+        if (in_array($sitestock_id, $file_names_without_extension)) {
+            // Eşleşen dosyanın tam yolunu bul
+            foreach ($files as $file) {
+                $file_name_without_extension = pathinfo($file, PATHINFO_FILENAME);
+                if ($file_name_without_extension == $sitestock_id) {
+                    $file_to_delete = $file_path . '/' . $file; // Dosya yolunu oluştur
+                    // Dosyayı sil
+                    if (unlink($file_to_delete)) {
+                        // Silme işlemi başarılı ise
+                        echo json_encode(['success' => true, 'message' => 'Dosya başarıyla silindi.']);
+                    } else {
+                        // Hata durumu
+                        echo json_encode(['success' => false, 'message' => 'Dosya silinemedi.']);
+                    }
+                    return; // İşlem tamamlandı, daha fazla işlem yapma
+                }
+            }
+        } else {
+            // Dosya bulunamadıysa
+            echo json_encode(['success' => false, 'message' => 'Dosya bulunamadı.']);
+        }
+    }
+
+
+    /*Sitewalllet End*/
+
+    /*----*/
+
+    /*Validation Controls Start*/
+
+    public
+    function name_control($user_name)
+    {
+        if (preg_match('/^([a-z üğışçöÜĞİŞÇÖ])*$/i', $user_name)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public
+    function duplicate_code_check($file_name)
+    {
+        $file_name = "SNT-" . $file_name;
+
+        $var = count_data("file_order", "file_order", $file_name);
+        if (($var > 0)) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public
+    function site_contractday($sitedal_day, $contract_day)
+    {
+        $date_diff = date_minus($sitedal_day, $contract_day);
+        if (($date_diff < 0)) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    /*Validation Controls End*/
+
+    /*----*/
+
+    /*Site Stock Start*/
+
+    public
+    function add_stock($site_id)
     {
         $site = $this->Site_model->get(array("id" => $site_id));
         $settings = $this->Settings_model->get();
@@ -1401,7 +1993,8 @@ class Site extends CI_Controller
         }
     }
 
-    public function exit_stock($site_id)
+    public
+    function exit_stock($site_id)
     {
         // Verilerin getirilmesi
         $item = $this->Site_model->get(array("id" => $site_id));
@@ -1496,7 +2089,8 @@ class Site extends CI_Controller
         }
     }
 
-    public function exit_stock_form($site_stok_id)
+    public
+    function open_exit_stock_modal($site_stok_id)
     {
         // Verilerin getirilmesi
 
@@ -1516,21 +2110,17 @@ class Site extends CI_Controller
         $viewData->sites = $sites;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/exit_modal_form", $viewData);
-
-
     }
 
-    public function delete_stock($stock_id)
+    public
+    function delete_stock($stock_id)
     {
         // Verilerin getirilmesi
         $site_stock = $this->Sitestock_model->get(array("id" => $stock_id));
 
+
         $delete_stock = $this->Sitestock_model->delete(array(
             "id" => $site_stock->id,
-        ));
-
-        $delete_connected_stock = $this->Sitestock_model->delete(array(
-            "connection" => $site_stock->id,
         ));
 
 
@@ -1572,6 +2162,11 @@ class Site extends CI_Controller
         }
     }
 
+    /*Site Stock End*/
+
+    /*----*/
+
+    /*Personel Start*/
 
     public
     function save_personel($site_id)
@@ -1923,213 +2518,7 @@ class Site extends CI_Controller
 
     }
 
-    public
-    function check_end_date($end_date)
-    {
-        $start_date = $this->input->post('start_date'); // Başlangıç tarihini post verisinden alın
-
-        // Eğer end date boş değilse ve start date doluysa kontrol yap
-        if (!empty($end_date) && !empty($start_date)) {
-            // İki tarih arasındaki farkı hesaplayın
-            $date_diff = strtotime($end_date) - strtotime($start_date);
-
-            if ($date_diff < 0) {
-                // Eğer çıkış tarihi, giriş tarihinden önce ise hata mesajı ayarlayın
-                $this->form_validation->set_message('check_end_date', 'Çıkış tarihi, giriş tarihinden sonraki bir tarih olmalıdır.');
-                return FALSE;
-            }
-        }
-
-        return TRUE; // Kontrol yapılmadı veya geçerli
-    }
-
-    public
-    function name_control($user_name)
-    {
-        if (preg_match('/^([a-z üğışçöÜĞİŞÇÖ])*$/i', $user_name)) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
-    public
-    function puantaj_print($site_id, $month, $year)
-    {
-        $month = date($month);
-        $year = date($year);
-        $year_month = $year . "-" . $month;
-        $month_name = ay_isimleri($month);
-
-        $year_month = dateFormat('Y-m', $year_month);
-
-        $viewData = new stdClass();
-
-        $this->load->model("Attendance_model");
-        $puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "year_month" => "$year_month"));
-        $site = $this->Site_model->get(array("id" => $site_id));
-
-        if (isset($puantaj)) {
-            $puantaj_data = json_decode($puantaj->puantaj, true);
-        } else {
-            $puantaj_data = null;
-        }
-
-        $this->load->library('pdf_creator');
-
-        // Yeni bir TCPDF nesnesi oluşturun
-        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
-
-        $pdf->SetPageOrientation('L');
-
-        $pdf->headerSubText = "Şantiye Adı : $site->santiye_ad";
-
-        $pdf->headerText = "$month_name $year Puantaj Tablosu";
-
-        $pdf->SetPrintFooter(false);
-        $pdf->AddPage();
-
-        $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
-
-        $pdf->SetFont('dejavusans', 'B', 10);
-        $pdf->Cell(7, 6, '#', 1);
-        $pdf->Cell(40, 6, 'Adı Soyadı', 1);
-        $pdf->Cell(30, 6, 'Ekip', 1);
-        for ($j = 1; $j <= gun_sayisi(); $j++) {
-            $pdf->Cell(6, 6, $j, 1, "", "C");
-        }
-        $pdf->Cell(16, 6, 'Toplam', 1);
-        $pdf->Ln(); // Bir sonraki satıra geç
-
-// Tablo verilerini oluştur
-        $pdf->SetFont('dejavusans', '', 10);
-        $i = 1;
-        foreach ($personel_datas as $personel_data) {
-            $pdf->Cell(7, 6, $i++, 1);
-            $pdf->Cell(40, 6, $personel_data->name_surname, 1);
-            $pdf->Cell(30, 6, group_name($personel_data->group), 1);
-
-            for ($j = 1; $j <= gun_sayisi(); $j++) {
-                $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
-                $isChecked = (isset($puantaj_data[$j_double_digit]) && in_array($personel_data->id, $puantaj_data[$j_double_digit])) ? 'X' : '';
-                $pdf->Cell(6, 6, $isChecked, 1, "", "C");
-            }
-
-            $count_of_value = 0;
-            if (isset($puantaj_data)) {
-                $value_to_count = $personel_data->id;
-                foreach ($puantaj_data as $sub_array) {
-                    if (in_array($value_to_count, $sub_array)) {
-                        $count_of_value += array_count_values($sub_array)[$value_to_count];
-                    }
-                }
-            }
-            $pdf->SetFont('dejavusans', 'B', 10);
-
-            $pdf->Cell(16, 6, $count_of_value, 1);
-            $pdf->SetFont('dejavusans', '', 10);
+    /*Personel End*/
 
 
-            $pdf->Ln(); // Bir sonraki satıra geç
-        }
-
-        $pdf->SetFont('dejavusans', 'B', 10);
-        $pdf->Cell(77, 10, 'Toplam', 1, 0, 'C');
-        for ($j = 1; $j <= gun_sayisi(); $j++) {
-            $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
-            if (array_key_exists($j_double_digit, $puantaj_data)) {
-                $pdf->Cell(6, 10, count($puantaj_data[$j_double_digit]), 1, 0, 'C');
-            } else {
-                $pdf->Cell(6, 10, '0', 1, 0, 'C');
-            }
-        }
-        $total_keys = 0;
-        foreach ($puantaj_data as $sub_array) {
-            $total_keys += count($sub_array);
-        }
-        $pdf->Cell(16, 10, $total_keys, 1, 1, 'C'); // Yeni satıra geç
-
-        // PDF'yi görüntüleme veya indirme
-        $pdf->Output("$site->santiye_ad" . "-" . $month_name . " " . $year . ".pdf");
-
-    }
-
-    public
-    function personel_print($site_id, $is_active)
-    {
-        $viewData = new stdClass();
-
-        $this->load->model("Attendance_model");
-        $site = $this->Site_model->get(array("id" => $site_id));
-        $puantaj = $this->Workman_model->get(array("site_id" => $site->id, "end_date" => NULL));
-
-
-        if (isset($puantaj)) {
-            $puantaj_data = json_decode($puantaj->puantaj, true);
-        } else {
-            $puantaj_data = null;
-        }
-
-        $this->load->library('pdf_creator');
-
-        // Yeni bir TCPDF nesnesi oluşturun
-        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
-
-        $pdf->SetPageOrientation('L');
-
-
-        $pdf->headerSubText = "Şantiye Adı : $site->santiye_ad";
-
-        $pdf->headerText = "Personel Tablosu";
-
-        if ($is_active == 1) {
-            $pdf->headerPaymentNo = "Aktif Çalışanlar Listesi";
-        } elseif ($is_active == 0) {
-            $pdf->headerPaymentNo = "Tüm Çalışanlar Listesi";
-        }
-
-        $pdf->SetPrintFooter(false);
-        $pdf->AddPage();
-
-        if ($is_active == 1) {
-            $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "end_date" => NULL));
-        } elseif ($is_active == 0) {
-            $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id));
-        }
-        $pdf->SetFont('dejavusans', '', 8);
-
-        $pdf->Cell(10, 7, '#', 1, 0, 'C');
-        $pdf->Cell(40, 7, 'Adı Soyadı', 1, 0, 'C');
-        $pdf->Cell(28, 7, 'TC Kimlik No', 1, 0, 'C');
-        $pdf->Cell(30, 7, 'Branş', 1, 0, 'C');
-        $pdf->Cell(25, 7, 'İşe Giriş', 1, 0, 'C');
-        if ($is_active == 0) {
-            $pdf->Cell(25, 7, 'İşten Çıkış', 1, 0, 'C');
-        }
-
-        $pdf->Cell(60, 7, 'Hesap No', 1, 0, 'C');
-        $pdf->Cell(60, 7, 'Banka', 1, 0, 'C');
-        $pdf->Ln();
-
-// Table data
-        $i = 1;
-        foreach ($personel_datas as $personel_data) {
-            $pdf->Cell(10, 7, $i++, 1, 0, 'C');
-            $pdf->Cell(40, 7, $personel_data->name_surname, 1, 0, 'L');
-            $pdf->Cell(28, 7, $personel_data->social_id, 1, 0, 'C');
-            $pdf->Cell(30, 7, group_name($personel_data->group), 1, 0, 'C');
-            $pdf->Cell(25, 7, dateFormat_dmy($personel_data->start_date), 1, 0, 'C');
-            if ($is_active == 0) {
-                $pdf->Cell(25, 7, (!empty($personel_data->end_date) ? dateFormat_dmy($personel_data->end_date) : 'Çalışıyor'), 1, 0, 'C');
-            }
-            $pdf->Cell(60, 7, $personel_data->IBAN, 1, 0, 'C');
-            $pdf->Cell(60, 7, $personel_data->bank, 1, 0, 'C');
-            $pdf->Ln();
-        }
-
-        $name = $site->santiye_ad . "-" . "-Personel Listesi.pdf";
-        // PDF'yi görüntüleme veya indirme
-        $pdf->Output($name);
-
-    }
 }

@@ -116,8 +116,8 @@
     </div>
 </div>
 <hr>
-<div id="table-responsive">
-    <table id="stock-table">
+<div class="table-responsive">
+    <table id="stock-table" class="display">
         <thead>
         <tr>
             <th>#</th>
@@ -139,7 +139,7 @@
                 <td>
                     <?php if ($kalan > 0): ?>
                         <a data-bs-toggle="modal" class="text-primary"
-                           onclick="open_exit_stock_form('<?php echo base_url("Site/exit_stock_form/$site_stock->id"); ?>')">
+                           onclick="edit_modal_form('<?php echo base_url("Site/open_exit_stock_modal/$site_stock->id"); ?>','site_stock_modal_form','ExitModal')">
                             <i class="fa fa-sign-out fa-2x"></i>
                         </a>
                     <?php else: ?>
@@ -179,7 +179,7 @@
                     <td></td> <!-- Boş sütun -->
                     <td>
                         <a href="javascript:void(0);"
-                           onclick="confirmDelete(<?php echo $stock_movement->id; ?>, '<?php echo base_url('Site/delete_stock'); ?>', '#site_stock_table')"
+                           onclick="confirmDelete('<?php echo base_url("Site/delete_stock/$stock_movement->id"); ?>', '#tab_sitestock','stock-table')"
                            title="Sil">
                             <i class="fa fa-trash-o fa-2x"></i>
                         </a>

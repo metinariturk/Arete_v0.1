@@ -22,6 +22,21 @@
     </script>
 <?php endif; ?>
 
+<?php $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+
+// Klasördeki tüm dosya ve klasörleri alıyoruz
+$files = scandir($file_path);
+
+// '.' ve '..' gibi klasörleri filtreleyip sadece dosya isimlerini almak için array_filter kullanıyoruz
+$files = array_filter($files, function ($file) use ($file_path) {
+    return !is_dir($file_path . '/' . $file); // Klasörleri dahil etmiyoruz, sadece dosyalar
+});
+
+// Dosya isimlerini uzantıları olmadan yeni bir diziye alıyoruz
+$file_names_without_extension = array_map(function ($file) {
+    return pathinfo($file, PATHINFO_FILENAME); // Sadece dosya adını (uzantısız) alıyoruz
+}, $files);
+?>
 
 <div class="card-body">
     <div class="modal fade" id="AddExpenseModal" tabindex="-1" role="dialog" aria-labelledby="AddExpenseModalLabel"
@@ -34,7 +49,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="addExpenseForm"
-                          data-form-url="<?php echo base_url("$this->Module_Name/sitewallet/$item->id/1"); ?>"
+                          data-form-url="<?php echo base_url("$this->Module_Name/add_expense/$item->id"); ?>"
                           method="post" enctype="multipart/form-data" autocomplete="off">
                         <!-- Tarih -->
                         <div class="mb-3">
@@ -97,12 +112,12 @@
                         <!-- Açıklama -->
                         <div class="mb-3">
                             <label class="col-form-label" for="payment_notes">Açıklama:</label>
-                            <input id="payment_notes" type="text"
-                                   class="form-control <?php cms_isset(form_error("payment_notes"), "is-invalid", ""); ?>"
-                                   name="payment_notes" value="<?php echo set_value('payment_notes'); ?>"
+                            <input id="expense_notes" type="text"
+                                   class="form-control <?php cms_isset(form_error("expense_notes"), "is-invalid", ""); ?>"
+                                   name="expense_notes" value="<?php echo set_value('expense_notes'); ?>"
                                    placeholder="Açıklama">
                             <?php if (isset($form_error)) { ?>
-                                <div class="invalid-feedback"><?php echo form_error('payment_notes'); ?></div>
+                                <div class="invalid-feedback"><?php echo form_error('expense_notes'); ?></div>
                             <?php } ?>
                         </div>
 
@@ -112,6 +127,7 @@
                             <input class="form-control" name="file" id="file-input" type="file">
                         </div>
                     </form>
+                    <?php print_r(validation_errors()); ?>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>
@@ -125,51 +141,59 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="tabs">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
                     <h5>Harcama Listesi</h5>
                 </div>
             </div>
             <hr>
-
-            <table id="expensesTable" style="width:100%">
-                <thead>
-                <tr>
-                    <th>Tarih</th>
-                    <th>Açıklama</th>
-                    <th>Miktar</th>
-                    <th>Ödeme Türü</th>
-                    <th>İndir</th>
-                    <th>Sil</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php $i = 1; ?>
-                <?php foreach ($all_expenses as $expense) { ?>
+            <div class="table-responsive">
+                <table id="expensesTable" style="width:100%">
+                    <thead>
                     <tr>
-                        <td><?php echo dateFormat_dmy($expense->date); ?></td>
-                        <td><?php echo $expense->note; ?></td>
-                        <td><?php echo money_format($expense->price); ?><?php echo $contract->para_birimi; ?></td>
-                        <td><?php echo $expense->payment_type; ?></td>
-                        <td>
-                            <a href="<?php echo base_url("$this->Module_Name/expense_download/$expense->id"); ?>">
-                                <i class="fa fa-download f-14 ellips"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="javascript:void(0);"
-                               onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$expense->id"); ?>', '#tab_expenses','expensesTable')"
-                               title="Sil">
-                                <i class="fa fa-trash-o fa-2x"></i>
-                            </a>
-                        </td>
+                        <th>Tarih</th>
+                        <th>Açıklama</th>
+                        <th>Miktar</th>
+                        <th>Ödeme Türü</th>
+                        <th></th>
                     </tr>
-                <?php } ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <?php $i = 1; ?>
+                    <?php foreach ($all_expenses as $expense) { ?>
+                        <tr>
+                            <td><?php echo dateFormat_dmy($expense->date); ?></td>
+                            <td><?php echo $expense->note; ?></td>
+                            <td><?php echo money_format($expense->price); ?><?php echo $contract->para_birimi; ?></td>
+                            <td><?php echo $expense->payment_type; ?></td>
+                            <td>
+                                <span class="icon-group">
+                                    <a data-bs-toggle="modal" class="text-primary"
+                                       onclick="edit_modal_form('<?php echo base_url("Site/open_edit_expenses_modal/$expense->id"); ?>','edit_expense_modal','EditExpenseModal')">
+                                        <i class="fa fa-edit fa-lg"></i>
+                                    </a>
+                                    <?php
+                                    // $edit_expense->id ile eşleşen bir dosya olup olmadığını kontrol ediyoruz
+                                    if (in_array($expense->id, $file_names_without_extension)) { ?>
+                                        <a href="<?php echo base_url("$this->Module_Name/sitewallet_file_download/$expense->id"); ?>">
+                                            <i class="fa fa-download f-14 ellips fa-lg"></i>
+                                        </a>
+                                    <?php } ?>
+                                    <a href="javascript:void(0);"
+                                       onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$expense->id"); ?>', '#tab_expenses','expensesTable')"
+                                       title="Sil">
+                                        <i class="fa fa-trash-o fa-lg"></i>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <?php
             $monthly_expenses = [];
             $i = 1; // Satır numarası için sayaç
@@ -226,9 +250,14 @@
         </div>
     </div>
 </div>
-<?php echo json_encode($monthly_expenses); ?>
+
+<div id="edit_expense_modal">
+    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_expense_modal_form"); ?>
+</div>
+
+
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         // PHP'den alınan harcama verisini JavaScript'te kullanmak için
         var monthlyExpenses = <?php echo json_encode($monthly_expenses); ?>;
 
@@ -276,3 +305,5 @@
         });
     });
 </script>
+
+

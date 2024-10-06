@@ -1,4 +1,3 @@
-
 <?php if (isset($form_error) && $form_error): ?>
     <script>
         $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
@@ -22,6 +21,9 @@
         }
     </script>
 <?php endif; ?>
+
+<?php $path_sitewallet = base_url("uploads/$project->project_code/$item->dosya_no/Sitewallet/"); ?>
+
 <div class="card-body">
     <div class="row">
         <div class="col-md-12">
@@ -32,41 +34,54 @@
                 </div>
             </div>
             <hr>
-            <table id="depositsTable" style="width:100%">
-                <thead>
-                <tr>
-                    <th>Tarih</th>
-                    <th>Açıklama</th>
-                    <th>Miktar</th>
-                    <th>Ödeme Türü</th>
-                    <th>İndir</th>
-                    <th>Sil</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php $i = 1; ?>
-                <?php foreach ($all_deposits as $deposit) { ?>
+            <div class="table-responsive">
+                <table id="depositsTable" style="width:100%">
+                    <thead>
                     <tr>
-                        <td><?php echo dateFormat_dmy($deposit->date); ?></td>
-                        <td><?php echo $deposit->note; ?></td>
-                        <td><?php echo money_format($deposit->price); ?><?php echo $contract->para_birimi; ?></td>
-                        <td><?php echo $deposit->payment_type; ?></td>
-                        <td>
-                            <a href="<?php echo base_url("$this->Module_Name/expense_download/$deposit->id"); ?>">
-                                <i class="fa fa-download f-14 ellips"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="javascript:void(0);"
-                               onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$deposit->id"); ?>', '#tab_depostis','depositsTable')"
-                               title="Sil">
-                                <i class="fa fa-trash-o fa-2x"></i>
-                            </a>
-                        </td>
+                        <th>Tarih</th>
+                        <th>Açıklama</th>
+                        <th>Miktar</th>
+                        <th>Ödeme Türü</th>
+                        <th>İndir</th>
+                        <th>Sil</th>
                     </tr>
-                <?php } ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <?php $i = 1; ?>
+                    <?php foreach ($all_deposits as $deposit) { ?>
+                        <tr>
+                            <td><?php echo dateFormat_dmy($deposit->date); ?></td>
+                            <td><?php echo $deposit->note; ?></td>
+                            <td><?php echo money_format($deposit->price); ?><?php echo $contract->para_birimi; ?></td>
+                            <td><?php echo $deposit->payment_type; ?></td>
+                            <td>
+                                <?php
+                                // Dosya varlığını kontrol et
+                                $file_isset = glob("$path_sitewallet.*") !== [];
+
+                                // Eğer dosya varsa
+                                if ($file_isset) { ?>
+                                    <a href="<?php echo base_url("$this->Module_Name/expense_download/$expense->id"); ?>">
+                                        <i class="fa fa-download f-14 ellips"></i>
+                                    </a>
+                                <?php } else { ?>
+                                    <!-- Dosya mevcut değilse alternatif bir ikon gösterebilirsin -->
+                                    <i class="fa fa-download f-14 ellips" style="color: grey;"
+                                       title="Dosya mevcut değil"></i>
+                                <?php } ?>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0);"
+                                   onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$deposit->id"); ?>', '#tab_depostis','depositsTable')"
+                                   title="Sil">
+                                    <i class="fa fa-trash-o fa-2x"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -82,7 +97,7 @@
             </div>
             <div class="modal-body">
                 <form id="addDepositForm"
-                      data-form-url="<?php echo base_url("$this->Module_Name/sitewallet/$item->id/0"); ?>"
+                      data-form-url="<?php echo base_url("$this->Module_Name/add_deposit/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <!-- Tarih -->
                     <div class="mb-3">
