@@ -77,7 +77,7 @@
                         </tr>
                         <tr>
                             <td><p>Aktif Çalışan Sayısı</p></td>
-                            <td><p><?php echo count($personel_datas); ?></p></td>
+                            <td><p><?php echo count($active_personel_datas)+count($passive_personel_datas); ?></p></td>
                         </tr>
                         </tbody>
                     </table>

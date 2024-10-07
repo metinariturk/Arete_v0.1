@@ -201,7 +201,8 @@
       <workItem from="1727959995801" duration="1463000" />
       <workItem from="1727962008369" duration="4559000" />
       <workItem from="1728066647112" duration="9736000" />
-      <workItem from="1728224517933" duration="16724000" />
+      <workItem from="1728224517933" duration="16916000" />
+      <workItem from="1728309967403" duration="17426000" />
     </task>
     <servers />
   </component>
@@ -267,7 +268,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1012</line>
+          <line>1019</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="sign_options" />
@@ -294,7 +295,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1573</line>
+          <line>1580</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="delete_sitewallet" />
@@ -323,7 +324,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1014</line>
+          <line>1021</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>

@@ -249,6 +249,18 @@
 <script>
     $(document).ready(function() {
         $('#stock-table').DataTable({
+            "columnDefs": [
+                { "width": "5%", "targets": 0 }, // İşlem sütunu
+                { "width": "25%", "targets": 1 }, // Stok Adı sütunu
+                { "width": "15%", "targets": 2 }, // Birim sütunu
+                { "width": "7%", "targets": 3 }, // Miktarı sütunu
+                { "width": "7%", "targets": 4 }, // Kalan sütunu
+                { "width": "10%", "targets": 5 }, // Tarihi sütunu
+                { "width": "30%", "targets": 6 }, // Açıklama sütunu
+                { "width": "5%", "targets": 7 }   // Sil sütunu
+            ],
+            "autoWidth": false, // Otomatik genişliği kapat
+            ordering: false,
             "responsive": true, // Mobil uyumluluk
             "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
             "language": {
@@ -307,6 +319,20 @@
                 }
             }
         });
+    $('#personelTable').DataTable({
+        "responsive": true, // Mobil uyumluluk
+        "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
+        ordering: false,
+        "language": {
+            "search": "Ara:",
+            "lengthMenu": "Göster _MENU_ kayıt",
+            "info": "_TOTAL_ kayıt arasından _START_ - _END_ arası gösteriliyor",
+            "paginate": {
+                "next": "Sonraki",
+                "previous": "Önceki"
+            }
+        }
+    });
 </script>
 
 <script>
@@ -355,6 +381,37 @@
             }
         }
     });
+</script>
+
+<script>
+    function change_list(div_id, url, DataTable) {
+        // İlk olarak AJAX çağrısı başlatıyoruz
+        $.ajax({
+            url: url, // PHP'den gelen URL
+            type: 'GET', // Yöntem
+            success: function(response) {
+                // AJAX başarılı olursa div'in içeriğini güncelle
+                $("#" + div_id).html(response);
+                // Eğer DataTable varsa önce destroy edelim
+                if ($.fn.DataTable.isDataTable("#personelTable")) {
+                    $("#" + DataTable).DataTable().destroy();
+                }
+
+                // DataTable'ı tekrar başlat
+                $("#" + DataTable).DataTable({
+                    // DataTable ayarlarınızı buraya ekleyebilirsiniz
+                    "paging": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true
+                });
+            },
+            error: function() {
+                // Hata durumu
+                alert("Veri alınırken bir hata oluştu!");
+            }
+        });
+    }
 </script>
 
 

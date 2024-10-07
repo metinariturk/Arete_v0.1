@@ -1,300 +1,390 @@
-<div class="card mb-0">
-    <div class="card-header d-flex">
-        <h6 class="mb-0">Puantaj</h6>
-        <ul>
-            <li>
-                <button type="button" class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#myModal">
-                    Yeni Personel Ekle
-                </button>
+<?php if (isset($form_error) && $form_error): ?>
+    <script>
+        $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
+        $('body').removeClass('modal-open');
+        $('body').css('overflow', 'auto');
+        $('#<?php echo $error_modal; ?>').modal('show');
 
-                <!-- The Modal -->
-                <div class="modal fade" id="myModal">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
+        // DataTable kontrolü ve yeniden başlatılması
+        if ($.fn.DataTable.isDataTable('#personelTable')) {
+            $('#personelTable').DataTable().destroy(); // Mevcut tabloyu yok et
+        }
 
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                                <h4 class="modal-title">Kişisel Bilgi Formu</h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <!-- Modal Body -->
-                            <div class="modal-body">
-                                <form id="personel_form"
-                                      action="<?php echo base_url("$this->Module_Name/save_personel/$item->id"); ?>"
-                                      method="post"
-                                      enctype="multipart/form-data"
-                                      autocomplete="off">
-                                    <div class="mb-3">
-                                        <label for="name_surname" class="form-label">Ad Soyad:</label>
-                                        <input type="text" class="form-control" name="name_surname"
-                                               placeholder="Adınız ve Soyadınız">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="group" class="form-label">Meslek:</label>
-                                        <select class="form-select" name="group">
-                                            <option value="" selected disabled>Seçiniz</option>
-                                            <?php if (!empty($workgroups)) { ?>}
-                                                <?php foreach ($workgroups as $active_workgroup => $workgroups) {
-                                                    foreach ($workgroups as $workgroup) { ?>
-                                                        <option value="<?php echo $workgroup; ?>"> <?php echo group_name($workgroup); ?></option>
-                                                    <?php } ?>
-                                                <?php } ?>
-                                            <?php } ?>
-                                            <?php if (!empty($workmachines)) { ?>}
-                                                <?php foreach ($workmachines as $active_workmachines => $workmachines) {
-                                                    foreach ($workmachines as $workmachine) { ?>
-                                                        <option value="<?php echo $workmachine; ?>"> <?php echo machine_name($workmachine); ?></option>
-                                                    <?php } ?>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
+        // DataTable'ı yeniden başlat
+        if (!$.fn.DataTable.isDataTable('#personelTable')) {
+            $('#personelTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                // Diğer DataTable ayarları
+            });
+        }
+    </script>
+<?php endif; ?>
 
-                                    <div class="mb-3">
-                                        <label for="bank" class="form-label">Banka Adı:</label>
-                                        <input type="text" class="form-control" name="bank" placeholder="Banka Adı">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="IBAN" class="form-label">Banka Hesap No:</label>
-                                        <input type="text" class="form-control" name="IBAN"
-                                               placeholder="Banka Hesap Numaranız">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="social_id" class="form-label">TC Kimlik No:</label>
-                                        <input type="text" class="form-control" name="social_id"
-                                               placeholder="TC Kimlik Numaranız">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="start_date" class="form-label">Giriş Tarihi:</label>
-                                        <input class="datepicker-here form-control digits"
-                                               type="text"
-                                               name="start_date"
-                                               value="<?php echo date('d-m-Y'); ?>"
-                                               data-options="{ format: 'DD-MM-YYYY' }"
-                                               data-language="tr">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="end_date" class="form-label">Çıkış Tarihi:</label>
-                                        <input class="datepicker-here form-control digits"
-                                               type="text"
-                                               name="end_date"
-                                               value=""
-                                               data-options="{ format: 'DD-MM-YYYY' }"
-                                               data-language="tr">
-                                    </div>
+<?php $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel";
 
-                                </form>
-                            </div>
+// Klasördeki tüm dosya ve klasörleri alıyoruz
+$files = scandir($file_path);
 
-                            <!-- Modal Footer -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat
-                                </button>
-                                <button type="button" onclick="savePersonel(this)" data-bs-dismiss="modal"
-                                        class="btn btn-primary">Kaydet
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+// '.' ve '..' gibi klasörleri filtreleyip sadece dosya isimlerini almak için array_filter kullanıyoruz
+$files = array_filter($files, function ($file) use ($file_path) {
+    return !is_dir($file_path . '/' . $file); // Klasörleri dahil etmiyoruz, sadece dosyalar
+});
+
+// Dosya isimlerini uzantıları olmadan yeni bir diziye alıyoruz
+$file_names_without_extension = array_map(function ($file) {
+    return pathinfo($file, PATHINFO_FILENAME); // Sadece dosya adını (uzantısız) alıyoruz
+}, $files);
+?>
+
+<div class="card-body">
+    <div class="modal fade" id="AddPersonelModal" tabindex="-1" role="dialog" aria-labelledby="AddPersonelModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Personel</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </li>
-        </ul>
-    </div>
+                <div class="modal-body">
+                    <form id="addPersonelForm"
+                          data-form-url="<?php echo base_url("$this->Module_Name/add_personel/$item->id"); ?>"
+                          method="post" enctype="multipart/form-data" autocomplete="off">
+                        <div class="mb-3">
+                            <label class="col-form-label" for="name_surname">Adı Soyadı:</label>
+                            <input id="name_surname" type="text"
+                                   class="form-control <?php cms_isset(form_error("name_surname"), "is-invalid", ""); ?>"
+                                   name="name_surname" value="<?php echo set_value('name_surname'); ?>"
+                                   placeholder="Adı Soyadı">
+                            <?php if (isset($form_error)) { ?>
+                                <div class="invalid-feedback"><?php echo form_error('name_surname'); ?></div>
+                            <?php } ?>
+                        </div>
 
-    <div class="row">
-        <div class="col-9">
-            <div class="personel_list">
-                <?php if (!empty(validation_errors())) { ?>
-                    <div class="alert alert-light-secondary" role="alert">
-                        <p style="font-size: 25px" class="txt-secondary">Aşağıdaki uyarıları inceleyiniz</p>
-                        <?php echo validation_errors(); ?>
-                    </div>
-                <?php } ?>
-                <div class="container">
-                    <div class="row">
-                        <div class="col text-start">
-                            <a class="btn btn-pill btn-success btn-lg" href="#" isActive="1" onclick="sendPersonelData(this)">
-                                <i class="fa fa-print"></i> Çalışanları Yazdır
-                            </a>
+                        <div class="mb-3">
+                            <label class="col-form-label" for="social_id">TC Kimlik No:</label>
+                            <input id="social_id" type="text"
+                                   class="form-control <?php cms_isset(form_error("social_id"), "is-invalid", ""); ?>"
+                                   name="social_id" maxlength="11" minlength="11"
+                                   pattern="[0-9]{11}"
+                                   placeholder="TC NO"
+                                   value="<?php echo set_value('social_id'); ?>">
+                            <?php if (isset($form_error)) { ?>
+                                <div class="invalid-feedback"><?php echo form_error('social_id'); ?></div>
+                            <?php } ?>
                         </div>
-                        <div class="col text-end">
-                            <a class="btn btn-pill btn-info btn-lg" href="#" isActive="0" onclick="sendPersonelData(this)">
-                                <i class="fa fa-print"></i> Tümünü Yazdır
-                            </a>
+
+
+                        <!-- Tarih -->
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Giriş Tarihi:</label>
+                            <input type="date" name="start_date" id="start_date"
+                                   value="<?php echo date(set_value('start_date')); ?>"
+                                   class="form-control <?php cms_isset(form_error("start_date"), "is-invalid", ""); ?>">
+                            <?php if (isset($form_error)) { ?>
+                                <div class="invalid-feedback"><?php echo form_error('start_date'); ?></div>
+                            <?php } ?>
                         </div>
-                        <div class="col-12">
-                            <div>
-                                <h3 class="text-center">
-                                    Personel Listesi
-                                </h3>
-                                <table style="border-collapse: collapse; width: 100%;">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Adı Soyadı</th>
-                                        <th>TC Kimlik No</th>
-                                        <th>Branş</th>
-                                        <th>İşe Giriş/Çıkış</th>
-                                        <th>Hesap No</th>
-                                        <th>Banka</th>
-                                        <th>İşlem</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                    $i = 1;
-                                    foreach ($personel_datas as $personel_data) { ?>
-                                        <tr style="height: 30px; border: 1px solid black;">
-                                            <td style="border: 1px solid black;"> <?php echo $i++; ?></td>
-                                            <td style="border: 1px solid black;"> <?php echo $personel_data->name_surname; ?></td>
-                                            <td style="border: 1px solid black;"> <?php echo $personel_data->social_id; ?></td>
-                                            <td style="border: 1px solid black;"> <?php echo group_name($personel_data->group); ?></td>
-                                            <td style="border: 1px solid black;">
-                                                <?php echo dateFormat_dmy($personel_data->start_date); ?> /
-                                                <?php if (!empty($personel_data->end_date)) { ?>
-                                                    <?php echo dateFormat_dmy($personel_data->end_date); ?>
-                                                <?php } else { ?>
-                                                    Çalışıyor
-                                                <?php } ?>
-                                            </td>
-                                            <td style="border: 1px solid black;"> <?php echo $personel_data->IBAN; ?> </td>
-                                            <td style="border: 1px solid black;"> <?php echo $personel_data->bank; ?> </td>
-                                            <td style="border: 1px solid black;">
-                                                <i class="fa fa-edit" name="personel_id"
-                                                   onclick="updatePersonelForm(this)"
-                                                   workerid="<?php echo $personel_data->id; ?>"></i>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="personel_update_form">
-                <form id="personel_form"
-                      action="<?php echo base_url("$this->Module_Name/update_personel/$item->id"); ?>"
-                      method="post"
-                      enctype="multipart/form-data" autocomplete="off">
-                    <h3 class="text-center">
-                        Personel Güncelle
-                    </h3>
-                    <?php if (isset($worker)) { ?>
-                        <form id="update_form"
-                              action="<?php echo base_url("$this->Module_Name/update_personel/$worker->id/$item->id"); ?>"
-                              method="post"
-                              enctype="multipart/form-data"
-                              autocomplete="off">
-                            <div class="mb-3">
-                                <label for="name_surname" class="form-label">Ad Soyad:</label>
-                                <input type="text" class="form-control" name="name_surname"
-                                       value="<?php if (isset($worker)) {
-                                           echo $worker->name_surname;
-                                       } ?>"
-                                       placeholder="Adınız ve Soyadınız">
-                            </div>
-                            <div class="mb-3">
-                                <label for="group" class="form-label">Meslek:</label>
-                                <select id="select2-demo-1" style="width: 100%;"
-                                        class="form-control <?php cms_isset(form_error("group"), "is-invalid", ""); ?>"
-                                        data-plugin="select2" name="group">
-                                    <option selected="selected"
-                                            value="<?php echo isset($form_error) ? set_value("group") : $worker->group; ?>"> <?php echo isset($form_error) ? group_name(set_value("group")) : group_name($worker->group); ?>
-                                    </option>
+                        <div class="mb-3">
+                            <label class="col-form-label" for="group">Meslek:</label>
+                            <select id="select2-demo-profession" style="width: 100%;"
+                                    class="form-control <?php cms_isset(form_error("group"), "is-invalid", ""); ?>"
+                                    data-plugin="select2" name="group">
+                                <?php if (isset($form_error)) { ?>
+                                    <option selected
+                                            value="<?php echo set_value('group'); ?>"><?php echo(group_name(set_value('group'))); ?></option>
+                                <?php } else { ?>
+                                    <option value="" disabled selected>Meslek Seçini</option>
+                                <?php } ?>
+                                <!-- Dynamic site options -->
+                                <?php if (!empty($workgroups)) { ?>}
                                     <?php foreach ($workgroups as $active_workgroup => $workgroups) {
                                         foreach ($workgroups as $workgroup) { ?>
                                             <option value="<?php echo $workgroup; ?>"> <?php echo group_name($workgroup); ?></option>
                                         <?php } ?>
                                     <?php } ?>
+                                <?php } ?>
+                            </select>
+                            <?php if (isset($form_error)) { ?>
+                                <div class="invalid-feedback"><?php echo form_error('group'); ?></div>
+                            <?php } ?>
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label" for="bank">Banka:</label>
+                            <select id="select2-demo-bank" style="width: 100%;"
+                                    class="form-control <?php cms_isset(form_error("bank"), "is-invalid", ""); ?>"
+                                    data-plugin="select2" name="bank">
+                                <?php if (isset($form_error)) { ?>
+                                    <option selected><?php echo(set_value('bank')); ?></option>
+                                <?php } else { ?>
+                                    <option value="" disabled selected>Banka Seçini</option>
+                                <?php } ?>
+                                <!-- Dynamic site options -->
+                                <?php $banks = get_as_array($settings->bankalar);
+                                foreach ($banks as $bank) { ?>
+                                    <option><?php echo $bank; ?></option>
+                                <?php } ?>
+                            </select>
+                            <?php if (isset($form_error)) { ?>
+                                <div class="invalid-feedback"><?php echo form_error('bank'); ?></div>
+                            <?php } ?>
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label" for="IBAN">IBAN:</label>
+                            <input id="IBAN" type="text" name="IBAN"
+                                   class="form-control <?php cms_isset(form_error("IBAN"), "is-invalid", ""); ?>"
+                                   value="<?php echo set_value('IBAN'); ?>">
+                            <?php if (isset($form_error)) { ?>
+                                <div class="invalid-feedback"><?php echo form_error('IBAN'); ?></div>
+                            <?php } ?>
+                        </div>
+                        <!-- Açıklama -->
+                        <div class="mb-3">
+                            <label class="col-form-label" for="payment_notes">Açıklama:</label>
+                            <input id="personel_notes" type="text"
+                                   class="form-control <?php cms_isset(form_error("personel_notes"), "is-invalid", ""); ?>"
+                                   name="personel_notes" value="<?php echo set_value('personel_notes'); ?>"
+                                   placeholder="Açıklama">
+                            <?php if (isset($form_error)) { ?>
+                                <div class="invalid-feedback"><?php echo form_error('personel_notes'); ?></div>
+                            <?php } ?>
+                        </div>
+                        <!-- Dosya Yükle -->
+                        <div class="mb-3">
+                            <label class="col-form-label" for="file-input">Dosya Yükle:</label>
+                            <input class="form-control" name="file" id="file-input" type="file">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary"
+                            onclick="submit_modal_form('addPersonelForm', 'AddPersonelModal', 'tab_personel', 'personelTable')">
+                        Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                </select>
-                                <?php if (isset($form_error)) { ?>
-                                    <div class="invalid-feedback"><?php echo form_error("group"); ?></div>
-                                <?php } ?>
-                            </div>
-                            <div class="mb-3">
-                                <label for="social_id" class="form-label">TC Kimlik No:</label>
-                                <input type="number"
-                                       class="form-control <?php cms_isset(form_error("social_id"), "is-invalid", ""); ?>"
-                                       name="social_id"
-                                       placeholder="TC Kimlik No"
-                                       value="<?php echo isset($form_error) ? set_value("social_id") : "$worker->social_id"; ?>">
-                                <?php if (isset($form_error)) { ?>
-                                    <div class="invalid-feedback"><?php echo form_error("social_id"); ?></div>
-                                <?php } ?>
-                            </div>
-                            <div class="mb-3">
-                                <label for="bank" class="form-label">Banka Adı:</label>
-                                <select id="select2-demo-1" style="width: 100%;"
-                                        class="form-control <?php cms_isset(form_error("bank"), "is-invalid", ""); ?>"
-                                        data-plugin="select2" name="bank">
-                                    <option selected="selected"> <?php echo isset($form_error) ? (set_value("bank")) : $worker->bank; ?></option>
-                                    <?php $banks = get_as_array($settings->bankalar);
-                                    foreach ($banks as $bank) { ?>
-                                        <option><?php echo $bank; ?></option>
-                                    <?php } ?>
-                                </select>
-                                <?php if (isset($form_error)) { ?>
-                                    <div class="invalid-feedback"><?php echo form_error("bank"); ?></div>
-                                <?php } ?>
-                            </div>
-                            <div class="mb-3">
-                                <label for="IBAN" class="form-label">Banka Hesap No:</label>
-                                <input class="form-control <?php cms_isset(form_error("IBAN"), "is-invalid", ""); ?>"
-                                       name="IBAN"
-                                       placeholder="IBAN"
-                                       value="<?php echo isset($form_error) ? set_value("IBAN") : "$worker->IBAN"; ?>">
-                                <?php if (isset($form_error)) { ?>
-                                    <div class="invalid-feedback"><?php echo form_error("IBAN"); ?></div>
-                                <?php } ?>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="start_date" class="form-label">Giriş Tarihi:</label>
-                                <input class="datepicker-here form-control digits <?php cms_isset(form_error("start_date"), "is-invalid", ""); ?>"
-                                       type="text"
-                                       name="start_date"
-                                       value="<?php echo isset($form_error) ? set_value("start_date") : dateFormat('d-m-Y', $worker->start_date); ?>"
-                                       data-options="{ format: 'DD-MM-YYYY' }"
-                                       data-language="tr">
-                                <?php if (isset($form_error)) { ?>
-                                    <div class="invalid-feedback"><?php echo form_error("start_date"); ?></div>
-                                <?php } ?>
-                            </div>
-                            <div class="mb-3">
-                                <label for="end_date" class="form-label">Çıkış Tarihi:</label>
-                                <input class="datepicker-here form-control digits <?php cms_isset(form_error("end_date"), "is-invalid", ""); ?>"
-                                       type="text"
-                                       name="end_date"
-                                    <?php if (!empty($worker->end_date)) { ?>
-                                        value="<?php echo isset($form_error) ? set_value("end_date") : dateFormat('d-m-Y', $worker->end_date); ?>"
-                                    <?php } else { ?>
-                                        value="<?php echo isset($form_error) ? set_value("end_date") : "" ?>"
-                                    <?php } ?>
-                                       data-options="{ format: 'DD-MM-YYYY' }"
-                                       data-language="tr">
-                                <?php if (isset($form_error)) { ?>
-                                    <div class="invalid-feedback"><?php echo form_error("end_date"); ?></div>
-                                <?php } ?>
-                            </div>
-                            <div class="mb-3">
-                                <a class="btn btn-success" onclick="updatePersonel(this)" form_id="update_form" url="<?php echo base_url("$this->Module_Name/update_personel/$worker->id/$item->id"); ?>">
-                                    <i class="menu-icon fa fa-floppy-o fa-lg" aria-hidden="true"></i> Güncelle
-                                </a>
-                            </div>
-                        </form>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="tabs">
+                <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+                    <h5><?php if (isset($situation)) {
+                            echo $situation == 1 ? "Çalışan" : ($situation == 0 ? "Çalışmayan" : "");
+                        } ?>
+                        <?php if (isset($group_code)) {
+                            echo group_name($group_code);
+                        } ?>
+                        <br>Personel Listesi</h5>
+                    <?php if (isset($group_code)) { ?>
+                        <a href="<?php echo base_url("export/personel_download_excel/$group_code/$situation"); ?>">
+                            <i class="fa fa-file-excel-o fa-2x"></i>
+                        </a>
+                        <a href="<?php echo base_url("export/personel_download_pdf/$group_code/$situation"); ?>">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>
+                        </a>
                     <?php } ?>
+                </div>
+            </div>
+            <hr>
+            <div class="table-responsive">
+                <table id="personelTable" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Adı Soyadı</th>
+                        <th>TC Kimlik No</th>
+                        <th>Branş</th>
+                        <th>İşe Giriş/Çıkış</th>
+                        <th>Hesap No</th>
+                        <th>Banka</th>
+                        <th>İşlem</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php $i = 1; ?>
+                    <?php foreach ($active_personel_datas as $personel_data) { ?>
+                        <tr>
+                            <td><?php echo $i++; ?>
 
+                                <?php if ($personel_data->isActive == 1) { ?>
+                                    <i class="fa  fa-bullseye" style="color: green"></i>
+                                <?php } else { ?>
+                                    <i class="fa  fa-bullseye" style="color: red"></i>
+                                <?php } ?>
+                            </td>
+                            <td><?php echo $personel_data->name_surname; ?></td>
+                            <td><?php echo $personel_data->social_id; ?></td>
+                            <td><?php echo group_name($personel_data->group); ?></td>
+                            <td> <?php echo dateFormat_dmy($personel_data->start_date); ?></td>
+                            <td><?php echo $personel_data->IBAN; ?></td>
+                            <td><?php echo $personel_data->bank; ?></td>
+                            <td>
+                                <span class="icon-group">
+                                    <a data-bs-toggle="modal" class="text-primary"
+                                       onclick="edit_modal_form('<?php echo base_url("Site/open_edit_personel_modal/$personel_data->id"); ?>','edit_personel_modal','EditPersonelModal')">
+                                        <i class="fa fa-edit fa-lg"></i>
+                                    </a>
+                                    <?php
+                                    // $personel_data->id ile eşleşen bir dosya olup olmadığını kontrol ediyoruz
+                                    if (in_array($personel_data->id, $file_names_without_extension)) { ?>
+                                        <a href="<?php echo base_url("$this->Module_Name/sitewallet_file_download/$personel_data->id"); ?>">
+                                            <i class="fa fa-download f-14 ellips fa-lg"></i>
+                                        </a>
+                                    <?php } ?>
+                                    <a href="javascript:void(0);"
+                                       onclick="confirmDelete('<?php echo base_url("Site/delete_personel/$personel_data->id"); ?>', '#tab_personel','personelTable')"
+                                       title="Sil">
+                                        <i class="fa fa-trash-o fa-lg"></i>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="container">
 
-                </form>
+                <?php
+                // Aktif, pasif ve tüm personel listelerini alalım
+                $active_personel_counts = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 1));
+                $passive_personel_counts = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 0));
+                $all_personel_counts = $this->Workman_model->get_all(array("site_id" => $item->id));
+
+                // Grup sayımı için boş dizi başlatalım
+                $group_counts = [];
+
+                // Aktif personelleri grup sayısına göre sayalım
+                foreach ($active_personel_counts as $personel) {
+                    $group = $personel->group;
+
+                    // Eğer grup daha önce sayılmadıysa, yeni bir giriş başlat
+                    if (!isset($group_counts[$group])) {
+                        $group_counts[$group] = 0;
+                    }
+
+                    // İlgili grubu bir artır
+                    $group_counts[$group]++;
+                }
+                ?>
+
+                <div class="tabs">
+                    <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+                        <h5>Çalışan Personel</h5>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <a href="javascript:void(0)"
+                       onclick="change_list('tab_personel', '<?php echo base_url("Site/chance_list/$item->id/0/1"); ?>','personelTable')"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        Tümü
+                        <span class="badge bg-primary rounded-pill">
+                        <?php echo count($active_personel_counts); ?>
+                    </span>
+                    </a>
+                    <?php foreach ($group_counts as $group => $count) { ?>
+                        <a href="javascript:void(0)"
+                           onclick="change_list('tab_personel', '<?php echo base_url("Site/chance_list/$item->id/$group/1"); ?>','personelTable')"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+
+                            <?php echo group_name($group); ?>
+                            <span class="badge bg-primary rounded-pill">
+                        <?php echo $count; ?>
+                    </span>
+                        </a>
+                    <?php } ?>
+                </div>
+                <hr>
+
+                <div class="tabs">
+                    <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+                        <h5>Çalışmayan Personel</h5>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <a href="javascript:void(0)"
+                       onclick="change_list('tab_personel', '<?php echo base_url("Site/chance_list/$item->id/0/0"); ?>','personelTable')"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        Tümü
+                        <span class="badge bg-primary rounded-pill">
+                        <?php echo count($passive_personel_counts); ?>
+                    </span>
+                    </a>
+
+                    <?php
+                    // Passif personelleri grup sayısına göre sayalım
+                    $passive_group_counts = [];
+                    foreach ($passive_personel_counts as $personel) {
+                        $group = $personel->group;
+                        if (!isset($passive_group_counts[$group])) {
+                            $passive_group_counts[$group] = 0;
+                        }
+                        $passive_group_counts[$group]++;
+                    }
+
+                    foreach ($passive_group_counts as $group => $count) { ?>
+                        <a href="javascript:void(0)"
+                           onclick="change_list('tab_personel', '<?php echo base_url("Site/chance_list/$item->id/$group/0"); ?>','personelTable')"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+
+                            <?php echo group_name($group); ?>
+                            <span class="badge bg-primary rounded-pill">
+                        <?php echo $count; ?>
+                    </span>
+                        </a>
+                    <?php } ?>
+                </div>
+                <hr>
+
+                <div class="tabs">
+                    <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+                        <h5>Tüm Personel</h5>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <a href="javascript:void(0)"
+                       onclick="change_list('tab_personel', '<?php echo base_url("Site/chance_list/$item->id"); ?>','personelTable')"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        Tümü
+                        <span class="badge bg-primary rounded-pill">
+                        <?php echo count($all_personel_counts); ?>
+                    </span>
+                    </a>
+
+                    <?php
+                    $all_group_counts = [];
+                    foreach ($all_personel_counts as $personel) {
+                        $group = $personel->group;
+                        if (!isset($all_group_counts[$group])) {
+                            $all_group_counts[$group] = 0;
+                        }
+                        $all_group_counts[$group]++;
+                    }
+
+                    foreach ($all_group_counts as $group => $count) { ?>
+                        <a href="javascript:void(0)"
+                           onclick="change_list('tab_personel', '<?php echo base_url("Site/chance_list/$item->id/$group"); ?>','personelTable')"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+
+                            <?php echo group_name($group); ?>
+                            <span class="badge bg-primary rounded-pill">
+                        <?php echo $count; ?>
+                    </span>
+                        </a>
+                    <?php } ?>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<div id="edit_personel_modal">
+    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_personel_modal_form"); ?>
+</div>
 

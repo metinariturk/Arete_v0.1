@@ -127,7 +127,6 @@ $file_names_without_extension = array_map(function ($file) {
                             <input class="form-control" name="file" id="file-input" type="file">
                         </div>
                     </form>
-                    <?php print_r(validation_errors()); ?>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>

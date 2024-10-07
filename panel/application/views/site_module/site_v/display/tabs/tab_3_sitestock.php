@@ -78,7 +78,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="arrival_date" class="form-label">Geliş Tarihi</label>
-                        <input type="date" name="arrival_date" id="arrival_date" value="<?php echo set_value('arrival_date'); ?>" class="form-control">
+                        <input type="date" name="arrival_date" id="arrival_date"
+                               value="<?php echo set_value('arrival_date'); ?>" class="form-control">
 
                         <?php if (isset($form_error)) { ?>
                             <div class="invalid-feedback"><?php echo form_error("arrival_date"); ?></div>
@@ -120,7 +121,6 @@
     <table id="stock-table" class="display">
         <thead>
         <tr>
-            <th>#</th>
             <th>İşlem</th>
             <th>Stok Adı</th>
             <th>Birim</th>
@@ -128,6 +128,7 @@
             <th>Kalan</th>
             <th>Tarihi</th>
             <th>Açıklama</th>
+            <th>Sil</th>
         </tr>
         </thead>
         <tbody>
@@ -136,27 +137,8 @@
             $kalan = $site_stock->stock_in - sum_anything("sitestock", "stock_out", "parent_id", "$site_stock->id");
             ?>
             <tr>
-                <td>
-                    <?php if ($kalan > 0): ?>
-                        <a data-bs-toggle="modal" class="text-primary"
-                           onclick="edit_modal_form('<?php echo base_url("Site/open_exit_stock_modal/$site_stock->id"); ?>','site_stock_modal_form','ExitModal')">
-                            <i class="fa fa-sign-out fa-2x"></i>
-                        </a>
-                    <?php else: ?>
-                        <i class="fa fa-sign-out fa-2x" onclick="empty_stock()"></i>
-                    <?php endif; ?>
-                </td>
-                <td>
-                    <?php $is_parent = $this->Sitestock_model->get(array("parent_id" => $site_stock->id)); ?>
-                    <?php if (empty($is_parent)): ?>
-                        <a href="javascript:void(0);"
-                           onclick="confirmDelete('<?php echo base_url("Site/delete_stock/$site_stock->id"); ?>', '#tab_sitestock','stock-table')"
-                           title="Sil">
-                            <i class="fa fa-trash-o fa-2x"></i>
-                        </a>
-                    <?php else: ?>
-                        <i class="fa fa-trash-o fa-2x" onclick="delete_stock_enter()"></i>
-                    <?php endif; ?>
+                <td onclick="<?php echo ($kalan > 0) ? "edit_modal_form('" . base_url("Site/open_exit_stock_modal/$site_stock->id") . "','site_stock_modal_form','ExitModal')" : "empty_stock()"; ?>">
+                    <i class="fa fa-sign-out" style="color: <?php echo ($kalan > 0) ? '#0a6aa1' : 'grey'; ?>"></i>
                 </td>
                 <td><?php echo $site_stock->stock_name; ?></td>
                 <td><?php echo $site_stock->unit; ?></td>
@@ -169,6 +151,18 @@
                     <?php endif; ?>
                     <?php echo $site_stock->notes; ?>
                 </td>
+                <td>
+                    <?php $is_parent = $this->Sitestock_model->get(array("parent_id" => $site_stock->id)); ?>
+                    <?php if (empty($is_parent)): ?>
+                        <a href="javascript:void(0);"
+                           onclick="confirmDelete('<?php echo base_url("Site/delete_stock/$site_stock->id"); ?>', '#tab_sitestock','stock-table')"
+                           title="Sil">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                    <?php else: ?>
+                        <i class="fa fa-trash-o" onclick="delete_stock_enter()"></i>
+                    <?php endif; ?>
+                </td>
             </tr>
 
             <!-- Child Row'ları Burada Oluştur -->
@@ -177,20 +171,18 @@
             foreach ($stock_movements as $stock_movement): ?>
                 <tr>
                     <td></td> <!-- Boş sütun -->
-                    <td>
-                        <a href="javascript:void(0);"
-                           onclick="confirmDelete('<?php echo base_url("Site/delete_stock/$stock_movement->id"); ?>', '#tab_sitestock','stock-table')"
-                           title="Sil">
-                            <i class="fa fa-trash-o fa-2x"></i>
-                        </a>
-                    </td>
                     <td></td> <!-- Boş sütun -->
                     <td></td> <!-- Boş sütun -->
                     <td style="color: #f16352">- <?php echo $stock_movement->stock_out; ?></td>
                     <td></td> <!-- Boş sütun -->
                     <td><?php echo dateFormat_dmy($stock_movement->exit_date); ?></td>
-                    <td>Transfer : <?php echo site_name($stock_movement->transfer); ?>
-                        <br><?php echo $stock_movement->notes; ?></td> <!-- Notlar -->
+                    <td>
+                        Transfer : <?php echo site_name($stock_movement->transfer); ?>
+                        <br><?php echo $stock_movement->notes; ?>
+                    </td>
+                    <td onclick="confirmDelete('<?php echo base_url("Site/delete_stock/$stock_movement->id"); ?>', '#tab_sitestock','stock-table')">
+                        <i class="fa fa-trash-o"></i>
+                    </td> <!-- Notlar -->
                 </tr>
             <?php endforeach; ?>
         <?php endforeach; ?>

@@ -334,8 +334,12 @@ class Site extends CI_Controller
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
 
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/main/";
+        $path_sitewallet = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/Sitewallet/";
+        $path_personel = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/Personel/";
 
         !is_dir($path) && mkdir($path, 0777, TRUE);
+        !is_dir($path_sitewallet) && mkdir($path_sitewallet, 0777, TRUE);
+        !is_dir($path_personel) && mkdir($path_personel, 0777, TRUE);
 
 
         $this->load->model("Report_workgroup_model");
@@ -362,7 +366,9 @@ class Site extends CI_Controller
         $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "contractor_staff"));
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $id, "module" => "owner_sign"));
         $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $id, "module" => "owner_staff"));
-        $personel_datas = $this->Workman_model->get_all(array("site_id" => $id, "isActive" => 1), "group DESC");
+        $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $id, "isActive" => 1), "group DESC");
+        $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $id, "isActive" => 0), "group DESC");
+
         $year_month = date('Y-m');
         $puantaj = $this->Attendance_model->get(array("site_id" => $id, "year_month" => $year_month));
 
@@ -420,7 +426,8 @@ class Site extends CI_Controller
         $viewData->month = $month;
         $viewData->owner_sign = $owner_sign;
         $viewData->owner_staff = $owner_staff;
-        $viewData->personel_datas = $personel_datas;
+        $viewData->active_personel_datas = $active_personel_datas;
+        $viewData->passive_personel_datas = $passive_personel_datas;
         $viewData->project = $project;
         $viewData->puantaj = $puantaj;
         if (!empty($puantaj->puantaj)) {
@@ -1874,6 +1881,57 @@ class Site extends CI_Controller
         }
     }
 
+    public function IBAN_control($IBAN)
+    {
+        // Tüm boşlukları kaldır
+        $IBAN = str_replace(' ', '', $IBAN);
+
+        // "TR" ibaresinin başında olup olmadığını kontrol et
+        if (substr($IBAN, 0, 2) !== 'TR') {
+            $IBAN = 'TR' . $IBAN; // Eğer yoksa, başına "TR" ekle
+        }
+
+        // Toplam uzunluğunu kontrol et
+        if (strlen($IBAN) === 26) {
+            return TRUE; // IBAN geçerli
+        } else {
+            return FALSE; // IBAN geçersiz
+        }
+    }
+
+    public function TC_control($social_id)
+    {
+        // T.C. kimlik numarasının 11 haneli olması gerekiyor
+        if (strlen($social_id) !== 11) {
+            return FALSE;
+        }
+
+        // T.C. kimlik numarasının yalnızca rakamlardan oluşup oluşmadığını kontrol et
+        if (!preg_match('/^[0-9]+$/', $social_id)) {
+            return FALSE;
+        }
+
+        // Son rakamın çift olup olmadığını kontrol et
+        if ($social_id[10] % 2 != 0) {
+            return FALSE;
+        }
+
+        // İlk 10 rakamın toplamını hesapla
+        $first10Sum = 0;
+        for ($i = 0; $i < 10; $i++) {
+            $first10Sum += (int)$social_id[$i];
+        }
+
+        // İlk 10 rakamın toplamının birler basamağını al
+        $eleventhDigit = $first10Sum % 10;
+
+        // 11. rakamın doğruluğunu kontrol et
+        if ((int)$social_id[10] !== $eleventhDigit) {
+            return FALSE;
+        }
+        return TRUE; // T.C. kimlik numarası geçerli
+    }
+
     public
     function duplicate_code_check($file_name)
     {
@@ -2169,101 +2227,195 @@ class Site extends CI_Controller
     /*Personel Start*/
 
     public
-    function save_personel($site_id)
+    function add_personel($site_id)
     {
 
+        // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
+        $item = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $settings = $this->Settings_model->get();
+
+        // Form validation kütüphanesini yüklüyoruz
         $this->load->library("form_validation");
 
+        // Form doğrulama kuralları ekliyoruz
         $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|callback_name_control');
         $this->form_validation->set_rules('group', 'Meslek', 'required');
-        $this->form_validation->set_rules('social_id', 'TC Kimlik No', 'numeric');
+
+        if ($this->input->post("social_id")) {
+            $this->form_validation->set_rules('social_id', 'TC Kimlik', 'callback_TC_control');
+        }
+        if ($this->input->post("IBAN")) {
+            $this->form_validation->set_rules('IBAN', 'IBAN', 'callback_IBAN_control');
+        }
         $this->form_validation->set_rules('start_date', 'Giriş Tarihi', 'required');
-        $this->form_validation->set_rules('end_date', 'Çıkış Tarihi', 'callback_check_end_date');
 
         $this->form_validation->set_message(
             array(
+                "IBAN_control" => "<b>{field}</b> TR ibaresi hariç 24 haneden oluşmalıdır, eğer TR ibaresi ile girerseniz 26 haneli olmalıdır. Boşluklar dikkate alınmamaktadır",
+                "TC_control" => "<b>{field}</b> Kimlik No Hatalı",
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
                 "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "name_control" => "<b>{field}</b> Özel Karakter Kullanmayınız",
                 "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
             )
         );
 
+        // Formun doğrulama işlemi başlatılıyor
         $validate = $this->form_validation->run();
 
+        // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
         if ($validate) {
+
+            $name_surname = ucwords(strtolower($this->input->post("name_surname")));
+            $IBAN = str_replace(' ', '', $this->input->post("IBAN"));
+
+            // "TR" ibaresinin başında olup olmadığını kontrol et
+            if (substr($IBAN, 0, 2) !== 'TR') {
+                $IBAN = 'TR' . $IBAN; // Eğer yoksa, başına "TR" ekle
+            }
+
+
+            // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
             if ($this->input->post("start_date")) {
                 $start_date = dateFormat('Y-m-d', $this->input->post("start_date"));
             } else {
                 $start_date = null;
             }
 
-            if ($this->input->post("end_date")) {
-                $end_date = dateFormat('Y-m-d', $this->input->post("end_date"));
-            } else {
-                $end_date = null;
-            }
-
             $insert = $this->Workman_model->add(
                 array(
                     "site_id" => $site_id,
-                    "name_surname" => $this->input->post("name_surname"),
+                    "name_surname" => $name_surname,
                     "group" => $this->input->post("group"),
                     "bank" => $this->input->post("bank"),
-                    "IBAN" => $this->input->post("IBAN"),
+                    "IBAN" => $IBAN,
                     "social_id" => $this->input->post('social_id'),
                     "start_date" => $start_date,
-                    "end_date" => $end_date,
+                    "notes" => $this->input->post('personel_notes'),
                     "isActive" => 1,
                 )
             );
 
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
+            // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
+            $record_id = $this->db->insert_id();
 
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            // Yüklenen dosyanın ismi SEO dostu hale getiriliyor
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+            // Dosya boyutu alınıyor
+            $size = $_FILES["file"]["size"];
+
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+            // Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+            // Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+                // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+            } else {
+                // Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
 
             $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site_id));
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+            $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 0));
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
-            $viewData->item = $item;
-            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
-            $viewData->form_error = true;
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->active_personel_datas = $active_personel_datas;
+            $viewData->passive_personel_datas = $passive_personel_datas;
+            $viewData->workgroups = json_decode($item->active_group, true);
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
+            $viewData->item = $item;
+            $viewData->settings = $settings;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+
         } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
 
             $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site_id));
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
+            $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 0));
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->active_personel_datas = $active_personel_datas;
+            $viewData->passive_personel_datas = $passive_personel_datas;
+            $viewData->workgroups = json_decode($item->active_group, true);
             $viewData->item = $item;
-            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
-            $viewData->form_error = true;
+            $viewData->settings = $settings;
 
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
+            $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
+            $viewData->error_modal = "AddPersonelModal"; // Hata modali için set edilen değişken
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+
+        }
+    }
+
+    public
+    function chance_list($site_id, $group_code=null, $situation = null)
+    {
+        $item = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $settings = $this->Settings_model->get();
+
+        $viewData = new stdClass();
+        if (isset($situation) && $group_code != 0) {
+            // Eğer $situation tanımlı ve $group_code sıfırdan farklıysa
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => $situation, "group" => $group_code));
+        } elseif ($group_code == 0 && isset($situation)) {
+            // Eğer $group_code 0 ise ve $situation tanımlıysa
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => $situation));
+        } elseif ($group_code != 0 && !isset($situation)) {
+            // Eğer $group_code tanımlı ve $situation null ise
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "group" => $group_code));
+        } elseif (!isset($situation) && !isset($group_code)) {
+            // Eğer her iki değer de tanımlı değilse
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id));
         }
 
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->contract = $contract;
+        $viewData->project = $project;
+        $viewData->active_personel_datas = $active_personel_datas;
+        $viewData->group_code = $group_code;
+        $viewData->situation = $situation;
+        $viewData->workgroups = json_decode($item->active_group, true);
 
+        $viewData->item = $item;
+        $viewData->settings = $settings;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
     }
+
 
     public
     function update_personel($worker_id, $site_id)
