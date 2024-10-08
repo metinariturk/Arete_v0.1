@@ -104,6 +104,21 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr id="center_row">
+                            <td>
+                                <a href="<?php echo base_url("report/new_form/$item->id"); ?>">
+                                    Yeni Rapor Oluştur
+                                </a>
+                            </td>
+
+                            <td colspan="2">
+                                <a href="<?php echo base_url("report/new_form/$item->id"); ?>" class="btn-download">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+
                         <?php if (!empty($reports)) { ?>
                             <?php
                             $counter = 0; // Sayaç tanımlıyoruz

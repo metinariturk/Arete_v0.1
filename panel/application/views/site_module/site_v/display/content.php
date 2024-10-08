@@ -62,6 +62,10 @@
             <div class="card-body">
                 <h5>Günlük Rapor</h5>
                 <div class="download_links mt-3">
+                    <a href="<?php echo base_url("Report/new_form/$item->id"); ?>">
+                        <i class="fa fa-plus fa-2x me-0"
+                           style="cursor: pointer;"></i>
+                    </a>
                     <a href="<?php echo base_url('export/report_download_excel'); ?>">
                         <i class="fa fa-file-excel-o fa-2x"></i>
                     </a>
