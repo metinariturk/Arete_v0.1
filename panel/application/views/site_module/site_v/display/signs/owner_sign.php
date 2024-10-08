@@ -26,7 +26,8 @@
                         <a onclick="delete_sign(this)"
                            div="refresh_owner_sign"
                            url="<?php echo base_url("$this->Module_Name/delete_sign/$owner_sign->id/owner_sign/$item->id"); ?>">
-                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
+                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                               aria-hidden="true">
                             </i>
                         </a>
                     </td>

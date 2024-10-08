@@ -1,3 +1,5 @@
+<div class="refresh_list_machine" id="refresh_list_machine">
+
 <div class="row">
     <div class="col-md-12 col-lg-6">
         <div class="card-body">
@@ -86,4 +88,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

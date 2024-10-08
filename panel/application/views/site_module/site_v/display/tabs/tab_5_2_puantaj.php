@@ -1,4 +1,4 @@
-<div class="puantaj_list">
+<div class="puantaj_list" id="puantaj_list">
     <form id="puantaj_form"
           action="<?php echo base_url("$this->Module_Name/update_puantaj"); ?>" method="post"
           enctype="multipart/form-data" autocomplete="off">
@@ -58,7 +58,7 @@
                         <?php
                         $i = 1;
                         $count_of_days = get_days_in_month($year, $month);
-                        foreach ($personel_datas as $personel_data) { ?>
+                        foreach ($active_personel_datas as $personel_data) { ?>
                             <tr>
                                 <td> <?php echo $i++; ?></td>
                                 <td> <?php echo $personel_data->name_surname; ?></td>

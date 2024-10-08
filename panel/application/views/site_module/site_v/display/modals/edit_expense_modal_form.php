@@ -88,40 +88,42 @@
 
 
                             <?php
+                            $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$edit_expense->id";
 
-                            $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+                            if (!is_dir($file_path)) {
+                                mkdir($file_path, 0777, true);
+                            }
 
-                            // Klasördeki tüm dosya ve klasörleri alıyoruz
-                            $files = scandir($file_path);
-
-                            // '.' ve '..' gibi klasörleri filtreleyip sadece dosya isimlerini almak için array_filter kullanıyoruz
-                            $files = array_filter($files, function ($file) use ($file_path) {
-                                return !is_dir($file_path . '/' . $file); // Klasörleri dahil etmiyoruz, sadece dosyalar
-                            });
-
-                            // Dosya isimlerini uzantıları olmadan yeni bir diziye alıyoruz
-                            $file_names_without_extension = array_map(function ($file) {
-                                return pathinfo($file, PATHINFO_FILENAME); // Sadece dosya adını (uzantısız) alıyoruz
-                            }, $files);
-
-                            // $edit_expense->id ile eşleşen bir dosya olup olmadığını kontrol ediyoruz
-                            if (in_array($edit_expense->id, $file_names_without_extension)) { ?>
-                                <div id="file-upload-container">
-                                    <a href="<?php echo base_url("$this->Module_Name/sitewallet_file_download/$edit_expense->id"); ?>">
-                                        <i class="fa fa-download f-14 ellips"></i> Dosyayı İndir
-                                    </a>
-                                    <span onclick="delete_file(this)"
-                                          data-url="<?php echo base_url("$this->Module_Name/sitewallet_file_delete/$edit_expense->id"); ?>">
-                                    <i class="fa fa-times-circle"></i>SİL
-                                </span>
-                                </div>
-                            <?php } else { ?>
-                                <div id="file-upload-container" class="mb-3" >
-                                    <label class="col-form-label" for="file-input">Dosya Yükle:</label>
-                                    <input class="form-control" name="file" id="file-input" type="file">
-                                </div>
-                            <?php }
+                            $files = glob("$file_path/*"); // glob ile tüm dosyaları al
                             ?>
+
+                            <div class="row mt-2">
+                                <?php foreach ($files as $file): ?>
+                                    <div class="col-12 d-flex align-items-center mb-2" id="expense_<?php echo $edit_expense->id; ?>">
+                                        <div class="col-2">
+                                            <?php echo ext_img($file); // Dosya simgesi ?>
+                                        </div>
+                                        <div class="col-7">
+                                            <p class="task_desc_0"><?php echo basename($file); // Dosya adı ?></p>
+                                        </div>
+                                        <div class="col-1 text-center">
+                                            <a href="<?php echo base_url("$this->Module_Name/expense_file_download/$edit_expense->id/" . basename($file)); ?>">
+                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-1 text-center">
+                                            <a onclick="delete_this_item(this)"
+                                               data="<?php echo base_url("$this->Module_Name/expense_file_delete/$edit_expense->id/" . basename($file)); ?>">
+                                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div id="file-upload-container" class="mb-3">
+                                <label class="col-form-label" for="file-input">Dosya Yükle:</label>
+                                <input class="form-control" name="file" id="file-input" type="file">
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">

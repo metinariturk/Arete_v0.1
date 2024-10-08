@@ -203,6 +203,7 @@
       <workItem from="1728066647112" duration="9736000" />
       <workItem from="1728224517933" duration="16916000" />
       <workItem from="1728309967403" duration="17426000" />
+      <workItem from="1728377011724" duration="26034000" />
     </task>
     <servers />
   </component>
@@ -268,24 +269,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1019</line>
-          <properties>
-            <option name="className" value="\Site" />
-            <option name="methodName" value="sign_options" />
-          </properties>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>159</line>
-          <properties>
-            <option name="className" value="\Site" />
-            <option name="methodName" value="save" />
-          </properties>
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
           <line>73</line>
           <properties>
             <option name="className" value="\Site" />
@@ -295,12 +278,30 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1580</line>
+          <line>1631</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="delete_sitewallet" />
           </properties>
           <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>2401</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="edit_personel" />
+          </properties>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>850</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="add_group" />
+          </properties>
+          <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>
@@ -321,11 +322,6 @@
           <url>file://$PROJECT_DIR$/panel/application/views/site_module/site_v/display/modals/exit_modal_form.php</url>
           <line>10</line>
           <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1021</line>
-          <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

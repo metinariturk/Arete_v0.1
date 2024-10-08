@@ -141,7 +141,7 @@ $file_names_without_extension = array_map(function ($file) {
                         </div>
                         <!-- Açıklama -->
                         <div class="mb-3">
-                            <label class="col-form-label" for="payment_notes">Açıklama:</label>
+                            <label class="col-form-label" for="payment_notes">Açıklama:</label>f
                             <input id="personel_notes" type="text"
                                    class="form-control <?php cms_isset(form_error("personel_notes"), "is-invalid", ""); ?>"
                                    name="personel_notes" value="<?php echo set_value('personel_notes'); ?>"
@@ -191,17 +191,17 @@ $file_names_without_extension = array_map(function ($file) {
             </div>
             <hr>
             <div class="table-responsive">
-                <table id="personelTable" style="width:100%">
+                <table id="personelTable" class="table" style="width:100%">
                     <thead>
                     <tr>
                         <th>#</th>
                         <th>Adı Soyadı</th>
-                        <th>TC Kimlik No</th>
-                        <th>Branş</th>
-                        <th>İşe Giriş/Çıkış</th>
-                        <th>Hesap No</th>
-                        <th>Banka</th>
-                        <th>İşlem</th>
+                        <th class="d-none d-sm-table-cell">TC Kimlik No</th>
+                        <th>Meslek</th>
+                        <th class="d-none d-sm-table-cell">İşe Giriş/Çıkış</th>
+                        <th class="d-none d-sm-table-cell">Hesap No / Banka</th>
+                        <th class="d-none d-sm-table-cell">İşlem</th>
+                        <th class="d-sm-none">Detaylar</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -209,38 +209,59 @@ $file_names_without_extension = array_map(function ($file) {
                     <?php foreach ($active_personel_datas as $personel_data) { ?>
                         <tr>
                             <td><?php echo $i++; ?>
-
                                 <?php if ($personel_data->isActive == 1) { ?>
-                                    <i class="fa  fa-bullseye" style="color: green"></i>
+                                    <i class="fa fa-bullseye" style="color: green"></i>
                                 <?php } else { ?>
-                                    <i class="fa  fa-bullseye" style="color: red"></i>
+                                    <i class="fa fa-bullseye" style="color: red"></i>
                                 <?php } ?>
                             </td>
                             <td><?php echo $personel_data->name_surname; ?></td>
-                            <td><?php echo $personel_data->social_id; ?></td>
+                            <td class="d-none d-sm-table-cell"><?php echo $personel_data->social_id; ?></td>
                             <td><?php echo group_name($personel_data->group); ?></td>
-                            <td> <?php echo dateFormat_dmy($personel_data->start_date); ?></td>
-                            <td><?php echo $personel_data->IBAN; ?></td>
-                            <td><?php echo $personel_data->bank; ?></td>
-                            <td>
-                                <span class="icon-group">
-                                    <a data-bs-toggle="modal" class="text-primary"
-                                       onclick="edit_modal_form('<?php echo base_url("Site/open_edit_personel_modal/$personel_data->id"); ?>','edit_personel_modal','EditPersonelModal')">
-                                        <i class="fa fa-edit fa-lg"></i>
-                                    </a>
-                                    <?php
-                                    // $personel_data->id ile eşleşen bir dosya olup olmadığını kontrol ediyoruz
-                                    if (in_array($personel_data->id, $file_names_without_extension)) { ?>
-                                        <a href="<?php echo base_url("$this->Module_Name/sitewallet_file_download/$personel_data->id"); ?>">
-                                            <i class="fa fa-download f-14 ellips fa-lg"></i>
-                                        </a>
-                                    <?php } ?>
-                                    <a href="javascript:void(0);"
-                                       onclick="confirmDelete('<?php echo base_url("Site/delete_personel/$personel_data->id"); ?>', '#tab_personel','personelTable')"
-                                       title="Sil">
-                                        <i class="fa fa-trash-o fa-lg"></i>
-                                    </a>
-                                </span>
+                            <td class="d-none d-sm-table-cell"><?php echo dateFormat_dmy($personel_data->start_date); ?></td>
+                            <td class="d-none d-sm-table-cell"
+                                onclick="openPersonModal(
+                                        '<?php echo wordwrap(str_replace(' ', '', $personel_data->IBAN), 4, ' ', true); ?>',
+                                        '<?php echo $personel_data->bank; ?>',
+                                        '<?php echo $personel_data->name_surname; ?>',
+                                        '<?php echo group_name($personel_data->group); ?>',
+                                        '<?php echo $personel_data->social_id; ?>',
+                                        '<?php echo dateFormat_dmy($personel_data->start_date) . "/" . dateFormat_dmy($personel_data->exit_date); ?>',
+                                        '<?php echo base_url("Site/open_edit_personel_modal/$personel_data->id"); ?>')">
+                                <?php echo wordwrap(str_replace(' ', '', $personel_data->IBAN), 4, ' ', true); ?>
+                                <br> <?php echo $personel_data->bank; ?>
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                        <span class="icon-group">
+                            <a data-bs-toggle="modal" class="text-primary"
+                               onclick="edit_modal_form('<?php echo base_url("Site/open_edit_personel_modal/$personel_data->id"); ?>','edit_personel_modal','EditPersonelModal')">
+                                <i class="fa fa-edit fa-lg"></i>
+                            </a>
+                            <?php if (in_array($personel_data->id, $file_names_without_extension)) { ?>
+                                <a href="<?php echo base_url("$this->Module_Name/sitewallet_file_download/$personel_data->id"); ?>">
+                                    <i class="fa fa-download f-14 ellips fa-lg"></i>
+                                </a>
+                            <?php } ?>
+                            <a href="javascript:void(0);"
+                               onclick="confirmDelete('<?php echo base_url("Site/delete_personel/$personel_data->id"); ?>', '#tab_personel','personelTable')"
+                               title="Sil">
+                                <i class="fa fa-trash-o fa-lg"></i>
+                            </a>
+                        </span>
+                            </td>
+                            <!-- Küçük ekranlar için Detaylar butonu -->
+                            <td class="d-sm-none">
+                                <button class="btn btn-primary btn-sm"
+                                        onclick="openPersonModal(
+                                                '<?php echo wordwrap(str_replace(' ', '', $personel_data->IBAN), 4, ' ', true); ?>',
+                                                '<?php echo $personel_data->bank; ?>',
+                                                '<?php echo $personel_data->name_surname; ?>',
+                                                '<?php echo group_name($personel_data->group); ?>',
+                                                '<?php echo $personel_data->social_id; ?>',
+                                                '<?php echo dateFormat_dmy($personel_data->start_date) . "/" . dateFormat_dmy($personel_data->exit_date); ?>',
+                                                '<?php echo base_url("Site/open_edit_personel_modal/$personel_data->id"); ?>')">
+                                    Detaylar
+                                </button>
                             </td>
                         </tr>
                     <?php } ?>
@@ -386,5 +407,19 @@ $file_names_without_extension = array_map(function ($file) {
 
 <div id="edit_personel_modal">
     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_personel_modal_form"); ?>
+</div>
+
+<div class="modal fade" id="personModal" tabindex="-1" aria-labelledby="personModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- modal-lg genişliği artırır, dilerseniz modal-xl kullanabilirsiniz -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="personModalLabel">Personel Bilgileri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="personModalBody">
+                <!-- Modal içeriği buraya dinamik olarak yüklenecek -->
+            </div>
+        </div>
+    </div>
 </div>
 

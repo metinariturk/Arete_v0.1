@@ -96,6 +96,31 @@ class Site extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
+    public function favorite($id)
+    {
+        $fav_id = get_from_any_and_and("favorite", "module", "site", "user_id", active_user_id(), "module_id", "$id");
+        if (!empty($fav_id)) {
+            $this->Favorite_model->delete(
+                array(
+                    "id" => $fav_id
+                )
+            );
+            echo "favoriden çıktı";
+        } else {
+
+            $insert = $this->Favorite_model->add(
+                array(
+                    "module" => "site",
+                    "view" => "file_form",
+                    "module_id" => $id,
+                    "user_id" => active_user_id(),
+                    "title" => site_code($id) . " - " . site_name($id)
+                )
+            );
+            echo "favoriye eklendi";
+        }
+    }
+
     public function select()
     {
         $viewData = new stdClass();
@@ -552,6 +577,7 @@ class Site extends CI_Controller
         redirect(base_url("project/file_form/$project_id"));
     }
 
+
     public function file_upload($id)
     {
 
@@ -603,7 +629,6 @@ class Site extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
-
     public function fileDelete_java($id)
     {
         if (!isAdmin()) {
@@ -822,7 +847,7 @@ class Site extends CI_Controller
 
     /*----*/
 
-    /*Settings Start*/
+    /*WorkGroup and WorkMachine Start*/
     public function add_group($site_id, $group_id)
     {
 
@@ -850,6 +875,8 @@ class Site extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
+
 
 
         $main_categories = $this->Workgroup_model->get_all(array('main_category' => 1));
@@ -866,9 +893,8 @@ class Site extends CI_Controller
         $viewData->main_categories = $main_categories;
 
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workgroup", $viewData, true);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_1_workgroup", $viewData);
 
-        echo $render_html;
 
     }
 
@@ -904,6 +930,7 @@ class Site extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
 
 
         $main_categories = $this->Workgroup_model->get_all(array('main_category' => 1));
@@ -919,10 +946,8 @@ class Site extends CI_Controller
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->main_categories = $main_categories;
 
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_1_workgroup", $viewData);
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workgroup", $viewData, true);
-
-        echo $render_html;
 
     }
 
@@ -953,6 +978,8 @@ class Site extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
+
 
         $main_categories_workmachine = $this->Workmachine_model->get_all(array(
             'main_category' => 1
@@ -972,9 +999,8 @@ class Site extends CI_Controller
         $viewData->workmachines = json_decode($item->active_machine, true);
 
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workmachine", $viewData, true);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_2_workmachine", $viewData);
 
-        echo $render_html;
 
     }
 
@@ -1009,6 +1035,8 @@ class Site extends CI_Controller
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "$this->Display_Folder";
+
         $main_categories_workmachine = $this->Workmachine_model->get_all(array(
             'main_category' => 1
         ));
@@ -1022,11 +1050,16 @@ class Site extends CI_Controller
         $viewData->item = $item;
         $viewData->workmachines = json_decode($item->active_machine, true);
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/workmachine", $viewData, true);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_2_workmachine", $viewData);
 
-        echo $render_html;
 
     }
+
+    /*WorkGroup and WorkMachine End*/
+
+    /*----*/
+
+/*    Rapor İmza Ayarları Start*/
 
     public function sign_options($site_id, $module)
     {
@@ -1123,14 +1156,12 @@ class Site extends CI_Controller
                 )
             );
 
-
             $viewData->contractor_sign = $contractor_sign;
             $viewData->contractor_staff = $contractor_staff;
             $viewData->owner_sign = $owner_sign;
             $viewData->owner_staff = $owner_staff;
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
-            echo $render_html;
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
         } else {
             $alert = array(
                 "title" => "İsim veya Ünvan Bilgilerinde Eksik Var",
@@ -1163,9 +1194,7 @@ class Site extends CI_Controller
             $viewData->owner_sign = $owner_sign;
             $viewData->owner_staff = $owner_staff;
 
-
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
-            echo $render_html;
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
         }
     }
 
@@ -1175,10 +1204,7 @@ class Site extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $contractor_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "contractor_sign"));
-        $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "contractor_staff"));
-        $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
-        $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
+
 
         $delete = $this->Report_sign_model->delete(
             array(
@@ -1186,23 +1212,13 @@ class Site extends CI_Controller
             )
         );
 
-        // TODO Alert sistemi eklenecek...
-        if ($delete) {
-            $alert = array(
-                "title" => "İmza Sütunu Silindi",
-                "text" => "İmza Ayarları Yapıldı",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İmza Sütunu Silinemedi",
-                "text" => "İmza Ayarları Güncellendi",
-                "type" => "danger"
-            );
-        }
-        $this->session->set_flashdata("alert", $alert);
 
         $viewData = new stdClass();
+
+        $contractor_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "contractor_sign"));
+        $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "contractor_staff"));
+        $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
+        $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -1219,9 +1235,8 @@ class Site extends CI_Controller
             )
         );
 
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
-        echo $render_html;
     }
 
     public function sign_rankSetter()
@@ -1243,37 +1258,73 @@ class Site extends CI_Controller
         }
     }
 
-    public function favorite($id)
-    {
-        $fav_id = get_from_any_and_and("favorite", "module", "site", "user_id", active_user_id(), "module_id", "$id");
-        if (!empty($fav_id)) {
-            $this->Favorite_model->delete(
-                array(
-                    "id" => $fav_id
-                )
-            );
-            echo "favoriden çıktı";
-        } else {
+    /*    Rapor İmza Ayarları Start*/
 
-            $insert = $this->Favorite_model->add(
-                array(
-                    "module" => "site",
-                    "view" => "file_form",
-                    "module_id" => $id,
-                    "user_id" => active_user_id(),
-                    "title" => site_code($id) . " - " . site_name($id)
-                )
-            );
-            echo "favoriye eklendi";
-        }
-    }
-
-    /*Settings End*/
 
     /*----*/
 
     /*Sitewalllet Start*/
 
+    public function expense_file_download($data_id, $file_name)
+    {
+
+        $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
+        $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
+
+        $file_path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$data_id/$file_name";
+
+        if ($file_path) {
+            if (file_exists($file_path)) {
+                $data = file_get_contents($file_path);
+                force_download($file_name, $data);
+            }
+        }
+    }
+
+    public function download_all_expense($data_id)
+    {
+        $this->load->library('zip');
+        $this->zip->compression_level = 0;
+
+        $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
+        $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
+
+        // Dosya yolunu oluşturmak
+        $file_path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$data_id/$file_name";
+
+
+        $zip_name = "Harcama - $data_id";
+
+        $this->zip->read_dir($file_path, FALSE);
+        $this->zip->download("$zip_name.zip");
+
+    }
+
+    public function expense_file_delete($data_id, $file_name)
+    {
+        // İlgili verileri almak
+        $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
+        $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
+
+        // Dosya yolunu oluşturmak
+        $file_path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$data_id/$file_name";
+
+        // Dosya yolu var mı diye kontrol
+        if ($file_path) {
+            // Dosya sistemde mevcut mu?
+            if (file_exists($file_path)) {
+                // Dosyayı silmek
+                if (unlink($file_path)) {
+                    echo "Dosya başarıyla silindi.";
+                } else {
+                    echo "Dosya silinirken bir hata oluştu.";
+                }
+            }
+        }
+    }
     public
     function check_end_date($end_date)
     {
@@ -1358,7 +1409,7 @@ class Site extends CI_Controller
             $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1373,7 +1424,7 @@ class Site extends CI_Controller
             // Yükleme ayarları belirleniyor
             $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
             $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
             $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
             // Yükleme kütüphanesi yükleniyor
@@ -1499,7 +1550,7 @@ class Site extends CI_Controller
             $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1514,7 +1565,7 @@ class Site extends CI_Controller
             // Yükleme ayarları belirleniyor
             $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
             $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
             $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
             // Yükleme kütüphanesi yükleniyor
@@ -1630,36 +1681,6 @@ class Site extends CI_Controller
 
     }
 
-    public function sitewallet_file_download($sitewallet_id)
-    {
-        // Sitewallet ve ilgili verileri al
-        $sitewallet = $this->Sitewallet_model->get(array("id" => $sitewallet_id));
-        $item = $this->Site_model->get(array("id" => $sitewallet->site_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
-
-        // Dosya yolunu ve arama desenini oluşturuyoruz (uzantısı bilinmiyor)
-        $file_path_pattern = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$sitewallet->id.*";
-
-        // Belirtilen desenle eşleşen dosyaları arıyoruz
-        $files = glob($file_path_pattern);
-
-        // Eğer dosya(lar) bulunduysa
-        if (!empty($files)) {
-            // Bulunan ilk dosyanın tam yolunu alıyoruz
-            $file_path = $files[0];
-
-            // CodeIgniter'ın helper fonksiyonlarını yükleyin
-            $this->load->helper('download');
-
-            // Dosyayı indiriyoruz
-            force_download($file_path, NULL);
-        } else {
-            // Dosya bulunamazsa, hata mesajı gösteriyoruz
-            $this->session->set_flashdata('error', 'Dosya bulunamadı!');
-            redirect($_SERVER['HTTP_REFERER']); // Kullanıcıyı önceki sayfaya geri yönlendiriyoruz
-        }
-    }
-
     public function open_edit_expenses_modal($expense_id)
     {
         // Verilerin getirilmesi
@@ -1740,20 +1761,21 @@ class Site extends CI_Controller
                 )
             );
 
-            // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
-            $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$expense_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
             }
 
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+
             // Yükleme ayarları belirleniyor
             $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
             $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $expense_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
             $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
             // Yükleme kütüphanesi yükleniyor
@@ -2303,7 +2325,7 @@ class Site extends CI_Controller
             $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -2318,7 +2340,7 @@ class Site extends CI_Controller
             // Yükleme ayarları belirleniyor
             $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
             $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $record_id; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
             $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
             // Yükleme kütüphanesi yükleniyor
@@ -2377,12 +2399,192 @@ class Site extends CI_Controller
     }
 
     public
-    function chance_list($site_id, $group_code=null, $situation = null)
+    function edit_personel($personel_id)
+    {
+
+        // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
+        $edit_personel = $this->Workman_model->get(array("id" => $personel_id));
+        $item = $this->Site_model->get(array("id" => $edit_personel->site_id));
+        $contract = $this->Contract_model->get(array("id" => $item->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $settings = $this->Settings_model->get();
+
+        // Form validation kütüphanesini yüklüyoruz
+        $this->load->library("form_validation");
+
+        // Form doğrulama kuralları ekliyoruz
+        $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|callback_name_control');
+        $this->form_validation->set_rules('group', 'Meslek', 'required');
+
+        if ($this->input->post("social_id")) {
+            $this->form_validation->set_rules('social_id', 'TC Kimlik', 'callback_TC_control');
+        }
+        if ($this->input->post("IBAN")) {
+            $this->form_validation->set_rules('IBAN', 'IBAN', 'callback_IBAN_control');
+        }
+        $this->form_validation->set_rules('start_date', 'Giriş Tarihi', 'required');
+
+        $this->form_validation->set_message(
+            array(
+                "IBAN_control" => "<b>{field}</b> TR ibaresi hariç 24 haneden oluşmalıdır, eğer TR ibaresi ile girerseniz 26 haneli olmalıdır. Boşluklar dikkate alınmamaktadır",
+                "TC_control" => "<b>{field}</b> Kimlik No Hatalı",
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
+                "name_control" => "<b>{field}</b> Özel Karakter Kullanmayınız",
+                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
+            )
+        );
+
+        // Formun doğrulama işlemi başlatılıyor
+        $validate = $this->form_validation->run();
+
+        // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
+        if ($validate) {
+
+            $name_surname = ucwords(strtolower($this->input->post("name_surname")));
+            $IBAN = str_replace(' ', '', $this->input->post("IBAN"));
+
+            // "TR" ibaresinin başında olup olmadığını kontrol et
+            if (substr($IBAN, 0, 2) !== 'TR') {
+                $IBAN = 'TR' . $IBAN; // Eğer yoksa, başına "TR" ekle
+            }
+
+
+            // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
+            if ($this->input->post("start_date")) {
+                $start_date = dateFormat('Y-m-d', $this->input->post("start_date"));
+            } else {
+                $start_date = null;
+            }
+
+            if ($this->input->post("exit_date")) {
+                $exit_date = dateFormat('Y-m-d', $this->input->post("exit_date"));
+            } else {
+                $exit_date = null;
+            }
+
+            $update = $this->Workman_model->update(
+                array("id" => $edit_personel->id),
+                array(
+                    "name_surname" => $name_surname,
+                    "group" => $this->input->post("group"),
+                    "bank" => $this->input->post("bank"),
+                    "IBAN" => $IBAN,
+                    "social_id" => $this->input->post('social_id'),
+                    "start_date" => $start_date,
+                    "exit_date" => $exit_date,
+                    "notes" => $this->input->post('personel_notes'),
+                    "isActive" => 1,
+                )
+            );
+
+
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel/$edit_personel->id";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            // Yüklenen dosyanın ismi SEO dostu hale getiriliyor
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+            // Dosya boyutu alınıyor
+            $size = $_FILES["file"]["size"];
+
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+            // Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+            // Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+                // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+            } else {
+                // Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
+
+            $viewData = new stdClass();
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 1));
+            $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 0));
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->active_personel_datas = $active_personel_datas;
+            $viewData->passive_personel_datas = $passive_personel_datas;
+            $viewData->workgroups = json_decode($item->active_group, true);
+
+            $viewData->item = $item;
+            $viewData->settings = $settings;
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+
+        } else {
+
+            $viewData = new stdClass();
+            $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 1));
+            $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 0));
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+            $viewData->contract = $contract;
+            $viewData->project = $project;
+            $viewData->active_personel_datas = $active_personel_datas;
+            $viewData->passive_personel_datas = $passive_personel_datas;
+            $viewData->workgroups = json_decode($item->active_group, true);
+            $viewData->item = $item;
+            $viewData->settings = $settings;
+            $viewData->edit_personel = $edit_personel;
+
+            $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
+            $viewData->error_modal = "EditPersonelModal"; // Hata modali için set edilen değişken
+
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+
+        }
+    }
+
+    public function open_edit_personel_modal($personel_id)
+    {
+        // Verilerin getirilmesi
+
+        $edit_personel = $this->Workman_model->get(array("id" => $personel_id));
+        $item = $this->Site_model->get(array("id" => $edit_personel->site_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $settings = $this->Settings_model->get();
+
+        // Görünüm için değişkenlerin set edilmesi
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->item = $item;
+        $viewData->project = $project;
+        $viewData->edit_personel = $edit_personel;
+        $viewData->workgroups = json_decode($item->active_group, true);
+        $viewData->settings = $settings;
+
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_personel_modal_form", $viewData);
+    }
+
+    public
+    function chance_list($site_id, $group_code = null, $situation = null)
     {
         $item = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
-
         $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();
@@ -2414,136 +2616,6 @@ class Site extends CI_Controller
         $viewData->settings = $settings;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
-    }
-
-
-    public
-    function update_personel($worker_id, $site_id)
-    {
-
-        $this->load->library("form_validation");
-
-        $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|callback_name_control');
-        $this->form_validation->set_rules('group', 'Meslek', 'required');
-        $this->form_validation->set_rules('social_id', 'TC Kimlik No', 'numeric');
-        $this->form_validation->set_rules('start_date', 'Giriş Tarihi', 'required');
-        $this->form_validation->set_rules('end_date', 'Çıkış Tarihi', 'callback_check_end_date');
-
-
-        $this->form_validation->set_message('name_control', 'İsim Soyisim Alanı sadece harf, boşluk ve Türkçe karakterler içerebilir.');
-
-
-        $this->form_validation->set_message(
-            array(
-                "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "alpha" => "<b>{field}</b> alanı harflerden oluşmaladır",
-                "numeric" => "<b>{field}</b> sayılardan oluşmalıdır",
-            )
-        );
-
-        $validate = $this->form_validation->run();
-
-        if ($validate) {
-            if ($this->input->post("start_date")) {
-                $start_date = dateFormat('Y-m-d', $this->input->post("start_date"));
-            } else {
-                $start_date = null;
-            }
-
-            if ($this->input->post("end_date")) {
-                $end_date = dateFormat('Y-m-d', $this->input->post("end_date"));
-            } else {
-                $end_date = null;
-            }
-
-            $update = $this->Workman_model->update(
-                array("id" => $worker_id),
-                array(
-                    "site_id" => $site_id,
-                    "name_surname" => $this->input->post("name_surname"),
-                    "group" => $this->input->post("group"),
-                    "bank" => $this->input->post("bank"),
-                    "IBAN" => $this->input->post("IBAN"),
-                    "social_id" => $this->input->post('social_id'),
-                    "start_date" => $start_date,
-                    "end_date" => $end_date,
-                    "isActive" => 1,
-                )
-            );
-
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-
-            $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site_id));
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
-            $viewData->item = $item;
-            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
-            $viewData->form_error = true;
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-
-            $viewData = new stdClass();
-            /** Tablodan Verilerin Getirilmesi.. */
-            $item = $this->Site_model->get(array("id" => $site_id));
-
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
-            $viewData->item = $item;
-            $viewData->personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
-            $viewData->form_error = true;
-
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_liste", $viewData);
-        }
-
-
-    }
-
-    public
-    function update_personel_form()
-    {
-
-        $workerId = $this->input->post('workerId');
-
-        $worker = $this->Workman_model->get(array("id" => $workerId));
-        $settings = $this->Settings_model->get();
-
-        $viewData = new stdClass();
-        /** Tablodan Verilerin Getirilmesi.. */
-        $item = $this->Site_model->get(array("id" => $worker->site_id));
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
-        $viewData->item = $item;
-        $viewData->worker = $worker;
-        $viewData->settings = $settings;
-        $viewData->workgroups = json_decode($item->active_group, true);
-        $viewData->workmachines = json_decode($item->active_machine, true);
-
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/personel_update", $viewData);
-
     }
 
     public
@@ -2615,7 +2687,7 @@ class Site extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $item = $this->Site_model->get(array("id" => $site_id));
-        $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
+        $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -2625,10 +2697,10 @@ class Site extends CI_Controller
         $viewData->year = $year;
         $viewData->month = $month;
         $viewData->puantaj_data = json_decode($puantaj->puantaj, true);
-        $viewData->personel_datas = $personel_datas;
+        $viewData->active_personel_datas = $active_personel_datas;
         $viewData->form_error = true;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_2_puantaj", $viewData);
 
     }
 
@@ -2646,7 +2718,7 @@ class Site extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $item = $this->Site_model->get(array("id" => $site_id));
-        $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
+        $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
 
         /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
@@ -2663,10 +2735,10 @@ class Site extends CI_Controller
             $viewData->puantaj = null;
             $viewData->puantaj_data = null;
         }
-        $viewData->personel_datas = $personel_datas;
+        $viewData->active_personel_datas = $active_personel_datas;
         $viewData->form_error = true;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/puantaj_liste", $viewData);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_2_puantaj", $viewData);
 
     }
 

@@ -85,6 +85,10 @@
             margin-right: 0; /* Son ikonun sağındaki boşluğu kaldır */
         }
 
+         #ibanText {
+             cursor: zoom-in; /* Fare imlecini büyüteç (zoom-in) şeklinde değiştir */
+         }
+
     </style>
     <!-- Plugins css start-->
 

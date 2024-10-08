@@ -155,7 +155,9 @@ $file_names_without_extension = array_map(function ($file) {
                         <th>Açıklama</th>
                         <th>Miktar</th>
                         <th>Ödeme Türü</th>
-                        <th></th>
+                        <th>Düzenle</th>
+                        <th>İndir</th>
+                        <th>Sil</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -166,25 +168,32 @@ $file_names_without_extension = array_map(function ($file) {
                             <td><?php echo $expense->note; ?></td>
                             <td><?php echo money_format($expense->price); ?><?php echo $contract->para_birimi; ?></td>
                             <td><?php echo $expense->payment_type; ?></td>
-                            <td>
-                                <span class="icon-group">
-                                    <a data-bs-toggle="modal" class="text-primary"
-                                       onclick="edit_modal_form('<?php echo base_url("Site/open_edit_expenses_modal/$expense->id"); ?>','edit_expense_modal','EditExpenseModal')">
-                                        <i class="fa fa-edit fa-lg"></i>
-                                    </a>
-                                    <?php
-                                    // $edit_expense->id ile eşleşen bir dosya olup olmadığını kontrol ediyoruz
-                                    if (in_array($expense->id, $file_names_without_extension)) { ?>
-                                        <a href="<?php echo base_url("$this->Module_Name/sitewallet_file_download/$expense->id"); ?>">
-                                            <i class="fa fa-download f-14 ellips fa-lg"></i>
-                                        </a>
-                                    <?php } ?>
-                                    <a href="javascript:void(0);"
-                                       onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$expense->id"); ?>', '#tab_expenses','expensesTable')"
-                                       title="Sil">
-                                        <i class="fa fa-trash-o fa-lg"></i>
-                                    </a>
-                                </span>
+                            <td style="text-align: center">
+                                <a data-bs-toggle="modal" class="text-primary"
+                                   onclick="edit_modal_form('<?php echo base_url("Site/open_edit_expenses_modal/$expense->id"); ?>','edit_expense_modal','EditExpenseModal')">
+                                    <i class="fa fa-edit fa-lg"></i>
+                                </a>
+                            </td>
+                            <td style="text-align: center">
+                                <?php
+                                $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$expense->id";
+
+                                if (!is_dir($file_path)) {
+                                    mkdir($file_path, 0777, true);
+                                }
+
+                                $files = glob("$file_path/*"); // glob ile tüm dosyaları al
+                                ?>
+                                <a href="<?php echo base_url("$this->Module_Name/download_all_expense/$expense->id"); ?>">
+                                    <i class="fa fa-download fa-lg"></i>(<?php echo count($files); ?>)
+                                </a>
+                            </td>
+                            <td style="text-align: center">
+                                <a href="javascript:void(0);"
+                                   onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$expense->id"); ?>', '#tab_expenses','expensesTable')"
+                                   title="Sil">
+                                    <i class="fa fa-trash-o fa-lg"></i>
+                                </a>
                             </td>
                         </tr>
                     <?php } ?>
