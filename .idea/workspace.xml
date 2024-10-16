@@ -34,6 +34,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe">
     <include_path>
       <path value="$PROJECT_DIR$/panel/vendor/composer" />
@@ -203,7 +204,8 @@
       <workItem from="1728066647112" duration="9736000" />
       <workItem from="1728224517933" duration="16916000" />
       <workItem from="1728309967403" duration="17426000" />
-      <workItem from="1728377011724" duration="27355000" />
+      <workItem from="1728377011724" duration="27513000" />
+      <workItem from="1729106781706" duration="2113000" />
     </task>
     <servers />
   </component>

@@ -2442,7 +2442,7 @@ class Site extends CI_Controller
         // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
         if ($validate) {
 
-            $name_surname = ucwords(strtolower($this->input->post("name_surname")));
+            $name_surname = ucwords(mb_strtolower($this->input->post("name_surname"), 'UTF-8'));
             $IBAN = str_replace(' ', '', $this->input->post("IBAN"));
 
             // "TR" ibaresinin başında olup olmadığını kontrol et
@@ -2460,8 +2460,10 @@ class Site extends CI_Controller
 
             if ($this->input->post("exit_date")) {
                 $exit_date = dateFormat('Y-m-d', $this->input->post("exit_date"));
+                $is_Active = 0;
             } else {
                 $exit_date = null;
+                $is_Active = 1;
             }
 
             $update = $this->Workman_model->update(
@@ -2475,7 +2477,7 @@ class Site extends CI_Controller
                     "start_date" => $start_date,
                     "exit_date" => $exit_date,
                     "notes" => $this->input->post('personel_notes'),
-                    "isActive" => 1,
+                    "isActive" => $is_Active,
                 )
             );
 

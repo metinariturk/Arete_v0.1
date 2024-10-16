@@ -141,7 +141,7 @@ $file_names_without_extension = array_map(function ($file) {
                         </div>
                         <!-- Açıklama -->
                         <div class="mb-3">
-                            <label class="col-form-label" for="payment_notes">Açıklama:</label>f
+                            <label class="col-form-label" for="payment_notes">Açıklama:</label>
                             <input id="personel_notes" type="text"
                                    class="form-control <?php cms_isset(form_error("personel_notes"), "is-invalid", ""); ?>"
                                    name="personel_notes" value="<?php echo set_value('personel_notes'); ?>"

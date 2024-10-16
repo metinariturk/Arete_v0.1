@@ -10,8 +10,10 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
 ?>
 <div class="card-body">
     <div class="card-header bg-dark text-white p-3 rounded">
-        <div class="title"><p class="mb-0 text-uppercase">Sözleşme Raporu</p></div>
+        <h6 class="mb-0">SÖZLEŞME RAPORU</h6>
+        <hr>
         <h5 class="mb-0"><?= mb_strtoupper($item->contract_name); ?></h5>
+        <div class="title"><p class="mb-0 text-uppercase"><?= company_name($item->yuklenici); ?></p></div>
     </div>
 
     <!-- Sözleşme Detayları -->
@@ -111,6 +113,6 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
         <p>Toplam Ödeme: <?= money_format($total_collection); ?><?php echo $item->para_birimi; ?> / Toplam Hakediş: <?= money_format($total_payment); ?><?php echo $item->para_birimi; ?></p>
         <p>Kalan Avans: <?= money_format($advance_given - $advance_admission); ?> <?php echo $item->para_birimi; ?> </p>
         <p>Nakit Teminat Kesintisi: <?= money_format($total_provision); ?> <?php echo $item->para_birimi; ?> </p>
-        <p><b>Kalan Ödeme: <?= money_format($total_payment - $total_collection - ($advance_given - $advance_admission) - $total_provision); ?> <?php echo $item->para_birimi; ?></b> </p>
+        <p><b>Kalan Ödeme: <?= money_format($total_payment - $total_collection - ($advance_given - $advance_admission)); ?> <?php echo $item->para_birimi; ?></b> </p>
     </div>
 </div>

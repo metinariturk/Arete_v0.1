@@ -24,7 +24,7 @@
                             <td><p>Şantiye Adı</p></td>
                             <td>
                                 <p>
-                                   <?php echo $item->dosya_no." - ".$item->santiye_ad; ?>
+                                    <?php echo $item->dosya_no . " - " . $item->santiye_ad; ?>
                                 </p>
                             </td>
                         </tr>
@@ -75,9 +75,37 @@
                             <td><p>Toplam Günlük Rapor</p></td>
                             <td><p><?php echo count($reports); ?></p></td>
                         </tr>
+                        <?php $total = $total_deposit - $total_expense; ?>
+                        <tr>
+                            <td><p><?php
+                                    // Top ikonunu duruma göre belirleme
+                                    if ($total < 0) {
+                                        echo '<i class="fa fa-circle" style="color: red; margin-right: 5px;"></i>'; // Negatif için kırmızı
+                                    } elseif ($total > 0) {
+                                        echo '<i class="fa fa-circle" style="color: green; margin-right: 5px;"></i>'; // Pozitif için yeşil
+                                    } else {
+                                        echo '<i class="fa fa-circle" style="color: gold; margin-right: 5px;"></i>'; // Sıfır için sarı
+                                    }
+                                    ?>
+                                    Kasa Durumu
+                                </p>
+                            </td>
+                            <td>
+                                <p>
+                                    <?php
+                                    $formatted_total = money_format($total, 2); // money_format alternatifi
+
+
+                                    // Sonuç ve para birimi gösterimi
+                                    echo $formatted_total . ' ' . $contract->para_birimi;
+                                    ?>
+                                </p>
+                            </td>
+                        </tr>
                         <tr>
                             <td><p>Aktif Çalışan Sayısı</p></td>
-                            <td><p><?php echo count($active_personel_datas)+count($passive_personel_datas); ?></p></td>
+                            <td><p><?php echo count($active_personel_datas) + count($passive_personel_datas); ?></p>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -145,13 +173,15 @@
                                     </td>
 
                                     <td>
-                                        <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>" class="btn-download">
+                                        <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>"
+                                           class="btn-download">
                                             <i class="fa fa-download"></i>
                                         </a>
                                     </td>
 
                                     <td>
-                                        <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>" class="btn-display">
+                                        <a href="<?php echo base_url("report/print_report/$report->id/1/1"); ?>"
+                                           class="btn-display">
                                             <i class="fa fa-desktop"></i>
                                         </a>
                                     </td>

@@ -57,7 +57,7 @@
                                         data-plugin="select2" name="group">
                                     <option selected="selected"
                                             value="<?php echo isset($form_error) ? cms_if_echo(set_value("group"), null, "", set_value("group")) : $edit_personel->group; ?>">
-                                        <?php echo isset($form_error) ? cms_if_echo(set_value("group"), null, "Seçiniz", set_value("group")) : group_name($edit_personel->group); ?>
+                                        <?php echo isset($form_error) ? cms_if_echo(set_value("group"), null, "Seçiniz", group_name(set_value("group"))) : group_name($edit_personel->group); ?>
                                     </option>
                                     <!-- Dynamic site options -->
                                     <?php if (!empty($workgroups)) { ?>}
