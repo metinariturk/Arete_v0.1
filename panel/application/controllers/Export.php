@@ -2659,6 +2659,11 @@ class Export extends CI_Controller
             $sheet->getStyle("I{$passive_group_row}:J{$passive_group_row}")
                 ->applyFromArray([
                     'font' => ['bold' => true], // Kalın yazı
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                        'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                        'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                    ],
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -2735,6 +2740,11 @@ class Export extends CI_Controller
             // Kenarlık ve kalın yazı uygulama
             $sheet->getStyle("L{$all_group_row}:M{$all_group_row}")
                 ->applyFromArray([
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                        'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                        'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                    ],
                     'font' => ['bold' => true], // Kalın yazı
                     'borders' => [
                         'allBorders' => [
