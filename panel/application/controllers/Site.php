@@ -1434,7 +1434,6 @@ class Site extends CI_Controller
             if (!$this->upload->do_upload("file")) {
                 // Yükleme başarısız olduysa hata mesajı döndürülüyor
                 $error = $this->upload->display_errors();
-                echo "Dosya yüklenemedi: " . $error;
             } else {
                 // Yükleme başarılıysa devam eden işlemler
                 $data = $this->upload->data();
@@ -1575,7 +1574,6 @@ class Site extends CI_Controller
             if (!$this->upload->do_upload("file")) {
                 // Yükleme başarısız olduysa hata mesajı döndürülüyor
                 $error = $this->upload->display_errors();
-                echo "Dosya yüklenemedi: " . $error;
             } else {
                 // Yükleme başarılıysa devam eden işlemler
                 $data = $this->upload->data();
@@ -1786,7 +1784,6 @@ class Site extends CI_Controller
             if (!$this->upload->do_upload("file")) {
                 // Yükleme başarısız olduysa hata mesajı döndürülüyor
                 $error = $this->upload->display_errors();
-                echo "Dosya yüklenemedi: " . $error;
             } else {
                 // Yükleme başarılıysa devam eden işlemler
                 $data = $this->upload->data();

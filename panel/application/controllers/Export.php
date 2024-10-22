@@ -11,6 +11,15 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use PhpOffice\PhpSpreadsheet\Chart\Chart;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeries;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues;
+use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
+use PhpOffice\PhpSpreadsheet\Chart\Title;
+use PhpOffice\PhpSpreadsheet\Chart\Legend;
+use PhpOffice\PhpSpreadsheet\Chart\Layout;
+
 
 $spreadsheet = new Spreadsheet();
 $writer = new Xlsx($spreadsheet);
@@ -55,6 +64,7 @@ class Export extends CI_Controller
         $this->load->model("Favorite_model");
         $this->load->model("Newprice_model");
         $this->load->model("Order_model");
+        $this->load->model("Payment_model");
         $this->load->model("Payment_model");
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
@@ -2171,15 +2181,22 @@ class Export extends CI_Controller
             redirect(base_url("error"));
         }
 
-
+        $this->load->model("Workman_model");
+        $this->load->model("Report_model");
         $site = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+        $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
         $all_workgroups = $this->Report_workgroup_model->get_unique_workgroups($site->id);
         $all_workmachines = $this->Report_workmachine_model->get_unique_workmachine($site->id);
+        $reports = $this->Report_model->get_all(array("site_id" => $site->id));
 
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageSetup()
+            ->setPaperSize(PageSetup::PAPERSIZE_A4)  // A4 boyutunda yapar
+            ->setOrientation(PageSetup::ORIENTATION_DEFAULT);  // Dikey olarak ayarlar
+
         $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
         $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
         $sheet->getPageMargins()->setRight(0);     // 0 cm
@@ -2208,16 +2225,23 @@ class Export extends CI_Controller
 
         // Sütun genişlikleri ayarlanıyor
         $sheet->getColumnDimension('A')->setWidth(3); // 8 piksel (yaklaşık)
-        $sheet->getColumnDimension('B')->setWidth(30); // 8 piksel (yaklaşık)
-        $sheet->getColumnDimension('C')->setWidth(20); // 35 piksel (yaklaşık)
-        $sheet->getColumnDimension('D')->setWidth(10); // 220 piksel (yaklaşık)
-        $sheet->getColumnDimension('E')->setWidth(10); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('B')->setWidth(7); // 8 piksel (yaklaşık)
+        $sheet->getColumnDimension('C')->setWidth(30); // 35 piksel (yaklaşık)
+        $sheet->getColumnDimension('D')->setWidth(15); // 220 piksel (yaklaşık)
+        $sheet->getColumnDimension('E')->setWidth(5); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('F')->setWidth(17); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('G')->setWidth(5); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('H')->setWidth(5); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('I')->setWidth(17); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('J')->setWidth(5); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('K')->setWidth(5); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('L')->setWidth(17); // 45 piksel (yaklaşık)
+        $sheet->getColumnDimension('M')->setWidth(5); // 45 piksel (yaklaşık)
 
         $rowNum = 2;
-
-        $sheet->mergeCells("D{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
-        $sheet->setCellValue("D{$rowNum}", "Tarih :" . dateFormat_dmy($contract->sozlesme_tarih));
-        $sheet->getStyle("D{$rowNum}")->applyFromArray([
+        $sheet->mergeCells("L{$rowNum}:M{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("L{$rowNum}", "Tarih: " . date('d.m.Y'));
+        $sheet->getStyle("L{$rowNum}")->applyFromArray([
             'font' => [
                 'bold' => true,       // Yazıyı koyu yap
             ],
@@ -2232,33 +2256,34 @@ class Export extends CI_Controller
         $rowNum++;
 
 
-        $sheet->mergeCells("B{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
-        $sheet->setCellValue("B{$rowNum}", "ŞANTİYE STOK/DEPO ENVANTERİ");
+        $sheet->mergeCells("B{$rowNum}:M{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "Çalışma Özeti");
         // Satır yüksekliğini ayarlayın (örneğin, varsayılan yüksekliğin 2 katı)
-        $sheet->getRowDimension($rowNum)->setRowHeight(30); // Varsayılan 15 px olduğu varsayımıyla 30 px
+        $sheet->getRowDimension($rowNum)->setRowHeight(40); // Varsayılan 15 px olduğu varsayımıyla 30 px
 
 // Hücre stilini uygulayın
-        $sheet->getStyle("B{$rowNum}:E{$rowNum}")->applyFromArray([
+        $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
             'font' => [
                 'bold' => true,       // Yazıyı koyu yap
-                'size' => 12,         // Yazı büyüklüğü 12 punto
+                'size' => 16,         // Yazı büyüklüğü 12 punto
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER, // Ortala (isteğe bağlı)
                 'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
             ],
+
         ]);
 
 
         $rowNum++;
         $rowNum++;
 
-        $sheet->mergeCells("B{$rowNum}:E{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->mergeCells("B{$rowNum}:M{$rowNum}");  // B-F sütunları birleştirildi
         $sheet->setCellValue("B{$rowNum}", "İşin Adı : " . $site->santiye_ad);
-        $sheet->getStyle("B{$rowNum}:E{$rowNum}")->applyFromArray([
+        $sheet->getStyle("B{$rowNum}:M{$rowNum}")->applyFromArray([
             'font' => [
                 'bold' => true,       // Yazıyı koyu yap
-                'size' => 10,         // Yazı büyüklüğü 12 punto
+                'size' => 12,         // Yazı büyüklüğü 12 punto
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
@@ -2266,27 +2291,479 @@ class Export extends CI_Controller
             ],
         ]);
         $rowNum++;
+        $rowNum++;
 
-        $sheet->setCellValue("B{$rowNum}", 'Çalışma Grubu / Makinesi');
-        $sheet->setCellValue("C{$rowNum}", 'Toplam Çalışan Sayısı');
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", 'Toplam Günlük Rapor Sayısı');
+
+        $sheet->setCellValue("D{$rowNum}", count($reports));
+        $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,    // Yazıyı koyu yapar
+                'size' => 12,      // 12 punto yapar
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,  // İnce çizgi
+                    'color' => ['argb' => 'FF000000'],     // Siyah renk
+                ],
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                'startColor' => [
+                    'argb' => 'FFD9D9D9', // Açık gri rengi
+                ],
+            ],
+        ]);
+
+        $rowNum++;
+        $rowNum++;
+
+
+
+        $sheet->setCellValue("B{$rowNum}", '#');
+        $sheet->setCellValue("C{$rowNum}", 'Ekip');
+        $sheet->setCellValue("D{$rowNum}", 'Çalışma (Gün)');
+
+        $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                'startColor' => [
+                    'argb' => 'FFD9D9D9', // Açık gri rengi
+                ],
+            ],
+            'font' => [
+                'bold' => true,    // Yazıyı koyu yapar
+                'size' => 12,      // 12 punto yapar
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,  // İnce çizgi
+                    'color' => ['argb' => 'FF000000'],     // Siyah renk
+                ],
+            ],
+        ]);
 
         $rowNum++;
 
 // Verileri ekle
-
+        $i = 1;
 // Çalışma Gruplarını ekle
         foreach ($all_workgroups as $subgroup) {
-            $sheet->setCellValue('B' . $rowNum, htmlspecialchars(group_name($subgroup['workgroup'])));
-            $sheet->setCellValue('C' . $rowNum, sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']));
+            $group_total = sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']);
+            $sheet->setCellValue('B' . $rowNum, $i++);
+            $sheet->setCellValue('C' . $rowNum, htmlspecialchars(group_name($subgroup['workgroup'])));
+            $sheet->setCellValue('D' . $rowNum, $group_total);
+            $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                    'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                    'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,  // İnce çizgi
+                        'color' => ['argb' => 'FF000000'],     // Siyah renk
+                    ],
+                ],
+            ]);
             $rowNum++;
         }
 
+
+
+        $total_group_total = 0;
+        foreach ($all_workgroups as $subgroup) {
+            $group_total = sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']);
+            $total_group_total += $group_total;
+        }
+
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", 'Toplam');
+
+        $sheet->setCellValue("D{$rowNum}", $total_group_total);
+
+        $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                'startColor' => [
+                    'argb' => 'FFEFEFEF', // Açık gri rengi
+                ],
+            ],
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,  // İnce çizgi
+                    'color' => ['argb' => 'FF000000'],     // Siyah renk
+                ],
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+        $sheet->setCellValue("B{$rowNum}", '#');
+        $sheet->setCellValue("C{$rowNum}", 'Makine');
+        $sheet->setCellValue("D{$rowNum}", 'Çalışma (Gün)');
+
+        $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                'startColor' => [
+                    'argb' => 'FFD9D9D9', // Açık gri rengi
+                ],
+            ],
+            'font' => [
+                'bold' => true,    // Yazıyı koyu yapar
+                'size' => 12,      // 12 punto yapar
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,  // İnce çizgi
+                    'color' => ['argb' => 'FF000000'],     // Siyah renk
+                ],
+            ],
+        ]);
+
+        $rowNum++;
+        $i = 1;
+
 // Çalışma Makinelerini ekle
+        $total_submachine_total = 0;
+
         foreach ($all_workmachines as $submachine) {
-            $sheet->setCellValue('B' . $rowNum, htmlspecialchars(machine_name($submachine['workmachine'])));
-            $sheet->setCellValue('C' . $rowNum, sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']));
+            $submachine_total = sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']);
+            $total_submachine_total += $submachine_total;
+
+            $sheet->setCellValue('B' . $rowNum, $i++);
+            $sheet->setCellValue('C' . $rowNum, htmlspecialchars(machine_name($submachine['workmachine'])));
+            $sheet->setCellValue('D' . $rowNum, $submachine_total);
+            $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+
+
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                    'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                    'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,  // İnce çizgi
+                        'color' => ['argb' => 'FF000000'],     // Siyah renk
+                    ],
+                ],
+            ]);
             $rowNum++;
         }
+
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", 'Toplam');
+        $sheet->setCellValue("D{$rowNum}", $total_submachine_total);
+
+        $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                'startColor' => [
+                    'argb' => 'FFEFEFEF', // Açık gri rengi
+                ],
+            ],
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,  // İnce çizgi
+                    'color' => ['argb' => 'FF000000'],     // Siyah renk
+                ],
+            ],
+        ]);
+
+        $rowNum++;
+        $rowNum++;
+
+
+        // Aktif, pasif ve tüm personel listelerini alalım
+        $active_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 1));
+        $passive_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 0));
+        $all_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id));
+
+        // Grup sayımı için boş dizi başlatalım
+        $group_counts = [];
+
+        // Aktif personelleri grup sayısına göre sayalım
+        foreach ($active_personel_counts as $personel) {
+            $group = $personel->group;
+
+            // Eğer grup daha önce sayılmadıysa, yeni bir giriş başlat
+            if (!isset($group_counts[$group])) {
+                $group_counts[$group] = 0;
+            }
+
+            // İlgili grubu bir artır
+            $group_counts[$group]++;
+        }
+
+        $active_group_row = 8;
+        $passive_group_row = 8;
+        $all_group_row = 8;
+
+        $sheet->mergeCells("F{$active_group_row}:G{$active_group_row}");
+        $sheet->setCellValue('F' . $active_group_row, "Çalışan Personel");
+
+        $sheet->getStyle("F{$active_group_row}:G{$active_group_row}")
+            ->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                    'startColor' => [
+                        'argb' => 'FFD9D9D9', // Açık gri rengi
+                    ],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                    'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                    'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                ],
+                'font' => ['bold' => true], // Kalın yazı
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'], // Siyah kenarlık
+                    ],
+                ],
+            ]);
+
+// Grup sayımlarını ekleme ve kenarlık/kalın yazı ayarlama
+        foreach ($group_counts as $group => $count) {
+            $active_group_row++;
+            $sheet->setCellValue('F' . $active_group_row, group_name($group));
+            $sheet->setCellValue('G' . $active_group_row, $count);
+
+            // group_name ve count hücrelerine kalın yazı ve kenarlık ekleme
+            $sheet->getStyle("F{$active_group_row}:G{$active_group_row}")
+                ->applyFromArray([
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                        'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                        'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                    ],
+                    'font' => ['bold' => true], // Kalın yazı
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+        }
+
+
+        $active_group_row++;
+        $sheet->setCellValue('F' . $active_group_row, "Toplam");
+        $sheet->setCellValue('G' . $active_group_row, array_sum($group_counts)); // Toplam pasif personel sayısı
+
+        $sheet->getStyle("F{$active_group_row}:G{$active_group_row}")
+            ->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                    'startColor' => [
+                        'argb' => 'FFEFEFEF', // Açık gri rengi
+                    ],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                    'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                    'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                ],
+                'font' => ['bold' => true], // Kalın yazı
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'], // Siyah kenarlık
+                    ],
+                ],
+            ]);
+
+
+// Pasif personel sayımlarını hesaplama
+        $passive_group_counts = [];
+        foreach ($passive_personel_counts as $personel) {
+            $group = $personel->group;
+            if (!isset($passive_group_counts[$group])) {
+                $passive_group_counts[$group] = 0;
+            }
+            $passive_group_counts[$group]++;
+        }
+
+// Pasif personel başlığı ekleme ve biçimlendirme
+        $sheet->mergeCells("I{$passive_group_row}:J{$passive_group_row}");  // B-F sütunları birleştirildi
+
+        $sheet->setCellValue('I' . $passive_group_row, "Çalışmayan Personel");
+        $sheet->getStyle("I{$passive_group_row}:J{$all_group_row}")
+            ->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                    'startColor' => [
+                        'argb' => 'FFD9D9D9', // Açık gri rengi
+                    ],
+                ],
+                'font' => ['bold' => true], // Kalın yazı
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'], // Siyah kenarlık
+                    ],
+                ],
+            ]);
+
+// Pasif grupların listesi ve biçimlendirme
+        foreach ($passive_group_counts as $group => $count) {
+            $passive_group_row++;
+            $sheet->setCellValue('I' . $passive_group_row, group_name($group));
+            $sheet->setCellValue('J' . $passive_group_row, $count);
+
+            // Kenarlık ve kalın yazı uygulama
+            $sheet->getStyle("I{$passive_group_row}:J{$passive_group_row}")
+                ->applyFromArray([
+                    'font' => ['bold' => true], // Kalın yazı
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'],
+                        ],
+                    ],
+                ]);
+        }
+
+        $passive_group_row++;
+        $sheet->setCellValue('I' . $passive_group_row, "Toplam");
+        $sheet->setCellValue('J' . $passive_group_row, array_sum($passive_group_counts)); // Toplam pasif personel sayısı
+
+        $sheet->getStyle("I{$passive_group_row}:J{$passive_group_row}")
+            ->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                    'startColor' => [
+                        'argb' => 'FFEFEFEF', // Açık gri rengi
+                    ],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                    'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                    'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                ],
+                'font' => ['bold' => true], // Kalın yazı
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'], // Siyah kenarlık
+                    ],
+                ],
+            ]);
+
+
+        // Tüm personel sayımlarını hesaplama
+        $all_group_counts = [];
+        foreach ($all_personel_counts as $personel) {
+            $group = $personel->group;
+            if (!isset($all_group_counts[$group])) {
+                $all_group_counts[$group] = 0;
+            }
+            $all_group_counts[$group]++;
+        }
+
+// "Tüm Personel" başlığını ekleme ve biçimlendirme
+        $sheet->mergeCells("L{$all_group_row}:M{$all_group_row}");  // B-F sütunları birleştirildi
+
+        $sheet->setCellValue('L' . $all_group_row, "Tüm Personel");
+        $sheet->getStyle("L{$all_group_row}:M{$all_group_row}")
+            ->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                    'startColor' => [
+                        'argb' => 'FFD9D9D9', // Açık gri rengi
+                    ],
+                ],
+                'font' => ['bold' => true], // Kalın yazı
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'], // Siyah kenarlık
+                    ],
+                ],
+            ]);
+
+// Tüm personel gruplarının sayımını ekleme ve biçimlendirme
+        foreach ($all_group_counts as $group => $count) {
+            $all_group_row++;
+            $sheet->setCellValue('L' . $all_group_row, group_name($group));
+            $sheet->setCellValue('M' . $all_group_row, $count);
+
+            // Kenarlık ve kalın yazı uygulama
+            $sheet->getStyle("L{$all_group_row}:M{$all_group_row}")
+                ->applyFromArray([
+                    'font' => ['bold' => true], // Kalın yazı
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'], // Siyah kenarlık
+                        ],
+                    ],
+                ]);
+        }
+
+        $all_group_row++;
+        $sheet->setCellValue('L' . $all_group_row, "Toplam");
+        $sheet->setCellValue('M' . $all_group_row, array_sum($all_group_counts)); // Tüm personelin toplamı
+
+        $sheet->getStyle("L{$all_group_row}:M{$all_group_row}")
+            ->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, // Dolu arka plan
+                    'startColor' => [
+                        'argb' => 'FFEFEFEF', // Açık gri rengi
+                    ],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER, // Yatayda ortalar
+                    'vertical' => Alignment::VERTICAL_CENTER,     // Dikeyde ortalar
+                    'wrapText' => true,  // Metni kaydır (hücreye sığdırmak için)
+                ],
+                'font' => ['bold' => true], // Kalın yazı
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => '000000'], // Siyah kenarlık
+                    ],
+                ],
+            ]);
 
 
         $filename = "$site->santiye_ad" . "- Şantiye Çalışma Raporu.xlsx";

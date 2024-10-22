@@ -66,10 +66,10 @@
                         <i class="fa fa-plus fa-2x me-0"
                            style="cursor: pointer;"></i>
                     </a>
-                    <a href="<?php echo base_url('export/report_download_excel'); ?>">
+                    <a href="<?php echo base_url("export/report_download_excel/$item->id"); ?>">"
                         <i class="fa fa-file-excel-o fa-2x"></i>
                     </a>
-                    <a href="<?php echo base_url('export/report_download_pdf'); ?>">
+                    <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
                         <i class="fa fa-file-pdf-o fa-2x"></i>
                     </a>
                 </div>
