@@ -583,7 +583,8 @@ class Export extends CI_Controller
         ]);
 
         // Logo dosyasının yolu
-        $logoPath = realpath("assets\images\logo\logo.png");
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
 
 // Logo'
 //yu ekleyin
@@ -917,7 +918,8 @@ class Export extends CI_Controller
         ]);
 
         // Logo dosyasının yolu
-        $logoPath = realpath("assets\images\logo\logo.png");
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
 
 // Logo'
 //yu ekleyin
@@ -1209,7 +1211,8 @@ class Export extends CI_Controller
         ]);
 
         // Logo dosyasının yolu
-        $logoPath = realpath("assets\images\logo\logo.png");
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
 
 // Logo'
 //yu ekleyin
@@ -1526,7 +1529,8 @@ class Export extends CI_Controller
         ]);
 
         // Logo dosyasının yolu
-        $logoPath = realpath("assets\images\logo\logo.png");
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
 
 // Logo'
 //yu ekleyin
@@ -1918,7 +1922,8 @@ class Export extends CI_Controller
         ]);
 
         // Logo dosyasının yolu
-        $logoPath = realpath("assets\images\logo\logo.png");
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
 
 // Logo'
 //yu ekleyin
@@ -2210,7 +2215,8 @@ class Export extends CI_Controller
         ]);
 
         // Logo dosyasının yolu
-        $logoPath = realpath("assets\images\logo\logo.png");
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
 
 // Logo'
 //yu ekleyin
