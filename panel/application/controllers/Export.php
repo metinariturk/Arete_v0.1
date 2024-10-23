@@ -2839,7 +2839,7 @@ class Export extends CI_Controller
         $pdf->Ln(10);
 
         // Tablo başlıkları
-        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->SetFont('dejavusans', 'B', 8);
         $pdf->Cell(10, 7, '#', 1, 0, 'C');
         $pdf->Cell(40, 7, 'Ekip', 1, 0, 'C');
         $pdf->Cell(30, 7, 'Çalışma Gün', 1, 1, 'C');
@@ -2852,24 +2852,24 @@ class Export extends CI_Controller
         $i = 1;
         foreach ($all_workgroups as $subgroup) {
             $group_total = sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']);
-            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(10, 7,$i++, 1,"",'C');
             $pdf->Cell(40, 7, htmlspecialchars(group_name($subgroup['workgroup'])), 1);
-            $pdf->Cell(30, 7, $group_total, 1, 1);
+            $pdf->Cell(30, 7, $group_total, 1, 1,  "C");
         }
         $total_group_total = 0;
         foreach ($all_workgroups as $subgroup) {
             $group_total = sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']);
             $total_group_total += $group_total;
         }
+        $pdf->SetFont('dejavusans', 'B', 8);
 
         $pdf->Cell(50, 7, "Toplam", 1);
-        $pdf->Cell(30, 7, $total_group_total, 1, 1);
+        $pdf->Cell(30, 7, $total_group_total, 1, 1, "C");
 
         // Boşluk bırak
         $pdf->Ln(10);
 
         // Tablo başlıkları
-        $pdf->SetFont('dejavusans', 'B', 10);
         $pdf->Cell(10, 7, '#', 1, 0, 'C');
         $pdf->Cell(40, 7, 'Makine', 1, 0, 'C');
         $pdf->Cell(30, 7, 'Çalışma Gün', 1, 1, 'C');
@@ -2886,13 +2886,15 @@ class Export extends CI_Controller
             $submachine_total = sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']);
             $total_group_total += $group_total;
             $total_submachine_total += $submachine_total;
-            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(10, 7,$i++, 1,"",'C');
             $pdf->Cell(40, 7, htmlspecialchars(machine_name($submachine['workmachine'])), 1);
-            $pdf->Cell(30, 7, $submachine_total, 1, 1);
+            $pdf->Cell(30, 7, $submachine_total, 1, 1,"C");
         }
 
+        $pdf->SetFont('dejavusans', 'B', 8);
+
         $pdf->Cell(50, 7, "Toplam", 1);
-        $pdf->Cell(30, 7, $total_submachine_total, 1, 1);
+        $pdf->Cell(30, 7, $total_submachine_total, 1, 1,"C");
 
         $active_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 1));
         $passive_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 0));
@@ -2920,15 +2922,19 @@ class Export extends CI_Controller
 
         $i = 1; // Sayaç başlangıcı
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+        $pdf->SetFont('dejavusans', 'N', 8);
 
         foreach ($group_counts as $group => $count) {
 
             $pdf->SetX(95); // X pozisyonunu korumak için
-            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(10, 7,$i++, 1,"",'C');
             $pdf->Cell(40, 7,group_name($group), 1);
-            $pdf->Cell(10, 7,$count, 1);
+            $pdf->Cell(10, 7,$count, 1,"","C");
             $pdf->Ln(); // İlk satırdan sonra alt satıra geç
         }
+
+        $pdf->SetFont('dejavusans', 'B', 8);
+
 
         $pdf->SetX(95); // X pozisyonunu korumak için
         $pdf->Cell(50, 7,"Toplam", 1);
@@ -2949,19 +2955,25 @@ class Export extends CI_Controller
             $passive_group_counts[$group]++;
         }
 
+        $pdf->SetFont('dejavusans', 'N', 8);
+
         $i = 1;
         foreach ($passive_group_counts as $group => $count) {
             $pdf->SetX(160); // X pozisyonunu korumak için
-            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(10, 7,$i++, 1,"",'C');
             $pdf->Cell(40, 7,group_name($group), 1);
-            $pdf->Cell(10, 7,$count, 1);
+            $pdf->Cell(10, 7,$count, 1,"","C");
             $pdf->Ln(); // İlk satırdan sonra alt satıra geç
         }
 
+        $pdf->SetFont('dejavusans', 'B', 8);
+
+
         $pdf->SetX(160); // X pozisyonunu korumak için
         $pdf->Cell(50, 7,"Toplam", 1);
-        $pdf->Cell(10, 7,array_sum($passive_group_counts), 1);
+        $pdf->Cell(10, 7,array_sum($passive_group_counts), 1,"","C");
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+
 
 
         $pdf->SetXY(225,68);
@@ -2976,20 +2988,24 @@ class Export extends CI_Controller
             }
             $all_group_counts[$group]++;
         }
-        
+
         $i = 1;
+
+        $pdf->SetFont('dejavusans', 'N', 8);
 
         foreach ($all_group_counts as $group => $count) {
             $pdf->SetX(225); // X pozisyonunu korumak için
-            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(10, 7,$i++, 1,"",'C');
             $pdf->Cell(40, 7,group_name($group), 1);
-            $pdf->Cell(10, 7,$count, 1);
+            $pdf->Cell(10, 7,$count, 1,"","C");
             $pdf->Ln(); // İlk satırdan sonra alt satıra geç
         }
 
         $pdf->SetX(225); // X pozisyonunu korumak için
+        $pdf->SetFont('dejavusans', 'B', 8);
+
         $pdf->Cell(50, 7,"Toplam", 1);
-        $pdf->Cell(10, 7,array_sum($all_group_counts), 1);
+        $pdf->Cell(10, 7,array_sum($all_group_counts), 1,"","C");
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
 
 
