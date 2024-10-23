@@ -2798,6 +2798,8 @@ class Export extends CI_Controller
             redirect(base_url("error"));
         }
 
+        $this->load->model("Workman_model");
+        $this->load->model("Report_model");
         $site = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $site->contract_id));
         $all_workgroups = $this->Report_workgroup_model->get_unique_workgroups($site->id);
@@ -2806,7 +2808,7 @@ class Export extends CI_Controller
         $this->load->library('pdf_creator');
 
         $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
-        $pdf->SetPageOrientation('P');
+        $pdf->SetPageOrientation('L');
 
         // PDF Bilgilerini ayarla
         $pdf->SetAuthor('Şirket İsmi');
@@ -2815,7 +2817,7 @@ class Export extends CI_Controller
         $pdf->SetKeywords('stok, depo, envanter, rapor');
 
         // Margin ayarları
-        $pdf->SetMargins(10, 6, 10);
+        $pdf->SetMargins(10, 3, 10);
         $pdf->SetAutoPageBreak(TRUE, 10);
 
         // Sayfa ekle
@@ -2826,10 +2828,10 @@ class Export extends CI_Controller
         $pdf->SetFont('dejavusans', 'B', 12);
 
         // Başlık
-        $pdf->Cell(0, 6, 'ŞANTİYE STOK/DEPO ENVANTERİ', 0, 1, 'C');
+        $pdf->Cell(0, 6, 'ÇALIŞMA ÖZETİ', 0, 1, 'C');
 
         // Sözleşme Bilgileri
-        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->SetFont('dejavusans', '', 8);
         $pdf->Cell(30, 6, 'Tarih: ' . dateFormat_dmy($contract->sozlesme_tarih), 0, 1);
         $pdf->Cell(30, 6, 'İşin Adı: ' . $site->santiye_ad, 0, 1);
 
@@ -2838,26 +2840,161 @@ class Export extends CI_Controller
 
         // Tablo başlıkları
         $pdf->SetFont('dejavusans', 'B', 10);
-        $pdf->Cell(80, 10, 'Çalışma Grubu / Makinesi', 1, 0, 'C');
-        $pdf->Cell(80, 10, 'Toplam Çalışan Sayısı', 1, 1, 'C');
+        $pdf->Cell(10, 7, '#', 1, 0, 'C');
+        $pdf->Cell(40, 7, 'Ekip', 1, 0, 'C');
+        $pdf->Cell(30, 7, 'Çalışma Gün', 1, 1, 'C');
 
         // Verileri ekle
-        $pdf->SetFont('helvetica', '', 10);
+        $pdf->SetFont('dejavusans', '', 8);
 
         // Çalışma Gruplarını ekle
+
+        $i = 1;
         foreach ($all_workgroups as $subgroup) {
-            $pdf->Cell(80, 10, htmlspecialchars(group_name($subgroup['workgroup'])), 1);
-            $pdf->Cell(80, 10, sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']), 1, 1);
+            $group_total = sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']);
+            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(40, 7, htmlspecialchars(group_name($subgroup['workgroup'])), 1);
+            $pdf->Cell(30, 7, $group_total, 1, 1);
+        }
+        $total_group_total = 0;
+        foreach ($all_workgroups as $subgroup) {
+            $group_total = sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']);
+            $total_group_total += $group_total;
         }
 
-        // Çalışma Makinelerini ekle
+        $pdf->Cell(50, 7, "Toplam", 1);
+        $pdf->Cell(30, 7, $total_group_total, 1, 1);
+
+        // Boşluk bırak
+        $pdf->Ln(10);
+
+        // Tablo başlıkları
+        $pdf->SetFont('dejavusans', 'B', 10);
+        $pdf->Cell(10, 7, '#', 1, 0, 'C');
+        $pdf->Cell(40, 7, 'Makine', 1, 0, 'C');
+        $pdf->Cell(30, 7, 'Çalışma Gün', 1, 1, 'C');
+
+        // Verileri ekle
+        $pdf->SetFont('dejavusans', '', 8);
+
+        // Çalışma Gruplarını ekle
+
+        $i = 1;
+        $total_submachine_total = 0;
+
         foreach ($all_workmachines as $submachine) {
-            $pdf->Cell(80, 10, htmlspecialchars(machine_name($submachine['workmachine'])), 1);
-            $pdf->Cell(80, 10, sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']), 1, 1);
+            $submachine_total = sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']);
+            $total_group_total += $group_total;
+            $total_submachine_total += $submachine_total;
+            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(40, 7, htmlspecialchars(machine_name($submachine['workmachine'])), 1);
+            $pdf->Cell(30, 7, $submachine_total, 1, 1);
         }
 
-        // PDF dosyasını oluştur ve kullanıcıya gönder
-        $pdf->Output($site->santiye_ad . '- Depo Stok Raporu.pdf', 'D');
+        $pdf->Cell(50, 7, "Toplam", 1);
+        $pdf->Cell(30, 7, $total_submachine_total, 1, 1);
+
+        $active_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 1));
+        $passive_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 0));
+        $all_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id));
+
+
+        // Grup sayımı için boş dizi başlatalım
+        $group_counts = [];
+
+        // Aktif personelleri grup sayısına göre sayalım
+        foreach ($active_personel_counts as $personel) {
+            $group = $personel->group;
+
+            // Eğer grup daha önce sayılmadıysa, yeni bir giriş başlat
+            if (!isset($group_counts[$group])) {
+                $group_counts[$group] = 0;
+            }
+
+            // İlgili grubu bir artır
+            $group_counts[$group]++;
+        }
+
+        $pdf->SetXY(95,68);
+        $pdf->Cell(60, 7, "Çalışan Personel", 1);
+
+        $i = 1; // Sayaç başlangıcı
+        $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+
+        foreach ($group_counts as $group => $count) {
+
+            $pdf->SetX(95); // X pozisyonunu korumak için
+            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(40, 7,group_name($group), 1);
+            $pdf->Cell(10, 7,$count, 1);
+            $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+        }
+
+        $pdf->SetX(95); // X pozisyonunu korumak için
+        $pdf->Cell(50, 7,"Toplam", 1);
+        $pdf->Cell(10, 7,array_sum($group_counts), 1);
+        $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+
+
+        $pdf->SetXY(160,68);
+        $pdf->Cell(60, 7, "Çalışmayan Personel", 1);
+        $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+
+        $passive_group_counts = [];
+        foreach ($passive_personel_counts as $personel) {
+            $group = $personel->group;
+            if (!isset($passive_group_counts[$group])) {
+                $passive_group_counts[$group] = 0;
+            }
+            $passive_group_counts[$group]++;
+        }
+
+        $i = 1;
+        foreach ($passive_group_counts as $group => $count) {
+            $pdf->SetX(160); // X pozisyonunu korumak için
+            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(40, 7,group_name($group), 1);
+            $pdf->Cell(10, 7,$count, 1);
+            $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+        }
+
+        $pdf->SetX(160); // X pozisyonunu korumak için
+        $pdf->Cell(50, 7,"Toplam", 1);
+        $pdf->Cell(10, 7,array_sum($passive_group_counts), 1);
+        $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+
+
+        $pdf->SetXY(225,68);
+        $pdf->Cell(60, 7, "Çalışmayan Personel", 1);
+        $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+
+        $all_group_counts = [];
+        foreach ($all_personel_counts as $personel) {
+            $group = $personel->group;
+            if (!isset($all_group_counts[$group])) {
+                $all_group_counts[$group] = 0;
+            }
+            $all_group_counts[$group]++;
+        }
+        
+        $i = 1;
+
+        foreach ($all_group_counts as $group => $count) {
+            $pdf->SetX(225); // X pozisyonunu korumak için
+            $pdf->Cell(10, 7,$i++, 1);
+            $pdf->Cell(40, 7,group_name($group), 1);
+            $pdf->Cell(10, 7,$count, 1);
+            $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+        }
+
+        $pdf->SetX(225); // X pozisyonunu korumak için
+        $pdf->Cell(50, 7,"Toplam", 1);
+        $pdf->Cell(10, 7,array_sum($all_group_counts), 1);
+        $pdf->Ln(); // İlk satırdan sonra alt satıra geç
+
+
+            // PDF dosyasını oluştur ve kullanıcıya gönder
+        $pdf->Output($site->santiye_ad . '- Depo Stok Raporu.pdf', 'I');
     }
 }
 

@@ -66,7 +66,7 @@
                         <i class="fa fa-plus fa-2x me-0"
                            style="cursor: pointer;"></i>
                     </a>
-                    <a href="<?php echo base_url("export/report_download_excel/$item->id"); ?>">"
+                    <a href="<?php echo base_url("export/report_download_excel/$item->id"); ?>">
                         <i class="fa fa-file-excel-o fa-2x"></i>
                     </a>
                     <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
@@ -177,10 +177,10 @@
                         <div class="download_links mt-3">
                             <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
                                data-bs-target="#AddPersonelModal"></i>
-                            <a href="<?php echo base_url("export/personel_download_excel/1"); ?>">
+                            <a href="<?php echo base_url("export/report_download_excel/$item->id"); ?>">
                                 <i class="fa fa-file-excel-o fa-2x"></i>
                             </a>
-                            <a href="<?php echo base_url("export/personel_download_pdf/1"); ?>">
+                            <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>
