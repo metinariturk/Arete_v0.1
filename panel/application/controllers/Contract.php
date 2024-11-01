@@ -253,11 +253,7 @@ class Contract extends CI_Controller
         $settings = $this->Settings_model->get();
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
 
-        if (isset($main_contract)) {
-            $site = $this->Site_model->get(array("contract_id" => $item->parent));
-        } else {
-            $site = $this->Site_model->get(array("contract_id" => $item->id));
-        }
+            $site = $this->Site_model->get(array("proje_id" => $item->proje_id));
 
 
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $id, 'leader' => 1));
