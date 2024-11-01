@@ -72,7 +72,7 @@
                             </td>
                             <td>
                                 <a href="javascript:void(0);"
-                                   onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$deposit->id"); ?>', '#tab_depostis','depositsTable')"
+                                   onclick="confirmDelete('<?php echo base_url("Site/delete_sitewallet/$deposit->id"); ?>', '#tab_deposits','depositsTable')"
                                    title="Sil">
                                     <i class="fa fa-trash-o fa-2x"></i>
                                 </a>
@@ -147,13 +147,13 @@
 
                     <!-- Açıklama -->
                     <div class="mb-3">
-                        <label class="col-form-label" for="payment_notes">Açıklama:</label>
-                        <input id="payment_notes" type="text"
-                               class="form-control <?php cms_isset(form_error("payment_notes"), "is-invalid", ""); ?>"
-                               name="payment_notes" value="<?php echo set_value('payment_notes'); ?>"
+                        <label class="col-form-label" for="deposit_notes">Açıklama:</label>
+                        <input id="deposit_notes" type="text"
+                               class="form-control <?php cms_isset(form_error("deposit_notes"), "is-invalid", ""); ?>"
+                               name="deposit_notes" value="<?php echo set_value('deposit_notes'); ?>"
                                placeholder="Açıklama">
                         <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error('payment_notes'); ?></div>
+                            <div class="invalid-feedback"><?php echo form_error('deposit_notes'); ?></div>
                         <?php } ?>
                     </div>
 

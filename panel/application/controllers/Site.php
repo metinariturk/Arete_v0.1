@@ -665,106 +665,7 @@ class Site extends CI_Controller
 
     }
 
-    public
-    function puantaj_print($site_id, $month, $year)
-    {
-        $month = date($month);
-        $year = date($year);
-        $year_month = $year . "-" . $month;
-        $month_name = ay_isimleri($month);
 
-        $year_month = dateFormat('Y-m', $year_month);
-
-        $viewData = new stdClass();
-
-        $this->load->model("Attendance_model");
-        $puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "year_month" => "$year_month"));
-        $site = $this->Site_model->get(array("id" => $site_id));
-
-        if (isset($puantaj)) {
-            $puantaj_data = json_decode($puantaj->puantaj, true);
-        } else {
-            $puantaj_data = null;
-        }
-
-        $this->load->library('pdf_creator');
-
-        // Yeni bir TCPDF nesnesi oluşturun
-        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
-
-        $pdf->SetPageOrientation('L');
-
-        $pdf->headerSubText = "Şantiye Adı : $site->santiye_ad";
-
-        $pdf->headerText = "$month_name $year Puantaj Tablosu";
-
-        $pdf->SetPrintFooter(false);
-        $pdf->AddPage();
-
-        $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
-
-        $pdf->SetFont('dejavusans', 'B', 10);
-        $pdf->Cell(7, 6, '#', 1);
-        $pdf->Cell(40, 6, 'Adı Soyadı', 1);
-        $pdf->Cell(30, 6, 'Ekip', 1);
-        for ($j = 1; $j <= gun_sayisi(); $j++) {
-            $pdf->Cell(6, 6, $j, 1, "", "C");
-        }
-        $pdf->Cell(16, 6, 'Toplam', 1);
-        $pdf->Ln(); // Bir sonraki satıra geç
-
-// Tablo verilerini oluştur
-        $pdf->SetFont('dejavusans', '', 10);
-        $i = 1;
-        foreach ($personel_datas as $personel_data) {
-            $pdf->Cell(7, 6, $i++, 1);
-            $pdf->Cell(40, 6, $personel_data->name_surname, 1);
-            $pdf->Cell(30, 6, group_name($personel_data->group), 1);
-
-            for ($j = 1; $j <= gun_sayisi(); $j++) {
-                $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
-                $isChecked = (isset($puantaj_data[$j_double_digit]) && in_array($personel_data->id, $puantaj_data[$j_double_digit])) ? 'X' : '';
-                $pdf->Cell(6, 6, $isChecked, 1, "", "C");
-            }
-
-            $count_of_value = 0;
-            if (isset($puantaj_data)) {
-                $value_to_count = $personel_data->id;
-                foreach ($puantaj_data as $sub_array) {
-                    if (in_array($value_to_count, $sub_array)) {
-                        $count_of_value += array_count_values($sub_array)[$value_to_count];
-                    }
-                }
-            }
-            $pdf->SetFont('dejavusans', 'B', 10);
-
-            $pdf->Cell(16, 6, $count_of_value, 1);
-            $pdf->SetFont('dejavusans', '', 10);
-
-
-            $pdf->Ln(); // Bir sonraki satıra geç
-        }
-
-        $pdf->SetFont('dejavusans', 'B', 10);
-        $pdf->Cell(77, 10, 'Toplam', 1, 0, 'C');
-        for ($j = 1; $j <= gun_sayisi(); $j++) {
-            $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
-            if (array_key_exists($j_double_digit, $puantaj_data)) {
-                $pdf->Cell(6, 10, count($puantaj_data[$j_double_digit]), 1, 0, 'C');
-            } else {
-                $pdf->Cell(6, 10, '0', 1, 0, 'C');
-            }
-        }
-        $total_keys = 0;
-        foreach ($puantaj_data as $sub_array) {
-            $total_keys += count($sub_array);
-        }
-        $pdf->Cell(16, 10, $total_keys, 1, 1, 'C'); // Yeni satıra geç
-
-        // PDF'yi görüntüleme veya indirme
-        $pdf->Output("$site->santiye_ad" . "-" . $month_name . " " . $year . ".pdf");
-
-    }
 
     public
     function personel_print($site_id, $is_active)
@@ -1663,6 +1564,8 @@ class Site extends CI_Controller
 
         $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 1));
         $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
+        $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 0));
+
 
         $viewData = new stdClass();
 
@@ -1672,11 +1575,14 @@ class Site extends CI_Controller
         $viewData->contract = $contract;
         $viewData->project = $project;
         $viewData->all_expenses = $all_expenses;
+        $viewData->all_deposits = $all_deposits;
         $viewData->total_expense = $total_expense;
         $viewData->item = $item;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
-
+        if ($sitewallet->type == 1){
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+        } elseif (($sitewallet->type == 0))
+            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
     }
 
     public function open_edit_expenses_modal($expense_id)

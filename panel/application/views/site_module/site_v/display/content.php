@@ -193,7 +193,7 @@
                             <a href="<?php echo base_url('export/sitewallet_download_excel'); ?>">
                                 <i class="fa fa-file-excel-o fa-2x"></i>
                             </a>
-                            <a href="<?php echo base_url('export/sitewallet_download_pdf'); ?>">
+                            <a href="#" onclick="sendPuantajDate(this)">
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>

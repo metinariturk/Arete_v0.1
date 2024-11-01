@@ -577,13 +577,13 @@
 
 
 <script>
-    function sendFormData() {
+    function sendPuantajDate() {
         // Seçili ay ve yılı al
         var month = $('#month').val();
         var year = $('#year').val();
 
         // Bağlantı URL'sini oluştur
-        var url = '<?php echo base_url("Site/puantaj_print/$item->id"); ?>/' + month + '/' + year;
+        var url = '<?php echo base_url("Export/puantaj_print/$item->id"); ?>/' + month + '/' + year;
 
         // AJAX isteğini gönder
         $.ajax({

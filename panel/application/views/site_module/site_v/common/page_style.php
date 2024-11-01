@@ -1,74 +1,74 @@
 <style>
     ul.list,
     ul.list ul {
-        margin:0;
-        padding:0;
+        margin: 0;
+        padding: 0;
         list-style-type: none;
 
     }
 
     ul.list ul {
 
-        position:relative;
-        margin-left:10px;
+        position: relative;
+        margin-left: 10px;
     }
 
     ul.list ul:before {
 
-        content:"";
-        display:block;
-        position:absolute;
-        top:0;
-        left:0;
-        bottom:0;
-        width:0;
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 0;
 
-        border-left:1px solid #ccc;
-    }
-
-    ul.list li  {
-
-        position:relative;
-        margin:0;
-        padding:5px 12px;
-
-        color:#ccc;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size:13px;
-        font-weight:normal;
-        line-height:20px;
+        border-left: 1px solid #ccc;
     }
 
     ul.list li {
 
-        position:relative;
+        position: relative;
+        margin: 0;
+        padding: 5px 12px;
 
-        color:#ccc;
+        color: #ccc;
         text-decoration: none;
         text-transform: uppercase;
-        font-size:13px;
-        font-weight:bold;
-        line-height:20px;
+        font-size: 13px;
+        font-weight: normal;
+        line-height: 20px;
+    }
+
+    ul.list li {
+
+        position: relative;
+
+        color: #ccc;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 20px;
     }
 
     ul.list li li:hover,
-    ul.list li li:hover+ul li li {
+    ul.list li li:hover + ul li li {
 
         color: RGBA(213, 235, 227, 1);
     }
 
     ul.list ul li:before {
 
-        content:"";
-        display:block;
-        position:absolute;
-        top:15px;
+        content: "";
+        display: block;
+        position: absolute;
+        top: 15px;
         left: 0;
-        width:8px;
-        height:0;
+        width: 8px;
+        height: 0;
 
-        border-top:1px solid #ccc;
+        border-top: 1px solid #ccc;
     }
 
     ul.list ul li:last-child:before {
@@ -173,6 +173,7 @@
         text-decoration: none; /* Link alt çizgisini kaldır */
         transition: background-color 0.3s; /* Hover efekti için geçiş */
     }
+
     .btn-download:hover {
         color: #07296c; /* Hover rengi */
         background-color: #50ba25; /* Hover rengi */
@@ -191,6 +192,7 @@
         text-decoration: none; /* Link alt çizgisini kaldır */
         transition: background-color 0.3s; /* Hover efekti için geçiş */
     }
+
     .btn-display:hover {
         background-color: #07296c; /* Hover rengi */
     }
@@ -202,18 +204,75 @@
         width: 100%;
         box-sizing: border-box;
     }
+
     .table .input-cell {
         position: relative;
     }
+
     .table .save-btn {
         display: none;
     }
+
     .table .edit-mode .save-btn {
         display: inline-block;
     }
+
     .table .edit-mode td input {
         border: 1px solid #ccc;
         border-radius: 4px;
     }
 </style>
 
+
+<style>
+    /* Tablo için genel stil */
+    .table-container {
+        width: 100%;
+        max-height: 80vh;
+        overflow: auto;
+        position: relative;
+    }
+
+    #table_puantaj {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed; /* Sütunların eşit genişlikte kalması */
+    }
+
+    /* Sütun genişliklerini kontrol et */
+    #table_puantaj th,
+    #table_puantaj td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+        white-space: nowrap;
+    }
+
+    /* Üstteki başlığı sabitle */
+    #table_puantaj thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f1f1f1;
+        z-index: 2;
+    }
+
+    /* İlk sütunu sabitle */
+    #table_puantaj tbody td:first-child {
+        position: sticky;
+        left: 0;
+        background-color: #fafafa;
+        z-index: 1;
+        font-weight: bold;
+    }
+
+    /* Dikey ve yatay kaydırma çubuğu görünümü */
+    .table-container::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+</style>
