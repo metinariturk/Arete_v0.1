@@ -84,7 +84,8 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
                 <?= ($item->sozlesme_bedel != 0) ? round(($total_payment / $item->sozlesme_bedel) * 100, 2) : 0; ?>%
             </div>
         </div>
-        <p>Toplam Hakediş: <?= money_format($total_payment); ?> <?php echo $item->para_birimi; ?> / Sözleşme Bedeli: <?= money_format($item->sozlesme_bedel); ?> <?php echo $item->para_birimi; ?></p>
+        <p>Toplam Hakediş: <?= money_format($total_payment); ?> <?php echo $item->para_birimi; ?> / Sözleşme
+            Bedeli: <?= money_format($item->sozlesme_bedel); ?> <?php echo $item->para_birimi; ?></p>
     </div>
 
     <!-- Avans İlerlemesi -->
@@ -97,7 +98,8 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
                 <?= ($advance_given != 0) ? round(($advance_admission / $advance_given) * 100, 2) : 0; ?>%
             </div>
         </div>
-        <p>Mahsup Edilen: <?= money_format($advance_admission); ?> <?php echo $item->para_birimi; ?> / Verilen Avans: <?= money_format($advance_given); ?> <?php echo $item->para_birimi; ?></p>
+        <p>Mahsup Edilen: <?= money_format($advance_admission); ?> <?php echo $item->para_birimi; ?> / Verilen
+            Avans: <?= money_format($advance_given); ?> <?php echo $item->para_birimi; ?></p>
     </div>
 
     <!-- Ödeme Durumu -->
@@ -110,9 +112,12 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
                 <?= ($total_payment != 0) ? round(($total_collection / $total_payment) * 100, 2) : 0; ?>%
             </div>
         </div>
-        <p>Toplam Ödeme: <?= money_format($total_collection); ?><?php echo $item->para_birimi; ?> / Toplam Hakediş: <?= money_format($total_payment); ?><?php echo $item->para_birimi; ?></p>
+        <p>Toplam Ödeme: <?= money_format($total_collection); ?><?php echo $item->para_birimi; ?> / Toplam
+            Hakediş: <?= money_format($total_payment); ?><?php echo $item->para_birimi; ?></p>
         <p>Kalan Avans: <?= money_format($advance_given - $advance_admission); ?> <?php echo $item->para_birimi; ?> </p>
         <p>Nakit Teminat Kesintisi: <?= money_format($total_provision); ?> <?php echo $item->para_birimi; ?> </p>
-        <p><b>Kalan Ödeme: <?= money_format($total_payment - $total_collection - ($advance_given - $advance_admission)); ?> <?php echo $item->para_birimi; ?></b> </p>
+        <p><b>Kalan
+                Ödeme: <?= money_format($total_payment - $total_collection - ($advance_given - $advance_admission)); ?> <?php echo $item->para_birimi; ?></b>
+        </p>
     </div>
 </div>

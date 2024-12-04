@@ -1,9 +1,12 @@
-<table class="table-lg" id="payment_table">
+
+
+<table class="table-lg" id="payment_Table">
     <thead>
     <tr>
         <th class="d-none d-sm-table-cell"><p>Hakediş No</p></th>
         <th class="d-none d-sm-table-cell"><p>Hakediş İtibar Tarihi</p></th>
         <th><p>Hakediş Tutar</p></th>
+        <th><p>Kesinti</p></th>
         <th class="d-none d-sm-table-cell"><p>Net Ödenecek</p></th>
     </tr>
     </thead>
@@ -24,6 +27,11 @@
                 <td>
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <p><?php echo money_format($payment->E); ?> <?php echo "$item->para_birimi"; ?></p>
+                    </a>
+                </td>
+                <td>
+                    <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
+                        <p><?php echo money_format($payment->I); ?> <?php echo "$item->para_birimi"; ?></p>
                     </a>
                 </td>
                 <td class="d-none d-sm-table-cell">

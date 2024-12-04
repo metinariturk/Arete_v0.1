@@ -45,4 +45,9 @@ class Payment_model extends CI_Model
         return $this->db->where($where)->delete($this->tableName);
     }
 
+    public function last_payment($where = array())
+    {
+        return $this->db->where($where)->order_by('hakedis_no', 'DESC')->limit(1)->get($this->tableName)->row();
+    }
+
 }

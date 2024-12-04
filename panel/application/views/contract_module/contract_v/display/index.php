@@ -3,7 +3,6 @@
 <head>
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
-
     <?php $this->load->view("includes/head"); ?>
 </head>
 <body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
@@ -24,11 +23,19 @@
 <?php $this->load->view("includes/footer"); ?>
 
 <?php $this->load->view("includes/include_script"); ?>
+<?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
 
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
-
-
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var errorModal = "<?= $error_modal ?>";  // PHP'den modal ID'sini al
+        if (errorModal) {
+            var modal = new bootstrap.Modal(document.getElementById(errorModal));
+            modal.show();
+        }
+    });
+</script>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

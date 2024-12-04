@@ -1,18 +1,30 @@
+<?php if (isset($error_modal) && $error_modal === 'modalPayment'): ?>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Modalı otomatik aç
+            $('#modalPayment').modal('show');
+        });
+    </script>
+<?php endif; ?>
 
-<div class="modal fade" id="modalPayment" tabindex="-1"
+<?php if (isset($error_modal)): ?>
+Hata Var
+<?php endif; ?>
+
+<div class="modal fade" id="modalPayment" tabindex="-1" name="modalPayment"
      role="dialog"
      aria-labelledby="modalPayment" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    Yeni <?php echo $this->Module_Title; ?></h5>
+                    Yeni Hakediş</h5>
                 <button class="btn-close" type="button" data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="payment_form"
-                      action="<?php echo base_url("payment/create/$item->id"); ?>"
+                      action="<?php echo base_url("contract/create_payment/$item->id"); ?>"
                       method="post"
                       enctype="multipart">
                     <div class="mb-3">

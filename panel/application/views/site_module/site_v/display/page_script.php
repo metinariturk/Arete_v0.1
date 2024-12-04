@@ -69,9 +69,6 @@
 
 </script>
 
-
-
-
 <script>
     function delete_this_item(element) {
         // URL'yi al

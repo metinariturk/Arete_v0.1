@@ -4390,7 +4390,10 @@ class Payment extends CI_Controller
         }
         //Metraj Cetveli Alt Gruplardan Ayırarak Yazdır Baskı Kontrolü
 
-        $file_name = "Hakediş";
+
+
+
+        $file_name = $contract->contract_name. "Hakediş No - $payment->hakedis_no";
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");

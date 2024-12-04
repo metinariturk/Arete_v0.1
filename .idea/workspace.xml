@@ -71,7 +71,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/site_module/site_v/display/modals&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display_new&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -82,11 +82,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display_new" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\modals" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\includes" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
@@ -209,6 +209,7 @@
       <workItem from="1729330033068" duration="680000" />
       <workItem from="1729615945465" duration="15871000" />
       <workItem from="1729705569356" duration="4408000" />
+      <workItem from="1733332214801" duration="6399000" />
     </task>
     <servers />
   </component>

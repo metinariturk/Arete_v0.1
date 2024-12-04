@@ -1,19 +1,13 @@
 <table class="table-lg table-border-horizontal" id="collection_table">
+
     <thead>
     <tr>
-        <th colspan="3"><p>TOPLAM YAPILAN ÖDEME</p></th>
-        <th>
-            <p><?php echo money_format(sum_anything("collection", "tahsilat_miktar", "contract_id", $item->id)); ?>
-                <?php echo "$item->para_birimi"; ?></p>
-        </th>
-    </tr>
-    </thead>
-    <thead>
-    <tr>
-        <th class="d-none d-sm-table-cell"><i class="fa fa-reorder"></i></th>
-        <th><p>Tarihi</p></th>
-        <th><p>Ödeme Türü/Açıklama</p></th>
-        <th class="d-none d-sm-table-cell"><p>Tutarı</p></th>
+        <th><i class="fa fa-reorder"></i></th>
+        <th>Ödeme Tarihi</th>
+        <th>Ödeme Türü</th>
+        <th>Tutarı</th>
+        <th>Vade Tarih</th>
+        <th>Açıklama</th>
     </tr>
     </thead>
     <tbody>
@@ -30,12 +24,22 @@
                 </td>
                 <td>
                     <a target="_blank" href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
-                        <p><?php echo $collection->tahsilat_turu; ?> / <?php echo $collection->aciklama; ?></p>
+                        <p><?php echo $collection->tahsilat_turu; ?></p>
                     </a>
                 </td>
                 <td>
                     <a target="_blank" href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
                         <p><?php echo money_format($collection->tahsilat_miktar) . " " . get_currency($item->id); ?></p>
+                    </a>
+                </td>
+                <td>
+                    <a target="_blank" href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
+                        <p><?php echo dateFormat_dmy($collection->vade_tarih); ?></p>
+                    </a>
+                </td>
+                <td>
+                    <a target="_blank" href="<?php echo base_url("collection/file_form/$collection->id"); ?>">
+                        <p><?php echo $collection->aciklama; ?></p>
                     </a>
                 </td>
             </tr>
