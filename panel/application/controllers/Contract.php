@@ -2359,13 +2359,10 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$contract->dosya_no/Payment/$hak_no";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
-                echo "Dosya Yolu Oluşturuldu: " . $path;
-            } else {
-                echo "<p>Aynı İsimde Dosya Mevcut: " . $path . "</p>";
             }
 
             if ($this->input->post('hakedis_no') == "on") {
@@ -2419,8 +2416,278 @@ class Contract extends CI_Controller
             $this->session->set_flashdata("alert", $alert);
 
             $this->session->unset_userdata('form_errors');
+            $viewData = new stdClass();
 
-            redirect(base_url("Payment/file_form/$record_id"));
+            $project = $this->Project_model->get(array("id" => $contract->proje_id));
+            $payments = $this->Payment_model->get_all(array('contract_id' => $contract->id));
+
+            // View'e gönderilecek Değişkenlerin Set Edilmesi
+            $viewData->viewModule = $this->moduleFolder;
+
+
+            $viewData->viewFolder = "contract_v";
+            $viewData->project = $project;
+            $viewData->payments = $payments;
+            $viewData->project_code = $project->project_code;
+
+            $viewData->item = $this->Contract_model->get(array("id" => $contract->id));
+
+            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_3_payments", $viewData);
+
+
+        } else {
+
+            $this->load->model("Advance_model");
+            $this->load->model("Bond_model");
+            $this->load->model("City_model");
+            $this->load->model("Company_model");
+            $this->load->model("Contract_model");
+            $this->load->model("Contract_price_model");
+            $this->load->model("Costinc_model");
+            $this->load->model("Collection_model");
+            $this->load->model("Delete_model");
+            $this->load->model("District_model");
+            $this->load->model("Extime_model");
+            $this->load->model("Favorite_model");
+            $this->load->model("Newprice_model");
+            $this->load->model("Order_model");
+            $this->load->model("Payment_model");
+            $this->load->model("Project_model");
+            $this->load->model("Settings_model");
+            $this->load->model("Site_model");
+            $this->load->model("User_model");
+            $this->load->model("Site_model");
+
+            $alert = array(
+                "title" => "İşlem Başarısız",
+                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
+                "type" => "danger"
+            );
+            $this->session->set_flashdata("alert", $alert);
+
+            if (!isAdmin()) {
+                redirect(base_url("error"));
+            }
+
+            $item = $this->Contract_model->get(array("id" => $contract->id));
+            $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
+            $collection_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection";
+            $advance_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance";
+            $offer_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer";
+            $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
+
+            $companys = $this->Company_model->get_all(array());
+
+            !is_dir($path) && mkdir($path, 0777, TRUE);
+            !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
+            !is_dir($advance_path) && mkdir($advance_path, 0777, TRUE);
+            !is_dir($offer_path) && mkdir($offer_path, 0777, TRUE);
+            !is_dir($payment_path) && mkdir($payment_path, 0777, TRUE);
+
+
+            if ($item->offer == 1) {
+                redirect(base_url("contract/file_form_offer/$contract->id"));
+            }
+
+
+            if (count_payments($contract->id) == 0) {
+                $payment_no = 1;
+            } else {
+                $payment_no = last_payment($contract->id) + 1;
+            }
+
+            $fav = $this->Favorite_model->get(array(
+                "user_id" => active_user_id(),
+                "module" => "contract",
+                "view" => "file_form",
+                "module_id" => $contract->id,
+            ));
+
+
+            $viewData = new stdClass();
+
+            $collections = $this->Collection_model->get_all(array('contract_id' => $contract->id), "tahsilat_tarih ASC");
+            $advances = $this->Advance_model->get_all(array('contract_id' => $contract->id));
+            $bonds = $this->Bond_model->get_all(array('contract_id' => $contract->id));
+            $costincs = $this->Costinc_model->get_all(array('contract_id' => $contract->id));
+            $extimes = $this->Extime_model->get_all(array('contract_id' => $contract->id));
+            $main_bond = $this->Bond_model->get(array('contract_id' => $contract->id, 'teminat_gerekce' => 'contract'));
+            $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
+            $payments = $this->Payment_model->get_all(array('contract_id' => $contract->id));
+            $site = $this->Site_model->get(array('contract_id' => $contract->id));
+            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+            $settings = $this->Settings_model->get();
+            $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1));
+            $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, 'leader' => 1));
+
+            // View'e gönderilecek Değişkenlerin Set Edilmesi
+            $viewData->viewModule = $this->moduleFolder;
+
+            $viewData->viewFolder = "contract_v";
+
+            if ($item->offer == 1) {
+                $viewData->subViewFolder = "display_offer";
+            } else {
+                $viewData->subViewFolder = "display";
+            }
+
+            $viewData->companys = $companys;
+            $viewData->project = $project;
+            $viewData->upload_function = $upload_function;
+            $viewData->path = $path;
+            $viewData->advances = $advances;
+            $viewData->collections = $collections;
+            $viewData->bonds = $bonds;
+            $viewData->leaders = $leaders;
+            $viewData->costincs = $costincs;
+            $viewData->extimes = $extimes;
+            $viewData->fav = $fav;
+            $viewData->main_bond = $main_bond;
+            $viewData->main_groups = $main_groups;
+            $viewData->newprices = $newprices;
+            $viewData->form_error = true;
+            $viewData->payment_no = $payment_no;
+            $viewData->payments = $payments;
+            $viewData->prices_main_groups = $prices_main_groups;
+            $viewData->settings = $settings;
+            $viewData->site = $site;
+             $viewData->error_modal = "AddPaymentModal"; // Hata modali için set edilen değişken
+
+            $form_errors = $this->session->flashdata('form_errors');
+
+            if (!empty($form_errors)) {
+                $viewData->form_errors = $form_errors;
+            } else {
+                $viewData->form_errors = null;
+            }
+
+            $viewData->item = $this->Contract_model->get(array("id" => $contract->id));
+
+            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_3_payments", $viewData);
+        }
+
+    }
+
+    public
+    function create_collection($contract_id)
+    {
+        $contract = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
+
+        $this->load->library("form_validation");
+
+        $file_name_len = file_name_digits();
+        $file_name = "TA-" . $this->input->post('dosya_no');
+
+        $contract_price = $contract->sozlesme_bedel;
+        $sozlesme_tarih = dateFormat_dmy($contract->sozlesme_tarih);
+
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "is_unique[collection.dosya_no]|exact_length[$file_name_len]|trim|callback_duplicate_code_check"); //2
+        $this->form_validation->set_rules("tahsilat_tarih", "Tahsilat Tarihi", "callback_contract_collection[$sozlesme_tarih]|required|trim");
+        $this->form_validation->set_rules("tahsilat_turu", "Tahsilat Türü", "required|trim");
+
+        if (!empty($this->input->post('vade_tarih'))) {
+            $this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_collection[$sozlesme_tarih]|trim");
+        }
+
+        if ($this->input->post('tahsilat_turu') == "Çek") {
+            $this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_collection[$sozlesme_tarih]|trim|required");
+        }
+
+        $this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "required|numeric|required|trim");
+
+        if ($this->input->post('onay') != "on") {
+            $this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "required|less_than_equal_to[$contract_price]|numeric|trim");
+        } else {
+            $this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "required|numeric|required|trim");
+        }
+        $this->form_validation->set_rules("aciklama", "Açıklama", "required|trim");
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "less_than_equal_to" => "<b>{field}</b> <b>{param}</b> 'den küçük olmalıdır",
+                "is_natural" => "<b>{field}</b> netural alanı rakamlardan oluşmalıdır",
+                "numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
+                "contract_collection" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden önce olamaz",
+                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
+                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
+                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
+                "duplicate_name_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
+                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
+            )
+        );
+
+        // Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+
+            $path = "$this->File_Dir_Prefix/$project->project_code/$contract->dosya_no/Collection";
+
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+                echo "oluştu";
+            } else {
+                echo "aynı isimde dosya mevcut";
+            }
+
+            if ($this->input->post("tahsilat_tarih")) {
+                $tahsilat_tarihi = dateFormat('Y-m-d', $this->input->post("tahsilat_tarih"));
+            } else {
+                $tahsilat_tarihi = null;
+            }
+            if ($this->input->post("vade_tarih")) {
+                $vade_tarihi = dateFormat('Y-m-d', $this->input->post("vade_tarih"));
+            } else {
+                $vade_tarihi = null;
+            }
+
+            $insert = $this->Collection_model->add(
+                array(
+                    "dosya_no" => $file_name,
+                    "contract_id" => $contract_id,
+                    "tahsilat_tarih" => $tahsilat_tarihi,
+                    "vade_tarih" => $vade_tarihi,
+                    "tahsilat_miktar" => $this->input->post("tahsilat_miktar"),
+                    "tahsilat_turu" => $this->input->post("tahsilat_turu"),
+                    "aciklama" => $this->input->post("aciklama"),
+                )
+            );
+            $record_id = $this->db->insert_id();
+            $insert2 = $this->Order_model->add(
+                array(
+                    "module" => $this->Module_Name,
+                    "connected_module_id" => $this->db->insert_id(),
+                    "connected_contract_id" => $contract_id,
+                    "file_order" => $file_name,
+                    "createdAt" => date("Y-m-d H:i:s"),
+                    "createdBy" => active_user_id(),
+                )
+            );
+            // TODO Alert sistemi eklenecek...
+            if ($insert) {
+                $alert = array(
+                    "title" => "İşlem Başarılı",
+                    "text" => "Kayıt başarılı bir şekilde eklendi",
+                    "type" => "success"
+                );
+            } else {
+                $alert = array(
+                    "title" => "İşlem Başarısız",
+                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
+                    "type" => "danger"
+                );
+            }
+            // İşlemin Sonucunu Session'a yazma işlemi...
+            $this->session->set_flashdata("alert", $alert);
+
+            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_collection", $viewData);
+
+            //kaydedilen elemanın id nosunu döküman ekleme
+            // sına post ediyoruz
 
         } else {
 
@@ -2541,7 +2808,7 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->site = $site;
             $viewData->tab3 = "active";
-            $viewData->error_modal = "modalPayment"; // Hata modali için set edilen değişken
+            $viewData->error_modal = "AddCollectionModal"; // Hata modali için set edilen değişken
 
             $form_errors = $this->session->flashdata('form_errors');
 
@@ -2553,10 +2820,11 @@ class Contract extends CI_Controller
 
             $viewData->item = $this->Contract_model->get(array("id" => $contract->id));
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/index", $viewData);
+            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_collection", $viewData);
         }
 
     }
+
 
     public function date_greater_than($date1, $date2_field)
     {

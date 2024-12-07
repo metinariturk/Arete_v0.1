@@ -21,24 +21,14 @@
     </div>
 </div>
 <?php $this->load->view("includes/footer"); ?>
-
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
-
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var errorModal = "<?= $error_modal ?>";  // PHP'den modal ID'sini al
-        if (errorModal) {
-            var modal = new bootstrap.Modal(document.getElementById(errorModal));
-            modal.show();
-        }
-    });
-</script>
+<?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/page_script"); ?>
+<?php $this->session->set_flashdata("alert", null); ?>
 </body>
 </html>
-<?php $this->session->set_flashdata("alert", null); ?>
 
 
 
