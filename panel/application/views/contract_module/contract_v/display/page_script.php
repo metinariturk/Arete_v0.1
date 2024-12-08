@@ -30,10 +30,6 @@
         ]
     });
 
-
-
-
-
 </script>
 <script>
     function submit_modal_form(formId, modalId, DivId, DataTable = null) {
@@ -131,6 +127,11 @@
 
                 // Modalı aç
                 $('#' + ModalId).modal('show');
+
+                $('.datepicker-here').datepicker({
+                    language: 'tr',
+                    dateFormat: 'dd-mm-yyyy'
+                });
 
                 // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
                 $('body').css('padding-right', '');
@@ -332,54 +333,6 @@
             "paginate": {
                 "next": "Sonraki",
                 "previous": "Önceki"
-            }
-        }
-    });
-</script>
-
-<script>
-    // PHP'den alınan harcama verisini JavaScript'te kullanmak için
-    var monthlyExpenses = <?php echo $chart_expense; ?>;
-
-    // Grafik verilerini hazırlama
-    var labels = Object.keys(monthlyExpenses); // Aylar
-    var data = Object.values(monthlyExpenses); // Toplam harcamalar
-
-    // Her çubuk için farklı renkler tanımlama
-    var colors = [
-        'rgba(75, 192, 192, 0.2)', // Ocak
-        'rgba(255, 99, 132, 0.2)', // Şubat
-        'rgba(255, 206, 86, 0.2)', // Mart
-        'rgba(75, 192, 192, 0.2)', // Nisan
-        'rgba(54, 162, 235, 0.2)', // Mayıs
-        'rgba(153, 102, 255, 0.2)', // Haziran
-        'rgba(255, 159, 64, 0.2)', // Temmuz
-        'rgba(255, 99, 132, 0.2)', // Ağustos
-        'rgba(75, 192, 192, 0.2)', // Eylül
-        'rgba(255, 206, 86, 0.2)', // Ekim
-        'rgba(54, 162, 235, 0.2)', // Kasım
-        'rgba(153, 102, 255, 0.2)'  // Aralık
-    ];
-
-    // Grafik oluşturma
-    var ctx = document.getElementById('expenseChart').getContext('2d');
-    var expenseChart = new Chart(ctx, {
-        type: 'bar', // Çubuk grafik
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Aylık Harcama (TL)',
-                data: data,
-                backgroundColor: colors.slice(0, data.length), // Her çubuğa farklı renk
-                borderColor: colors.slice(0, data.length).map(color => color.replace('0.2', '1')), // Kenar rengi
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
             }
         }
     });

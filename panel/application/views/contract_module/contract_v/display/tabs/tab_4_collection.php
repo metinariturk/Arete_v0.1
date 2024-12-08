@@ -1,5 +1,4 @@
-
-<?php if (isset($error_modal) && $error_modal=="AddCollectionModal") { ?>
+<?php if (isset($error_modal) && $error_modal == "AddCollectionModal") { ?>
     <script>
         if ($.fn.DataTable.isDataTable('#collectionTable')) {
             $('#collectionTable').DataTable().destroy();
@@ -10,7 +9,7 @@
             "columnDefs": [
                 {
                     "targets": 1,  // 1, tarih sütununu belirtir.
-                    "render": function(data, type, row) {
+                    "render": function (data, type, row) {
                         if (type === 'display' || type === 'filter') {
                             // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
                             var dateParts = data.split('-');  // Y-m-d formatında ayır
@@ -26,7 +25,6 @@
             ]
         });
 
-
         // Modal açma işlemi ve z-index hatası düzeltme
         $('#openCollectionModal').click(); // Önce modalı aç
 
@@ -38,24 +36,20 @@
 <div class="card-body">
     <div class="row">
         <div class="col-md-12">
-            <h2></h2>
-            <div class="tabs">
-                <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
-                    <h5>Ödeme</h5>
-                </div>
-            </div>
-            <hr>
             <div class="table-responsive">
                 <table id="collectionTable" style="width:100%">
                     <thead>
                     <tr>
                         <th><i class="fa fa-reorder"></i></th>
-                        <th style="    width: 150px; /* İstediğiniz genişlik değerini buraya yazın */">Ödeme Tarihi</th>
+                        <th>Ödeme Tarihi</th>
                         <th>Ödeme Türü</th>
                         <th>Tutarı</th>
                         <th>Vade Tarih</th>
                         <th>Açıklama</th>
-                        <th>İşlem</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,7 +57,7 @@
                     <?php if (!empty($collections)) { ?>
                         <?php foreach ($collections as $collection) { ?>
                             <tr>
-                                <td>
+                                <td> <?php echo $i++; ?>
                                 </td>
                                 <td>
                                     <?php echo $collection->tahsilat_tarih; ?>
@@ -92,13 +86,28 @@
                                         </a>
                                     <?php } else { ?>
                                         <!-- Dosya mevcut değilse alternatif bir ikon gösterebilirsin -->
-                                        <i class="fa fa-download f-14 ellips" style="color: grey;"
+                                        <i class="fa fa-download fa-lg" style="color: grey;"
                                            title="Dosya mevcut değil"></i>
                                     <?php } ?>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0);"
+                                       onclick="confirmDelete('<?php echo base_url("Contract/delete_collection/$collection->id"); ?>', '#tab_Collection','collectionTable')"
+                                       title="Makbuz">
+                                        <i class="fa fa-file fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a data-bs-toggle="modal" class="text-primary"
+                                       onclick="edit_modal_form('<?php echo base_url("Contract/open_edit_collection_modal/$collection->id"); ?>','edit_collection_modal','EditCollectionModal')">
+                                        <i class="fa fa-edit fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td>
                                     <a href="javascript:void(0);"
                                        onclick="confirmDelete('<?php echo base_url("Contract/delete_collection/$collection->id"); ?>', '#tab_Collection','collectionTable')"
                                        title="Sil">
-                                        <i class="fa fa-trash-o fa-2x"></i>
+                                        <i class="fa fa-trash-o fa-lg"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -109,6 +118,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="edit_collection_modal">
+    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_collection_modal_form"); ?>
 </div>
 
 
