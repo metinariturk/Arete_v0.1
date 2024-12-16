@@ -1,33 +1,3 @@
-<script>
-    if ($.fn.DataTable.isDataTable('#collectionTable')) {
-        $('#collectionTable').DataTable().destroy();
-    }
-
-    $('#collectionTable').DataTable({
-        "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
-        "columnDefs": [
-            {
-                "targets": 1,  // 1, tarih sütununu belirtir.
-                "render": function (data, type, row) {
-                    if (type === 'display' || type === 'filter') {
-                        // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
-                        var dateParts = data.split('-');  // Y-m-d formatında ayır
-                        var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
-                        var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
-                        var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
-                        // d-m-Y formatında birleştir
-                        return day + '-' + month + '-' + year;  // - ile birleştir
-                    }
-                    return data;
-                }
-            }
-        ]
-    });
-
-    // Modal açma işlemi ve z-index hatası düzeltme
-    alert('#EditCollectionModal-' + <?php echo json_encode($edit_collection->id); ?>);
-    $('#EditCollectionModal-' + <?php echo json_encode($edit_collection->id); ?>).click(); // Önce modalı aç
-</script>
 <?php if (isset($edit_collection)) { ?>
     <div class="modal fade" id="EditCollectionModal" tabindex="-1" aria-labelledby="editCollectionModalLabel"
          aria-hidden="true">
@@ -41,13 +11,6 @@
                     <form id="editCollectionForm"
                           data-form-url="<?php echo base_url("$this->Module_Name/edit_collection/$edit_collection->id"); ?>"
                           method="post" enctype="multipart/form-data" autocomplete="off">
-                        <div class="mb-2">
-                            <div class="col-form-label">Dosya No</div>
-                            <div class="input-group">
-                                <input class="form-control" value="<?php echo $edit_collection->dosya_no; ?>" readonly>
-                            </div>
-                        </div>
-
                         <div class="mb-2">
                             <div class="col-form-label">Tahsilat Ödeme Tarihi Edit</div>
                             <input class="datepicker-here form-control digits <?php cms_isset(form_error("tahsilat_tarih"), "is-invalid", ""); ?>"
@@ -146,3 +109,13 @@
     </div>
 <?php } ?>
 
+<?php if (isset($edit_collection)) { ?>
+    <?php if (isset($error_modal) && $error_modal == "EditCollectionModal") { ?>
+        <script>
+            $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
+            $('body').removeClass('modal-open');
+            $('body').css('overflow', 'auto');
+            $('#EditCollectionModal').modal('show');
+        </script>
+    <?php } ?>
+<?php } ?>

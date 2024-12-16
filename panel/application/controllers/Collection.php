@@ -793,18 +793,6 @@ class Collection extends CI_Controller
     }
 
 
-    public function duplicate_code_check($file_name)
-    {
-        $file_name = "TA-" . $file_name;
-
-        $var = count_data("file_order", "file_order", $file_name);
-        if (($var > 0)) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-
     public function contract_collection($collection_day, $contract_day)
     {
         $date_diff = date_minus($collection_day, $contract_day);

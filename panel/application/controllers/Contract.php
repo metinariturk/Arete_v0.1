@@ -2583,30 +2583,12 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
-        $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
-
-        $viewData = new stdClass();
-
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = "contract_v";
-        $viewData->subViewFolder = "display";
-
-        $viewData->project = $project;
-        $viewData->collections = $collections;
-        $viewData->settings = $settings;
-        $viewData->item = $this->Contract_model->get(array("id" => $item->id));
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         $this->load->library("form_validation");
-
-        $file_name_len = file_name_digits();
-        $file_name = "TA-" . $this->input->post('dosya_no');
 
         $contract_price = $item->sozlesme_bedel;
         $sozlesme_tarih = dateFormat_dmy($item->sozlesme_tarih);
 
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "is_unique[collection.dosya_no]|exact_length[$file_name_len]|trim|callback_duplicate_code_check"); //2
         $this->form_validation->set_rules("tahsilat_tarih", "Tahsilat Tarihi", "callback_contract_collection[$sozlesme_tarih]|required|trim");
         $this->form_validation->set_rules("tahsilat_turu", "Tahsilat Türü", "required|trim");
 
@@ -2614,7 +2596,7 @@ class Contract extends CI_Controller
             $this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_collection[$sozlesme_tarih]|trim");
         }
 
-        if ($this->input->post('tahsilat_turu') == "Çek") {
+        if ($this->input->post('tahsilat_turu') == "Çek" || $this->input->post('tahsilat_turu') == "Senet") {
             $this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_collection[$sozlesme_tarih]|trim|required");
         }
 
@@ -2634,11 +2616,6 @@ class Contract extends CI_Controller
                 "is_natural" => "<b>{field}</b> netural alanı rakamlardan oluşmalıdır",
                 "numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
                 "contract_collection" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden önce olamaz",
-                "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
-                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
-                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                "duplicate_name_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
-                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
             )
         );
 
@@ -2666,7 +2643,6 @@ class Contract extends CI_Controller
 
             $insert = $this->Collection_model->add(
                 array(
-                    "dosya_no" => $file_name,
                     "contract_id" => $contract_id,
                     "tahsilat_tarih" => $tahsilat_tarihi,
                     "vade_tarih" => $vade_tarihi,
@@ -2675,34 +2651,19 @@ class Contract extends CI_Controller
                     "aciklama" => $this->input->post("aciklama"),
                 )
             );
-            $record_id = $this->db->insert_id();
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $this->db->insert_id(),
-                    "connected_contract_id" => $contract_id,
-                    "file_order" => $file_name,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                )
-            );
-            // TODO Alert sistemi eklenecek...
-            if ($insert) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-            // İşlemin Sonucunu Session'a yazma işlemi...
-            $this->session->set_flashdata("alert", $alert);
 
+            $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = "contract_v";
+            $viewData->subViewFolder = "display";
+
+            $viewData->project = $project;
+            $viewData->collections = $collections;
+            $viewData->settings = $settings;
+            $viewData->item = $item;
 
             $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_collection", $viewData);
 
@@ -2711,12 +2672,18 @@ class Contract extends CI_Controller
 
         } else {
 
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
+            $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = "contract_v";
+            $viewData->subViewFolder = "display";
+
+            $viewData->project = $project;
+            $viewData->collections = $collections;
+            $viewData->settings = $settings;
+            $viewData->item = $item;
 
             $viewData->form_error = true;
             $viewData->error_modal = "AddCollectionModal"; // Hata modali için set edilen değişken
@@ -2728,7 +2695,6 @@ class Contract extends CI_Controller
             } else {
                 $viewData->form_errors = null;
             }
-
 
             $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_collection", $viewData);
         }
@@ -2798,10 +2764,7 @@ class Contract extends CI_Controller
         $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
-
         $settings = $this->Settings_model->get();
-
-
 
         // Görünüm için değişkenlerin set edilmesi
         $viewData = new stdClass();
@@ -2825,7 +2788,6 @@ class Contract extends CI_Controller
 
         $this->load->model("Contract_model");
         $this->load->model("Settings_model");
-        $this->load->model("Order_model");
 
         $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
@@ -2842,8 +2804,7 @@ class Contract extends CI_Controller
         $viewData->project = $project;
         $viewData->collections = $collections;
         $viewData->settings = $settings;
-        $viewData->item = $this->Contract_model->get(array("id" => $item->id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $viewData->item = $item;
 
         $this->load->library("form_validation");
 
@@ -2911,24 +2872,22 @@ class Contract extends CI_Controller
                 )
             );
 
+            $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
+            $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
+            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $settings = $this->Settings_model->get();
+            $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-            // İşlemin Sonucunu Session'a yazma işlemi...
-            $this->session->set_flashdata("alert", $alert);
+            $viewData = new stdClass();
 
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = "contract_v";
+            $viewData->subViewFolder = "display";
+
+            $viewData->project = $project;
+            $viewData->collections = $collections;
+            $viewData->settings = $settings;
+            $viewData->item = $item;
 
             $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_collection", $viewData);
 
@@ -2937,26 +2896,37 @@ class Contract extends CI_Controller
 
         } else {
 
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
+            $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
+            $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
+            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $settings = $this->Settings_model->get();
+            $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = "contract_v";
+            $viewData->subViewFolder = "display";
+
+            $viewData->edit_collection = $edit_collection;
+            $viewData->project = $project;
+            $viewData->collections = $collections;
+            $viewData->settings = $settings;
+            $viewData->item = $item;
 
             $viewData->form_error = true;
             $viewData->error_modal = "EditCollectionModal"; // Hata modali için set edilen değişken
 
-            $form_errors = $this->session->flashdata('form_errors');
+            if (!empty($form_errors)) {
+                $viewData->form_errors = $form_errors;
+            } else {
+                $viewData->form_errors = null;
+            }
 
             $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_collection", $viewData);
+
         }
-
     }
-
-
-
-
 }
 
 

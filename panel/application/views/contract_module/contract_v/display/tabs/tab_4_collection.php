@@ -1,35 +1,37 @@
+<script>
+    if ($.fn.DataTable.isDataTable('#collectionTable')) {
+        $('#collectionTable').DataTable().destroy();
+    }
+
+    $('#collectionTable').DataTable({
+        "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
+        "columnDefs": [
+            {
+                "targets": 1,  // 1, tarih sütununu belirtir.
+                "render": function (data, type, row) {
+                    if (type === 'display' || type === 'filter') {
+                        // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
+                        var dateParts = data.split('-');  // Y-m-d formatında ayır
+                        var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
+                        var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
+                        var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
+                        // d-m-Y formatında birleştir
+                        return day + '-' + month + '-' + year;  // - ile birleştir
+                    }
+                    return data;
+                }
+            }
+        ]
+    });
+
+</script>
 <?php if (isset($error_modal) && $error_modal == "AddCollectionModal") { ?>
     <script>
-        if ($.fn.DataTable.isDataTable('#collectionTable')) {
-            $('#collectionTable').DataTable().destroy();
-        }
-
-        $('#collectionTable').DataTable({
-            "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
-            "columnDefs": [
-                {
-                    "targets": 1,  // 1, tarih sütununu belirtir.
-                    "render": function (data, type, row) {
-                        if (type === 'display' || type === 'filter') {
-                            // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
-                            var dateParts = data.split('-');  // Y-m-d formatında ayır
-                            var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
-                            var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
-                            var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
-                            // d-m-Y formatında birleştir
-                            return day + '-' + month + '-' + year;  // - ile birleştir
-                        }
-                        return data;
-                    }
-                }
-            ]
-        });
-
         // Modal açma işlemi ve z-index hatası düzeltme
         $('#openCollectionModal').click(); // Önce modalı aç
-
     </script>
 <?php } ?>
+
 
 <?php $path_collection = base_url("uploads/$project->project_code/$item->dosya_no/Collection/"); ?>
 
@@ -98,7 +100,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a data-bs-toggle="modal" class="text-primary"
+                                    <a data-bs-toggle="modal" class="text-primary" id="open_edit_collection_modal_<?php echo $collection->id;?>"
                                        onclick="edit_modal_form('<?php echo base_url("Contract/open_edit_collection_modal/$collection->id"); ?>','edit_collection_modal','EditCollectionModal')">
                                         <i class="fa fa-edit fa-lg"></i>
                                     </a>
@@ -137,32 +139,6 @@
                 <form id="addCollectionForm"
                       data-form-url="<?php echo base_url("$this->Module_Name/create_collection/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
-                    <div class="mb-2">
-                        <div class="col-form-label">Dosya No</div>
-                        <div class="input-group"><span class="input-group-text" id="inputGroupPrepend">TA</span>
-                            <?php if (!empty(get_last_fn("collection"))) { ?>
-                                <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                                       type="number" placeholder="Proje Kodu" aria-describedby="inputGroupPrepend"
-                                       readonly
-                                       data-bs-original-title="" title="" name="dosya_no"
-                                       value="<?php echo isset($form_error) ? set_value("dosya_no") : increase_code_suffix("collection"); ?>">
-                                <?php
-                            } else { ?>
-                                <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                                       type="number" placeholder="Username" aria-describedby="inputGroupPrepend"
-                                       readonly
-                                       required="" data-bs-original-title="" title="" name="dosya_no"
-                                       value="<?php echo isset($form_error) ? set_value("dosya_no") : fill_empty_digits() . "1" ?>">
-                            <?php } ?>
-                            <?php if (isset($form_error)) { ?>
-                                <div class="invalid-feedback"><?php echo form_error("dosya_no"); ?></div>
-                                <div class="invalid-feedback">* Önerilen Proje Kodu
-                                    : <?php echo increase_code_suffix("collection"); ?>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-
                     <div class="mb-2">
                         <div class="col-form-label">Tahsilat Ödeme Tarihi</div>
                         <input class="datepicker-here form-control digits <?php cms_isset(form_error("tahsilat_tarih"), "is-invalid", ""); ?>"
@@ -209,7 +185,7 @@
                             <?php } ?>
                         <?php } ?>
                         <input class="form-control <?php cms_isset(form_error("tahsilat_miktar"), "is-invalid", ""); ?>"
-                               name="tahsilat_miktar"
+                               name="tahsilat_miktar" type="number"
                                placeholder="Tahsilat Tutar"
                                value="<?php echo isset($form_error) ? set_value("tahsilat_miktar") : ""; ?>">
                         <?php if (isset($form_error)) { ?>
