@@ -358,6 +358,7 @@ function ext_img($file_name)
             'dwg' => base_url("assets") . "/images/file_img/acad.png",
             'dxf' => base_url("assets") . "/images/file_img/acad.png",
             'skp' => base_url("assets") . "/images/file_img/sketchup.png",
+            'skb' => base_url("assets") . "/images/file_img/sketchup.png",
             'kmz' => base_url("assets") . "/images/file_img/kmz.png",
         );
 

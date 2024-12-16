@@ -2652,6 +2652,38 @@ class Contract extends CI_Controller
                 )
             );
 
+            $record_id = $this->db->insert_id();
+
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$record_id";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+            // Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+
+            // Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+                // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+            } else {
+                // Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
+
+
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
             $viewData = new stdClass();
@@ -2871,6 +2903,35 @@ class Contract extends CI_Controller
                     "aciklama" => $this->input->post("aciklama"),
                 )
             );
+
+            // Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$collection_id";
+            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+
+            // Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+            // Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+
+            // Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+                // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+            } else {
+                // Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
 
             $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
             $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));

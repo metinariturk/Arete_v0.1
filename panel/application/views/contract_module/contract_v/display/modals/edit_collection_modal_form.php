@@ -89,8 +89,52 @@
                             <?php } ?>
                         </div>
 
-                        <!-- Dosya Yükle -->
-                        <div class="mb-3">
+                        <?php
+                        $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$edit_collection->id";
+
+                        if (!is_dir($file_path)) {
+                            mkdir($file_path, 0777, true);
+                        }
+
+                        $files = glob("$file_path/*"); // glob ile tüm dosyaları al
+                        ?>
+                        <div class="mb-2">
+                            <label class="col-form-label">Yüklenen Dosyalar</label>
+                            <div class="list-group">
+                                <?php foreach ($files as $file): ?>
+                                    <?php
+                                    // Dosya adını kısalt
+                                    $filename = basename($file);
+                                    $short_filename = strlen($filename) > 40 ? substr($filename, 0, 40) . '...' : $filename;
+                                    ?>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center p-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-2">
+                                                <?php echo ext_img($file); // Dosya simgesi ?>
+                                            </div>
+                                            <div>
+                                                <!-- Kısaltılmış dosya adı -->
+                                                <p class="mb-0 small" title="<?php echo $filename; ?>">
+                                                    <?php echo $short_filename; ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <a href="<?php echo base_url("$this->Module_Name/collection_file_download/$edit_collection->id/" . basename($file)); ?>">
+                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                            </a>
+                                            <a onclick="delete_this_item(this)"
+                                               data="<?php echo base_url("$this->Module_Name/collection_file_delete/$edit_collection->id/" . basename($file)); ?>">
+                                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+
+                        <div id="file-upload-container" class="mb-3">
                             <label class="col-form-label" for="file-input">Dosya Yükle:</label>
                             <input class="form-control" name="file" id="file-input" type="file">
                         </div>
