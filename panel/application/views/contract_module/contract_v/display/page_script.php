@@ -30,6 +30,27 @@
         ]
     });
 
+    $('#advanceTable').DataTable({
+        "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
+        "columnDefs": [
+            {
+                "targets": 1,  // 1, tarih sütununu belirtir.
+                "render": function(data, type, row) {
+                    if (type === 'display' || type === 'filter') {
+                        // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
+                        var dateParts = data.split('-');  // Y-m-d formatında ayır
+                        var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
+                        var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
+                        var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
+                        // d-m-Y formatında birleştir
+                        return day + '-' + month + '-' + year;  // - ile birleştir
+                    }
+                    return data;
+                }
+            }
+        ]
+    });
+
 </script>
 <script>
     function submit_modal_form(formId, modalId, DivId, DataTable = null) {

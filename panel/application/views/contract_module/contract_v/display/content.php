@@ -142,6 +142,12 @@
                             <h5>Avanslar</h5>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab4-3-link"
+                           data-bs-toggle="tab" href="#tab4-3" role="tab">
+                            <h5>Teminatlar</h5>
+                        </a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab4-1" role="tabpanel" aria-labelledby="tab4-1-link">
@@ -157,21 +163,39 @@
                             </a>
                         </div>
                         <div id="tab_Collection">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_collection"); ?>
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_a_collection"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
                         <div class="download_links mt-3">
                             <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
-                               data-bs-target="#AddDepositModal"></i>
-                            <a href="<?php echo base_url('export/sitewallet_download_excel'); ?>">
+                               id="openAdvanceModal"
+                               data-bs-target="#AddAdvanceModal"></i>
+                            <a href="<?php echo base_url('export/advance_download_excel'); ?>">
                                 <i class="fa fa-file-excel-o fa-2x"></i>
                             </a>
-                            <a href="<?php echo base_url('export/sitewallet_download_pdf'); ?>">
+                            <a href="<?php echo base_url('export/advance_download_pdf'); ?>">
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>
-                        <div id="tab_deposits">
+                        <div id="tab_Advance">
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_b_advance"); ?>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab4-3" role="tabpanel" aria-labelledby="tab4-3-link">
+                        <div class="download_links mt-3">
+                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
+                               id="openBondModal"
+                               data-bs-target="#AddBondModal"></i>
+                            <a href="<?php echo base_url('export/bond_download_excel'); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url('export/bond_download_pdf'); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div id="tab_Bond">
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_c_bond"); ?>
                         </div>
                     </div>
                 </div>

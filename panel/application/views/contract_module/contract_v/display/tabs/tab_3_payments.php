@@ -33,12 +33,12 @@
     <?php if (!empty($payments)) { ?>
         <?php foreach ($payments as $payment) { ?>
             <tr id="center_row">
-                <td Payment>
+                <td>
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <p><?php echo str_pad($payment->hakedis_no, 2, "0", STR_PAD_LEFT); ?></p>
                     </a>
                 </td>
-                <td Payment>
+                <td>
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <p><?php echo dateFormat_dmy($payment->imalat_tarihi); ?></p>
                     </a>
@@ -53,7 +53,7 @@
                         <p><?php echo money_format($payment->I); ?><?php echo "$item->para_birimi"; ?></p>
                     </a>
                 </td>
-                <td Payment>
+                <td>
                     <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>">
                         <p><?php echo money_format($payment->balance); ?><?php echo "$item->para_birimi"; ?></p>
                     </a>
@@ -64,12 +64,15 @@
     </tbody>
     <tfoot>
     <tr>
-        <td Payment><p>TOPLAM</p></td>
-        <td Payment></td>
+        <td><p>TOPLAM</p></td>
+        <td></td>
         <td>
             <p><?php echo money_format(sum_anything("payment", "E", "contract_id", $item->id)); ?><?php echo "$item->para_birimi"; ?></p>
         </td>
-        <td Payment>
+        <td>
+            <p><?php echo money_format(sum_anything("payment", "H", "contract_id", $item->id)); ?><?php echo "$item->para_birimi"; ?></p>
+        </td>
+        <td>
             <p><?php echo money_format(sum_anything("payment", "balance", "contract_id", $item->id)); ?><?php echo "$item->para_birimi"; ?></p>
         </td>
     </tr>
