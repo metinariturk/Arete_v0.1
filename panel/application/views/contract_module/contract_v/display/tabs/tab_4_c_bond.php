@@ -44,12 +44,10 @@
                     <tr>
                         <th><i class="fa fa-reorder"></i></th>
                         <th>Teminat Teslim Tarihi</th>
-                        <th>Teminat No</th>
                         <th>Teminat Türü</th>
                         <th>Banka</th>
                         <th>Tutarı</th>
-                        <th>Tutarı</th>
-                        <th>Vade Tarih</th>
+                        <th>Geçerlilik Tarihi</th>
                         <th>Açıklama</th>
                         <th></th>
                         <th></th>
@@ -58,23 +56,24 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $i = 1; ?>
                     <?php if (!empty($bonds)) { ?>
                         <?php foreach ($bonds as $bond) { ?>
                             <tr>
-                                <td> <?php echo $i++; ?>
+                                <td> </td>
+                                <td>
+                                    <?php echo $bond->teslim_tarih; ?>
                                 </td>
                                 <td>
-                                    <?php echo $bond->avans_tarih; ?>
+                                    <p><?php echo $bond->teminat_turu; ?></p>
                                 </td>
                                 <td>
-                                    <p><?php echo $bond->avans_turu; ?></p>
+                                    <p><?php echo $bond->teminat_banka; ?></p>
                                 </td>
                                 <td>
-                                    <p><?php echo money_format($bond->avans_miktar) . " " . get_currency($item->id); ?></p>
+                                    <p><?php echo money_format($bond->teminat_miktar) . " " . get_currency($item->id); ?></p>
                                 </td>
                                 <td>
-                                    <p><?php echo dateFormat_dmy($bond->vade_tarih); ?></p>
+                                    <p><?php echo dateFormat_dmy($bond->gecerlilik_tarih); ?></p>
                                 </td>
                                 <td>
                                     <p><?php echo $bond->aciklama; ?></p>
@@ -144,67 +143,88 @@
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <div class="mb-2">
                         <div class="col-form-label">Teminat Tarihi</div>
-                        <input class="datepicker-here form-control digits <?php cms_isset(form_error("avans_tarih"), "is-invalid", ""); ?>"
+                        <input class="datepicker-here form-control digits <?php cms_isset(form_error("teslim_tarih"), "is-invalid", ""); ?>"
                                type="text"
-                               name="avans_tarih"
-                               value="<?php echo isset($form_error) ? set_value("avans_tarih") : ""; ?>"
+                               name="teslim_tarih"
+                               value="<?php echo isset($form_error) ? set_value("teslim_tarih") : ""; ?>"
                                data-options="{ format: 'DD-MM-YYYY' }"
                                data-language="tr">
                         <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("avans_tarih"); ?></div>
+                            <div class="invalid-feedback"><?php echo form_error("teslim_tarih"); ?></div>
                         <?php } ?>
                     </div>
 
                     <div class="mb-2">
-                        <div class="col-form-label">Ödeme Türü</div>
+                        <div class="col-form-label">Teminat Türü</div>
                         <select id="select2-demo-1" style="width: 100%;"
-                                class="form-control <?php cms_isset(form_error("avans_turu"), "is-invalid", ""); ?>"
-                                data-plugin="select2" name="avans_turu">
+                                class="form-control <?php cms_isset(form_error("teminat_turu"), "is-invalid", ""); ?>"
+                                data-plugin="select2" name="teminat_turu">
                             <option selected="selected"
-                                    value="<?php echo isset($form_error) ? set_value("avans_turu") : ""; ?>"><?php echo isset($form_error) ? set_value("avans_turu") : "Seçiniz"; ?>
+                                    value="<?php echo isset($form_error) ? set_value("teminat_turu") : ""; ?>"><?php echo isset($form_error) ? set_value("teminat_turu") : "Seçiniz"; ?>
                             </option>
-                            <?php $odeme_turleri = get_as_array($settings->odeme_turu);
-                            foreach ($odeme_turleri as $odeme_turu) {
-                                echo "<option value='$odeme_turu'>$odeme_turu</option>";
+                            <?php $teminat_turleri = get_as_array($settings->teminat_turu);
+                            foreach ($teminat_turleri as $teminat_turu) {
+                                echo "<option value='$teminat_turu'>$teminat_turu</option>";
                             } ?>
                         </select>
                         <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("avans_turu"); ?></div>
+                            <div class="invalid-feedback"><?php echo form_error("teminat_turu"); ?></div>
                         <?php } ?>
                     </div>
+
+                    <div class="mb-2">
+                        <div class="col-form-label">Gerekçe</div>
+                        <select id="select2-demo-1" style="width: 100%;"
+                                class="form-control <?php cms_isset(form_error("teminat_gerekce"), "is-invalid", ""); ?>"
+                                data-plugin="select2" name="teminat_gerekce">
+                            <option selected="selected"
+                                    value="<?php echo isset($form_error) ? set_value("teminat_gerekce") : ""; ?>"><?php echo isset($form_error) ? set_value("teminat_gerekce") : "Seçiniz"; ?>
+                            </option>
+                            <option>Sözleşme Teminatı</option>
+                            <option>Fiyat Farkı Teminatı</option>
+                            <option>Avans Teminatı</option>
+                        </select>
+                        <?php if (isset($form_error)) { ?>
+                            <div class="invalid-feedback"><?php echo form_error("teminat_gerekce"); ?></div>
+                        <?php } ?>
+                    </div>
+
+                    <div class="mb-2">
+                        <div class="col-form-label">Banka</div>
+                        <input class="form-control  <?php cms_isset(form_error("teminat_banka"), "is-invalid", ""); ?>" name="teminat_banka"
+                               list="datalistOptions" placeholder="Banka Adı Yazınız" value="<?php echo isset($form_error) ? set_value("teminat_banka") : ""; ?>">
+                        <datalist id="datalistOptions">
+                            <?php $bankalar = get_as_array($settings->bankalar);
+                            foreach ($bankalar as $banka) {
+                                echo "<option value='$banka'>$banka</option>";
+                            } ?>
+                        </datalist>
+                        <?php if (isset($form_error)) { ?>
+                            <div class="invalid-feedback"><?php echo form_error("teminat_banka"); ?></div>
+                        <?php } ?>
+                    </div>
+
                     <div class="mb-2">
                         <div class="col-form-label">Teminat Tutar</div>
-                        <?php if (isset($form_error)) { ?>
-                            <?php
-                            // Teminat miktarı alanı boş değilse ve sözleşme bedelinden fazla girildiyse kontrol yap
-                            if (!empty(set_value("avans_miktar")) && form_error("avans_miktar")) { ?>
-                                <div style="color: red">
-                                    *** Sözleşme bedelinden fazla tahsilat yapılamaz. Özel bir gerekçe ile fazla
-                                    tahsilat yapılması gerekiyorsa aşağıdaki onay kutusunu işaretleyiniz.
-                                    <br>
-                                    <input name="onay" type="checkbox" id="cb-10"> Sözleşme bedelinden fazla tahsilat
-                                    yapmak istiyorum!
-                                </div>
-                            <?php } ?>
-                        <?php } ?>
-                        <input class="form-control <?php cms_isset(form_error("avans_miktar"), "is-invalid", ""); ?>"
-                               name="avans_miktar" type="number"
+
+                        <input class="form-control <?php cms_isset(form_error("teminat_miktar"), "is-invalid", ""); ?>"
+                               name="teminat_miktar" type="number"
                                placeholder="Teminat Tutar"
-                               value="<?php echo isset($form_error) ? set_value("avans_miktar") : ""; ?>">
+                               value="<?php echo isset($form_error) ? set_value("teminat_miktar") : ""; ?>">
                         <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("avans_miktar"); ?></div>
+                            <div class="invalid-feedback"><?php echo form_error("teminat_miktar"); ?></div>
                         <?php } ?>
                     </div>
                     <div class="mb-2">
-                        <div class="col-form-label">Vade Tarihi</div>
-                        <input class="datepicker-here form-control digits <?php cms_isset(form_error("vade_tarih"), "is-invalid", ""); ?>"
+                        <div class="col-form-label">Geçerlilik Tarihi</div>
+                        <input class="datepicker-here form-control digits <?php cms_isset(form_error("gecerlilik_tarih"), "is-invalid", ""); ?>"
                                type="text"
-                               name="vade_tarih"
-                               value="<?php echo isset($form_error) ? set_value("vade_tarih") : ""; ?>"
+                               name="gecerlilik_tarih"
+                               value="<?php echo isset($form_error) ? set_value("gecerlilik_tarih") : ""; ?>"
                                data-options="{ format: 'DD-MM-YYYY' }"
                                data-language="tr">
                         <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("vade_tarih"); ?></div>
+                            <div class="invalid-feedback"><?php echo form_error("gecerlilik_tarih"); ?></div>
                         <?php } ?>
                     </div>
                     <div class="mb-2">

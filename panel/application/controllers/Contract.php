@@ -1078,7 +1078,7 @@ class Contract extends CI_Controller
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("teslim_tarihi", "Teslim Tarihi", "callback_sitedel_contractday[$sozlesme_tarihi]|required|trim");
+        $this->form_validation->set_rules("teslim_tarih", "Teslim Tarihi", "callback_sitedel_contractday[$sozlesme_tarihi]|required|trim");
 
         $this->form_validation->set_message(
             array(
@@ -1091,7 +1091,7 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $teslim_tarihi = dateFormat('Y-m-d', $this->input->post("teslim_tarihi"));
+            $teslim_tarihi = dateFormat('Y-m-d', $this->input->post("teslim_tarih"));
 
             $sozlesme_bitis = dateFormat('Y-m-d', (date_plus_days($teslim_tarihi, ($isin_suresi - 1))));
 
@@ -2553,7 +2553,7 @@ class Contract extends CI_Controller
             $viewData->prices_main_groups = $prices_main_groups;
             $viewData->settings = $settings;
             $viewData->site = $site;
-             $viewData->error_modal = "AddPaymentModal"; // Hata modali için set edilen değişken
+            $viewData->error_modal = "AddPaymentModal"; // Hata modali için set edilen değişken
 
             $form_errors = $this->session->flashdata('form_errors');
 
@@ -2896,71 +2896,172 @@ class Contract extends CI_Controller
 
     }
 
-    public function contract_collection($collection_day, $contract_day)
+    public
+    function create_bond($contract_id)
     {
-        $date_diff = date_minus($collection_day, $contract_day);
-        if (($date_diff < 0)) {
-            return FALSE;
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $this->load->model("Contract_model");
+        $this->load->model("Settings_model");
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $settings = $this->Settings_model->get();
+
+        $this->load->library("form_validation");
+
+        $contract_price = $item->sozlesme_bedel;
+        $sozlesme_tarih = dateFormat_dmy($item->sozlesme_tarih);
+
+        $this->form_validation->set_rules("teslim_tarih", "Teminat Tarihi", "callback_contract_bond[$sozlesme_tarih]|required|trim");
+        $this->form_validation->set_rules("teminat_turu", "Teminat Türü", "required|trim");
+
+        if (!empty($this->input->post('vade_tarih'))) {
+            $this->form_validation->set_rules("teslim_tarih", "Vade Tarihi", "callback_contract_bond[$sozlesme_tarih]|trim");
+        }
+
+        if ($this->input->post('teminat_turu') != "Nakit") {
+            $this->form_validation->set_rules("gecerlilik_tarih", "Vade Tarihi", "callback_contract_bond[$sozlesme_tarih]|trim|required");
+        }
+
+        if ($this->input->post('teminat_turu') == "Çek") {
+            $this->form_validation->set_rules("teminat_banka", "Banka Adı", "trim|required");
+        }
+
+        $this->form_validation->set_rules("teminat_miktar", "Teminat Miktarı", "required|numeric|required|trim");
+
+        $this->form_validation->set_rules("teminat_gerekce", "Gerekçe", "required|trim");
+
+        $this->form_validation->set_rules("teminat_miktar", "Teminat Miktarı", "required|numeric|trim");
+
+        $this->form_validation->set_rules("aciklama", "Açıklama", "required|trim");
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "is_natural" => "<b>{field}</b> netural alanı rakamlardan oluşmalıdır",
+                "numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
+                "contract_bond" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden önce olamaz",
+            )
+        );
+
+// Form Validation Calistirilir..
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond";
+
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            if ($this->input->post("teslim_tarih")) {
+                $teslim_tarihi = dateFormat('Y-m-d', $this->input->post("teslim_tarih"));
+            } else {
+                $teslim_tarihi = null;
+            }
+            if ($this->input->post("gecerlilik_tarih")) {
+                $gecerlilik_tarihi = dateFormat('Y-m-d', $this->input->post("gecerlilik_tarih"));
+            } else {
+                $gecerlilik_tarihi = null;
+            }
+
+            $insert = $this->Bond_model->add(
+                array(
+                    "contract_id" => $contract_id,
+                    "teminat_gerekce" => $this->input->post("teminat_gerekce"),
+                    "teminat_turu" => $this->input->post("teminat_turu"),
+                    "teminat_miktar" => $this->input->post("teminat_miktar"),
+                    "teminat_banka" => $this->input->post("teminat_banka"),
+                    "teslim_tarih" => $teslim_tarihi,
+                    "gecerlilik_tarih" => $gecerlilik_tarihi,
+                )
+            );
+
+            $record_id = $this->db->insert_id();
+
+// Yükleme yapılacak dosya yolu oluşturuluyor
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
+// Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+
+
+// Yükleme ayarları belirleniyor
+            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+
+// Yükleme kütüphanesi yükleniyor
+            $this->load->library("upload", $config);
+
+
+// Dosya yükleme işlemi
+            if (!$this->upload->do_upload("file")) {
+// Yükleme başarısız olduysa hata mesajı döndürülüyor
+                $error = $this->upload->display_errors();
+            } else {
+// Yükleme başarılıysa devam eden işlemler
+                $data = $this->upload->data();
+            }
+
+
+            $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = "contract_v";
+            $viewData->subViewFolder = "display";
+
+            $viewData->project = $project;
+            $viewData->bonds = $bonds;
+            $viewData->settings = $settings;
+            $viewData->item = $item;
+
+            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
+
+//kaydedilen elemanın id nosunu döküman ekleme
+// sına post ediyoruz
+
         } else {
-            return TRUE;
+
+            $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = "contract_v";
+            $viewData->subViewFolder = "display";
+
+            $viewData->project = $project;
+            $viewData->bonds = $bonds;
+            $viewData->settings = $settings;
+            $viewData->item = $item;
+
+            $viewData->form_error = true;
+            $viewData->error_modal = "AddBondModal"; // Hata modali için set edilen değişken
+
+            $form_errors = $this->session->flashdata('form_errors');
+
+            if (!empty($form_errors)) {
+                $viewData->form_errors = $form_errors;
+            } else {
+                $viewData->form_errors = null;
+            }
+
+            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
         }
+
     }
 
-    public function contract_advance($advance_day, $contract_day)
-    {
-        $date_diff = date_minus($advance_day, $contract_day);
-        if (($date_diff < 0)) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-
-    public function date_greater_than($date1, $date2_field)
-    {
-        $format_date1 = dateFormat('Y-m-d', "$date1");
-        $format_date2 = dateFormat('Y-m-d', "$date2_field");
-
-        if (strtotime($format_date1) > strtotime($format_date2)) {
-            return TRUE; // Karşılaştırma doğruysa TRUE döner
-        }
-        return FALSE; // Karşılaştırma yanlışsa FALSE döner
-
-    }
-
-    public function date_greater_than_equal($date1, $date2_field)
-    {
-        $format_date1 = dateFormat('Y-m-d', "$date1");
-        $format_date2 = dateFormat('Y-m-d', "$date2_field");
-
-        if (strtotime($format_date1) >= strtotime($format_date2)) {
-            return TRUE;
-        }
-        return FALSE;
-    }
-
-    public function date_less_than($date1, $date2_field)
-    {
-        $format_date1 = dateFormat('Y-m-d', "$date1");
-        $format_date2 = dateFormat('Y-m-d', "$date2_field");
-
-        if (strtotime($format_date1) < strtotime($format_date2)) {
-            return TRUE;
-        }
-        return FALSE;
-    }
-
-
-    public function date_less_than_equal($date1, $date2_field)
-    {
-        $format_date1 = dateFormat('Y-m-d', "$date1");
-        $format_date2 = dateFormat('Y-m-d', "$date2_field");
-
-        if (strtotime($format_date1) <= strtotime($format_date2)) {
-            return TRUE;
-        }
-        return FALSE;
-    }
 
     public function open_edit_collection_modal($collection_id)
     {
@@ -3004,6 +3105,28 @@ class Contract extends CI_Controller
         $viewData->edit_advance = $edit_advance;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_advance_modal_form", $viewData);
+    }
+
+    public function open_edit_bond_modal($bond)
+    {
+        // Verilerin getirilmesi
+
+        $edit_bond = $this->Bond_model->get(array("id" => $bond));
+        $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $settings = $this->Settings_model->get();
+
+        // Görünüm için değişkenlerin set edilmesi
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->settings = $settings;
+        $viewData->item = $item;
+        $viewData->project = $project;
+        $viewData->edit_bond = $edit_bond;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_bond_modal_form", $viewData);
     }
 
 
@@ -3065,7 +3188,7 @@ class Contract extends CI_Controller
                 "is_natural" => "<b>{field}</b> netural alanı rakamlardan oluşmalıdır",
                 "numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
                 "contract_collection" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden önce olamaz",
-             )
+            )
         );
 
         // Form Validation Calistirilir..
@@ -3354,6 +3477,83 @@ class Contract extends CI_Controller
             $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_b_advance", $viewData);
 
         }
+    }
+
+
+    public function contract_collection($collection_day, $contract_day)
+    {
+        $date_diff = date_minus($collection_day, $contract_day);
+        if (($date_diff < 0)) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function contract_advance($advance_day, $contract_day)
+    {
+        $date_diff = date_minus($advance_day, $contract_day);
+        if (($date_diff < 0)) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function contract_bond($bond_day, $contract_day)
+    {
+        $date_diff = date_minus($bond_day, $contract_day);
+        if (($date_diff < 0)) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function date_greater_than($date1, $date2_field)
+    {
+        $format_date1 = dateFormat('Y-m-d', "$date1");
+        $format_date2 = dateFormat('Y-m-d', "$date2_field");
+
+        if (strtotime($format_date1) > strtotime($format_date2)) {
+            return TRUE; // Karşılaştırma doğruysa TRUE döner
+        }
+        return FALSE; // Karşılaştırma yanlışsa FALSE döner
+
+    }
+
+    public function date_greater_than_equal($date1, $date2_field)
+    {
+        $format_date1 = dateFormat('Y-m-d', "$date1");
+        $format_date2 = dateFormat('Y-m-d', "$date2_field");
+
+        if (strtotime($format_date1) >= strtotime($format_date2)) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    public function date_less_than($date1, $date2_field)
+    {
+        $format_date1 = dateFormat('Y-m-d', "$date1");
+        $format_date2 = dateFormat('Y-m-d', "$date2_field");
+
+        if (strtotime($format_date1) < strtotime($format_date2)) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+
+    public function date_less_than_equal($date1, $date2_field)
+    {
+        $format_date1 = dateFormat('Y-m-d', "$date1");
+        $format_date2 = dateFormat('Y-m-d', "$date2_field");
+
+        if (strtotime($format_date1) <= strtotime($format_date2)) {
+            return TRUE;
+        }
+        return FALSE;
     }
 
 }

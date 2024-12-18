@@ -30,6 +30,10 @@
         ]
     });
 
+    $('#bondTable').DataTable({
+        "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
+    });
+
     $('#advanceTable').DataTable({
         "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
         "columnDefs": [
@@ -297,65 +301,6 @@
                 }
             }
         });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#expensesTable').DataTable({
-            "responsive": true, // Mobil uyumluluk
-            "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
-            "language": {
-                "search": "Ara:",
-                "lengthMenu": "Göster _MENU_ kayıt",
-                "info": "_TOTAL_ kayıt arasından _START_ - _END_ arası gösteriliyor",
-                "paginate": {
-                    "next": "Sonraki",
-                    "previous": "Önceki"
-                }
-            }
-        });
-    });
-
-    $('#advancesTable').DataTable({
-        "responsive": true, // Mobil uyumluluk
-        "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
-        "language": {
-            "search": "Ara:",
-            "lengthMenu": "Göster _MENU_ kayıt",
-            "info": "_TOTAL_ kayıt arasından _START_ - _END_ arası gösteriliyor",
-            "paginate": {
-                "next": "Sonraki",
-                "previous": "Önceki"
-            }
-        }
-    });
-    $('#depositsTable').DataTable({
-        "responsive": true, // Mobil uyumluluk
-        "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
-        "language": {
-            "search": "Ara:",
-            "lengthMenu": "Göster _MENU_ kayıt",
-            "info": "_TOTAL_ kayıt arasından _START_ - _END_ arası gösteriliyor",
-            "paginate": {
-                "next": "Sonraki",
-                "previous": "Önceki"
-            }
-        }
-    });
-    $('#personelTable').DataTable({
-        "responsive": true, // Mobil uyumluluk
-        "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
-        ordering: false,
-        "language": {
-            "search": "Ara:",
-            "lengthMenu": "Göster _MENU_ kayıt",
-            "info": "_TOTAL_ kayıt arasından _START_ - _END_ arası gösteriliyor",
-            "paginate": {
-                "next": "Sonraki",
-                "previous": "Önceki"
-            }
-        }
     });
 </script>
 
@@ -716,6 +661,30 @@
             }
         });
     }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#mySelect").select2({
+            matcher: function (params, data) {
+                // Arama kutusu boşsa tüm sonuçları göster
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+
+                // Küçük-büyük harf farkını kaldır
+                const term = params.term.toLowerCase();
+                const text = data.text.toLowerCase();
+
+                // Aranan terim metnin herhangi bir yerinde geçiyorsa eşleştir
+                if (text.indexOf(term) > -1) {
+                    return data;
+                }
+
+                // Diğerlerini hariç tut
+                return null;
+            }
+        });
+    });
 </script>
 
 
