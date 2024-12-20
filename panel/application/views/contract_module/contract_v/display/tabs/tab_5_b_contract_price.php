@@ -23,7 +23,6 @@
                                         <li>
                                             <span class="num"><?php echo $boq_item->code; ?></span>
                                             <span style="color: #91b0b4"><?php echo $boq_item->name; ?> (<?php echo $boq_item->unit; ?>)</span>
-
                                         </li>
                                     <?php } ?>
                                 <?php } ?>

@@ -216,6 +216,7 @@
       <workItem from="1734371772539" duration="10631000" />
       <workItem from="1734458430806" duration="5112000" />
       <workItem from="1734549418826" duration="4249000" />
+      <workItem from="1734728806951" duration="3926000" />
     </task>
     <servers />
   </component>
@@ -314,6 +315,15 @@
             <option name="methodName" value="report_download_excel" />
           </properties>
           <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
+          <line>3310</line>
+          <properties>
+            <option name="className" value="\Contract" />
+            <option name="methodName" value="edit_bond" />
+          </properties>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

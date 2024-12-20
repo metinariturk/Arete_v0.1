@@ -1,161 +1,176 @@
-<div class="row">
-    <div class="col-6">
-        <div class="card">
-            <div class="card-body">
-                <div class="mb-2">
-                    <div class="col-form-label">Dosya No</div>
-                    <div class="input-group"><span class="input-group-text" id="inputGroupPrepend">TM</span>
-                        <?php if (!empty(get_last_fn("bond"))) { ?>
-                            <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                                   type="number" placeholder="Proje Kodu" aria-describedby="inputGroupPrepend"
-                                   data-bs-original-title="" title="" name="dosya_no"
-                                   value="<?php echo isset($form_error) ? set_value("dosya_no") : increase_code_suffix("bond"); ?>">
-                            <?php
-                        } else { ?>
-                            <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                                   type="number" placeholder="Username" aria-describedby="inputGroupPrepend"
-                                   required="" data-bs-original-title="" title="" name="dosya_no"
-                                   value="<?php echo isset($form_error) ? set_value("dosya_no") : fill_empty_digits() . "1" ?>">
-                        <?php } ?>
+function edit_bond($bond_id)
+{
+if (!isAdmin()) {
+redirect(base_url("error"));
+}
 
-                        <?php if (isset($form_error)) { ?>
-                            <div class="invalid-feedback"><?php echo form_error("dosya_no"); ?></div>
-                            <div class="invalid-feedback">* Önerilen Proje Kodu
-                                : <?php echo increase_code_suffix("bond"); ?>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <div class="col-form-label">Teminat Türü</div>
+$this->load->model("Contract_model");
+$this->load->model("Settings_model");
 
-                    <select id="select2-demo-1" style="width: 100%;"
-                            class="form-control <?php cms_isset(form_error("teminat_turu"), "is-invalid", ""); ?>"
-                            data-plugin="select2" name="teminat_turu">
-                        <option selected="selected"
-                                value="<?php echo isset($form_error) ? set_value("teminat_turu") : ""; ?>"><?php echo isset($form_error) ? set_value("teminat_turu") : "Seçiniz"; ?>
-                        </option>
-                        <?php $teminat_turleri = get_as_array($settings->teminat_turu);
-                        foreach ($teminat_turleri as $teminat_turu) {
-                            echo "<option value='$teminat_turu'>$teminat_turu</option>";
-                        } ?>
-                    </select>
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("teminat_turu"); ?></div>
-                    <?php } ?>
-                </div>
+$edit_bond = $this->Bond_model->get(array("id" => $bond_id));
+$item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
+$project = $this->Project_model->get(array("id" => $item->proje_id));
+$settings = $this->Settings_model->get();
+$bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
-                <div class="mb-2">
-                    <div class="col-form-label">Teminat Veren Banka</div>
+$viewData = new stdClass();
 
-                    <select id="select2-demo-1" style="width: 100%;" class="form-control <?php cms_isset(form_error("teminat_banka"), "is-invalid", ""); ?>"
-                            data-plugin="select2" name="teminat_banka">
-                        <option selected="selected"
-                                value="<?php echo isset($form_error) ? set_value("teminat_banka") : ""; ?>"><?php echo isset($form_error) ? set_value("teminat_banka") : "Seçiniz"; ?>
-                        </option>
-                        <?php $bankalar = get_as_array($settings->bankalar);
-                        foreach ($bankalar as $banka) {
-                            echo "<option value='$banka'>$banka</option>";
-                        } ?>
-                    </select>
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("teminat_banka"); ?></div>
-                    <?php } ?>
-                </div>
-                <div class="col-form-label">
-                    <input type="checkbox" name="fiyat_fark" />
-                    <label for="custome-checkbox2">Fiyat Farkı Teminatı</label>
-                </div>
+$viewData->viewModule = $this->moduleFolder;
+$viewData->viewFolder = "contract_v";
+$viewData->subViewFolder = "display";
 
+$viewData->project = $project;
+$viewData->bonds = $bonds;
+$viewData->settings = $settings;
+$viewData->item = $item;
 
+$this->load->library("form_validation");
 
-            </div>
-        </div>
-    </div>
-    <div class="col-6">
-        <div class="card">
-            <div class="card-body">
-                <div class="mb-2">
-                    <div class="col-form-label">Teminat Tutar</div>
-                    <input type="number" step="any" id="calA" onblur="calcular()" onfocus="calcular()"
-                           onChange="myFunction(calA)"
-                           class="form-control <?php cms_isset(form_error("teminat_miktar"), "is-invalid", ""); ?>"
-                           name="teminat_miktar"
-                           placeholder="Teminat Tutar"
-                           value="<?php echo isset($form_error) ? set_value("teminat_miktar") : ""; ?>">
+$contract_price = $item->sozlesme_bedel;
+$sozlesme_tarih = dateFormat_dmy($item->sozlesme_tarih);
 
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("teminat_miktar"); ?></div>
-                    <?php } ?>
-                </div>
+$this->form_validation->set_rules("tahsilat_tarih", "Tahsilat Tarihi", "callback_contract_bond[$sozlesme_tarih]|required|trim");
+$this->form_validation->set_rules("tahsilat_turu", "Tahsilat Türü", "required|trim");
 
-                <div class="mb-2">
-                    <div class="row">
-                        <div class="col-sm-4 col-md-3">
-                            <div class="col-form-label">Teminat Gerekçe</div>
-                            <div>
-                                <input hidden name="teminat_gerekce" value="contract">
-                                <span>Sözleşme Teminatı</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4 col-md-3">
-                            <div class="col-form-label">Sözleşme Tutarı</div>
-                            <div>
-                                <input hidden id="calB" onblur="calcular()" onfocus="calcular()"
-                                       onChange="myFunction(calB)"
-                                       name="sozlesme_bedel"
-                                       value="<?php echo get_from_id("contract", "sozlesme_bedel", $contract_id); ?>"/>
-                                <span><?php echo money_format(get_from_id("contract", "sozlesme_bedel", $contract_id)) . " " . get_currency($contract_id); ?></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4 col-md-3">
-                            <div class="col-form-label">Sözleşmeye Göre Teminat Oran</div>
-                            <span>%</span>
-                        </div>
-                        <div class="col-sm-4 col-md-3">
-                            <div class="col-form-label">Teminatın Sözleşmeye Oranı</div>
-                            <input hidden type="text" id="calD" value="" name="sozlesme_oran">
-                            %<span id="calC" onblur="calcular()" onfocus="calcular()"></span>
-                        </div>
-                    </div>
-                </div>
+if (!empty($this->input->post('vade_tarih'))) {
+$this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_bond[$sozlesme_tarih]|trim");
+}
+
+if ($this->input->post('tahsilat_turu') == "Çek") {
+$this->form_validation->set_rules("vade_tarih", "Vade Tarihi", "callback_contract_bond[$sozlesme_tarih]|trim|required");
+}
+
+$this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "required|numeric|required|trim");
+
+if ($this->input->post('onay') != "on") {
+$this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "required|less_than_equal_to[$contract_price]|numeric|trim");
+} else {
+$this->form_validation->set_rules("tahsilat_miktar", "Tahsilat Miktarı", "required|numeric|required|trim");
+}
+$this->form_validation->set_rules("aciklama", "Açıklama", "required|trim");
+
+$this->form_validation->set_message(
+array(
+"required" => "<b>{field}</b> alanı doldurulmalıdır",
+"less_than_equal_to" => "<b>{field}</b> <b>{param}</b> 'den küçük olmalıdır",
+"is_natural" => "<b>{field}</b> netural alanı rakamlardan oluşmalıdır",
+"numeric" => "<b>{field}</b> numeric alanı rakamlardan oluşmalıdır",
+"contract_bond" => "<b>{field}</b> sözleşme tarihi olan <b>{param}</b> tarhihinden önce olamaz",
+)
+);
+
+// Form Validation Calistirilir..
+$validate = $this->form_validation->run();
+
+if ($validate) {
+
+$path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond";
+
+if ($this->input->post("tahsilat_tarih")) {
+$tahsilat_tarihi = dateFormat('Y-m-d', $this->input->post("tahsilat_tarih"));
+} else {
+$tahsilat_tarihi = null;
+}
+if ($this->input->post("vade_tarih")) {
+$vade_tarihi = dateFormat('Y-m-d', $this->input->post("vade_tarih"));
+} else {
+$vade_tarihi = null;
+}
+
+$update = $this->Bond_model->update(
+array(
+"id" => $bond_id
+),
+array(
+"tahsilat_tarih" => $tahsilat_tarihi,
+"vade_tarih" => $vade_tarihi,
+"tahsilat_miktar" => $this->input->post("tahsilat_miktar"),
+"tahsilat_turu" => $this->input->post("tahsilat_turu"),
+"aciklama" => $this->input->post("aciklama"),
+)
+);
+
+// Yükleme yapılacak dosya yolu oluşturuluyor
+$path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$bond_id";
+// Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+if (!is_dir($path)) {
+mkdir("$path", 0777, TRUE);
+}
+
+$file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
 
 
-                <div class="mb-2">
-                    <div class="col-form-label">Teminat Başlangıç Tarihi<?php echo $limit_check; ?></div>
-                    <input class="datepicker-here form-control digits <?php cms_isset(form_error("teslim_tarihi"), "is-invalid", ""); ?>"
-                           type="text"
-                           name="teslim_tarihi"
-                           value="<?php echo isset($form_error) ? set_value("teslim_tarihi") : ""; ?>"
-                           data-options="{ format: 'DD-MM-YYYY' }"
-                           data-language="tr">
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("teslim_tarihi"); ?></div>
-                    <?php } ?>
-                </div>
+// Yükleme ayarları belirleniyor
+$config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+$config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+$config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+$config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
-                <div class="mb-2">
-                    <div class="col-form-label">Teminat Geçerlilik Süresi <br>
-                        <input type="checkbox" name="sure_kontrol" onclick="enable()" id="bond_control" <?php echo $limit_check; ?>/>
-                        <label for="custome-checkbox2">Süresiz Teminat</label>
-                    </div>
-
-                    <input type="number"
-                           class="form-control <?php cms_isset(form_error("teminat_sure"), "is-invalid", ""); ?>"
-                           id="bond_limit" placeholder="Geçerlilik Süre (Gün)"
-                           name="teminat_sure" id="bond_limit"
-                           value="<?php echo isset($form_error) ? set_value("teminat_sure") : ""; ?>"
-                        <?php echo $limit_input; ?>>
-                    <?php if (isset($form_error)) { ?>
-                        <div class="invalid-feedback"><?php echo form_error("teminat_sure"); ?></div>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
+// Yükleme kütüphanesi yükleniyor
+$this->load->library("upload", $config);
 
 
+// Dosya yükleme işlemi
+if (!$this->upload->do_upload("file")) {
+// Yükleme başarısız olduysa hata mesajı döndürülüyor
+$error = $this->upload->display_errors();
+} else {
+// Yükleme başarılıysa devam eden işlemler
+$data = $this->upload->data();
+}
 
+$edit_bond = $this->Bond_model->get(array("id" => $bond_id));
+$item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
+$project = $this->Project_model->get(array("id" => $item->proje_id));
+$settings = $this->Settings_model->get();
+$bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
+$viewData = new stdClass();
+
+$viewData->viewModule = $this->moduleFolder;
+$viewData->viewFolder = "contract_v";
+$viewData->subViewFolder = "display";
+
+$viewData->project = $project;
+$viewData->bonds = $bonds;
+$viewData->settings = $settings;
+$viewData->item = $item;
+
+$this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
+
+//kaydedilen elemanın id nosunu döküman ekleme
+// sına post ediyoruz
+
+} else {
+
+$edit_bond = $this->Bond_model->get(array("id" => $bond_id));
+$item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
+$project = $this->Project_model->get(array("id" => $item->proje_id));
+$settings = $this->Settings_model->get();
+$bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
+
+$viewData = new stdClass();
+
+$viewData->viewModule = $this->moduleFolder;
+$viewData->viewFolder = "contract_v";
+$viewData->subViewFolder = "display";
+
+$viewData->edit_bond = $edit_bond;
+$viewData->project = $project;
+$viewData->bonds = $bonds;
+$viewData->settings = $settings;
+$viewData->item = $item;
+
+$viewData->form_error = true;
+$viewData->error_modal = "EditBondModal"; // Hata modali için set edilen değişken
+
+if (!empty($form_errors)) {
+$viewData->form_errors = $form_errors;
+} else {
+$viewData->form_errors = null;
+}
+
+$this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
+
+}
+}
