@@ -73,7 +73,7 @@ $activeModal = isset($tabMapping[$active_module]) ? $tabMapping[$active_module][
         var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
 
         $.post(formAction, formData, function (response) {
-            $(".refresh_group").html(response);
+            $(".refresh_tab_5").html(response);
         });
     }
 </script>

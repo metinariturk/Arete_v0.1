@@ -56,7 +56,7 @@ class Guest extends CI_Controller
             redirect(base_url("Errors"));
         }
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";

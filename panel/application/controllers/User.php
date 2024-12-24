@@ -76,7 +76,7 @@ class user extends CI_Controller
             "id" => $user->id
         ));
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -100,7 +100,7 @@ class user extends CI_Controller
         $companys = $this->Company_model->get_all();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->settings = $settings;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -131,7 +131,7 @@ class user extends CI_Controller
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
@@ -165,7 +165,7 @@ class user extends CI_Controller
         $companys = $this->Company_model->get_all();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
@@ -283,7 +283,7 @@ class user extends CI_Controller
             $companys = $this->Company_model->get_all();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->settings = $settings;
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -405,7 +405,7 @@ class user extends CI_Controller
             $companys = $this->Company_model->get_all();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Update_Folder";

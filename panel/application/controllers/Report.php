@@ -64,7 +64,7 @@ class Report extends CI_Controller
         $items = $this->Report_model->get_all(array());
         $active_sites = $this->Site_model->get_all();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -80,7 +80,7 @@ class Report extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Report_model->get_all(array());
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -107,7 +107,7 @@ class Report extends CI_Controller
         $active_workgroups = json_decode($site->active_group, true);
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
@@ -147,7 +147,7 @@ class Report extends CI_Controller
         $active_sites = $this->Site_model->get_all(array());
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
@@ -220,7 +220,7 @@ class Report extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -472,7 +472,7 @@ class Report extends CI_Controller
 
                 $viewData->settings = $settings;
 
-                /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+                
                 $viewData->viewModule = $this->moduleFolder;
                 $viewData->viewFolder = $this->viewFolder;
                 $viewData->subViewFolder = "$this->Add_Folder";

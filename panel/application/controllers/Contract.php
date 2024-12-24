@@ -94,7 +94,7 @@ class Contract extends CI_Controller
             "offer" => 0
         ), "sozlesme_tarih DESC");
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list_contract";
@@ -102,33 +102,7 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function add_contract_price($sub_group_id)
-    {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Boq_model");
 
-
-        $viewData = new stdClass();
-        /** Tablodan Verilerin Getirilmesi.. */
-        $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
-        $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
-        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, 'leader' => 1));
-        $contract = $this->Contract_model->get(array('id' => $sub_group->contract_id));
-
-
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add_contract_price";
-        $viewData->sub_group = $sub_group;
-        $viewData->main_group = $main_group;
-        $viewData->contract = $contract;
-        $viewData->leaders = $leaders;
-
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-    }
 
     public function offer_list()
     {
@@ -144,7 +118,7 @@ class Contract extends CI_Controller
             "offer" => 1
         ));
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list_offer";
@@ -167,7 +141,7 @@ class Contract extends CI_Controller
             "offer" => null,
         ), "id DESC");
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list_sub";
@@ -191,7 +165,7 @@ class Contract extends CI_Controller
             "isActive" => default_table()
         ));
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Select_Folder";
@@ -248,7 +222,7 @@ class Contract extends CI_Controller
         $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
         $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "code ASC");
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
@@ -323,7 +297,6 @@ class Contract extends CI_Controller
         $companys = $this->Company_model->get_all(array());
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_main";
@@ -368,7 +341,6 @@ class Contract extends CI_Controller
         $main_contract = $this->Contract_model->get(array("id" => $main_contract_id));
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_sub";
@@ -408,7 +380,6 @@ class Contract extends CI_Controller
         $companys = $this->Company_model->get_all(array());
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_offer";
@@ -547,7 +518,6 @@ class Contract extends CI_Controller
             $companys = $this->Company_model->get_all(array());
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_main";
@@ -807,7 +777,7 @@ class Contract extends CI_Controller
             $settings = $this->Settings_model->get();
             $companys = $this->Company_model->get_all(array());
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_offer";
@@ -984,7 +954,7 @@ class Contract extends CI_Controller
             $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
             $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
             $payments = $this->Payment_model->get_all(array('contract_id' => $id));
-            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "rank ASC");
+            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "code ASC");
             $sites = $this->Site_model->get_all(array('contract_id' => $id));
             $settings = $this->Settings_model->get();
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
@@ -1048,7 +1018,7 @@ class Contract extends CI_Controller
 
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "update_payment";
@@ -1157,7 +1127,7 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "delete_form";
@@ -1602,37 +1572,35 @@ class Contract extends CI_Controller
 
             $item = $this->Contract_model->get(array("id" => $contract_id));
 
-            $criteria = array(
-                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
-            );
-
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
             $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+            $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->item = $item;
-
+            $viewData->subViewFolder = "display";
             $viewData->main_groups = $main_groups;
             $viewData->sub_groups = $sub_groups;
+
+            $viewData->leaders = $leaders;
+
 
         } else {
 
             $item = $this->Contract_model->get(array("id" => $contract_id));
-            $criteria = array(
-                'isActive' => 1,  // isActive özelliğine göre büyükten küçüğe sırala
-            );
-
 
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
             $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
-
+            $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
+            $viewData->subViewFolder = "display";
+            $viewData->leaders = $leaders;
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->item = $item;
@@ -1642,7 +1610,7 @@ class Contract extends CI_Controller
 
         }
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true);
 
         echo $render_boq;
 
@@ -1657,10 +1625,11 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->item = $item;
+        $viewData->subViewFolder = "display";
 
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
@@ -1723,18 +1692,24 @@ class Contract extends CI_Controller
 
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "code ASC");
+        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
 
 
         $viewData = new stdClass();
+        $viewData->leaders = $leaders;
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->subViewFolder = "display";
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true);
 
         echo $render_boq;
 
@@ -1754,18 +1729,22 @@ class Contract extends CI_Controller
 
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $group->contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $group->contract_id, "sub_group" => 1));
+        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $group->contract_id, 'leader' => 1));
 
 
         $viewData = new stdClass();
+        $viewData->leaders = $leaders;
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
+        $viewData->subViewFolder = "display";
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_7_price_group", $viewData, true);
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true);
         echo $render_boq;
 
     }
@@ -1823,7 +1802,7 @@ class Contract extends CI_Controller
             $viewData = new stdClass();
             $viewData->leaders = $leaders;
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
             $viewData->viewFolder = $this->viewFolder;
             $viewData->viewModule = $this->moduleFolder;
             $viewData->subViewFolder = "display";
@@ -1833,7 +1812,7 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
 
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
             echo $render_html;
 
         } else {
@@ -1844,7 +1823,7 @@ class Contract extends CI_Controller
             $viewData = new stdClass();
             $viewData->leaders = $leaders;
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
             $viewData->viewFolder = $this->viewFolder;
             $viewData->viewModule = $this->moduleFolder;
 
@@ -1855,7 +1834,7 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
 
 
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
+            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
             echo $render_html;
 
         }
@@ -1905,7 +1884,7 @@ class Contract extends CI_Controller
         $viewData = new stdClass();
         $viewData->leaders = $leaders;
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
@@ -1915,7 +1894,7 @@ class Contract extends CI_Controller
         $viewData->settings = $settings;
 
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
         echo $render_html;
 
 
@@ -2014,7 +1993,7 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_8_price_book", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
         echo $render_html;
 
     }
@@ -2030,7 +2009,7 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
@@ -2064,7 +2043,7 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
@@ -2104,7 +2083,7 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
@@ -2149,7 +2128,7 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+
         $viewData->viewFolder = $this->viewFolder;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->subViewFolder = "display";
@@ -2517,7 +2496,7 @@ class Contract extends CI_Controller
             $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
             $payments = $this->Payment_model->get_all(array('contract_id' => $contract->id));
             $site = $this->Site_model->get(array('contract_id' => $contract->id));
-            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1),"code ASC");
             $settings = $this->Settings_model->get();
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1));
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, 'leader' => 1));
@@ -3128,6 +3107,35 @@ class Contract extends CI_Controller
         $viewData->edit_bond = $edit_bond;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_bond_modal_form", $viewData);
+    }
+
+    public function open_edit_contract_price($sub_group_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+        $this->load->model("Boq_model");
+
+
+        $viewData = new stdClass();
+        /** Tablodan Verilerin Getirilmesi.. */
+        $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
+        $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
+        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, 'leader' => 1));
+        $contract = $this->Contract_model->get(array('id' => $sub_group->contract_id));
+
+
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->sub_group = $sub_group;
+        $viewData->main_group = $main_group;
+        $viewData->contract = $contract;
+        $viewData->leaders = $leaders;
+        $viewData->edit_contract_price = $sub_group;
+
+       $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_contract_price_modal_form", $viewData);
     }
 
 

@@ -71,7 +71,7 @@ class Project extends CI_Controller
         $settings = $this->Settings_model->get();
         $users = $this->User_model->get_all();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";
@@ -224,7 +224,7 @@ class Project extends CI_Controller
                 $items = $this->Project_model->get_all();
                 $settings = $this->Settings_model->get();
 
-                /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+                
                 $viewData->viewModule = $this->moduleFolder;
                 $viewData->viewFolder = $this->viewFolder;
                 $viewData->subViewFolder = "add";
@@ -257,7 +257,7 @@ class Project extends CI_Controller
             ));
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "list";

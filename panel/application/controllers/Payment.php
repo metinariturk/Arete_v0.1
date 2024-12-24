@@ -71,7 +71,7 @@ class Payment extends CI_Controller
         $items = $this->Payment_model->get_all(array());
         $contracts = $this->Contract_model->get_all(array(),"sozlesme_tarih DESC");
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -90,7 +90,7 @@ class Payment extends CI_Controller
         $active_contracts = $this->Contract_model->get_all(array()
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -110,8 +110,8 @@ class Payment extends CI_Controller
         $next_payment = $this->Payment_model->get(array("hakedis_no" => $payment->hakedis_no+1, "contract_id" =>$payment->contract_id));
 
         $leaders = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "leader" => 1), "code ASC");
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "rank ASC");
-        $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => null, "sub_group" => null,), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "code ASC");
+        $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => null, "sub_group" => null,), "code ASC");
         $settings = $this->Settings_model->get();
         $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract->id));
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Payment/$payment->hakedis_no/";
@@ -121,7 +121,7 @@ class Payment extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -349,7 +349,7 @@ class Payment extends CI_Controller
             $newprices = $this->Newprice_model->get_all(array('contract_id' => $contract->id));
             $payments = $this->Payment_model->get_all(array('contract_id' => $contract->id));
             $site = $this->Site_model->get(array('contract_id' => $contract->id));
-            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+            $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "code ASC");
             $settings = $this->Settings_model->get();
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1));
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, 'leader' => 1));
@@ -543,7 +543,7 @@ class Payment extends CI_Controller
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->active_tab = $active_tab;
@@ -571,7 +571,7 @@ class Payment extends CI_Controller
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->active_tab = $active_tab;
@@ -783,7 +783,7 @@ class Payment extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->active_tab = $active_tab;
@@ -922,7 +922,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -1103,7 +1103,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -1287,7 +1287,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -1421,7 +1421,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -1548,7 +1548,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -1699,7 +1699,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -1986,7 +1986,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -2126,7 +2126,7 @@ class Payment extends CI_Controller
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "main_group" => 1), "code ASC");
 
         $payment_no = get_from_id("payment", "hakedis_no", "$payment_id");
         $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $contract_id, "sign_page" => "contractor_sign"));
@@ -2833,7 +2833,7 @@ class Payment extends CI_Controller
             $this->session->set_flashdata("alert", $alert);
 
             $viewData = new stdClass();
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -2856,7 +2856,7 @@ class Payment extends CI_Controller
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -2906,7 +2906,7 @@ class Payment extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
@@ -2977,7 +2977,7 @@ class Payment extends CI_Controller
         $all_calculate = $this->input->post('calculate_all');
         $calculate_seperate_sub = $this->input->post('calculate_seperate_sub');
 
-        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "rank ASC");
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "code ASC");
         $work_group = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "group_sign"), "rank ASC");
 
         $advance_given = sum_from_table("advance", "avans_miktar", $contract->id);

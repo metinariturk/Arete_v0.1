@@ -118,7 +118,7 @@ class login extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->form_error = true;
@@ -246,7 +246,7 @@ class login extends CI_Controller
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = "forget_password";
 
@@ -485,7 +485,7 @@ class login extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = "temp_password";
         $viewData->form_error = true;

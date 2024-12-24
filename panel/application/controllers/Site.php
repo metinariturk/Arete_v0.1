@@ -84,7 +84,7 @@ class Site extends CI_Controller
         );
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -132,7 +132,7 @@ class Site extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -167,7 +167,7 @@ class Site extends CI_Controller
 
         $users = $this->User_model->get_all(array());
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add";
@@ -319,7 +319,7 @@ class Site extends CI_Controller
 
             $users = $this->User_model->get_all(array());
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add";
@@ -427,7 +427,7 @@ class Site extends CI_Controller
         $month = date('n');
         $year = date('Y');
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
 
         $viewData->viewFolder = $this->viewFolder;
@@ -773,7 +773,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -828,7 +828,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -876,7 +876,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -933,7 +933,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -1047,7 +1047,7 @@ class Site extends CI_Controller
             $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
 
             $viewData = new stdClass();
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -1078,7 +1078,7 @@ class Site extends CI_Controller
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -1121,7 +1121,7 @@ class Site extends CI_Controller
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
         $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
@@ -1944,7 +1944,7 @@ class Site extends CI_Controller
             $item = $this->Site_model->get(array("id" => $site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
@@ -1961,7 +1961,7 @@ class Site extends CI_Controller
             /** Tablodan Verilerin Getirilmesi.. */
             $item = $this->Site_model->get(array("id" => $site_id));
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
@@ -2594,7 +2594,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
@@ -2625,7 +2625,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";

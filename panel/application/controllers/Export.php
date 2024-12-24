@@ -627,7 +627,7 @@ class Export extends CI_Controller
         $rowNum++;
 
         // Sözleşme ve ana grup bilgilerini al
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "code ASC");
 
         $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
         $sheet->setCellValue("B{$rowNum}", "SÖZLEŞME GRUPLAR ÖZETİ");
@@ -684,10 +684,10 @@ class Export extends CI_Controller
 
 // Tüm ana ve alt grupları gezip genel toplamı hesaplayalım
         foreach ($prices_main_groups as $prices_main_group) {
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "code ASC");
 
             foreach ($sub_groups as $sub_group) {
-                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "code ASC");
 
                 foreach ($boq_items as $boq_item) {
                     $general_total += $boq_item->qty * $boq_item->price;
@@ -729,12 +729,12 @@ class Export extends CI_Controller
             $rowNum++;
 
             // Alt grupları al
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "code ASC");
 
             foreach ($sub_groups as $sub_group) {
                 $sub_group_total = 0;
                 // Alt grup içindeki BOQ öğelerini al
-                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "code ASC");
 
                 foreach ($boq_items as $boq_item) {
                     // Alt grup toplamını hesapla
@@ -960,7 +960,7 @@ class Export extends CI_Controller
         $rowNum++;
 
         // Sözleşme ve ana grup bilgilerini al
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "code ASC");
 
         $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
         $sheet->setCellValue("B{$rowNum}", "POZ LİSTESİ");
@@ -1253,7 +1253,7 @@ class Export extends CI_Controller
         $rowNum++;
 
         // Sözleşme ve ana grup bilgilerini al
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "code ASC");
 
         $sheet->mergeCells("B{$rowNum}:F{$rowNum}");  // B-F sütunları birleştirildi
         $sheet->setCellValue("B{$rowNum}", "İŞ GRUPLARINA GÖRE İMALAT LİSTESİ");
@@ -1330,7 +1330,7 @@ class Export extends CI_Controller
             ]);
             $rowNum++;
 
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "code ASC");
 
             foreach ($sub_groups as $sub_group) {
                 // Alt grup satırı
@@ -1378,7 +1378,7 @@ class Export extends CI_Controller
                 // Alt grup ürünleri ve alt grup toplamını hesaplamak için toplam değişkeni
                 // Alt grup ürünleri ve alt grup toplamını hesaplamak için toplam değişkeni
                 $sub_group_total = 0;
-                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "code ASC");
                 $i = 1;
                 $startRow = $rowNum; // Alt grup ürünlerinin başladığı satır numarası
 
@@ -1457,7 +1457,7 @@ class Export extends CI_Controller
 
         // Veri Satırları
         $this->load->model('Contract_price_model');
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "code ASC");
 
         foreach ($prices_main_groups as $prices_main_group) {
             $pdf->SetFont('dejavusans', 'B', 8);
@@ -1466,7 +1466,7 @@ class Export extends CI_Controller
             $pdf->Cell(185, 6, "{$prices_main_group->code} {$prices_main_group->name}", 1, 0, 'L', 1);
             $pdf->Ln();
 
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "code ASC");
 
             foreach ($sub_groups as $sub_group) {
 
@@ -1486,7 +1486,7 @@ class Export extends CI_Controller
                 $pdf->Ln();
 
                 // Alt grup ürünlerini ekle
-                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "code ASC");
 
                 $pdf->SetFont('dejavusans', '', 8);
                 $sub_group_total = 0;
@@ -1573,7 +1573,7 @@ class Export extends CI_Controller
         $rowNum++;
 
         // Sözleşme ve ana grup bilgilerini al
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "code ASC");
 
         $sheet->mergeCells("B{$rowNum}:H{$rowNum}");  // B-F sütunları birleştirildi
         $sheet->setCellValue("B{$rowNum}", "SÖZLEŞME BİRİM FİYAT VE MİKTARLARI");
@@ -1650,7 +1650,7 @@ class Export extends CI_Controller
             ]);
             $rowNum++;
 
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "code ASC");
 
             foreach ($sub_groups as $sub_group) {
                 // Alt grup satırı
@@ -1700,7 +1700,7 @@ class Export extends CI_Controller
                 // Alt grup ürünleri ve alt grup toplamını hesaplamak için toplam değişkeni
                 // Alt grup ürünleri ve alt grup toplamını hesaplamak için toplam değişkeni
                 $sub_group_total = 0;
-                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "code ASC");
                 $i = 1;
                 $startRow = $rowNum; // Alt grup ürünlerinin başladığı satır numarası
 
@@ -1831,7 +1831,7 @@ class Export extends CI_Controller
 
         // Veri Satırları
         $this->load->model('Contract_price_model');
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "rank ASC");
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1), "code ASC");
 
         foreach ($prices_main_groups as $prices_main_group) {
             $pdf->SetFont('dejavusans', 'B', 8);
@@ -1840,7 +1840,7 @@ class Export extends CI_Controller
             $pdf->Cell(185, 6, "{$prices_main_group->code} {$prices_main_group->name}", 1, 0, 'L', 1);
             $pdf->Ln();
 
-            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "rank ASC");
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_group" => 1, "parent" => $prices_main_group->id), "code ASC");
 
             foreach ($sub_groups as $sub_group) {
 
@@ -1862,7 +1862,7 @@ class Export extends CI_Controller
                 $pdf->Ln();
 
                 // Alt grup ürünlerini ekle
-                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+                $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "code ASC");
 
                 $pdf->SetFont('dejavusans', '', 8);
                 $sub_group_total = 0;

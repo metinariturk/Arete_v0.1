@@ -57,7 +57,7 @@ class Bond extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -78,7 +78,7 @@ class Bond extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -117,7 +117,7 @@ class Bond extends CI_Controller
         $settings = $this->Settings_model->get();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
@@ -154,7 +154,7 @@ class Bond extends CI_Controller
         $settings = $this->Settings_model->get();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_advance";
@@ -195,7 +195,7 @@ class Bond extends CI_Controller
         $settings = $this->Settings_model->get();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_contract";
@@ -231,7 +231,7 @@ class Bond extends CI_Controller
         $settings = $this->Settings_model->get();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_costinc";
@@ -266,7 +266,7 @@ class Bond extends CI_Controller
         $contract_id = contract_id_module("bond", $id);
         $project_id = project_id_cont($contract_id);
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$type_page";
@@ -293,7 +293,7 @@ class Bond extends CI_Controller
         $contract_id = contract_id_module("bond", $id);
         $project_id = project_id_cont($contract_id);
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -446,7 +446,7 @@ class Bond extends CI_Controller
             $settings = $this->Settings_model->get();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_advance";
@@ -615,7 +615,7 @@ class Bond extends CI_Controller
             $settings = $this->Settings_model->get();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_contract";
@@ -780,7 +780,7 @@ class Bond extends CI_Controller
             $settings = $this->Settings_model->get();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_costinc";
@@ -947,7 +947,7 @@ class Bond extends CI_Controller
             $settings = $this->Settings_model->get();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update_advance";
@@ -1126,7 +1126,7 @@ class Bond extends CI_Controller
             $settings = $this->Settings_model->get();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update_contract";
@@ -1302,7 +1302,7 @@ class Bond extends CI_Controller
             $settings = $this->Settings_model->get();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update_costinc";

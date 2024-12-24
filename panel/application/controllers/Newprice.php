@@ -57,7 +57,7 @@ class Newprice extends CI_Controller
         $active_contracts = $this->Contract_model->get_all(array());
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -79,7 +79,7 @@ class Newprice extends CI_Controller
         $active_contracts = $this->Contract_model->get_all(array());
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
@@ -105,7 +105,7 @@ class Newprice extends CI_Controller
         $project_id = project_id_cont($contract_id);
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
@@ -131,7 +131,7 @@ class Newprice extends CI_Controller
         echo $contract_id = contract_id_module("newprice", $id);
         echo $project_id = project_id_cont($contract_id);
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -251,7 +251,7 @@ class Newprice extends CI_Controller
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Add_Folder";
@@ -374,7 +374,7 @@ class Newprice extends CI_Controller
 
             $contract_id = get_from_any("newprice", "contract_id", "id", "$id");
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Update_Folder";

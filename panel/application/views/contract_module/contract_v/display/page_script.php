@@ -688,4 +688,4 @@
 </script>
 
 
-<!--Rapor İmza Ayarı-->
+<!--Sözleşme Poz Ekleme Ekranı Arama Çubuğu-->

@@ -62,7 +62,7 @@ class Extime extends CI_Controller
         );
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -80,7 +80,7 @@ class Extime extends CI_Controller
         $items = $this->Extime_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array());
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -104,7 +104,7 @@ class Extime extends CI_Controller
         );
         $settings = $this->Settings_model->get();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_contract";
@@ -135,7 +135,7 @@ class Extime extends CI_Controller
         );
         $settings = $this->Settings_model->get();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_costinc";
@@ -201,7 +201,7 @@ class Extime extends CI_Controller
         $contract_id = contract_id_module("extime", "$id");
         $project_id = project_id_cont($contract_id);
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -335,7 +335,7 @@ class Extime extends CI_Controller
             $viewData = new stdClass();
             $settings = $this->Settings_model->get();
             $viewData->settings = $settings;
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_contract";
@@ -480,7 +480,7 @@ class Extime extends CI_Controller
             );
 
             $viewData->settings = $settings;
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_costinc";
@@ -502,7 +502,7 @@ class Extime extends CI_Controller
         $settings = $this->Settings_model->get();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
@@ -656,7 +656,7 @@ class Extime extends CI_Controller
 
             $settings = $this->Settings_model->get();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update_contract";

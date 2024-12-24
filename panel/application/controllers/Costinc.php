@@ -60,7 +60,7 @@ class Costinc extends CI_Controller
         );
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -81,7 +81,7 @@ class Costinc extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -110,7 +110,7 @@ class Costinc extends CI_Controller
             $contract_id = contract_id_module("newprice", "$newprice_id");
         }
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_newprice";
@@ -143,7 +143,7 @@ class Costinc extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add_contract";
@@ -164,7 +164,7 @@ class Costinc extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
@@ -206,7 +206,7 @@ class Costinc extends CI_Controller
         $contract_id = contract_id_module("costinc", $id);
         $project_id = project_id_cont($contract_id);
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -330,7 +330,7 @@ class Costinc extends CI_Controller
             $settings = $this->Settings_model->get();
             $viewData->settings = $settings;
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_newprice";
@@ -452,7 +452,7 @@ class Costinc extends CI_Controller
             $settings = $this->Settings_model->get();
             $viewData->settings = $settings;
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add_contract";
@@ -572,7 +572,7 @@ class Costinc extends CI_Controller
             );
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update_newprice";
@@ -693,7 +693,7 @@ class Costinc extends CI_Controller
 
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update_contract";

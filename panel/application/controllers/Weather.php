@@ -38,7 +38,7 @@ class Weather extends CI_Controller
             array()
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->subViewFolder = "display";
         $viewData->items = $items;
 
@@ -54,7 +54,7 @@ class Weather extends CI_Controller
             array()
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->subViewFolder = "display";
         $viewData->items = $items;
         $viewData->report = $this->Report_model->get(array("id" => $report_id));
@@ -67,7 +67,7 @@ class Weather extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add";
         $viewData->report_id = $report_id;
@@ -161,7 +161,7 @@ class Weather extends CI_Controller
                 array()
             );
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->subViewFolder = "display";
             $viewData->form_error = true;
 
@@ -186,7 +186,7 @@ class Weather extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "update";
         $viewData->item = $item;
@@ -266,7 +266,7 @@ class Weather extends CI_Controller
 
             $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "update";
             $viewData->form_error = true;

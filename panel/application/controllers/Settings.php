@@ -37,7 +37,7 @@ class Settings extends CI_Controller
 
         $viewData->subViewFolder = "display";
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewFolder = $this->viewFolder;
         $viewData->item = $item;
 
@@ -48,7 +48,7 @@ class Settings extends CI_Controller
     {
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add";
 
@@ -158,7 +158,7 @@ class Settings extends CI_Controller
         $viewData = new stdClass();
 
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add";
             $viewData->form_error = true;
@@ -309,7 +309,7 @@ class Settings extends CI_Controller
     
         $viewData = new stdClass();
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
             $viewData->form_error = true;
@@ -337,7 +337,7 @@ class Settings extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
@@ -356,7 +356,7 @@ class Settings extends CI_Controller
             )
         );
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "pick_color";
         $viewData->item = $item;

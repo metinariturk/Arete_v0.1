@@ -20,7 +20,7 @@ class Errors extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $this->load->view("errors/index", $viewData);
 
     }

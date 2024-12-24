@@ -13,7 +13,7 @@
         <hr>
         <div id="leaderList">
             <?php
-            $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "rank ASC");
+            $boq_items = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "sub_id" => $sub_group->id), "code ASC");
 
             // BOQ item'larının leader_id'lerini bir diziye alalım
             $boq_leader_ids = array_map(function ($item) {

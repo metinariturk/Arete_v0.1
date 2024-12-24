@@ -66,7 +66,7 @@ class company extends CI_Controller
         $settings = $this->Settings_model->get();
 
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -85,7 +85,7 @@ class company extends CI_Controller
         $cities = $this->City_model->get_all(array());
         $items = $this->company_model->get_all();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->settings = $settings;
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -107,7 +107,7 @@ class company extends CI_Controller
 
         
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->contracts = $contracts;
@@ -130,7 +130,7 @@ class company extends CI_Controller
         $cities = $this->City_model->get_all(array());
         $executive_users = $this->User_model->get_all(array());
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
@@ -339,7 +339,7 @@ class company extends CI_Controller
 
             $executive_users = $this->User_model->get_all(array());
 
-            /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Update_Folder";
@@ -436,7 +436,7 @@ class company extends CI_Controller
 
         $viewData = new stdClass();
 
-        /** View'e gönderilecek Değişkenlerin Set Edilmesi.. */
+        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
