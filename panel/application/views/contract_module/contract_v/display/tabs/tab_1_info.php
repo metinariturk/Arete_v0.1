@@ -11,11 +11,13 @@
                         Proje <br><?php echo project_code($item->proje_id); ?>
                     </a>
                 </div>
+                <?php if (isset($site)) { ?>
                 <div class="tab-item" style="background-color: rgba(229,217,201,0.55);">
                     <a class="text-blink" href="<?php echo base_url("site/file_form/$site->id"); ?>">
                         Şantiye <br><?php echo site_code($site->id); ?>
                     </a>
                 </div>
+                <?php } ?>
                 <?php if ($item->parent) { ?>
                     <div class="tab-item" style="background-color: rgba(239,232,223,0.44);">
                         <a class="text-blink" href="<?php echo base_url("contract/file_form/$item->parent"); ?>">
@@ -75,7 +77,5 @@
     </div>
 
     <!-- Ortak Bölüm -->
-    <div class="mt-4">
-        <?php $this->load->view("{$viewModule}/{$viewFolder}/common/add_document"); ?>
-    </div>
+
 </div>

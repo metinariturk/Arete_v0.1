@@ -688,4 +688,30 @@
 </script>
 
 
+<script>
+    function sendFolderData(folderName, contractID, folderID = null) {
+        // AJAX isteği
+        $.ajax({
+            url: '<?= base_url('Contract/folder_open') ?>', // Controller ve method yolu
+            type: 'POST',
+            data: {
+                folder_name: folderName,
+                contractID: contractID, // Klasör ID'sini de gönderiyoruz
+                folder_id: folderID // folder_id null olabilir
+            },
+            success: function(response) {
+                // Eğer başarılıysa yapılacak işlemler
+                console.log('Klasör adı: ' + folderName + ' ID: ' + contractID);
+                console.log(response); // Server'dan gelen yanıt
+
+                // Gelen yanıtı 'sub_folder' ID'sine sahip div'e yerleştiriyoruz
+                $('#sub_folder').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.log("Bir hata oluştu: " + error);
+            }
+        });
+    }
+</script>
+
 <!--Sözleşme Poz Ekleme Ekranı Arama Çubuğu-->

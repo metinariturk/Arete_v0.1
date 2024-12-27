@@ -398,6 +398,7 @@ function module_name($module_name)
         "Teklifler" => "offer",
         "Kullanıcılar" => "user",
         "Finansal" => "finance",
+        "Ödemeler" => "collection",
         "Kullanıcı Rolleri" => "user_roles"
 
     );
@@ -900,6 +901,24 @@ function roundToNearest($number, $nearestValues) {
 
 }
 
+// Boyutları okunabilir formata dönüştürmek için fonksiyon
+function formatSize($bytes) {
+    $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    $power = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
+    return number_format($bytes / pow(1024, $power), 2) . ' ' . $units[$power];
+}
+
+// Klasörün toplam boyutunu hesaplamak için fonksiyon
+function getFolderSize($dir) {
+    $size = 0;
+
+    // Klasördeki tüm dosya ve alt klasörleri gez
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir)) as $file) {
+        $size += $file->getSize(); // Her dosyanın boyutunu ekle
+    }
+
+    return $size;
+}
 
 
 

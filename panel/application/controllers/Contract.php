@@ -191,6 +191,7 @@ class Contract extends CI_Controller
         $advance_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance";
         $offer_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer";
         $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
+        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no";
 
         $companys = $this->Company_model->get_all(array());
 
@@ -241,6 +242,8 @@ class Contract extends CI_Controller
 
         $viewData->upload_function = $upload_function;
         $viewData->path = $path;
+        $viewData->main_path = $main_path;
+        $viewData->sub_path = $main_path;
         $viewData->advances = $advances;
         $viewData->collections = $collections;
         $viewData->bonds = $bonds;
@@ -3746,6 +3749,32 @@ class Contract extends CI_Controller
         return FALSE;
     }
 
+    public function folder_open()
+    {
+
+        $folder_id = $this->input->post('folder_id'); // folder_id parametresi
+        $folder_name = $this->input->post('folder_name'); // folder_name parametresi
+        $contract_id = $this->input->post('contractID');     // folder_id parametresi
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        if ($folder_id !=null){
+            $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$folder_id";
+        } else {
+            $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name";
+        }
+
+
+        // Görünüm için değişkenlerin set edilmesi
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->item = $item;
+        $viewData->sub_path = $sub_path;
+        $viewData->folder_name = $folder_name;
+
+        $this->load->view("{$viewData->viewModule}/contract_v/display/modules/folder_view", $viewData);
+
+    }
 }
 
 

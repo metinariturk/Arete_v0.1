@@ -42,7 +42,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link"
-               id="tab7-link" data-bs-toggle="tab" href="#tab7" role="tab"
+               id="tab6-link" data-bs-toggle="tab" href="#tab6" role="tab"
                tabindex="-1"
                aria-selected="false">
                 Dosya Yöneticisi
@@ -227,6 +227,18 @@
                 </ul>
                 <div class="tab-content">
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_price"); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab6" role="tabpanel"
+         aria-labelledby="tab6-link">
+        <div class="card">
+            <div class="card-body">
+                <h5>Hakediş Listesi</h5>
+                <div id="tab_Files">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_contract_file_manager"); ?>
                 </div>
             </div>
         </div>

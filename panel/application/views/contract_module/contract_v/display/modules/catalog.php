@@ -1,1 +1,0 @@
-Site için katalog yükleme yeri
