@@ -68,18 +68,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/tabs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/tabs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
@@ -89,11 +89,11 @@
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display_new" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0004\SOZ-0015\Collection\8" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\css" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0001\SOZ-0027\Offer\Drawing" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\js" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -219,7 +219,8 @@
       <workItem from="1734728806951" duration="4022000" />
       <workItem from="1735053754477" duration="2059000" />
       <workItem from="1735060239878" duration="8416000" />
-      <workItem from="1735327858457" duration="8939000" />
+      <workItem from="1735327858457" duration="9589000" />
+      <workItem from="1735413498147" duration="8301000" />
     </task>
     <servers />
   </component>

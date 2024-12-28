@@ -236,7 +236,7 @@
          aria-labelledby="tab6-link">
         <div class="card">
             <div class="card-body">
-                <h5>Hakediş Listesi</h5>
+                <h5>Dosya Yöneticisi</h5>
                 <div id="tab_Files">
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_contract_file_manager"); ?>
                 </div>

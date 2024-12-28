@@ -3751,7 +3751,6 @@ class Contract extends CI_Controller
 
     public function folder_open()
     {
-
         $folder_id = $this->input->post('folder_id'); // folder_id parametresi
         $folder_name = $this->input->post('folder_name'); // folder_name parametresi
         $contract_id = $this->input->post('contractID');     // folder_id parametresi
@@ -3759,8 +3758,10 @@ class Contract extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         if ($folder_id !=null){
             $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$folder_id";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$folder_id/";
         } else {
             $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/";
         }
 
 
@@ -3769,12 +3770,104 @@ class Contract extends CI_Controller
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->item = $item;
+        $viewData->path = $path;
         $viewData->sub_path = $sub_path;
         $viewData->folder_name = $folder_name;
 
         $this->load->view("{$viewData->viewModule}/contract_v/display/modules/folder_view", $viewData);
 
     }
+
+    public function create_folder($contract_id)
+    {
+
+        // Gelen ID'ye göre veriyi al
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        // Eğer $item bulunamazsa işlem durdurulur
+        if (!$item) {
+            echo "Geçersiz Contract ID!";
+            return;
+        }
+
+        // Formdan gelen klasör adı
+        $folderName = $this->input->post('folderName');
+
+
+
+            // Yeni klasör yolu
+        $new_folder = "{$this->File_Dir_Prefix}/{$project->project_code}/{$item->dosya_no}/$folderName";
+
+
+        // Gelen verilerle işlem yap
+        if (!empty($folderName)) {
+            if (!is_dir($new_folder)) {
+
+                if (mkdir("$new_folder", 0777, TRUE)) { // Klasör oluştur
+                    echo "Klasör başarıyla oluşturuldu!";
+                } else {
+                    echo "Klasör oluşturulurken bir hata oluştu!";
+                }
+            } else {
+                echo "Klasör zaten mevcut!";
+            }
+        } else {
+            echo "Eksik veri gönderildi!";
+        }
+
+        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->item = $item;
+        $viewData->path = $path;
+        $viewData->sub_path = $new_folder;
+        $viewData->folder_name = $folderName;
+        $viewData->error_find =$new_folder;
+
+        $this->load->view("{$viewData->viewModule}/contract_v/display/modules/folder_view", $viewData);
+
+    }
+
+    public function download_file($encoded_path) {
+        // Dosya yolunu decode et
+        $file_path = base64_decode(urldecode($encoded_path));
+
+        // Platforma uygun dosya yolunu normalize et
+        $file_path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file_path);  // / ve \'yi platforma uygun şekilde değiştir
+
+        // Dosyanın var olup olmadığını kontrol et
+        if (file_exists($file_path)) {
+            // Dosya indirmeye başla
+            $this->load->helper('download');
+            force_download($file_path, NULL);  // Dosyayı indir
+        } else {
+            echo "Dosya bulunamadı!";
+        }
+    }
+
+    public function delete_file($encoded_path) {
+        // Dosya yolunu decode et
+        $file_path = base64_decode(urldecode($encoded_path));
+
+        // Platforma uygun dosya yolunu normalize et
+        $file_path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file_path);  // / ve \'yi platforma uygun şekilde değiştir
+
+        // Dosyanın var olup olmadığını kontrol et
+        if (file_exists($file_path)) {
+            // Dosyayı sil
+            if (unlink($file_path)) {
+                echo "Dosya başarıyla silindi.";
+            } else {
+                echo "Dosya silinirken bir hata oluştu.";
+            }
+        } else {
+            echo "Dosya bulunamadı!";
+        }
+    }
+
 }
 
 

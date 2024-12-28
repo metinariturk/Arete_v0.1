@@ -404,7 +404,7 @@ function module_name($module_name)
     );
 
     $ext = array_search(mb_strtolower($module_name), $module_types);
-    return empty($ext) ? 'Varsayılan' : $ext;
+    return empty($ext) ? $module_name : $ext;
 
 }
 

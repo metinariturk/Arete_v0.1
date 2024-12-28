@@ -712,6 +712,57 @@
             }
         });
     }
+
+    $(document).ready(function () {
+        // Belirli bir formun submit olayı
+        $('#newFolderForm').on('submit', function (e) {
+            e.preventDefault(); // Sayfa yenilemeyi engelle
+
+            // Form verilerini al
+            var formData = $(this).serialize();
+
+            // Input alanındaki data-item-id değerini al
+            var itemID = $('#folderName').data('item-id');
+
+            // AJAX ile form ve itemID'yi gönder
+            $.ajax({
+                url: '<?= base_url("Contract/create_folder/") ?>' + itemID, // PHP kontrolör yolu
+                type: 'POST',
+                data: formData, // Form verilerini POST ile gönder
+                success: function (response) {
+                    // Modal'ı kapat
+                    $('#newFolderModal').modal('hide');
+
+                    // Example div'i yenile
+                    $('#sub_folder').html(response);
+
+                    // Formu sıfırla
+                    $('#newFolderForm')[0].reset();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Bir hata oluştu:', error);
+                    console.log('Hata Detayı:', xhr.responseText); // Sunucudan gelen hata mesajı
+                    alert('Klasör oluşturulurken bir hata oluştu.');
+                }
+            });
+        });
+    });
+
+    function deleteFile(encodedPath) {
+        // Silme işlemi için AJAX
+        $.ajax({
+            url: '<?php echo base_url("Contract/delete_file/"); ?>' + encodedPath,
+            type: 'GET',
+            success: function(response) {
+                // Dosya başarıyla silindiyse, sayfayı yenileyin veya başarı mesajı gösterin
+                alert(response);  // Başarı veya hata mesajını gösterir
+                location.reload(); // Sayfayı yenileyebilirsiniz
+            },
+            error: function(xhr, status, error) {
+                alert('Silme işlemi sırasında bir hata oluştu!');
+            }
+        });
+    }
 </script>
 
 <!--Sözleşme Poz Ekleme Ekranı Arama Çubuğu-->

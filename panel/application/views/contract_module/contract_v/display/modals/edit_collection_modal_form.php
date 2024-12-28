@@ -120,11 +120,13 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <a href="<?php echo base_url("$this->Module_Name/collection_file_download/$edit_collection->id/" . basename($file)); ?>">
+                                            <!-- İndirme butonu: Dosya yolunu gönderecek -->
+                                            <a href="<?php echo base_url('contract/download_file/' . urlencode(base64_encode($file))); ?>">
                                                 <i class="fa fa-download" aria-hidden="true"></i>
                                             </a>
-                                            <a onclick="delete_this_item(this)"
-                                               data="<?php echo base_url("$this->Module_Name/collection_file_delete/$edit_collection->id/" . basename($file)); ?>">
+
+                                            <!-- Silme butonu: Dosya yolunu gönderecek -->
+                                            <a href="#" onclick="deleteFile('<?php echo urlencode(base64_encode($file)); ?>')">
                                                 <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
                                             </a>
                                         </div>

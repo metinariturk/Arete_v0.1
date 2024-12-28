@@ -27,36 +27,51 @@ foreach ($files as $file) {
                     </div>
                 </form>
                 <div class="media-body text-end">
-                    <form class="d-inline-flex" action="#" method="POST" enctype="multipart/form-data" name="myForm">
-                        <div class="btn btn-primary" onclick="getFile()"><i data-feather="plus-square"></i>Yeni Ekle</div>
-                        <div style="height: 0px;width: 0px; overflow:hidden;">
-                            <input id="upfile" type="file" onchange="sub(this)">
+
+                    <i class="fa fa-plus-square fa-2x" data-bs-toggle="modal" data-bs-target="#newFolderModal" style="cursor: pointer;"></i>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="newFolderModal" tabindex="-1" aria-labelledby="newFolderModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="newFolderModalLabel">Yeni Klasör Oluştur</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="newFolderForm">
+                                        <input type="text" class="form-control" id="folderName" name="folderName" data-item-id="<?= $item->id ?>" placeholder="Klasör adını girin" required>
+                                        <button type="submit" class="btn btn-primary">Klasör Oluştur</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                    <div class="btn btn-outline-primary ms-2"><i data-feather="upload"> </i>Yükle</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="card-body file-manager">
-            <h4 class="mb-3">Tüm Dosyalar</h4>
-            <h6>Toplam Klasör Sayısı: <?php echo $folder_count; ?> Klasör</h6>
+            <?php if ((isset($folder_name)) and ($folder_name != "Contract")) { ?>
+            <h4 class="mb-3"><?php echo module_name($folder_name); ?></h4>
 
-            <!-- Klasörler Grubu (Yan Yana Görüntülenmesi için düzenleme) -->
-            <h5>Klasörler</h5>
-            <div class="row">
-                <?php
-                // Dizin içindeki klasörleri listele
-                foreach ($files as $file) {
-                    if ($file != '.' && $file != '..') {
-                        $file_path = $sub_path . DIRECTORY_SEPARATOR . $file;
-                        if (is_dir($file_path)) {
-                            // Klasörse
-                            $sub_files = scandir($file_path);
-                            $sub_file_count = count($sub_files) - 2; // "." ve ".." dosyalarını çıkar
+            <?php if ($folder_count > 0) {
+                ; ?>
+                <!-- Klasörler Grubu (Yan Yana Görüntülenmesi için düzenleme) -->
+                <h5>Klasörler</h5>
+                <div class="row">
+                    <?php
+                    // Dizin içindeki klasörleri listele
+                    foreach ($files as $file) {
+                        if ($file != '.' && $file != '..') {
+                            $file_path = $sub_path . DIRECTORY_SEPARATOR . $file;
+                            if (is_dir($file_path)) {
+                                // Klasörse
+                                $sub_files = scandir($file_path);
+                                $sub_file_count = count($sub_files) - 2; // "." ve ".." dosyalarını çıkar
 
-                            // Burada PHP değişkenlerini JavaScript'e düzgün şekilde iletebilmek için tırnakları dikkatlice kullanıyoruz
-                            echo "<div class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3'>
+                                // Burada PHP değişkenlerini JavaScript'e düzgün şekilde iletebilmek için tırnakları dikkatlice kullanıyoruz
+                                echo "<div class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3'>
                     <div class='card folder-box' onclick='loadFolderContent(\"$file\")'>
                         <div class='card-body text-center'>
                             <i class='fa fa-folder f-36 txt-warning' onclick=\"sendFolderData('$folder_name', '$item->id', '$file')\"></i>
@@ -65,13 +80,15 @@ foreach ($files as $file) {
                         </div>
                     </div>
                   </div>";
+                            }
                         }
                     }
-                }
-                ?>
-            </div>
+                    ?>
+                </div>
+            <?php } ?>
 
             <!-- Dosyalar Grubu -->
+            <?php if (count($files) > 0) { ?>
             <h5>Dosyalar</h5>
             <ul class="files">
                 <?php
@@ -83,20 +100,65 @@ foreach ($files as $file) {
                             // Dosya ise
                             $file_size = filesize($file_path);
                             $creation_time = date("Y-m-d H:i:s", filectime($file_path)); // Dosyanın oluşturulma tarihi
+                            ?>
+                            <li class='file-box'>
+                                <div class='file-top'>
+                                    <?php echo ext_img($file); ?>
+                                </div>
+                                <div class='file-bottom'>
+                                    <h6><?php echo $file; ?></h6>
+                                    <p class='mb-1'><?php echo round($file_size / 1024 / 1024, 2); ?> MB</p>
+                                    <p><b>Oluşturulma Tarihi: </b><?php echo $creation_time; ?></p>
 
-                            echo "<li class='file-box'>
-                                    <div class='file-top'><i class='fa fa-file-o txt-primary'></i><i class='fa fa-ellipsis-v f-14 ellips'></i></div>
-                                    <div class='file-bottom'>
-                                        <h6>{$file}</h6>
-                                        <p class='mb-1'>" . round($file_size / 1024 / 1024, 2) . " MB</p>
-                                        <p><b>Oluşturulma Tarihi: </b>{$creation_time}</p>
+                                    <!-- File actions div: Sağda ve solda hizalanmış simgeler -->
+                                    <div class="file-actions" style="display: flex; justify-content: space-between; width: 100%;">
+                                        <!-- Sol tarafta indir simgesi -->
+                                        <div style="text-align: left;">
+                                            <a href="<?php echo base_url('contract/download_file/' . urlencode(base64_encode($file_path))); ?>" class="fa fa-download f-14"></a>
+                                        </div>
+                                        <!-- Sağ tarafta silme simgesi, kırmızı renk -->
+                                        <a href="#" onclick="deleteFile('<?php echo urlencode(base64_encode($file_path)); ?>')">
+                                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                        </a>
                                     </div>
-                                </li>";
+                                </div>
+                            </li>
+
+                            <?php
                         }
                     }
                 }
                 ?>
+                <?php } ?>
             </ul>
         </div>
+        <?php } else { ?>
+            <div class="file-content">
+
+
+                <div class="fileuploader fileuploader-theme-dragdrop">
+                    <form method="post" enctype="multipart/form-data">
+                        <?php
+                        $uploadDir = $path;
+                        $preloadedFiles = array();
+                        $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
+                        foreach ($uploadsFiles as $file) {
+                            if (is_dir($uploadDir . $file))
+                                continue;
+                            $preloadedFiles[] = array(
+                                "name" => $file,
+                                "type" => FileUploader::mime_content_type($uploadDir . $file),
+                                "size" => filesize($uploadDir . $file),
+                                "file" => base_url($path) . $file,
+                                "local" => base_url($path) . $file,
+                            );
+                        }
+                        $preloadedFiles = json_encode($preloadedFiles);
+                        ?>
+                        <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
+                    </form>
+                </div>
+            </div>
+        <?php } ?>
     </div>
 </div>
