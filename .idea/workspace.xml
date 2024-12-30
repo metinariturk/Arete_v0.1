@@ -89,11 +89,11 @@
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display_new" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0004\SOZ-0015\Bond" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0004\SOZ-0015\Collection\8" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\css" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0001\SOZ-0027\Offer\Drawing" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -220,7 +220,8 @@
       <workItem from="1735053754477" duration="2059000" />
       <workItem from="1735060239878" duration="8416000" />
       <workItem from="1735327858457" duration="9589000" />
-      <workItem from="1735413498147" duration="8301000" />
+      <workItem from="1735413498147" duration="8499000" />
+      <workItem from="1735486105488" duration="8937000" />
     </task>
     <servers />
   </component>
@@ -322,7 +323,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>3321</line>
+          <line>3281</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="edit_bond" />

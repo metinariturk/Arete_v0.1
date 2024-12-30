@@ -55,9 +55,10 @@ if (is_dir($main_path)) {
                             <div class="card-body">
                                 <ul>
                                     <li>
-                                        <div class="btn btn-primary"><i data-feather="home"> </i>Ana Klasör</div>
+                                        <div class="btn btn-primary" onclick="open_uploader(<?= $item->id; ?>)">
+                                            <i data-feather="home"></i>Ana Klasör
+                                        </div>
                                     </li>
-
                                     <?php if (!empty($folders)): ?>
                                         <?php foreach ($folders as $folder): ?>
                                             <li>
@@ -80,21 +81,13 @@ if (is_dir($main_path)) {
                                     <?php endif; ?>
                                 </ul>
                                 <hr>
-                                <ul>
-                                    <li>
-                                        <div class="m-t-15">
-                                            <p>25 GB of 100 GB used</p>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <hr>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-9 col-md-12 box-col-12" id="sub_folder">
+        <div class="col-xl-9 col-md-12 box-col-12">
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/folder_view"); ?>
         </div>
     </div>

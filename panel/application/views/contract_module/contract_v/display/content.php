@@ -237,7 +237,7 @@
         <div class="card">
             <div class="card-body">
                 <h5>Dosya Yöneticisi</h5>
-                <div id="tab_Files">
+                <div>
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_contract_file_manager"); ?>
                 </div>
             </div>

@@ -1,3 +1,8 @@
+<script>
+    $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
+    $('body').removeClass('modal-open');
+    $('body').css('overflow', 'auto');
+</script>
 <?php if (isset($edit_bond)) { ?>
     <div class="modal fade" id="EditBondModal" tabindex="-1" aria-labelledby="editBondModalLabel"
          aria-hidden="true">

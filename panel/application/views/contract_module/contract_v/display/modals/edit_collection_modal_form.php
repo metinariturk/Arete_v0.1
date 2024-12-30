@@ -1,3 +1,8 @@
+<script>
+    $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
+    $('body').removeClass('modal-open');
+    $('body').css('overflow', 'auto');
+</script>
 <?php if (isset($edit_collection)) { ?>
     <div class="modal fade" id="EditCollectionModal" tabindex="-1" aria-labelledby="editCollectionModalLabel"
          aria-hidden="true">
@@ -92,8 +97,8 @@
                         <?php
                         $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$edit_collection->id";
 
-                        if (!is_dir($file_path)) {
-                            mkdir($file_path, 0777, true);
+                        if (!is_dir($file_path) && !mkdir($file_path, 0777, true)) {
+                            throw new Exception("Klasör oluşturulamadı: $file_path");
                         }
 
                         $files = glob("$file_path/*"); // glob ile tüm dosyaları al
@@ -124,18 +129,17 @@
                                             <a href="<?php echo base_url('contract/download_file/' . urlencode(base64_encode($file))); ?>">
                                                 <i class="fa fa-download" aria-hidden="true"></i>
                                             </a>
-
                                             <!-- Silme butonu: Dosya yolunu gönderecek -->
-                                            <a href="#" onclick="deleteFile('<?php echo urlencode(base64_encode($file)); ?>')">
-                                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                            <a href="#"
+                                               onclick="deleteFile('<?php echo urlencode(base64_encode($file)); ?>')">
+                                                <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
+                                                   aria-hidden="true"></i>
                                             </a>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
                         </div>
-
-
                         <div id="file-upload-container" class="mb-3">
                             <label class="col-form-label" for="file-input">Dosya Yükle:</label>
                             <input class="form-control" name="file" id="file-input" type="file">

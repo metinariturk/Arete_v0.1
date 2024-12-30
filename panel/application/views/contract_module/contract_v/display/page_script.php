@@ -335,59 +335,125 @@
     }
 </script>
 
-<script>
 
-    $(document).ready(function () {
-        // FileUploader plugin initialization
+<script>
+    // Dosya Yükleme Scripti
+    function initializeFileUploader(itemId) {
         $('input[name="files"]').fileuploader({
-            limit: 3, // Tek dosya sınırı
-            onSelect: function (item) {
-                // Upload butonunu ekliyoruz
-                if (!item.html.find('.fileuploader-action-start').length)
-                    item.html.find('.fileuploader-action-remove').before('<button type="button" class="fileuploader-action fileuploader-action-start" title="Upload"><i class="fileuploader-icon-upload"></i></button>');
-            },
+            changeInput: '<div class="fileuploader-input">' +
+                '<div class="fileuploader-input-inner">' +
+                '<div class="fileuploader-icon-main"></div>' +
+                '<h3 class="fileuploader-input-caption"><span>${captions.feedback}</span></h3>' +
+                '<p>${captions.or}</p>' +
+                '<button type="button" class="fileuploader-input-button"><span>${captions.button}</span></button>' +
+                '</div>' +
+                '</div>',
+            theme: 'dragdrop',
             upload: {
-                url: 'php/ajax_upload_file.php', // Yükleme yapılacak PHP dosyası
+                url: "<?php echo base_url('Contract/file_upload/'); ?>" + itemId,
+                data: null,
                 type: 'POST',
                 enctype: 'multipart/form-data',
-                start: false,
+                start: true,
                 synchron: true,
-                beforeSend: function (item) {
-                    // Custom dosya adı kontrolü
-                    var input = $('#custom_file_name');
-                    if (input.length) {
-                        item.upload.data.custom_name = input.val(); // Custom adı POST verisine ekle
-                    }
-                    input.val(""); // Ad alanını sıfırla
-                },
+                beforeSend: null,
                 onSuccess: function (result, item) {
-                    // Yükleme başarılı olursa dosya adını güncelle
-                    var data = result;
+                    var data = {};
+
+                    // get data
+                    if (result && result.files)
+                        data = result;
+                    else
+                        data.hasWarnings = true;
+
+                    // if success
                     if (data.isSuccess && data.files[0]) {
                         item.name = data.files[0].name;
-                        item.html.find('.column-title div').animate({opacity: 0}, 400);
+                        item.html.find('.column-title > div:first-child').text(data.files[0].name).attr('title', data.files[0].name);
                     }
-                    // Başarı simgesi ve progress bar güncellenmesi
+
+                    // if warnings
+                    if (data.hasWarnings) {
+                        for (var warning in data.warnings) {
+                            alert(data.warnings[warning]);
+                        }
+
+                        item.html.removeClass('upload-successful').addClass('upload-failed');
+                        return this.onError ? this.onError(item) : null;
+                    }
+
                     item.html.find('.fileuploader-action-remove').addClass('fileuploader-action-success');
                     setTimeout(function () {
-                        item.html.find('.column-title div').attr('title', item.name).text(item.name).animate({opacity: 1}, 400);
-                        $('#progress-bar').fadeOut(400);
+                        item.html.find('.progress-bar2').fadeOut(400);
                     }, 400);
                 },
                 onError: function (item) {
-                    $('#file-progress-bar').hide(); // Hata durumunda progress bar gizlenir
-                    alert('Dosya yükleme sırasında hata oluştu.');
+                    var progressBar = item.html.find('.progress-bar2');
+
+                    if (progressBar.length) {
+                        progressBar.find('span').html(0 + "%");
+                        progressBar.find('.fileuploader-progressbar .bar').width(0 + "%");
+                        item.html.find('.progress-bar2').fadeOut(400);
+                    }
+
+                    if (item.upload.status != 'cancelled' && item.html.find('.fileuploader-action-retry').length == 0) {
+                        item.html.find('.column-actions').prepend(
+                            '<button type="button" class="fileuploader-action fileuploader-action-retry" title="Retry"><i class="fileuploader-icon-retry"></i></button>'
+                        );
+                    }
                 },
                 onProgress: function (data, item) {
-                    // Progress bar güncelleme
-                    $('#file-progress-bar').show();
-                    $('#progress-bar').val(data.percentage);
-                    $('#progress-percentage').text(data.percentage + '%');
-                }
-            }
-        });
-    });
+                    var progressBar = item.html.find('.progress-bar2');
 
+                    if (progressBar.length > 0) {
+                        progressBar.show();
+                        progressBar.find('span').html(data.percentage + "%");
+                        progressBar.find('.fileuploader-progressbar .bar').width(data.percentage + "%");
+                    }
+                },
+                onComplete: null,
+            },
+            onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
+                // AJAX isteği ile dosyanın sunucudan silinmesi
+                $.ajax({
+                    url: "<?php echo base_url('Contract/filedelete_java/'); ?>" + itemId,
+                    type: 'POST',
+                    data: {
+                        fileName: item.name // Dosyanın adı
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Sunucu silme işlemini başarıyla tamamladı
+                            console.log('Dosya başarıyla silindi:', item.name);
+                        } else {
+                            // Sunucu bir hata mesajı döndürdü
+                            console.error(item.id, response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // AJAX isteği başarısız oldu
+                        console.error('Bir hata oluştu:', error);
+                    }
+                });
+
+                // Dosyanın listeden hemen kaldırılmasını önlemek için false döndürün
+                return true;
+            },
+            captions: $.extend(true, {}, $.fn.fileuploader.languages['en'], {
+                feedback: 'Drag and drop files here',
+                feedback2: 'Drag and drop files here',
+                drop: 'Drag and drop files here',
+                or: 'or',
+                button: 'Browse files',
+            }),
+        });
+    }
+
+    // Sayfa yüklendiğinde dosya yükleyici fonksiyonunu başlat
+    $(document).ready(function() {
+        var itemId = <?php echo json_encode($item->id); ?>; // Örneğin, PHP'den alınan item ID'si
+        initializeFileUploader(itemId); // Dosya yükleyiciyi başlat
+    });
 </script>
 
 
@@ -443,90 +509,6 @@
         isTextEnlarged = !isTextEnlarged; // Toggle durumunu değiştir
     }
 </script>
-
-
-<!--Puantaj Tablosu-->
-
-
-<script>
-    function savePuantaj(checkbox) {
-        // Checkbox'tan ilgili verileri al
-        var workerId = $(checkbox).attr('workerid');
-        var date = $(checkbox).attr('date');
-        var isChecked = checkbox.checked ? 1 : 0; // CheckBox'ın durumuna göre 1 (checked) veya 0 (unchecked) değeri
-
-        // AJAX isteği gönder
-        $.ajax({
-            type: 'POST',
-            url: "<?php echo base_url("$this->Module_Name/update_puantaj/$item->id"); ?>", // Sunucunuzun POST isteğini alacağı adres
-            data: {
-                workerId: workerId,
-                date: date,
-                isChecked: isChecked // CheckBox'ın durumu
-            },
-            success: function (response) {
-                // Başarılı yanıt aldığınızda yapılacak işlemler
-                $(".puantaj_list").html(response);
-            },
-            error: function (xhr, status, error) {
-                console.log(error);
-            }
-        });
-    }
-</script>
-
-<script>
-    function puantajDate(element) {
-        var month = $('select[name="month"]').val();
-        var year = $('select[name="year"]').val();
-
-        var url = $('#puantajDate').attr('url');
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {month: month, year: year},
-            success: function (response) {
-                $(".puantaj_list").html(response);
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-</script>
-
-
-<script>
-    function sendPuantajDate() {
-        // Seçili ay ve yılı al
-        var month = $('#month').val();
-        var year = $('#year').val();
-
-        // Bağlantı URL'sini oluştur
-        var url = '<?php echo base_url("Export/puantaj_print/$item->id"); ?>/' + month + '/' + year;
-
-        // AJAX isteğini gönder
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {month: month, year: year},
-            success: function (response) {
-                // AJAX isteği başarılı olduğunda yapılacak işlemler
-                console.log("AJAX isteği başarıyla tamamlandı.");
-            },
-            error: function (xhr, status, error) {
-                // AJAX isteği başarısız olduğunda yapılacak işlemler
-                console.error("AJAX isteği sırasında bir hata oluştu:", error);
-            }
-        });
-
-        // Yeni sekme aç
-        window.open(url, '_blank');
-    }
-</script>
-
-<!--Puantaj Tablosu Bitiş-->
 
 
 <!--İş Grupları-->
@@ -763,6 +745,29 @@
             }
         });
     }
+
+    function open_uploader(itemId) {
+        // sub_folder içeriğini AJAX ile güncelle
+        $.ajax({
+            url: '<?= base_url("contract/open_uploader/"); ?>' + itemId, // Sunucu tarafına id ekle
+            type: 'GET',
+            success: function (response) {
+                // sub_folder içeriğini yeni veriyle güncelle
+                $('#sub_folder').html(response);
+
+                // Preloaded files bilgisi
+                var preloadedFiles = $('#preloaded-files-data').data('files') || [];
+
+                // FileUploader kütüphanesini yeniden başlat
+                initializeFileUploader(<?php echo $item->id; ?>);
+            },
+            error: function () {
+                alert('İçerik yüklenirken bir hata oluştu.');
+            }
+        });
+    }
+
+
 </script>
 
 <!--Sözleşme Poz Ekleme Ekranı Arama Çubuğu-->

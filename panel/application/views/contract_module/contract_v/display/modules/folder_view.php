@@ -17,19 +17,12 @@ foreach ($files as $file) {
     }
 }
 ?>
-<div class="file-content">
+<div class="file-content" id="sub_folder">
     <div class="card">
         <div class="card-header">
             <div class="media">
-                <form class="form-inline" action="#" method="get">
-                    <div class="form-group mb-0"><i class="fa fa-search"></i>
-                        <input class="form-control-plaintext" type="text" placeholder="Ara...">
-                    </div>
-                </form>
                 <div class="media-body text-end">
-
                     <i class="fa fa-plus-square fa-2x" data-bs-toggle="modal" data-bs-target="#newFolderModal" style="cursor: pointer;"></i>
-
                     <!-- Modal -->
                     <div class="modal fade" id="newFolderModal" tabindex="-1" aria-labelledby="newFolderModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -51,8 +44,8 @@ foreach ($files as $file) {
             </div>
         </div>
 
-        <div class="card-body file-manager">
-            <?php if ((isset($folder_name)) and ($folder_name != "Contract")) { ?>
+        <div class="card-body file-manager" >
+            <?php if (isset($folder_name)) { ?>
             <h4 class="mb-3"><?php echo module_name($folder_name); ?></h4>
 
             <?php if ($folder_count > 0) {
@@ -89,76 +82,154 @@ foreach ($files as $file) {
 
             <!-- Dosyalar Grubu -->
             <?php if (count($files) > 0) { ?>
-            <h5>Dosyalar</h5>
+            <h5>Dosyalar<?php echo $folder_id;?></h5>
             <ul class="files">
-                <?php
-                // Dizin içindeki dosyaları listele
-                foreach ($files as $file) {
-                    if ($file != '.' && $file != '..') {
-                        $file_path = $sub_path . DIRECTORY_SEPARATOR . $file;
-                        if (is_file($file_path)) {
-                            // Dosya ise
-                            $file_size = filesize($file_path);
-                            $creation_time = date("Y-m-d H:i:s", filectime($file_path)); // Dosyanın oluşturulma tarihi
-                            ?>
-                            <li class='file-box'>
-                                <div class='file-top'>
-                                    <?php echo ext_img($file); ?>
-                                </div>
-                                <div class='file-bottom'>
-                                    <h6><?php echo $file; ?></h6>
-                                    <p class='mb-1'><?php echo round($file_size / 1024 / 1024, 2); ?> MB</p>
-                                    <p><b>Oluşturulma Tarihi: </b><?php echo $creation_time; ?></p>
+                <script>
+                    // Dosya Yükleme Scripti
+                    function initializeFileUploader(itemId) {
+                        $('input[name="files_<?php echo $folder_name; ?>"]').fileuploader({
+                            changeInput: '<div class="fileuploader-input">' +
+                                '<div class="fileuploader-input-inner">' +
+                                '<div class="fileuploader-icon-main"></div>' +
+                                '<h3 class="fileuploader-input-caption"><span>${captions.feedback}</span></h3>' +
+                                '<p>${captions.or}</p>' +
+                                '<button type="button" class="fileuploader-input-button"><span>${captions.button}</span></button>' +
+                                '</div>' +
+                                '</div>',
+                            theme: 'dragdrop',
+                            upload: {
+                                url: "<?php echo base_url("Contract/file_upload/$folder_name/$item->id/$folder_id"); ?>",
+                                data: null,
+                                type: 'POST',
+                                enctype: 'multipart/form-data',
+                                start: true,
+                                synchron: true,
+                                beforeSend: null,
+                                onSuccess: function (result, item) {
+                                    var data = {};
 
-                                    <!-- File actions div: Sağda ve solda hizalanmış simgeler -->
-                                    <div class="file-actions" style="display: flex; justify-content: space-between; width: 100%;">
-                                        <!-- Sol tarafta indir simgesi -->
-                                        <div style="text-align: left;">
-                                            <a href="<?php echo base_url('contract/download_file/' . urlencode(base64_encode($file_path))); ?>" class="fa fa-download f-14"></a>
-                                        </div>
-                                        <!-- Sağ tarafta silme simgesi, kırmızı renk -->
-                                        <a href="#" onclick="deleteFile('<?php echo urlencode(base64_encode($file_path)); ?>')">
-                                            <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
+                                    // get data
+                                    if (result && result.files)
+                                        data = result;
+                                    else
+                                        data.hasWarnings = true;
 
-                            <?php
-                        }
+                                    // if success
+                                    if (data.isSuccess && data.files[0]) {
+                                        item.name = data.files[0].name;
+                                        item.html.find('.column-title > div:first-child').text(data.files[0].name).attr('title', data.files[0].name);
+                                    }
+
+                                    // if warnings
+                                    if (data.hasWarnings) {
+                                        for (var warning in data.warnings) {
+                                            alert(data.warnings[warning]);
+                                        }
+
+                                        item.html.removeClass('upload-successful').addClass('upload-failed');
+                                        return this.onError ? this.onError(item) : null;
+                                    }
+
+                                    item.html.find('.fileuploader-action-remove').addClass('fileuploader-action-success');
+                                    setTimeout(function () {
+                                        item.html.find('.progress-bar2').fadeOut(400);
+                                    }, 400);
+                                },
+                                onError: function (item) {
+                                    var progressBar = item.html.find('.progress-bar2');
+
+                                    if (progressBar.length) {
+                                        progressBar.find('span').html(0 + "%");
+                                        progressBar.find('.fileuploader-progressbar .bar').width(0 + "%");
+                                        item.html.find('.progress-bar2').fadeOut(400);
+                                    }
+
+                                    if (item.upload.status != 'cancelled' && item.html.find('.fileuploader-action-retry').length == 0) {
+                                        item.html.find('.column-actions').prepend(
+                                            '<button type="button" class="fileuploader-action fileuploader-action-retry" title="Retry"><i class="fileuploader-icon-retry"></i></button>'
+                                        );
+                                    }
+                                },
+                                onProgress: function (data, item) {
+                                    var progressBar = item.html.find('.progress-bar2');
+
+                                    if (progressBar.length > 0) {
+                                        progressBar.show();
+                                        progressBar.find('span').html(data.percentage + "%");
+                                        progressBar.find('.fileuploader-progressbar .bar').width(data.percentage + "%");
+                                    }
+                                },
+                                onComplete: null,
+                            },
+                            onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
+                                // AJAX isteği ile dosyanın sunucudan silinmesi
+                                $.ajax({
+                                    url: "<?php echo base_url("Contract/filedelete_java/$folder_name/"); ?>" + itemId,
+                                    type: 'POST',
+                                    data: {
+                                        fileName: item.name // Dosyanın adı
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            // Sunucu silme işlemini başarıyla tamamladı
+                                            console.log('Dosya başarıyla silindi:', item.name);
+                                        } else {
+                                            // Sunucu bir hata mesajı döndürdü
+                                            console.error(item.id, response.message);
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        // AJAX isteği başarısız oldu
+                                        console.error('Bir hata oluştu:', error);
+                                    }
+                                });
+
+                                // Dosyanın listeden hemen kaldırılmasını önlemek için false döndürün
+                                return true;
+                            },
+                            captions: $.extend(true, {}, $.fn.fileuploader.languages['en'], {
+                                feedback: 'Drag and drop files here',
+                                feedback2: 'Drag and drop files here',
+                                drop: 'Drag and drop files here',
+                                or: 'or',
+                                button: 'Browse files',
+                            }),
+                        });
                     }
-                }
-                ?>
+
+                    // Sayfa yüklendiğinde dosya yükleyici fonksiyonunu başlat
+                    $(document).ready(function() {
+                        var itemId = <?php echo json_encode($item->id); ?>; // Örneğin, PHP'den alınan item ID'si
+                        initializeFileUploader(itemId); // Dosya yükleyiciyi başlat
+                    });
+                </script>
+                <div class="file-content">
+                    <div class="fileuploader fileuploader-theme-dragdrop">
+                        <form method="post" enctype="multipart/form-data">
+                            <?php
+                            $uploadDir = $sub_path . DIRECTORY_SEPARATOR;
+                            $preloadedFiles = array();
+                            $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
+                            foreach ($uploadsFiles as $file) {
+                                if (is_dir($uploadDir . $file))
+                                    continue;
+                                $preloadedFiles[] = array(
+                                    "name" => $file,
+                                    "type" => FileUploader::mime_content_type($uploadDir . $file),
+                                    "size" => filesize($uploadDir . $file),
+                                    "file" => base_url($sub_path . DIRECTORY_SEPARATOR) . $file,
+                                    "local" => base_url($sub_path . DIRECTORY_SEPARATOR) . $file,
+                                );
+                            }
+                            $preloadedFiles = json_encode($preloadedFiles);
+                            ?>
+                            <input type="file" name="files_<?php echo $folder_name;?>" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
+                        </form>
+                    </div>
+                </div>
                 <?php } ?>
             </ul>
         </div>
-        <?php } else { ?>
-            <div class="file-content">
-
-
-                <div class="fileuploader fileuploader-theme-dragdrop">
-                    <form method="post" enctype="multipart/form-data">
-                        <?php
-                        $uploadDir = $path;
-                        $preloadedFiles = array();
-                        $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
-                        foreach ($uploadsFiles as $file) {
-                            if (is_dir($uploadDir . $file))
-                                continue;
-                            $preloadedFiles[] = array(
-                                "name" => $file,
-                                "type" => FileUploader::mime_content_type($uploadDir . $file),
-                                "size" => filesize($uploadDir . $file),
-                                "file" => base_url($path) . $file,
-                                "local" => base_url($path) . $file,
-                            );
-                        }
-                        $preloadedFiles = json_encode($preloadedFiles);
-                        ?>
-                        <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
-                    </form>
-                </div>
-            </div>
         <?php } ?>
     </div>
 </div>
