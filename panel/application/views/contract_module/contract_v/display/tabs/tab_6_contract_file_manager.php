@@ -55,7 +55,7 @@ if (is_dir($main_path)) {
                             <div class="card-body">
                                 <ul>
                                     <li>
-                                        <div class="btn btn-primary" onclick="open_uploader(<?= $item->id; ?>)">
+                                        <div class="btn btn-primary">
                                             <i data-feather="home"></i>Ana Klasör
                                         </div>
                                     </li>

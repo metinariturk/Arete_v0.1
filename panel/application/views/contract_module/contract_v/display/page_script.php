@@ -716,7 +716,6 @@
                     $('#newFolderModal').modal('hide');
 
                     // Example div'i yenile
-                    $('#sub_folder').html(response);
 
                     // Formu sıfırla
                     $('#newFolderForm')[0].reset();
@@ -746,28 +745,6 @@
         });
     }
 
-    function open_uploader(itemId) {
-        // sub_folder içeriğini AJAX ile güncelle
-        $.ajax({
-            url: '<?= base_url("contract/open_uploader/"); ?>' + itemId, // Sunucu tarafına id ekle
-            type: 'GET',
-            success: function (response) {
-                // sub_folder içeriğini yeni veriyle güncelle
-                $('#sub_folder').html(response);
-
-                // Preloaded files bilgisi
-                var preloadedFiles = $('#preloaded-files-data').data('files') || [];
-
-                // FileUploader kütüphanesini yeniden başlat
-                initializeFileUploader(<?php echo $item->id; ?>);
-            },
-            error: function () {
-                alert('İçerik yüklenirken bir hata oluştu.');
-            }
-        });
-    }
 
 
 </script>
-
-<!--Sözleşme Poz Ekleme Ekranı Arama Çubuğu-->

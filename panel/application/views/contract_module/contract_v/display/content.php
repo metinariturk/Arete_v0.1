@@ -207,9 +207,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-2-link"
-                           data-bs-toggle="tab" href="#tab5-2" role="tab">
-                            <h5>Poz Grupları </h5>
+                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);"
+                           id="tab5-2-link"
+                           data-id="<?php echo $item->id; ?>"
+                           data-url="<?php echo base_url('Contract/refresh_leader_group/'); ?>"
+                           data-bs-toggle="tab" href="#tab5-2" role="tab"
+                           onclick="refresh_leader_group(this)">
+                            <h5>Poz Grupları</h5>
                         </a>
                     </li>
                     <li class="nav-item">

@@ -102,7 +102,6 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-
     public function offer_list()
     {
         if (!isAdmin()) {
@@ -1313,7 +1312,7 @@ class Contract extends CI_Controller
         redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
     }
 
-    public function file_upload($type, $contract_id, $sub_folder = null )
+    public function file_upload($type, $contract_id, $sub_folder = null)
     {
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
@@ -1678,6 +1677,27 @@ class Contract extends CI_Controller
 
     }
 
+    public function refresh_leader_group($contract_id)
+    {
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "code ASC");
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->subViewFolder = "display";
+
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price", $viewData, true);
+
+        echo $render_boq;
+
+    }
+
     public function delete_group($group_id)
     {
         $group = $this->Contract_price_model->get(array("id" => $group_id));
@@ -1864,36 +1884,35 @@ class Contract extends CI_Controller
     }
 
     public
-    function update_leader_selection()
+    function update_leader_selection($sub_group_id)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
+
         $this->load->model("Boq_model");
 
-        echo $leader_id = $this->input->post('leader_id');
-        echo $sub_group_id = $this->input->post('sub_group_id');
-        echo $situation = $this->input->post('is_checked');
-
-        $boq = $this->Contract_price_model->get(array("leader_id" => $leader_id, "sub_id" => $sub_group_id));
-        $leader = $this->Contract_price_model->get(array("id" => $leader_id));
         $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
         $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
 
 
-        if ($situation == 1) {
-            $insert = $this->Contract_price_model->add(
-                array(
-                    "contract_id" => $sub_group->contract_id,
-                    "code" => $main_group->code . "." . $sub_group->code . "." . $leader->code,
-                    "sub_id" => $sub_group->id,
-                    "main_id" => $main_group->id,
-                    "leader_id" => $leader->id,
-                    "name" => $leader->name,
-                    "unit" => $leader->unit,
-                    "price" => $leader->price,
-                ));
-        } elseif ($situation == 0) {
+        $updated_leaders = $this->input->post('leaders') ?? []; // Eğer boş ise boş bir dizi olarak ayarla
+
+        $existing_leaders = $this->Contract_price_model->get_all(
+            array("sub_id" => $sub_group_id),
+            "leader_id"
+        );
+
+        $existing_leader_ids = array_map(function ($existing_leader) {
+            return $existing_leader->leader_id;
+        }, $existing_leaders);
+
+        $leaders_to_remove = array_diff($existing_leader_ids, $updated_leaders);
+
+        foreach ($leaders_to_remove as $leader_id_to_remove) {
+
+            $boq = $this->Contract_price_model->get(array("leader_id" => $leader_id_to_remove, "sub_id" => $sub_group_id));
+
             $delete = $this->Contract_price_model->delete(
                 array(
                     "id" => $boq->id,
@@ -1905,6 +1924,43 @@ class Contract extends CI_Controller
                 ));
         }
 
+
+        // Eklenecek liderler: Yeni listede olup eski listede olmayanlar
+        $leaders_to_add = array_diff($updated_leaders, $existing_leader_ids);
+
+        foreach ($leaders_to_add as $leader_id_to_add) {
+            $leader = $this->Contract_price_model->get(array("id" => $leader_id_to_add));
+            if ($leader) {
+                $this->Contract_price_model->add(array(
+                    "contract_id" => $sub_group->contract_id,
+                    "code" => $main_group->code . "." . $sub_group->code . "." . $leader->code,
+                    "sub_id" => $sub_group->id,
+                    "main_id" => $main_group->id,
+                    "leader_id" => $leader->id,
+                    "name" => $leader->name,
+                    "unit" => $leader->unit,
+                    "price" => $leader->price,
+                ));
+            }
+        }
+
+
+
+        $item = $this->Contract_model->get(array("id" => $sub_group->contract_id));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, "main_group" => 1), "code ASC");
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->subViewFolder = "display";
+
+
+
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price", $viewData, true);
+        echo $render_html;
 
     }
 
@@ -3005,7 +3061,6 @@ class Contract extends CI_Controller
 
     }
 
-
     public function open_edit_collection_modal($collection_id)
     {
         // Verilerin getirilmesi
@@ -3085,7 +3140,7 @@ class Contract extends CI_Controller
         $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
         $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, 'leader' => 1));
-        $contract = $this->Contract_model->get(array('id' => $sub_group->contract_id));
+        $item = $this->Contract_model->get(array('id' => $sub_group->contract_id));
 
 
         $viewData = new stdClass();
@@ -3094,7 +3149,7 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "display";
         $viewData->sub_group = $sub_group;
         $viewData->main_group = $main_group;
-        $viewData->contract = $contract;
+        $viewData->item = $item;
         $viewData->leaders = $leaders;
         $viewData->edit_contract_price = $sub_group;
 
@@ -3632,7 +3687,6 @@ class Contract extends CI_Controller
         }
     }
 
-
     public function contract_collection($collection_day, $contract_day)
     {
         $date_diff = date_minus($collection_day, $contract_day);
@@ -3696,7 +3750,6 @@ class Contract extends CI_Controller
         }
         return FALSE;
     }
-
 
     public function date_less_than_equal($date1, $date2_field)
     {
@@ -3830,22 +3883,6 @@ class Contract extends CI_Controller
         }
     }
 
-    public function open_uploader($contract_id)
-    {
-        // Dosya yolunu decode et
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
-        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
-
-        $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->path = $path;
-        $viewData->item = $item;
-
-        $this->load->view("{$viewData->viewModule}/contract_v/common/add_document", $viewData);
-
-
-    }
 
 }
 

@@ -25,6 +25,7 @@
 <?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/page_script"); ?>
+<?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/price_script"); ?>
 <?php $this->session->set_flashdata("alert", null); ?>
 </body>
 </html>
