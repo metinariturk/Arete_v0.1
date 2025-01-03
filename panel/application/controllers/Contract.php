@@ -83,7 +83,7 @@ class Contract extends CI_Controller
 
     public function index()
     {
-        if (!isAdmin()) {
+        if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
         $viewData = new stdClass();
@@ -104,7 +104,7 @@ class Contract extends CI_Controller
 
     public function offer_list()
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -126,7 +126,7 @@ class Contract extends CI_Controller
 
     public function contract_sub()
     {
-        if (!isAdmin()) {
+        if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -149,7 +149,7 @@ class Contract extends CI_Controller
 
     public function select()
     {
-        if (!isAdmin()) {
+        if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -174,9 +174,10 @@ class Contract extends CI_Controller
 
     public function file_form($id = null, $active_module = null)
     {
-        if (!isAdmin()) {
+        if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
+
 
         $item = $this->Contract_model->get(array("id" => $id));
         if ($item->parent > 0) {
@@ -193,11 +194,11 @@ class Contract extends CI_Controller
 
         $companys = $this->Company_model->get_all(array());
 
-        !is_dir($path) && mkdir($path, 0777, TRUE);
-        !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
-        !is_dir($advance_path) && mkdir($advance_path, 0777, TRUE);
-        !is_dir($offer_path) && mkdir($offer_path, 0777, TRUE);
-        !is_dir($payment_path) && mkdir($payment_path, 0777, TRUE);
+        !is_dir($path) || mkdir($path, 0777, TRUE);
+        !is_dir($collection_path) || mkdir($collection_path, 0777, TRUE);
+        !is_dir($advance_path) || mkdir($advance_path, 0777, TRUE);
+        !is_dir($offer_path) || mkdir($offer_path, 0777, TRUE);
+        !is_dir($payment_path) || mkdir($payment_path, 0777, TRUE);
 
 
         if ($item->offer == 1) {
@@ -278,7 +279,7 @@ class Contract extends CI_Controller
 
     public function new_form_main($project_id = null)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -308,19 +309,12 @@ class Contract extends CI_Controller
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
-        $alert = array(
-            "title" => "Sözleşme",
-            "text" => "Yeni Oluştur Sayfası ",
-            "type" => "success"
-        );
-
-        $this->session->set_flashdata("alert", $alert);
 
     }
 
     public function new_form_sub($main_contract_id = null)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -353,19 +347,12 @@ class Contract extends CI_Controller
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
-        $alert = array(
-            "title" => "Sözleşme",
-            "text" => "Yeni Oluştur Sayfası ",
-            "type" => "success"
-        );
-
-        $this->session->set_flashdata("alert", $alert);
 
     }
 
     public function new_form_offer($project_id = null)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -391,20 +378,13 @@ class Contract extends CI_Controller
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
-        $alert = array(
-            "title" => "Teklif",
-            "text" => "Yeni Oluştur Sayfası ",
-            "type" => "success"
-        );
-
-        $this->session->set_flashdata("alert", $alert);
 
     }
 
     public function save_main($project_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -451,7 +431,7 @@ class Contract extends CI_Controller
         if ($validate) {
             // Dizin oluşturma işlemi
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name";
-            !is_dir($path) && mkdir($path, 0777, TRUE);
+            !is_dir($path) || mkdir($path, 0777, TRUE);
 
             // Tarih ve adı biçimlendirme işlemleri
             $sozlesme_tarih = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
@@ -509,7 +489,6 @@ class Contract extends CI_Controller
                 );
             }
 
-            $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
         } else {
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
@@ -535,7 +514,7 @@ class Contract extends CI_Controller
     public function save_sub($main_contract_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -583,7 +562,7 @@ class Contract extends CI_Controller
         if ($validate) {
             // Dizin oluşturma işlemi
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name";
-            !is_dir($path) && mkdir($path, 0777, TRUE);
+            !is_dir($path) || mkdir($path, 0777, TRUE);
 
             // Tarih ve adı biçimlendirme işlemleri
             $sozlesme_tarih = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
@@ -625,23 +604,7 @@ class Contract extends CI_Controller
                 )
             );
 
-            // TODO: Alert sistemi eklenecek...
 
-            if ($insert) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
         } else {
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
@@ -669,7 +632,7 @@ class Contract extends CI_Controller
     public function save_offer($project_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -713,7 +676,7 @@ class Contract extends CI_Controller
         if ($validate) {
             // Dizin oluşturma işlemi
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name";
-            !is_dir($path) && mkdir($path, 0777, TRUE);
+            !is_dir($path) || mkdir($path, 0777, TRUE);
 
             // Tarih ve adı biçimlendirme işlemleri
             $sozlesme_tarih = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
@@ -753,23 +716,7 @@ class Contract extends CI_Controller
                 )
             );
 
-            // TODO: Alert sistemi eklenecek...
 
-            if ($insert) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
         } else {
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
@@ -794,7 +741,7 @@ class Contract extends CI_Controller
 
     public function update($id, $active_module = null)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -877,34 +824,12 @@ class Contract extends CI_Controller
                 )
             );
 
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
 
-            $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
 
         } else {
 
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-
-            if (!isAdmin()) {
+             if (!isAdmin() || !permission_control("contract", "update")) {
                 redirect(base_url("error"));
             }
 
@@ -919,11 +844,11 @@ class Contract extends CI_Controller
 
             $companys = $this->Company_model->get_all(array());
 
-            !is_dir($path) && mkdir($path, 0777, TRUE);
-            !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
-            !is_dir($advance_path) && mkdir($advance_path, 0777, TRUE);
-            !is_dir($offer_path) && mkdir($offer_path, 0777, TRUE);
-            !is_dir($payment_path) && mkdir($payment_path, 0777, TRUE);
+            !is_dir($path) || mkdir($path, 0777, TRUE);
+            !is_dir($collection_path) || mkdir($collection_path, 0777, TRUE);
+            !is_dir($advance_path) || mkdir($advance_path, 0777, TRUE);
+            !is_dir($offer_path) || mkdir($offer_path, 0777, TRUE);
+            !is_dir($payment_path) || mkdir($payment_path, 0777, TRUE);
 
 
             if ($item->offer == 1) {
@@ -1005,7 +930,7 @@ class Contract extends CI_Controller
 
     public function update_payment_form($id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1039,7 +964,7 @@ class Contract extends CI_Controller
 
     public function sitedel_date($id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1078,32 +1003,10 @@ class Contract extends CI_Controller
             );
 
 
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
             redirect(base_url("$this->Module_Name/file_form/$id/sitedel"));
 
         } else {
 
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Yer Teslim Tarihi,$sozlesme_tarihi olan Sözleşme Tarihinden Önce Olamaz",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
 
             redirect(base_url("$this->Module_Name/file_form/$id/sitedel/error"));
 
@@ -1112,7 +1015,7 @@ class Contract extends CI_Controller
 
     public function delete_form($id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -1147,7 +1050,7 @@ class Contract extends CI_Controller
 
     public function delete($id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -1228,27 +1131,14 @@ class Contract extends CI_Controller
                 echo '<br>errors occured';
             }
 
-            if ($delete_contract) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Teklif tüm alt süreçleri ile birlikte, başarılı bir şekilde silindi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Teklif silme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-            $this->session->set_flashdata("alert", $alert);
+
             redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
         }
     }
 
     public function hard_delete($id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -1295,25 +1185,16 @@ class Contract extends CI_Controller
             echo '<br>errors occured';
         }
 
-        if ($delete_contract) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Sözleşme tüm alt işleri ile birlikte, başarılı bir şekilde silindi",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Sözleşme silme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-        }
-        $this->session->set_flashdata("alert", $alert);
+
         redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
     }
 
     public function file_upload($type, $contract_id, $sub_folder = null)
     {
+
+        if (!isAdmin() || !permission_control("contract", "read")) {
+            redirect(base_url("error"));
+        }
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
@@ -1343,7 +1224,7 @@ class Contract extends CI_Controller
         $file = ($uploadedFiles['files']);
         $maxFileSize = 2 * 1024 * 1024; // 2 MB
 
-        if ($uploadedFiles['isSuccess'] && count($uploadedFiles["files"]) > 0) {
+        if ($uploadedFiles['isSuccess'] || count($uploadedFiles["files"]) > 0) {
 
             // Yüklenen dosyaları işleyin
             foreach ($uploadedFiles["files"] as $file) {
@@ -1374,6 +1255,9 @@ class Contract extends CI_Controller
 
     public function fileDelete_java($id)
     {
+        if (!isAdmin() || !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+        }
 
         $fileName = $this->input->post('fileName');
 
@@ -1391,7 +1275,8 @@ class Contract extends CI_Controller
 
     public function download_all($cont_id, $where = null)
     {
-        if (!isAdmin()) {
+
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -1428,7 +1313,7 @@ class Contract extends CI_Controller
 
     public function download_backup($cont_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -1502,6 +1387,10 @@ class Contract extends CI_Controller
 
     public function add_main_group($contract_id)
     {
+        if (!isAdmin() || !permission_control("contract", "update")) {
+            redirect(base_url("error"));
+        }
+
         $group_name = $this->input->post('main_group');
         $group_code = $this->input->post('main_code');
 
@@ -1604,6 +1493,9 @@ class Contract extends CI_Controller
 
     public function update_sub_group($contract_id)
     {
+        if (!isAdmin() || !permission_control("contract", "update")) {
+            redirect(base_url("error"));
+        }
 
         $groups = $this->input->post("groups[]");
 
@@ -1721,6 +1613,9 @@ class Contract extends CI_Controller
 
     public function delete_group($group_id)
     {
+        if (!isAdmin() || !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+        }
         $group = $this->Contract_price_model->get(array("id" => $group_id));
 
         $delete = $this->Contract_price_model->delete(
@@ -1755,7 +1650,7 @@ class Contract extends CI_Controller
 
     public function add_leader($contract_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
         $settings = $this->Settings_model->get();
@@ -1848,7 +1743,7 @@ class Contract extends CI_Controller
     {
 
         $leader_id = $this->input->post('leader_id');
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1907,7 +1802,7 @@ class Contract extends CI_Controller
     public
     function update_leader_selection($sub_group_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1966,7 +1861,6 @@ class Contract extends CI_Controller
         }
 
 
-
         $item = $this->Contract_model->get(array("id" => $sub_group->contract_id));
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, "main_group" => 1), "code ASC");
 
@@ -1979,7 +1873,6 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "display";
 
 
-
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price_group", $viewData, true);
         echo $render_html;
 
@@ -1987,7 +1880,7 @@ class Contract extends CI_Controller
 
     public function delete_contract_price($boq_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
         $this->load->model("Boq_model");
@@ -2001,7 +1894,7 @@ class Contract extends CI_Controller
         $delete_boq = $this->Boq_model->delete(array("leader_id" => $boq_id));
 
         // Silme işlemi başarılıysa başarılı mesajını, başarısızsa hata mesajını JSON olarak döndürelim
-        if ($delete && $delete_boq && $delete_leader) {
+        if ($delete || $delete_boq || $delete_leader) {
             $alert = array(
                 "status" => "success",
                 "title" => "İşlem Başarılı",
@@ -2069,6 +1962,11 @@ class Contract extends CI_Controller
     public
     function delete_item($contract_id, $item_id)
     {
+        if (!isAdmin() || !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+        }
+
+
         $item = $this->Contract_model->get(array('id' => $contract_id));
         $book_item = $this->Contract_price_model->get(array('id' => $item_id));
         $sub_group = $this->Contract_price_model->get(array('id' => $book_item->sub_id));
@@ -2102,6 +2000,11 @@ class Contract extends CI_Controller
     public
     function delete_sub($contract_id, $sub_id)
     {
+        if (!isAdmin() || !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+        }
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
 
 
@@ -2140,6 +2043,11 @@ class Contract extends CI_Controller
     public
     function delete_main($contract_id, $main_id)
     {
+        if (!isAdmin() || !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+        }
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
 
 
@@ -2184,7 +2092,7 @@ class Contract extends CI_Controller
 
     public function upload_book_excel($contract_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -2280,23 +2188,7 @@ class Contract extends CI_Controller
                     }
                 }
 
-                // İşlemin Sonucunu kontrol etme ve kullanıcıya bildirme
-                if ($updateCount > 0) {
-                    $alert = array(
-                        "title" => "İşlem Başarılı",
-                        "text" => "$updateCount veri başarılı bir şekilde eklendi",
-                        "type" => "success"
-                    );
-                } else {
-                    $alert = array(
-                        "title" => "İşlem Başarısız",
-                        "text" => "Veri ekleme sırasında bir problem oluştu veya eklenecek veri bulunamadı",
-                        "type" => "danger"
-                    );
-                }
 
-                // İşlemin Sonucunu Session'a yazma işlemi
-                $this->session->set_flashdata("alert", $alert);
                 redirect(base_url("contract/file_form/$contract_id/Price")); // Başarılı işlem sonrası yönlendirme
             } else {
                 die('Dosya yüklenemedi...');
@@ -2308,6 +2200,11 @@ class Contract extends CI_Controller
 
     public function update_boqs()
     {
+        if (!isAdmin() || !permission_control("contract", "update")) {
+            redirect(base_url("error"));
+        }
+
+
         // JSON verilerini al
         $data = file_get_contents('php://input');
 
@@ -2342,6 +2239,11 @@ class Contract extends CI_Controller
     public
     function create_payment($contract_id)
     {
+        if (!isAdmin() || !permission_control("contract", "write")) {
+            redirect(base_url("error"));
+        }
+
+
         $contract = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
         $last_payment = $this->Payment_model->last_payment(array("contract_id" => $contract_id));
@@ -2413,26 +2315,6 @@ class Contract extends CI_Controller
                 )
             );
 
-            // TODO Alert sistemi eklenecek...
-            if ($insert) {
-
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Hakediş başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-
-            } else {
-
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Hakediş Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            // İşlemin Sonucunu Session'a yazma işlemi...
-            $this->session->set_flashdata("alert", $alert);
 
             $this->session->unset_userdata('form_errors');
             $viewData = new stdClass();
@@ -2477,14 +2359,8 @@ class Contract extends CI_Controller
             $this->load->model("User_model");
             $this->load->model("Site_model");
 
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
 
-            if (!isAdmin()) {
+             if (!isAdmin() || !permission_control("contract", "write")) {
                 redirect(base_url("error"));
             }
 
@@ -2499,11 +2375,11 @@ class Contract extends CI_Controller
 
             $companys = $this->Company_model->get_all(array());
 
-            !is_dir($path) && mkdir($path, 0777, TRUE);
-            !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
-            !is_dir($advance_path) && mkdir($advance_path, 0777, TRUE);
-            !is_dir($offer_path) && mkdir($offer_path, 0777, TRUE);
-            !is_dir($payment_path) && mkdir($payment_path, 0777, TRUE);
+            !is_dir($path) || mkdir($path, 0777, TRUE);
+            !is_dir($collection_path) || mkdir($collection_path, 0777, TRUE);
+            !is_dir($advance_path) || mkdir($advance_path, 0777, TRUE);
+            !is_dir($offer_path) || mkdir($offer_path, 0777, TRUE);
+            !is_dir($payment_path) || mkdir($payment_path, 0777, TRUE);
 
 
             if ($item->offer == 1) {
@@ -2592,7 +2468,7 @@ class Contract extends CI_Controller
     public
     function create_collection($contract_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -2755,7 +2631,7 @@ class Contract extends CI_Controller
     public
     function create_advance($contract_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -2918,7 +2794,7 @@ class Contract extends CI_Controller
     public
     function create_bond($contract_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -3150,7 +3026,7 @@ class Contract extends CI_Controller
 
     public function open_edit_contract_price($sub_group_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
         $this->load->model("Boq_model");
@@ -3180,7 +3056,7 @@ class Contract extends CI_Controller
 
     function edit_collection($collection_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -3357,7 +3233,7 @@ class Contract extends CI_Controller
 
     function edit_bond($bond_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -3538,7 +3414,7 @@ class Contract extends CI_Controller
 
     function edit_advance($advance_id)
     {
-        if (!isAdmin()) {
+         if (!isAdmin() || !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 

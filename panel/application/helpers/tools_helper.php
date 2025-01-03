@@ -920,6 +920,29 @@ function getFolderSize($dir) {
     return $size;
 }
 
+function permission_control($module, $permission)
+{
+    // CodeIgniter instansı al
+    $ci =& get_instance();
+
+    // Oturumdaki kullanıcı verilerini al
+    $session_data = $ci->session->userdata('user');
+
+    if (!$session_data) {
+        return false; // Kullanıcı oturumu yoksa yetkisiz
+    }
+
+    // Kullanıcının izinlerini kontrol et
+    $permissions = isset($session_data->permissions) ? json_decode($session_data->permissions, true) : [];
+
+    // İlgili modül ve izin kontrolü
+    if (isset($permissions[$module][$permission]) && $permissions[$module][$permission] === 'on') {
+        return true; // Yetki var
+    }
+
+    return false; // Yetki yok
+}
+
 
 
 
