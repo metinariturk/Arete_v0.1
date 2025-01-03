@@ -21,7 +21,7 @@
         </a>
     </div>
     <div id="tab_contract_price">
-        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_b_contract_price"); ?>
+        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_b_contract_price_group"); ?>
     </div>
 </div>
 <div class="tab-pane fade" id="tab5-3" role="tabpanel" aria-labelledby="tab5-3-link">

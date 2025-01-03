@@ -1692,7 +1692,28 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "display";
 
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price", $viewData, true);
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price_group", $viewData, true);
+
+        echo $render_boq;
+
+    }
+
+    public function refresh_contract_price($contract_id)
+    {
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "code ASC");
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->item = $item;
+        $viewData->prices_main_groups = $prices_main_groups;
+        $viewData->subViewFolder = "display";
+
+
+        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_a_contract_price_table", $viewData, true);
 
         echo $render_boq;
 
@@ -1959,7 +1980,7 @@ class Contract extends CI_Controller
 
 
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price", $viewData, true);
+        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price_group", $viewData, true);
         echo $render_html;
 
     }

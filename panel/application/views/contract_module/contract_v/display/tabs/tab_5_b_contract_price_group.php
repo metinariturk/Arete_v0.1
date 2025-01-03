@@ -1,4 +1,4 @@
-<div class="container mt-4" id="contract_price_div">
+<div class="container mt-4" id="contract_group_div">
     <div class="row">
         <?php foreach ($prices_main_groups as $prices_main_group) { ?>
             <div class="col-md-6 mb-3">

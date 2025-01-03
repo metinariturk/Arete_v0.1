@@ -375,13 +375,29 @@
 
         // jQuery ile AJAX POST isteği
         $.post(url, {}, function (response) {
-            // Cevabı contract_price_div içine yazdır
+            $("#contract_group_div").html(response);
+        }).fail(function (xhr, status, error) {
+            console.error('Hata:', error);
+            alert('Bir hata oluştu, lütfen tekrar deneyin.');
+        });
+    }
+
+    function refresh_contract_price(anchor) {
+        // data-id ve data-url değerlerini al
+        const id = anchor.getAttribute('data-id');
+        const url = anchor.getAttribute('data-url') + id;
+
+        // jQuery ile AJAX POST isteği
+        $.post(url, {}, function (response) {
             $("#contract_price_div").html(response);
         }).fail(function (xhr, status, error) {
             console.error('Hata:', error);
             alert('Bir hata oluştu, lütfen tekrar deneyin.');
         });
     }
-    
+
+
+
+
 
 </script>

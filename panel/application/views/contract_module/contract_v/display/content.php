@@ -202,7 +202,10 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab5-1-link"
-                           data-bs-toggle="tab" href="#tab5-1" role="tab">
+                           data-id="<?php echo $item->id; ?>"
+                           data-url="<?php echo base_url('Contract/refresh_contract_price/'); ?>"
+                           data-bs-toggle="tab" href="#tab5-1" role="tab"
+                           onclick="refresh_contract_price(this)">
                             <h5>Birim Fiyat Tablo</h5>
                         </a>
                     </li>

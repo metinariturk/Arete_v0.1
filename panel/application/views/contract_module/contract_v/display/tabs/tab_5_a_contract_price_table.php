@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4" id="contract_price_div">
     Sözleşme Pozları
     <button id="save-button-top" class="btn btn-primary btn-block">Kaydet</button>
     <table>
