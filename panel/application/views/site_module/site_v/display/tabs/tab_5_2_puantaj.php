@@ -32,38 +32,39 @@
                     <option><?php echo $year - 5; ?></option>
                 </select>
             </div>
-
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="table-container">
-                    <table id="table_puantaj" class="table-bordered">
+                <div class="table-responsive">
+                    <table class="table-bordered">
                         <thead>
                         <tr>
-                            <th  style="
-                                transform: rotate(-90deg); /* 90 derece döndür */
-                                transform-origin: bottom left; /* Dönme noktası */
-                                height: 150px">#</th>
-                            <?php foreach ($active_personel_datas as $i => $personel_data) { ?>
-                                <th style="
-                                transform: rotate(-90deg); /* 90 derece döndür */
-                                transform-origin: bottom left; /* Dönme noktası */
-                                height: 150px"><?php echo $personel_data->name_surname; ?></th>
+                            <th style="position: sticky; left: 0; background-color: #fff; z-index: 1;">#</th>
+                            <?php
+                            $count_of_days = gun_sayisi();
+
+                            for ($j = 1; $j <= $count_of_days; $j++) { ?>
+                                <th style="width: 70px; height: 50px; text-align: center"><?php echo str_pad($j, 2, "0", STR_PAD_LEFT); ?></th>
                             <?php } ?>
                         </tr>
                         </thead>
                         <tbody>
                         <?php
-                        $count_of_days = gun_sayisi();
-                        for ($j = 1; $j <= $count_of_days; $j++) {
-                            $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
+                        foreach ($active_personel_datas as $personel_data) {
                             ?>
                             <tr>
-                                <td><b><?php echo $j; ?></b></td>
-                                <?php foreach ($active_personel_datas as $personel_data) { ?>
-                                    <td>
+                                <td style="width: 250px; position: sticky; left: 0; background-color: #fff; z-index: 1;">
+                                    <b><?php echo $personel_data->name_surname; ?></b></td>
+                                <?php
+                                $count_of_days = gun_sayisi();
+
+                                for ($j = 1; $j <= $count_of_days; $j++) {
+                                    $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
+                                    ?>
+                                    <td style="width: 70px; height: 30px; text-align: center">
                                         <input type="checkbox"
-                                               onclick="savePuantaj(this)"
+                                               style="transform: scale(1.3); -webkit-transform: scale(1.3); -moz-transform: scale(1.3);"
+                                               onclick=" savePuantaj(this)"
                                                workerid="<?php echo $personel_data->id; ?>"
                                                date="<?php echo $year . '-' . $month . '-' . $j; ?>"
                                             <?php
@@ -84,5 +85,3 @@
         </div>
     </form>
 </div>
-
-
