@@ -84,8 +84,6 @@ class Site extends CI_Controller
         );
 
 
-        
-
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -132,7 +130,7 @@ class Site extends CI_Controller
             )
         );
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -167,7 +165,7 @@ class Site extends CI_Controller
 
         $users = $this->User_model->get_all(array());
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add";
@@ -319,7 +317,7 @@ class Site extends CI_Controller
 
             $users = $this->User_model->get_all(array());
 
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add";
@@ -426,8 +424,12 @@ class Site extends CI_Controller
 
         $month = date('n');
         $year = date('Y');
+// O ayın son gününü bul
+        $last_day_of_month = date('t', strtotime("$year-$month-01"));
 
-        
+// $last_day_of_month, o ayın son gününü (kaç gün olduğunu) verecektir
+        $count_of_days = (int)$last_day_of_month;
+
         $viewData->viewModule = $this->moduleFolder;
 
         $viewData->viewFolder = $this->viewFolder;
@@ -435,6 +437,7 @@ class Site extends CI_Controller
         $viewData->path = $path;
         $viewData->upload_function = $upload_function;
         $viewData->active_tab = $active_tab;
+        $viewData->count_of_days = $count_of_days;
 
         $viewData->all_deposits = $all_deposits;
         $viewData->all_expenses = $all_expenses;
@@ -629,6 +632,7 @@ class Site extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
+
     public function fileDelete_java($id)
     {
         if (!isAdmin()) {
@@ -664,7 +668,6 @@ class Site extends CI_Controller
         $this->zip->download("$zip_name.zip");
 
     }
-
 
 
     public
@@ -773,11 +776,10 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
-
 
 
         $main_categories = $this->Workgroup_model->get_all(array('main_category' => 1));
@@ -828,7 +830,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -876,7 +878,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -933,7 +935,7 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -960,7 +962,7 @@ class Site extends CI_Controller
 
     /*----*/
 
-/*    Rapor İmza Ayarları Start*/
+    /*    Rapor İmza Ayarları Start*/
 
     public function sign_options($site_id, $module)
     {
@@ -1047,7 +1049,7 @@ class Site extends CI_Controller
             $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
 
             $viewData = new stdClass();
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -1078,7 +1080,7 @@ class Site extends CI_Controller
 
             $viewData = new stdClass();
 
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -1106,7 +1108,6 @@ class Site extends CI_Controller
         }
 
 
-
         $delete = $this->Report_sign_model->delete(
             array(
                 "id" => $id
@@ -1121,7 +1122,7 @@ class Site extends CI_Controller
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
         $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
@@ -1226,6 +1227,7 @@ class Site extends CI_Controller
             }
         }
     }
+
     public
     function check_end_date($end_date)
     {
@@ -1579,7 +1581,7 @@ class Site extends CI_Controller
         $viewData->total_expense = $total_expense;
         $viewData->item = $item;
 
-        if ($sitewallet->type == 1){
+        if ($sitewallet->type == 1) {
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
         } elseif (($sitewallet->type == 0))
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
@@ -1944,7 +1946,7 @@ class Site extends CI_Controller
             $item = $this->Site_model->get(array("id" => $site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
 
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
@@ -1961,7 +1963,7 @@ class Site extends CI_Controller
             /** Tablodan Verilerin Getirilmesi.. */
             $item = $this->Site_model->get(array("id" => $site_id));
 
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
@@ -2594,7 +2596,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
@@ -2613,9 +2615,14 @@ class Site extends CI_Controller
     function puantaj_date($site_id)
     {
 
-        $month = date($this->input->post('month'));
-        $year = date($this->input->post('year'));
+        $month = $this->input->post('month');
+        $year = $this->input->post('year');
 
+// O ayın son gününü bul
+        $last_day_of_month = date('t', strtotime("$year-$month-01"));
+
+// $last_day_of_month, o ayın son gününü (kaç gün olduğunu) verecektir
+        $count_of_days = (int)$last_day_of_month;
 
         $viewData = new stdClass();
         $this->load->model("Attendance_model");
@@ -2625,13 +2632,14 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
         $viewData->year = $year;
         $viewData->month = $month;
+        $viewData->count_of_days = $count_of_days;
 
         if (isset($puantaj)) {
             $viewData->puantaj = $puantaj;

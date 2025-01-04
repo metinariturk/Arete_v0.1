@@ -574,13 +574,18 @@
 
 
 <script>
-    function sendPuantajDate() {
+    function sendPuantajDate(type) {
         // Seçili ay ve yılı al
         var month = $('#month').val();
         var year = $('#year').val();
 
         // Bağlantı URL'sini oluştur
-        var url = '<?php echo base_url("Export/puantaj_print/$item->id"); ?>/' + month + '/' + year;
+        var url;
+        if (type == 'excel') {  // 'excel' değerini doğru şekilde string olarak yazdık
+            url = '<?php echo base_url("Export/puantaj_print_excel/$item->id"); ?>/' + month + '/' + year;
+        } else {
+            url = '<?php echo base_url("Export/puantaj_print/$item->id"); ?>/' + month + '/' + year;
+        }
 
         // AJAX isteğini gönder
         $.ajax({

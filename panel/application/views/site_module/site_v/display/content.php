@@ -190,10 +190,10 @@
                     </div>
                     <div class="tab-pane fade" id="tab5-2" role="tabpanel" aria-labelledby="tab5-2-link">
                         <div class="download_links mt-3">
-                            <a href="<?php echo base_url('export/sitewallet_download_excel'); ?>">
+                            <a href="#" onclick="sendPuantajDate('excel')">
                                 <i class="fa fa-file-excel-o fa-2x"></i>
                             </a>
-                            <a href="#" onclick="sendPuantajDate(this)">
+                            <a href="#" onclick="sendPuantajDate('pdf')">
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>

@@ -3023,8 +3023,6 @@ class Export extends CI_Controller
 
         $year_month = dateFormat('Y-m', $year_month);
 
-        $viewData = new stdClass();
-
         $this->load->model("Attendance_model");
         $this->load->model("Workman_model");
         $puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "year_month" => "$year_month"));
@@ -3116,6 +3114,310 @@ class Export extends CI_Controller
 
     }
 
+    public function puantaj_print_excel($site_id, $month, $year)
+    {
+        $month = date($month);
+        $year = date($year);
+        $year_month = $year . "-" . $month;
+        $month_name = ay_isimleri($month);
+
+        $year_month = dateFormat('Y-m', $year_month);
+
+        $last_day_of_month = date('t', strtotime("$year-$month-01"));
+        $count_of_days = (int)$last_day_of_month;
+
+
+        $this->load->model("Attendance_model");
+        $this->load->model("Workman_model");
+        $this->load->model("Site_model");
+        $this->load->model("Contract_model");
+        $puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "year_month" => "$year_month"));
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+
+        if (isset($puantaj)) {
+            $puantaj_data = json_decode($puantaj->puantaj, true);
+        } else {
+            $puantaj_data = null;
+        }
+
+        $personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageSetup()
+            ->setPaperSize(PageSetup::PAPERSIZE_A4)  // A4 boyutunda yapar
+            ->setOrientation(PageSetup::ORIENTATION_DEFAULT);  // Dikey olarak ayarlar
+
+        $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setRight(0);     // 0 cm
+
+        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+        $sheet->getStyle('A1:Z1000')->applyFromArray([
+            'font' => [
+                'size' => 12, // Yazı büyüklüğü 8 punto
+            ],
+        ]);
+
+        // Logo dosyasının yolu
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is your logo');
+        $drawing->setPath($logoPath); // Resim dosyasının yolu
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
+        $drawing->setHeight(60); // Resmin yüksekliği (piksel)
+        $drawing->setWorksheet($sheet);
+
+        $sheet->getColumnDimension('A')->setWidth(3);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(13);
+        for ($col = 4; $col <= 34; $col++) {
+            $column = getExcelColumn($col);  // Kolon ismini alıyoruz (A, B, C, ..., AH)
+            $sheet->getColumnDimension($column)->setWidth(3);
+        }
+
+
+        $rowNum = 2;
+        $sheet->mergeCells("Z{$rowNum}:AH{$rowNum}");  // Z ile AH sütunları birleştirildi
+        $sheet->setCellValue("Z{$rowNum}", "Tarih: " . date('d.m.Y'));
+
+// Sağ hizalama ve kalın yazı stili eklemek
+        $sheet->getStyle("Z{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,  // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,  // Sağ hizalama
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,    // Dikeyde ortala
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+
+        $sheet->mergeCells("B{$rowNum}:AH{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "$year $month_name Puantaj Listesi");
+        // Satır yüksekliğini ayarlayın (örneğin, varsayılan yüksekliğin 2 katı)
+        $sheet->getRowDimension($rowNum)->setRowHeight(40); // Varsayılan 15 px olduğu varsayımıyla 30 px
+
+// Hücre stilini uygulayın
+        $sheet->getStyle("B{$rowNum}:D{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 16,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+
+        $rowNum++;
+        $rowNum++;
+
+        $sheet->mergeCells("B{$rowNum}:M{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "Şantiye Adı : " . $site->santiye_ad);
+        $sheet->getStyle("B{$rowNum}:M{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $rowNum++;
+
+        $sheet->mergeCells("B{$rowNum}:M{$rowNum}");  // B-F sütunları birleştirildi
+        $sheet->setCellValue("B{$rowNum}", "Sözleşme Adı : " . $contract->contract_name);
+        $sheet->getStyle("B{$rowNum}:M{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+                'size' => 12,         // Yazı büyüklüğü 12 punto
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+        $rowNum++;
+        $rowNum++;
+
+// Başlangıç kolonu 'D'
+        $columnIndex = 4;
+
+// Excel kolon isimlerini hesaplayan fonksiyon
+
+
+        $row = $rowNum++;
+
+        $sheet->setCellValue("A9", "#");  // Hücreye sayıyı yazıyoruz
+        $sheet->setCellValue("B9", "Ad Soyad");  // Hücreye sayıyı yazıyoruz
+        $sheet->setCellValue("C9", "Meslek");  // Hücreye sayıyı yazıyoruz
+
+
+
+
+// $count_of_days kadar döngü oluşturuyoruz
+        for ($i = 1; $i <= $count_of_days; $i++) {
+            // Excel kolon ismini alıyoruz
+            $column = getExcelColumn($columnIndex);  // Kolon ismini hesaplıyoruz
+
+            // Hücreyi oluşturuyoruz
+            $cell = $column . $row;  // Hücre ismini oluşturuyoruz (örneğin: D3, E3, F3, ...)
+
+            // Hücreye değeri set ediyoruz
+            $sheet->setCellValue($cell, $i);  // Hücreye sayıyı yazıyoruz
+
+            $columnIndex++;  // Bir sonraki kolona geçiyoruz
+        }
+
+// Son sütundan bir sonraki kolona "TOPLAM" yazdırıyoruz
+        $lastColumn = getExcelColumn($columnIndex);  // Son kolonun ismini alıyoruz
+        $sheet->setCellValue($lastColumn . $row, "TOPLAM");  // "TOPLAM" yazıyoruz
+
+// Personel verilerini ekle
+        $row = $rowNum++; // Başlık sonrası başlar
+        $t = 1;
+        $totalZ = 0;  // Toplam sayacı başlatıyoruz
+
+        foreach ($personel_datas as $personel_data) {
+            $sheet->setCellValue('A' . $row, $t++);
+            $sheet->setCellValue('B' . $row, $personel_data->name_surname);
+            $sheet->setCellValue('C' . $row, group_name($personel_data->group));
+
+            $columnIndex_A = 4;
+            $z = 0;  // Personel başına sayacı sıfırlıyoruz
+
+            for ($i = 1; $i <= $count_of_days; $i++) {
+                // Excel kolon ismini alıyoruz
+                $column = getExcelColumn($columnIndex_A);  // Kolon ismini hesaplıyoruz
+
+                // Hücreyi oluşturuyoruz
+                $cell = $column . $row;  // Hücre ismini oluşturuyoruz (örneğin: D3, E3, F3, ...)
+
+                $j_double_digit = str_pad($i, 2, "0", STR_PAD_LEFT);
+
+                if (isset($puantaj_data[$j_double_digit]) && in_array($personel_data->id, $puantaj_data[$j_double_digit])) {
+                    $isChecked = 'X';
+                    $z++;  // Personel ID'si varsa $z sayacını 1 artırıyoruz
+                } else {
+                    $isChecked = '';
+                }
+
+                // Hücreye sayıyı yazıyoruz
+                $sheet->setCellValue($cell, $isChecked);
+
+                // Hücre içeriğini ortalıyoruz
+                $sheet->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle($cell)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+                // Kolon index'ini artırıyoruz
+                $columnIndex_A++;  // Bir sonraki kolona geçiyoruz
+            }
+
+            // Son satırda toplam "X" sayısını yazıyoruz
+            $column_total = getExcelColumn($columnIndex_A);  // Son kolonu buluyoruz
+            $sheet->setCellValue($column_total . $row, $z);  // Son hücreye $z yazıyoruz
+
+            // Toplam $z'yi global toplam değere ekliyoruz
+            $totalZ += $z;
+
+            $row++;  // Personel satırını artırıyoruz
+        }
+
+// Toplam sayıyı son sütuna yazıyoruz
+        $lastColumn = getExcelColumn($columnIndex_A-1);  // Son kolonu buluyoruz
+        $previousColumn = getExcelColumn($columnIndex_A - 7);  // Son sütundan bir önceki sütunu alıyoruz
+
+// Hücreleri birleştiriyoruz, "TOPLAM" yazısını bir önceki sütuna yerleştiriyoruz
+        $mergeRange = "D{$row}:{$lastColumn}{$row}";  // Birleştirilecek hücre aralığı
+        $sheet->mergeCells($mergeRange);  // Hücreleri birleştiriyoruz
+
+// "TOPLAM" yazısını birleştirilen hücreye yazıyoruz
+        $sheet->setCellValue("D{$row}", "TOPLAM");
+
+// Stil uygulaması
+        $sheet->getStyle("D{$row}")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT, // Sağda hizalama
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,     // Ortada dikey hizalama
+            ],
+        ]);
+
+// Son olarak, toplam "X" sayısını yazıyoruz
+        $total_column = getExcelColumn($columnIndex_A);
+        $sheet->setCellValue($total_column . $row, $totalZ);  // Toplam sayıyı yazıyoruz
+
+        $sheet->getStyle('A9:AI1000')->applyFromArray([
+            'font' => [
+                'name' => 'Calibri',    // Font olarak Calibri
+                'size' => 12,           // Font boyutu 12 punto
+            ]
+        ]);
+
+        // İnce çizgiler eklemek için
+        $sheet->getStyle('A9:' . $total_column . $row)->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN, // İnce çizgi
+                    'color' => ['argb' => '000000'], // Siyah renk
+                ],
+            ],
+        ]);
+
+// $total_column . $row etrafına kalın çerçeve eklemek için
+        $sheet->getStyle($total_column . $row)->applyFromArray([
+            'borders' => [
+                'top' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK, // Kalın üst kenar
+                    'color' => ['argb' => '000000'], // Siyah renk
+                ],
+                'right' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK, // Kalın sağ kenar
+                    'color' => ['argb' => '000000'], // Siyah renk
+                ],
+                'bottom' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK, // Kalın alt kenar
+                    'color' => ['argb' => '000000'], // Siyah renk
+                ],
+                'left' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK, // Kalın sol kenar
+                    'color' => ['argb' => '000000'], // Siyah renk
+                ],
+            ],
+        ]);
+
+        $sheet->getStyle("A9:AI9")->applyFromArray([
+            'font' => [
+                'bold' => true,       // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Ortada yatay hizalama
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,   // Ortada dikey hizalama
+            ],
+        ]);
+
+        $filename = "Puantaj Raporu.xlsx";
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
 }
 
 

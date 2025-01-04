@@ -289,7 +289,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1629</line>
+          <line>1631</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="delete_sitewallet" />
@@ -298,7 +298,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>2398</line>
+          <line>2400</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="edit_personel" />
@@ -307,7 +307,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>850</line>
+          <line>852</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="add_group" />
@@ -331,6 +331,15 @@
             <option name="methodName" value="file_upload" />
           </properties>
           <option name="timeStamp" value="53" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>2614</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="puantaj_date" />
+          </properties>
+          <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

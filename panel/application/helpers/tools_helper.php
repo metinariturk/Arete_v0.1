@@ -943,6 +943,14 @@ function permission_control($module, $permission)
     return false; // Yetki yok
 }
 
-
+function getExcelColumn($index) {
+    $columnName = '';
+    while ($index > 0) {
+        $index--;
+        $columnName = chr($index % 26 + 65) . $columnName;
+        $index = intdiv($index, 26);
+    }
+    return $columnName;
+}
 
 

@@ -41,11 +41,10 @@
                         <tr>
                             <th style="position: sticky; left: 0; background-color: #fff; z-index: 1;">#</th>
                             <?php
-                            $count_of_days = gun_sayisi();
-
                             for ($j = 1; $j <= $count_of_days; $j++) { ?>
                                 <th style="width: 70px; height: 50px; text-align: center"><?php echo str_pad($j, 2, "0", STR_PAD_LEFT); ?></th>
                             <?php } ?>
+                            <th>Toplam</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -54,28 +53,30 @@
                             ?>
                             <tr>
                                 <td style="width: 250px; position: sticky; left: 0; background-color: #fff; z-index: 1;">
-                                    <b><?php echo $personel_data->name_surname; ?></b></td>
+                                    <b><?php echo $personel_data->name_surname; ?></b>
+                                </td>
                                 <?php
-                                $count_of_days = gun_sayisi();
-
+                                $working_days = 0;  // Toplam çalışma günleri sayacı
                                 for ($j = 1; $j <= $count_of_days; $j++) {
                                     $j_double_digit = str_pad($j, 2, "0", STR_PAD_LEFT);
                                     ?>
                                     <td style="width: 70px; height: 30px; text-align: center">
                                         <input type="checkbox"
                                                style="transform: scale(1.3); -webkit-transform: scale(1.3); -moz-transform: scale(1.3);"
-                                               onclick=" savePuantaj(this)"
+                                               onclick="savePuantaj(this)"
                                                workerid="<?php echo $personel_data->id; ?>"
                                                date="<?php echo $year . '-' . $month . '-' . $j; ?>"
                                             <?php
                                             if (isset($puantaj_data[$j_double_digit]) &&
                                                 in_array($personel_data->id, $puantaj_data[$j_double_digit])) {
                                                 echo "checked";
+                                                $working_days++;  // İşaretli gün sayısını artır
                                             }
                                             ?>
                                         >
                                     </td>
                                 <?php } ?>
+                                <td style="text-align: center; font-weight: bold;"><?php echo $working_days; ?></td> <!-- Çalışma gün sayısı -->
                             </tr>
                         <?php } ?>
                         </tbody>
