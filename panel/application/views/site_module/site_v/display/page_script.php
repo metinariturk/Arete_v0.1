@@ -542,7 +542,7 @@
             },
             success: function (response) {
                 // Başarılı yanıt aldığınızda yapılacak işlemler
-                $(".puantaj_list").html(response);
+                $(".puantaj_total").html(response);
             },
             error: function (xhr, status, error) {
                 console.log(error);
