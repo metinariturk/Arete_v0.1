@@ -194,11 +194,21 @@ class Contract extends CI_Controller
 
         $companys = $this->Company_model->get_all(array());
 
-        !is_dir($path) || mkdir($path, 0777, TRUE);
-        !is_dir($collection_path) || mkdir($collection_path, 0777, TRUE);
-        !is_dir($advance_path) || mkdir($advance_path, 0777, TRUE);
-        !is_dir($offer_path) || mkdir($offer_path, 0777, TRUE);
-        !is_dir($payment_path) || mkdir($payment_path, 0777, TRUE);
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
+        }
+        if (!is_dir($collection_path)) {
+            mkdir($collection_path, 0777, TRUE);
+        }
+        if (!is_dir($advance_path)) {
+            mkdir($advance_path, 0777, TRUE);
+        }
+        if (!is_dir($offer_path)) {
+            mkdir($offer_path, 0777, TRUE);
+        }
+        if (!is_dir($payment_path)) {
+            mkdir($payment_path, 0777, TRUE);
+        }
 
 
         if ($item->offer == 1) {
