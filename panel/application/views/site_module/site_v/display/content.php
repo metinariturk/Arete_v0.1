@@ -42,7 +42,12 @@
     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
         <div class="card">
             <div class="card-body">
-                <h5>Genel Bilgiler</h5>
+                <h5><?php echo $item->santiye_ad; ?> Şantiyesi </h5>
+                <a onclick="changeIcon(this)" style="cursor: pointer;"
+                   url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
+                   id="myBtn">
+                    <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?> fa-2x"></i> Ana Sayfaya Ekle
+                </a>
                 <div class="download_links mt-3">
                     <a href="<?php echo base_url('export/'); ?>">
                         <i class="fa fa-file-excel-o fa-2x"></i>

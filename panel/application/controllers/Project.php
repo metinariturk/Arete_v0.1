@@ -45,7 +45,7 @@ class Project extends CI_Controller
         $this->Display_Folder = "display";
         $this->Update_route = "update_form";
         $this->Upload_Folder = "uploads";
-        
+
         $this->List_Folder = "list";
         $this->Dependet_id_key = "project_id";
         $this->Common_Files = "common";
@@ -61,7 +61,7 @@ class Project extends CI_Controller
     public function index()
     {
 
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("project", "read")) {
             redirect(base_url("error"));
         }
 
@@ -71,7 +71,7 @@ class Project extends CI_Controller
         $settings = $this->Settings_model->get();
         $users = $this->User_model->get_all();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";
@@ -85,7 +85,8 @@ class Project extends CI_Controller
 
     public function file_form($id)
     {
-        if (!isAdmin()) {
+
+        if (!isAdmin() && !permission_control("project", "read")) {
             redirect(base_url("error"));
         }
 
@@ -144,7 +145,7 @@ class Project extends CI_Controller
 
     public function save()
     {
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("project", "write")) {
             redirect(base_url("error"));
         }
 
@@ -224,7 +225,7 @@ class Project extends CI_Controller
                 $items = $this->Project_model->get_all();
                 $settings = $this->Settings_model->get();
 
-                
+
                 $viewData->viewModule = $this->moduleFolder;
                 $viewData->viewFolder = $this->viewFolder;
                 $viewData->subViewFolder = "add";
@@ -257,7 +258,6 @@ class Project extends CI_Controller
             ));
 
 
-            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "list";
@@ -282,7 +282,7 @@ class Project extends CI_Controller
 
     public function update($id)
     {
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("project", "update")) {
             redirect(base_url("error"));
         }
 
@@ -415,198 +415,199 @@ class Project extends CI_Controller
     public function delete($id)
     {
 
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+        if (isAdmin() && permission_control("project", "delete")) {
 
-        $project = $this->Project_model->get(array("id"=> $id));
+            $project = $this->Project_model->get(array("id" => $id));
 
-        $project_name = project_name($id);
-        $number_of_contracts = count(get_from_any_array_select_ci("id", "contract", "proje_id", $id));
-        $number_of_sites = count(get_from_any_array_select_ci("id", "site", "proje_id", $id));
-        $control = $number_of_contracts + $number_of_aucitons + $number_of_sites;
+            $project_name = project_name($id);
+            $number_of_contracts = count(get_from_any_array_select_ci("id", "contract", "proje_id", $id));
+            $number_of_sites = count(get_from_any_array_select_ci("id", "site", "proje_id", $id));
+            $control = $number_of_contracts + $number_of_aucitons + $number_of_sites;
 
 
-        if ($control > 0) {
-
-            $alert = array(
-                "title" => "Bu Projeye Bağlı Sözleşme/Teklif/Şantiye Mevcut",
-                "text" => "$project_name silmek için alt birimleri silmeniz gerekmektedir.",
-                "type" => "danger"
-            );
-            $this->session->set_flashdata("alert", $alert);
-            redirect(base_url("$this->Module_Name/file_form/$id"));
-        } else {
-
-            $this->Favorite_model->delete(
-                array(
-                    "module" => "project",
-                    "module_id" => $id
-                )
-            );
-
-
-            $folder_name = $project->project_code;
-            $project_name = $project->project_name;
-            $path = "$this->Upload_Folder/$this->viewFolder/$folder_name/";
-
-            if (file_exists($path)) {
-                $sil = deleteDirectory($path);
+            if ($control > 0) {
 
                 $alert = array(
-                    "title" => "Silinen Kayıt",
-                    "text" => "$project_name",
+                    "title" => "Bu Projeye Bağlı Sözleşme/Teklif/Şantiye Mevcut",
+                    "text" => "$project_name silmek için alt birimleri silmeniz gerekmektedir.",
                     "type" => "danger"
                 );
                 $this->session->set_flashdata("alert", $alert);
+                redirect(base_url("$this->Module_Name/file_form/$id"));
             } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Dosya Zaten Silinmiş Görünüyor, İzinsiz Erişim Kontrolü Yapılmalı",
-                    "type" => "danger"
-                );
-                $this->session->set_flashdata("alert", $alert);
-            }
-            $file_order_id = get_from_any_and('file_order', 'connected_module_id', $id, 'module', 'Project');
 
-            $update_file_order = $this->Order_model->update(
-                array(
-                    "id" => $file_order_id
-                ),
-                array(
-                    "deletedAt" => date("Y-m-d H:i:s"),
-                    "deletedBy" => active_user_id(),
-
-                )
-            );
-
-
-            $delete = $this->Project_model->delete(array("id" => $id));
-
-            if (!$sil) {
-
-                $alert = array(
-                    "title" => "Dosya Silinme İşlemi Başarısız",
-                    "text" => "Proje Dosyaları Silinmesi Sırasında Bir Problem Oluştu",
-                    "type" => "danger"
+                $this->Favorite_model->delete(
+                    array(
+                        "module" => "project",
+                        "module_id" => $id
+                    )
                 );
 
-                $this->session->set_flashdata("alert", $alert);
+
+                $folder_name = $project->project_code;
+                $project_name = $project->project_name;
+                $path = "$this->Upload_Folder/$this->viewFolder/$folder_name/";
+
+                if (file_exists($path)) {
+                    $sil = deleteDirectory($path);
+
+                    $alert = array(
+                        "title" => "Silinen Kayıt",
+                        "text" => "$project_name",
+                        "type" => "danger"
+                    );
+                    $this->session->set_flashdata("alert", $alert);
+                } else {
+                    $alert = array(
+                        "title" => "İşlem Başarısız",
+                        "text" => "Dosya Zaten Silinmiş Görünüyor, İzinsiz Erişim Kontrolü Yapılmalı",
+                        "type" => "danger"
+                    );
+                    $this->session->set_flashdata("alert", $alert);
+                }
+                $file_order_id = get_from_any_and('file_order', 'connected_module_id', $id, 'module', 'Project');
+
+                $update_file_order = $this->Order_model->update(
+                    array(
+                        "id" => $file_order_id
+                    ),
+                    array(
+                        "deletedAt" => date("Y-m-d H:i:s"),
+                        "deletedBy" => active_user_id(),
+
+                    )
+                );
+
+
+                $delete = $this->Project_model->delete(array("id" => $id));
+
+                if (!$sil) {
+
+                    $alert = array(
+                        "title" => "Dosya Silinme İşlemi Başarısız",
+                        "text" => "Proje Dosyaları Silinmesi Sırasında Bir Problem Oluştu",
+                        "type" => "danger"
+                    );
+
+                    $this->session->set_flashdata("alert", $alert);
+                    redirect(base_url("$this->Module_Name"));
+                }
+
+                // TODO Alert Sistemi Eklenecek...
+                if ($delete) {
+
+                    $alert = array(
+                        "title" => "Proje Veri Tabanından Silindi",
+                        "text" => "$project_name isimli proje tüm alt süreçleriyle birlikte kalıcı olarak silindi",
+                        "type" => "danger"
+                    );
+                    $this->session->set_flashdata("alert", $alert);
+
+                } else {
+
+                    $alert = array(
+                        "title" => "Proje Veri Tabanından Silinemedi",
+                        "text" => "Proje silinmesi sırasında bir problem oluştu",
+                        "type" => "danger"
+                    );
+                    $this->session->set_flashdata("alert", $alert);
+                }
                 redirect(base_url("$this->Module_Name"));
             }
-
-            // TODO Alert Sistemi Eklenecek...
-            if ($delete) {
-
-                $alert = array(
-                    "title" => "Proje Veri Tabanından Silindi",
-                    "text" => "$project_name isimli proje tüm alt süreçleriyle birlikte kalıcı olarak silindi",
-                    "type" => "danger"
-                );
-                $this->session->set_flashdata("alert", $alert);
-
-            } else {
-
-                $alert = array(
-                    "title" => "Proje Veri Tabanından Silinemedi",
-                    "text" => "Proje silinmesi sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-                $this->session->set_flashdata("alert", $alert);
-            }
-            redirect(base_url("$this->Module_Name"));
+        } else {
+            echo "Bu İşlemi Yapma Yetkiniz Yok";
         }
+
     }
 
     public function file_upload($id)
     {
 
-        if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
+        if (isAdmin() || permission_control("project", "update")) {
+
+            $project = $this->Project_model->get(array("id" => $id));
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
+
+            if (!is_dir($path)) {
+                mkdir($path, 0777, TRUE);
             }
-        }
 
+            $FileUploader = new FileUploader('files', array(
+                'limit' => null,
+                'maxSize' => null,
+                'extensions' => null,
+                'uploadDir' => $path,
+                'title' => 'name'
+            ));
 
-        $project = $this->Project_model->get(array("id" => $id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
+            // call to upload the files
 
-        if (!is_dir($path)) {
-            mkdir($path, 0777, TRUE);
-        }
+            $uploadedFiles = $FileUploader->upload();
 
-        $FileUploader = new FileUploader('files', array(
-            'limit' => null,
-            'maxSize' => null,
-            'extensions' => null,
-            'uploadDir' => $path,
-            'title' => 'name'
-        ));
+            $files = ($uploadedFiles['files']);
 
-        // call to upload the files
+            if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+                // Yüklenen dosyaları işleyin
+                foreach ($uploadedFiles['files'] as $file) {
+                    // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                    if ($file['size'] > 2097152) {
+                        // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                        $newWidth = null; // Örnek olarak 500 piksel genişlik
+                        $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
 
-        $uploadedFiles = $FileUploader->upload();
-
-        $files = ($uploadedFiles['files']);
-
-        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
-            // Yüklenen dosyaları işleyin
-            foreach ($uploadedFiles['files'] as $file) {
-                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
-                if ($file['size'] > 2097152) {
-                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
-                    $newWidth = null; // Örnek olarak 500 piksel genişlik
-                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
-
-                    // Yeniden boyutlandırma işlemi
-                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
+                        // Yeniden boyutlandırma işlemi
+                        FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
+                    }
                 }
             }
-        }
 
-        header('Content-Type: application/json');
-        echo json_encode($uploadedFiles);
-        exit;
+            header('Content-Type: application/json');
+            echo json_encode($uploadedFiles);
+            exit;
+        } else {
+            echo "Bu İşlemi Yapma Yetkiniz Yok";
+        }
     }
 
     public function fileDelete_java($id)
     {
-        $fileName = $this->input->post('fileName');
+        if (isAdmin() && permission_control("project", "delete")) {
+            $fileName = $this->input->post('fileName');
 
-        $project = $this->Project_model->get(array("id" => $id));
+            $project = $this->Project_model->get(array("id" => $id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
 
-        unlink("$path/$fileName");
+            unlink("$path/$fileName");
+        } else {
+            echo "Bu İşlemi Yapma Yetkiniz Yok";
+        }
     }
 
     public
     function download_all($project_id)
     {
-        if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
+        if (isAdmin() && permission_control("project", "update")) {
+            $this->load->library('zip');
+            $this->zip->compression_level = 0;
+
+            $project_code = project_code($project_id);
+            $project_name = get_from_id("projects", "project_name", $project_id);
+
+            $path = "uploads/project_v/$project_code/main";
+            echo $path;
+
+            $files = glob($path . '/*');
+
+            foreach ($files as $file) {
+                $this->zip->read_file($file, FALSE);
             }
+
+            $zip_name = $project_name;
+            $this->zip->download("$zip_name");
+        } else {
+            echo "Bu İşlemi Yapma Yetkiniz Yok";
         }
-
-        $this->load->library('zip');
-        $this->zip->compression_level = 0;
-
-        $project_code = project_code($project_id);
-        $project_name = get_from_id("projects", "project_name", $project_id);
-
-        $path = "uploads/project_v/$project_code/main";
-        echo $path;
-
-        $files = glob($path . '/*');
-
-        foreach ($files as $file) {
-            $this->zip->read_file($file, FALSE);
-        }
-
-        $zip_name = $project_name;
-        $this->zip->download("$zip_name");
-
     }
 
     public

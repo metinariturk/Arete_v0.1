@@ -1,5 +1,4 @@
 <?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
-
 <div class="container mt-5">
     <div class="row">
         <!-- Sol Sekmeler ve İçerik -->
@@ -66,7 +65,6 @@
                 </table>
             </div>
         </div>
-
         <!-- Sağ Alt Sözleşmeler -->
         <?php if (!$item->parent) { ?>
         <div class="col-md-6">
@@ -78,7 +76,6 @@
                     </a>
                 </div>
             </div>
-
             <div class="custom-card-body">
                 <?php if (!empty($sub_contracts)) { ?>
                     <table class="table table-sm table-borderless">
@@ -105,6 +102,6 @@
                 <?php } ?>
             </div>
         </div>
+        <?php } ?>
     </div>
-    <?php } ?>
 </div>

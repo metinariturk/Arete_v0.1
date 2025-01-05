@@ -9,6 +9,7 @@
                         <th>Sözleşme Kodu</th>
                         <th>Sözleşme Adı</th>
                         <th>İşveren</th>
+                        <th>Yüklenici</th>
                         <th>İmza Tarihi</th>
                     </tr>
                     </thead>
@@ -32,6 +33,11 @@
                             <td>
                                 <a href="<?php echo base_url("contract/file_form/$item->id"); ?>">
                                     <?php echo company_name($item->isveren); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo base_url("contract/file_form/$item->id"); ?>">
+                                    <?php echo company_name($item->yuklenici); ?>
                                 </a>
                             </td>
                             <td>

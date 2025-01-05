@@ -55,16 +55,50 @@
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
         <div class="card">
-            <div class="card-body">
-                <h5><?php echo $item->dosya_no . " / " . $item->contract_name; ?></h5>
-                <div class="download_links mt-3">
-                    <a href="<?php echo base_url('export/'); ?>">
-                        <i class="fa fa-file-excel-o fa-2x"></i>
-                    </a>
-                    <a href="<?php echo base_url('export/'); ?>">
-                        <i class="fa fa-file-pdf-o fa-2x"></i>
-                    </a>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <!-- Başlık -->
+                <h5 class="mb-0">
+                    <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
+                </h5>
+
+                <!-- Dropdown Menüsü -->
+                <div class="dropdown">
+                    <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h fa-2x"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" onclick="changeIcon(this)" style="cursor: pointer;"
+                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
+                               id="myBtn">
+                                <i <?php echo $fav ? 'style="color: gold;"' : 'fa-star-o'; ?>  class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?>"></i>
+                                Favori Ekle/Çıkart
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo base_url('export/'); ?>">
+                                <i class="fa fa-file-excel-o"></i> Excel'e Aktar
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo base_url('export/'); ?>">
+                                <i class="fa fa-file-pdf-o"></i> PDF'e Aktar
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>">
+                                <i class="fa fa-edit"></i> Düzenle
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                                <i class="fa fa-trash"></i> Sil
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+            <div class="card-body">
                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
             </div>
         </div>

@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-        <h5>   Yukarıdaki tüm verilerle birlikte sözleşmeyi silmek için burayı tıklayınız</h5>
+        <h5>Yukarıdaki tüm verilerle birlikte sözleşmeyi silmek için <a href="<?php echo base_url("contract/hard_delete/$contract->id"); ?>"> burayı</a> tıklayınız</h5>
     </div>
 </div>
 

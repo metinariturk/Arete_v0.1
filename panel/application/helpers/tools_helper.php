@@ -926,14 +926,21 @@ function permission_control($module, $permission)
     $ci =& get_instance();
 
     // Oturumdaki kullanıcı verilerini al
-    $session_data = $ci->session->userdata('user');
+    $session_user = $ci->session->userdata('user');
 
-    if (!$session_data) {
+    $user_data = $ci->User_model->get(
+        array(
+            "id" => $session_user->id
+        )
+    );
+
+
+    if (!$user_data) {
         return false; // Kullanıcı oturumu yoksa yetkisiz
     }
 
     // Kullanıcının izinlerini kontrol et
-    $permissions = isset($session_data->permissions) ? json_decode($session_data->permissions, true) : [];
+    $permissions = isset($user_data->permissions) ? json_decode($user_data->permissions, true) : [];
 
     // İlgili modül ve izin kontrolü
     if (isset($permissions[$module][$permission]) && $permissions[$module][$permission] === 'on') {

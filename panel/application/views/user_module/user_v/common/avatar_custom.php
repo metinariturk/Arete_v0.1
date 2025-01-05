@@ -321,14 +321,7 @@
                         file: item.name
                     });
             },
-            captions: $.extend(true, {}, $.fn.fileuploader.languages['en'], {
-                edit: 'Edit',
-                upload: 'Upload',
-                remove: 'Remove',
-                errors: {
-                    filesLimit: 'Only 1 file is allowed to be uploaded.',
-                }
-            })
+            captions: $.extend(true, {}, $.fn.fileuploader.languages['tr'], {})
         });
     });
 </script>

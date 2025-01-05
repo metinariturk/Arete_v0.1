@@ -224,6 +224,7 @@
       <workItem from="1735486105488" duration="9101000" />
       <workItem from="1735761521387" duration="10152000" />
       <workItem from="1735916073528" duration="2862000" />
+      <workItem from="1736070605122" duration="15652000" />
     </task>
     <servers />
   </component>
@@ -253,7 +254,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
-          <line>520</line>
+          <line>522</line>
           <properties>
             <option name="className" value="\Project" />
             <option name="methodName" value="file_upload" />
@@ -268,15 +269,6 @@
             <option name="methodName" value="fileDelete_java" />
           </properties>
           <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
-          <line>571</line>
-          <properties>
-            <option name="className" value="\Project" />
-            <option name="methodName" value="fileDelete_java" />
-          </properties>
-          <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
@@ -324,15 +316,6 @@
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1191</line>
-          <properties>
-            <option name="className" value="\Contract" />
-            <option name="methodName" value="file_upload" />
-          </properties>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
           <line>2614</line>
           <properties>
@@ -340,6 +323,15 @@
             <option name="methodName" value="puantaj_date" />
           </properties>
           <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
+          <line>1105</line>
+          <properties>
+            <option name="className" value="\Contract" />
+            <option name="methodName" value="hard_delete" />
+          </properties>
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

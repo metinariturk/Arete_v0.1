@@ -187,13 +187,7 @@ foreach ($files as $file) {
                                 // Dosyanın listeden hemen kaldırılmasını önlemek için false döndürün
                                 return true;
                             },
-                            captions: $.extend(true, {}, $.fn.fileuploader.languages['en'], {
-                                feedback: 'Drag and drop files here',
-                                feedback2: 'Drag and drop files here',
-                                drop: 'Drag and drop files here',
-                                or: 'or',
-                                button: 'Browse files',
-                            }),
+                            captions: $.extend(true, {}, $.fn.fileuploader.languages['tr'], {}),
                         });
                     }
 
