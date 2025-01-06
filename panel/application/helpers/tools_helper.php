@@ -425,14 +425,7 @@ function yazim_duzen($var)
 
 function increase_code_suffix($module)
 {
-    $module_name = mb_strtolower($module);
-    $last_file_code = get_last_fn("$module_name");
-    if (!empty($last_file_code)) {
-        $dilimler = explode("-", $last_file_code);
-        return str_pad(($dilimler[1] + 1), 4, "0", STR_PAD_LEFT);
-    } else {
-        return "0001";
-    }
+    echo "Dosya No Hatalı";
 }
 
 function file_name_len()

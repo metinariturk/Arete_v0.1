@@ -359,13 +359,12 @@ class Contract extends CI_Controller
         $is_main = $is_sub == 1 ? 0 : 1;
         $project_code = project_code($project_id);
 
-        $file_name_len = file_name_digits();
         $file_name = "SOZ-" . $this->input->post('dosya_no');
 
         $this->load->library("form_validation");
 
         // Form Validation Kuralları
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[contract.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|trim");
         $this->form_validation->set_rules("contract_name", "Sözleşme Ad", "required|trim");
 
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
@@ -386,7 +385,6 @@ class Contract extends CI_Controller
                 "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
                 "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
                 "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük olmalıdır",
-                "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış. Sistem sıradaki dosya numarasını otomatik atamaktadır. Özel bir gerekçe yoksa değiştirmeyiniz.",
                 "less_than_equal_to" => "<b>{field}</b> uygulaması seçilmelidir",
                 "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
             )
@@ -496,7 +494,7 @@ class Contract extends CI_Controller
         $this->load->library("form_validation");
 
         // Form Validation Kuralları
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[contract.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|trim");
         $this->form_validation->set_rules("contract_name", "Sözleşme Ad", "required|trim");
 
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
@@ -517,7 +515,6 @@ class Contract extends CI_Controller
                 "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
                 "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
                 "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük olmalıdır",
-                "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış. Sistem sıradaki dosya numarasını otomatik atamaktadır. Özel bir gerekçe yoksa değiştirmeyiniz.",
                 "less_than_equal_to" => "<b>{field}</b> uygulaması seçilmelidir",
                 "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
             )
@@ -613,7 +610,7 @@ class Contract extends CI_Controller
         $this->load->library("form_validation");
 
         // Form Validation Kuralları
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[contract.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|trim");
         $this->form_validation->set_rules("contract_name", "Sözleşme Ad", "required|trim");
 
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
@@ -631,7 +628,6 @@ class Contract extends CI_Controller
                 "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
                 "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
                 "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük olmalıdır",
-                "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış. Sistem sıradaki dosya numarasını otomatik atamaktadır. Özel bir gerekçe yoksa değiştirmeyiniz.",
                 "less_than_equal_to" => "<b>{field}</b> uygulaması seçilmelidir",
                 "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
             )
@@ -1301,17 +1297,6 @@ class Contract extends CI_Controller
         echo json_encode($result);
     }
 
-    public function duplicate_code_check($file_name)
-    {
-        $file_name = "SOZ-" . $file_name;
-
-        $var = count_data("file_order", "file_order", $file_name);
-        if (($var > 0)) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
 
     public function sitedel_contractday($sitedal_day, $contract_day)
     {

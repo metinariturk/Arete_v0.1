@@ -5,15 +5,12 @@
             <div class="input-group">
                 <span class="input-group-text" id="inputGroupPrepend">SZL</span>
                 <input class="form-control <?php cms_isset(form_error("dosya_no"), "is-invalid", ""); ?>"
-                       type="number" placeholder="Username" aria-describedby="inputGroupPrepend"
-                       required="" data-bs-original-title="" title="" name="dosya_no" disabled
+                       type="number" placeholder="Dosya No" aria-describedby="inputGroupPrepend"
+                       required="" data-bs-original-title="" title="" name="dosya_no" readonly
                        value="<?php echo isset($form_error) ? set_value("dosya_no") : $next_file_name ?>">
 
                 <?php if (isset($form_error)) { ?>
                     <div class="invalid-feedback"><?php echo form_error("dosya_no"); ?></div>
-                    <div class="invalid-feedback">* Önerilen Proje Kodu
-                        : <?php echo increase_code_suffix("Contract"); ?>
-                    </div>
                 <?php } ?>
             </div>
         </div>

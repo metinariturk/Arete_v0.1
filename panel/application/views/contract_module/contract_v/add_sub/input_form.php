@@ -11,9 +11,6 @@
 
                 <?php if (isset($form_error)) { ?>
                     <div class="invalid-feedback"><?php echo form_error("dosya_no"); ?></div>
-                    <div class="invalid-feedback">* Önerilen Proje Kodu
-                        : <?php echo increase_code_suffix("Contract"); ?>
-                    </div>
                 <?php } ?>
             </div>
             <div class="mb-2">
