@@ -59,6 +59,15 @@
                 <!-- Başlık -->
                 <h5 class="mb-0">
                     <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
+                    <small style="font-size: 14px;">(
+                        <?php
+                        if ($item->isActive == 1) {
+                            echo "Devam eden sözleşme";
+                        } elseif ($item->isActive == 2) {
+                            echo "Tamamlanan sözleşme";
+                        }
+                        ?>)
+                    </small>
                 </h5>
 
                 <!-- Dropdown Menüsü -->
@@ -69,10 +78,10 @@
                     <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
                         <li>
                             <a class="dropdown-item" onclick="changeIcon(this)" style="cursor: pointer;"
-                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
-                               id="myBtn">
-                                <i <?php echo $fav ? 'style="color: gold;"' : 'fa-star-o'; ?>  class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?>"></i>
-                                Favori Ekle/Çıkart
+                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>">
+                                <i class="fa <?php echo $fav ? 'fa-times' : 'fa-star'; ?>"
+                                   style="<?php echo $fav ? 'color: tomato;' : 'color: gold;'; ?>"></i>
+                                <span><?php echo $fav ? 'Favori Çıkart' : 'Favori Ekle'; ?></span>
                             </a>
                         </li>
                         <li>
@@ -86,13 +95,26 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>">
+                            <a class="dropdown-item"
+                               href="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>">
                                 <i class="fa fa-edit"></i> Düzenle
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                            <a class="dropdown-item"
+                               href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
                                 <i class="fa fa-trash"></i> Sil
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" onclick="change_Status(this)"
+                               url="<?php echo base_url("$this->Module_Name/changeStatus/$item->id"); ?>"
+                               style="cursor: pointer;">
+                                <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
+                                   style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>
+                                <span>
+       <?php echo ($item->isActive == 1) ? 'Tamamlandı Olarak İşaretle' : 'Devam Ediyor Olarak İşaretle'; ?>
+   </span>
                             </a>
                         </li>
                     </ul>

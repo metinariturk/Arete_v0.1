@@ -227,12 +227,12 @@ class Contract extends CI_Controller
         }
 
         $all_contracts = $this->Contract_model->get_all();
-        $file_numbers = array_map(function($contract) {
+        $file_numbers = array_map(function ($contract) {
             // '-' karakterine göre ayır ve ilk kısmı al
             $parts = explode('-', $contract->dosya_no);
 
             // Eğer sayıya çevirebiliyorsa, sayıya çevir, aksi takdirde sıfırla
-            return is_numeric($parts[1]) ? (int) $parts[1] : 0;
+            return is_numeric($parts[1]) ? (int)$parts[1] : 0;
         }, $all_contracts);
         sort($file_numbers);
         $max_value = empty($file_numbers) ? 0 : max($file_numbers);
@@ -271,12 +271,12 @@ class Contract extends CI_Controller
         }
 
         $all_contracts = $this->Contract_model->get_all();
-        $file_numbers = array_map(function($contract) {
+        $file_numbers = array_map(function ($contract) {
             // '-' karakterine göre ayır ve ilk kısmı al
             $parts = explode('-', $contract->dosya_no);
 
             // Eğer sayıya çevirebiliyorsa, sayıya çevir, aksi takdirde sıfırla
-            return is_numeric($parts[1]) ? (int) $parts[1] : 0;
+            return is_numeric($parts[1]) ? (int)$parts[1] : 0;
         }, $all_contracts);
         sort($file_numbers);
         $max_value = empty($file_numbers) ? 0 : max($file_numbers);
@@ -1348,6 +1348,38 @@ class Contract extends CI_Controller
         }
     }
 
+    public function changeStatus($id)
+    {
+        // Kayıt kontrolü
+        $item = $this->Contract_model->get(array("id" => $id));
+        if (!$item) {
+            echo "Kayıt bulunamadı.";
+            return false;
+        }
+
+        // Güncelleme işlemi
+        if ($item->isActive == 0 || $item->isActive == 1) {
+            $update = $this->Contract_model->update(
+                array("id" => $id),
+                array("isActive" => 2)
+            );
+        } elseif ($item->isActive == 2) {
+            $update = $this->Contract_model->update(
+                array("id" => $id),
+                array("isActive" => 1)
+            );
+        } else {
+            echo "Geçerli bir durum güncellemesi yapılamadı.";
+            return false;
+        }
+
+        // Güncelleme sonucu kontrolü
+        if ($update) {
+            echo "Durum başarıyla güncellendi.";
+        } else {
+            echo "Güncelleme sırasında bir hata oluştu.";
+        }
+    }
     public function add_main_group($contract_id)
     {
         if (!isAdmin() || !permission_control("contract", "update")) {
