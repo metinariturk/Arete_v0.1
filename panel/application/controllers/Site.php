@@ -141,7 +141,7 @@ class Site extends CI_Controller
 
     public function new_form($project_id = null)
     {
-        if (!isAdmin() || !permission_control("site", "write")) {
+        if (!isAdmin() && !permission_control("site", "write")) {
             redirect(base_url("error"));
         }
 

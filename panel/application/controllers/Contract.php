@@ -92,9 +92,10 @@ class Contract extends CI_Controller
 
     public function index()
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
+
         $viewData = new stdClass();
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Contract_model->get_all(array(), "sozlesme_tarih DESC");
@@ -108,7 +109,7 @@ class Contract extends CI_Controller
 
     public function file_form($id = null, $active_module = null)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -222,7 +223,7 @@ class Contract extends CI_Controller
 
     public function new_form_main($project_id = null)
     {
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -254,7 +255,7 @@ class Contract extends CI_Controller
 
     public function new_form_sub($main_contract_id = null)
     {
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -307,7 +308,7 @@ class Contract extends CI_Controller
 
     public function new_form_offer($project_id = null)
     {
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -339,7 +340,7 @@ class Contract extends CI_Controller
     public function save_main($project_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -465,7 +466,7 @@ class Contract extends CI_Controller
     public function save_sub($main_contract_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -582,7 +583,7 @@ class Contract extends CI_Controller
     public function save_offer($project_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -690,7 +691,7 @@ class Contract extends CI_Controller
 
     public function update($id, $active_module = null)
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -778,7 +779,7 @@ class Contract extends CI_Controller
 
         } else {
 
-            if (!isAdmin() || !permission_control("contract", "update")) {
+            if (!isAdmin() && !permission_control("contract", "update")) {
                 redirect(base_url("error"));
             }
 
@@ -879,7 +880,7 @@ class Contract extends CI_Controller
 
     public function update_payment_form($id)
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -913,7 +914,7 @@ class Contract extends CI_Controller
 
     public function sitedel_date($id)
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -964,7 +965,7 @@ class Contract extends CI_Controller
 
     public function delete_form($id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -999,7 +1000,7 @@ class Contract extends CI_Controller
 
     public function delete($id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -1087,7 +1088,7 @@ class Contract extends CI_Controller
 
     public function hard_delete($id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -1137,7 +1138,7 @@ class Contract extends CI_Controller
     public function file_upload($type, $contract_id, $sub_folder = null)
     {
 
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -1200,7 +1201,7 @@ class Contract extends CI_Controller
 
     public function fileDelete_java($id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -1221,7 +1222,7 @@ class Contract extends CI_Controller
     public function download_all($cont_id, $where = null)
     {
 
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -1258,7 +1259,7 @@ class Contract extends CI_Controller
 
     public function download_backup($cont_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -1353,7 +1354,7 @@ class Contract extends CI_Controller
     }
     public function add_main_group($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1459,7 +1460,7 @@ class Contract extends CI_Controller
 
     public function update_sub_group($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1579,7 +1580,7 @@ class Contract extends CI_Controller
 
     public function delete_group($group_id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
         $group = $this->Contract_price_model->get(array("id" => $group_id));
@@ -1616,7 +1617,7 @@ class Contract extends CI_Controller
 
     public function add_leader($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
         $settings = $this->Settings_model->get();
@@ -1709,7 +1710,7 @@ class Contract extends CI_Controller
     {
 
         $leader_id = $this->input->post('leader_id');
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1768,7 +1769,7 @@ class Contract extends CI_Controller
     public
     function update_leader_selection($sub_group_id)
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -1846,7 +1847,7 @@ class Contract extends CI_Controller
 
     public function delete_contract_price($boq_id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
         $this->load->model("Boq_model");
@@ -1928,7 +1929,7 @@ class Contract extends CI_Controller
     public
     function delete_item($contract_id, $item_id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -1966,7 +1967,7 @@ class Contract extends CI_Controller
     public
     function delete_sub($contract_id, $sub_id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -2009,7 +2010,7 @@ class Contract extends CI_Controller
     public
     function delete_main($contract_id, $main_id)
     {
-        if (!isAdmin() || !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
@@ -2058,7 +2059,7 @@ class Contract extends CI_Controller
 
     public function upload_book_excel($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -2166,7 +2167,7 @@ class Contract extends CI_Controller
 
     public function update_boqs()
     {
-        if (!isAdmin() || !permission_control("contract", "update")) {
+        if (!isAdmin() && !permission_control("contract", "update")) {
             redirect(base_url("error"));
         }
 
@@ -2205,7 +2206,7 @@ class Contract extends CI_Controller
     public
     function create_payment($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "write")) {
             redirect(base_url("error"));
         }
 
@@ -2326,7 +2327,7 @@ class Contract extends CI_Controller
             $this->load->model("Site_model");
 
 
-            if (!isAdmin() || !permission_control("contract", "write")) {
+            if (!isAdmin() && !permission_control("contract", "write")) {
                 redirect(base_url("error"));
             }
 
@@ -2433,7 +2434,7 @@ class Contract extends CI_Controller
     public
     function create_collection($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -2596,7 +2597,7 @@ class Contract extends CI_Controller
     public
     function create_advance($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -2759,7 +2760,7 @@ class Contract extends CI_Controller
     public
     function create_bond($contract_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -2991,7 +2992,7 @@ class Contract extends CI_Controller
 
     public function open_edit_contract_price($sub_group_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
         $this->load->model("Boq_model");
@@ -3021,7 +3022,7 @@ class Contract extends CI_Controller
 
     function edit_collection($collection_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -3198,7 +3199,7 @@ class Contract extends CI_Controller
 
     function edit_bond($bond_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 
@@ -3379,7 +3380,7 @@ class Contract extends CI_Controller
 
     function edit_advance($advance_id)
     {
-        if (!isAdmin() || !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "read")) {
             redirect(base_url("error"));
         }
 

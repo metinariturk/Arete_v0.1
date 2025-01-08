@@ -90,7 +90,7 @@ class Report extends CI_Controller
     public function new_form($site_id = null)
     {
 
-        if (!isAdmin() || !permission_control("site", "write")) {
+        if (!isAdmin() && !permission_control("site", "write")) {
             redirect(base_url("error"));
         }
 
@@ -251,7 +251,7 @@ class Report extends CI_Controller
     public function save($site_id)
     {
 
-        if (!isAdmin() || !permission_control("site", "write")) {
+        if (!isAdmin() && !permission_control("site", "write")) {
             redirect(base_url("error"));
         }
 
