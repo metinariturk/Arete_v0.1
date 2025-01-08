@@ -9,9 +9,12 @@
                     </a>
                 </div>
                 <div class="tab-item" style="background-color: rgba(229,217,201,0.55);">
-                    <a class="text-blink full-link" href="<?php echo base_url("contract/file_form/$contract->id"); ?>">Sözleşme
-                        <br><?php echo $contract->dosya_no; ?>
-                    </a>
+                    <?php if (isset($contract)) { ?>
+                        <a class="text-blink full-link"
+                           href="<?php echo base_url("contract/file_form/$contract->id"); ?>">Sözleşme
+                            <br><?php echo $contract->dosya_no; ?>
+                        </a>
+                    <?php } ?>
                 </div>
             </div>
             <hr>
@@ -49,12 +52,7 @@
                                 </p>
                             </td>
                         </tr>
-                        <tr>
-                            <td><p>Kasa Durumu</p></td>
-                            <td>
-                                <p><?php echo money_format($total_deposit - $total_expense); ?><?php echo $contract->para_birimi; ?></p>
-                            </td>
-                        </tr>
+
                         <tr>
                             <td><p>Personel Çalışması</p></td>
                             <td>
@@ -97,8 +95,12 @@
 
 
                                     // Sonuç ve para birimi gösterimi
-                                    echo $formatted_total . ' ' . $contract->para_birimi;
-                                    ?>
+                                    echo $formatted_total?>
+                                    <?php if (!empty($contract)) { ?>
+                                        <?php echo $contract->para_birimi; ?>
+                                    <?php } else { ?>
+                                        TL
+                                    <?php } ?>
                                 </p>
                             </td>
                         </tr>

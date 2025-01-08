@@ -141,12 +141,18 @@ class Site extends CI_Controller
 
     public function new_form($project_id = null)
     {
+        if (!isAdmin() || !permission_control("site", "write")) {
+            redirect(base_url("error"));
+        }
+
         if (empty($project_id)) {
             $project_id = $this->input->post('project_id');
         }
 
+        $next_file_name = get_next_file_code("Site");
+
         $viewData = new stdClass();
-        /** Tablodan Verilerin Getirilmesi.. */
+
         $items = $this->Site_model->get_all(array());
 
         $contracts = $this->Contract_model->get_all(array(
@@ -170,6 +176,7 @@ class Site extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add";
         $viewData->items = $items;
+        $viewData->next_file_name = $next_file_name;
         $viewData->contracts = $contracts;
         $viewData->subcontracts = $subcontracts;
         $viewData->project_id = $project_id;
@@ -188,7 +195,7 @@ class Site extends CI_Controller
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("dosya_no", "Dosya No", "is_unique[site.dosya_no]|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "required|trim|greater_than[0]");
         $this->form_validation->set_rules("contract_id", "Sözleşme", "required|trim");
         $this->form_validation->set_rules("santiye_sefi", "Şantiye Şefi", "greater_than[0]|required|trim");
         $this->form_validation->set_rules("santiye_ad", "Şantiye Adı", "required|trim");
@@ -242,12 +249,6 @@ class Site extends CI_Controller
             }
 
             $sub_contracts = $this->input->post('sub_contract');
-
-            if (!empty($sub_contracts)) {
-                $data_sub_contracts = implode(",", array_unique($sub_contracts));
-            } else {
-                $data_sub_contracts = null;
-            }
 
             $insert = $this->Site_model->add(
                 array(

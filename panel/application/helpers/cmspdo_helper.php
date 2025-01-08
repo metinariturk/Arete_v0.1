@@ -835,3 +835,41 @@ function get_last_date($contract_id, $table, $date_criter)
     }
 }
 
+function get_next_file_code($module_name)
+{
+    // CodeIgniter'nin global $CI nesnesini yükle
+    $CI =& get_instance();
+
+    // Model adını belirle
+    $model_name = ucfirst($module_name) . '_model';
+
+    // Belirtilen modül için model yüklenmiş mi kontrol et, yüklenmemişse yükle
+    if (!isset($CI->$model_name)) {
+        $CI->load->model($model_name);
+    }
+
+    // İlgili modelin get_all() metodunu çağır
+    if (!method_exists($CI->$model_name, 'get_all')) {
+        throw new Exception("Model '$model_name' içinde 'get_all' metodu bulunamadı.");
+    }
+
+    $all_records = $CI->$model_name->get_all();
+
+    // Dosya numaralarını işlemek için array_map kullan
+    $file_numbers = array_map(function ($record) {
+        $parts = explode('-', $record->dosya_no);
+        return isset($parts[1]) && is_numeric($parts[1]) ? (int)$parts[1] : 0;
+    }, $all_records);
+
+    // Dosya numaralarını sırala ve maksimum değeri bul
+    sort($file_numbers);
+    $max_value = empty($file_numbers) ? 0 : max($file_numbers);
+
+    // Bir sonraki dosya numarasını oluştur
+    $max_value++;
+    $next_file_code = str_pad($max_value, 4, '0', STR_PAD_LEFT);
+
+    return $next_file_code;
+}
+
+

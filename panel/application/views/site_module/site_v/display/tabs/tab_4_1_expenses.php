@@ -166,7 +166,16 @@ $file_names_without_extension = array_map(function ($file) {
                         <tr>
                             <td><?php echo dateFormat_dmy($expense->date); ?></td>
                             <td><?php echo $expense->note; ?></td>
-                            <td><?php echo money_format($expense->price); ?><?php echo $contract->para_birimi; ?></td>
+                            <td><?php echo money_format($expense->price); ?>
+
+                                <?php if (!empty($contract)) { ?>
+                                    <?php echo $contract->para_birimi; ?>
+                                <?php } else { ?>
+                                    TL
+                                <?php } ?>
+
+
+                            </td>
                             <td><?php echo $expense->payment_type; ?></td>
                             <td style="text-align: center">
                                 <a data-bs-toggle="modal" class="text-primary"
@@ -237,14 +246,26 @@ $file_names_without_extension = array_map(function ($file) {
                 <thead>
                 <tr>
                     <th>Ay</th>
-                    <th>Toplam Harcama (<?php echo $contract->para_birimi; ?>)</th>
+                    <th>Toplam Harcama (
+                        <?php if (!empty($contract)) { ?>
+                            <?php echo $contract->para_birimi; ?>
+                        <?php } else { ?>
+                            TL
+                        <?php } ?>
+                        )</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($monthly_expenses as $month => $total): ?>
                     <tr>
                         <td><?php echo YM_to_M($month); ?></td>
-                        <td><?php echo money_format($total); ?><?php echo $contract->para_birimi; ?></td>
+                        <td><?php echo money_format($total); ?>
+                            <?php if (!empty($contract)) { ?>
+                                <?php echo $contract->para_birimi; ?>
+                            <?php } else { ?>
+                                TL
+                            <?php } ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

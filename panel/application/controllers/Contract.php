@@ -226,19 +226,7 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $all_contracts = $this->Contract_model->get_all();
-        $file_numbers = array_map(function ($contract) {
-            // '-' karakterine göre ayır ve ilk kısmı al
-            $parts = explode('-', $contract->dosya_no);
-
-            // Eğer sayıya çevirebiliyorsa, sayıya çevir, aksi takdirde sıfırla
-            return is_numeric($parts[1]) ? (int)$parts[1] : 0;
-        }, $all_contracts);
-        sort($file_numbers);
-        $max_value = empty($file_numbers) ? 0 : max($file_numbers);
-        $max_value++;
-        $next_file_name = str_pad($max_value, 4, '0', STR_PAD_LEFT);
-
+        $next_file_name = get_next_file_code("Contract");
 
         if (empty($project_id)) {
             $project_id = $this->input->post('proje_id');
@@ -360,10 +348,8 @@ class Contract extends CI_Controller
         $project_code = project_code($project_id);
 
         $file_name = "SOZ-" . $this->input->post('dosya_no');
-
         $this->load->library("form_validation");
 
-        // Form Validation Kuralları
         $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|trim");
         $this->form_validation->set_rules("contract_name", "Sözleşme Ad", "required|trim");
 

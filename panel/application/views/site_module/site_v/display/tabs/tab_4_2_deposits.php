@@ -52,7 +52,14 @@
                         <tr>
                             <td><?php echo dateFormat_dmy($deposit->date); ?></td>
                             <td><?php echo $deposit->note; ?></td>
-                            <td><?php echo money_format($deposit->price); ?><?php echo $contract->para_birimi; ?></td>
+                            <td><?php echo money_format($deposit->price); ?>
+                                <?php if (!empty($contract)) { ?>
+                                    <?php echo $contract->para_birimi; ?>
+                                <?php } else { ?>
+                                    TL
+                                <?php } ?>
+
+                            </td>
                             <td><?php echo $deposit->payment_type; ?></td>
                             <td>
                                 <?php

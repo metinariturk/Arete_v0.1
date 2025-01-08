@@ -30,7 +30,6 @@ class Report extends CI_Controller
 
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
-        $this->load->model("Order_model");
         $this->load->model("User_model");
         $this->load->model("Site_model");
         $this->load->model("Workgroup_model");
@@ -64,7 +63,7 @@ class Report extends CI_Controller
         $items = $this->Report_model->get_all(array());
         $active_sites = $this->Site_model->get_all();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -80,7 +79,7 @@ class Report extends CI_Controller
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Report_model->get_all(array());
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -90,6 +89,11 @@ class Report extends CI_Controller
 
     public function new_form($site_id = null)
     {
+
+        if (!isAdmin() || !permission_control("site", "write")) {
+            redirect(base_url("error"));
+        }
+
 
         if ($site_id == null) {
             $site_id = $this->input->post("site_id");
@@ -107,7 +111,6 @@ class Report extends CI_Controller
         $active_workgroups = json_decode($site->active_group, true);
 
 
-        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
@@ -147,7 +150,6 @@ class Report extends CI_Controller
         $active_sites = $this->Site_model->get_all(array());
 
 
-        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
@@ -220,7 +222,7 @@ class Report extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -247,14 +249,10 @@ class Report extends CI_Controller
     }
 
     public function save($site_id)
-
     {
-        $session_user = $this->session->userdata("user");
 
-        if ($session_user->user_role != 2) {
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
+        if (!isAdmin() || !permission_control("site", "write")) {
+            redirect(base_url("error"));
         }
 
         if ($this->input->post("report_date")) {
@@ -264,7 +262,9 @@ class Report extends CI_Controller
         }
 
         $record_control = $this->Report_model->get(array("site_id" => $site_id, "report_date" => $report_date));
+
         if ($record_control) {
+
             $alert = array(
                 "title" => "İşlem Başarısız",
                 "text" => "Bu tarihte başka bir günlük rapor var işlem yapılamaz",
@@ -273,6 +273,7 @@ class Report extends CI_Controller
             $this->session->set_flashdata("alert", $alert);
 
             redirect(base_url("$this->Module_Name/new_form/$site_id"));
+
         } else {
             $site = $this->Site_model->get(array("id" => $site_id));
 
@@ -305,26 +306,16 @@ class Report extends CI_Controller
                 }
             }
 
-            $file_name_len = file_name_digits();
-            $file_name = "GR-" . $this->input->post('dosya_no');
-
 
             $this->load->library("form_validation");
 
-            $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|is_unique[report.dosya_no]|required|trim|exact_length[$file_name_len]|callback_duplicate_code_check");
             $this->form_validation->set_rules("report_date", "Rapor Tarihi", "required|trim");
 
             $this->form_validation->set_message(
                 array(
                     "required" => "<b>{field}</b> alanı doldurulmalıdır",
                     "greater_than" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
-                    "exact_length" => "<b>{field}</b> en az $file_name_len karakter uzunluğunda, rakamlardan oluşmalıdır.
-                                           <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.
-                                           <br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-                    "duplicate_code_check" => "<b>{field}</b> $file_name daha önce kullanılmış.
-                                            <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
-
-                )
+                    )
             );
 
             $validate = $this->form_validation->run();
@@ -410,41 +401,6 @@ class Report extends CI_Controller
                     );
                 }
 
-                $record_id = $this->db->insert_id();
-
-                $insert2 = $this->Order_model->add(
-                    array(
-                        "module" => $this->Module_Name,
-                        "connected_module_id" => $report_id,
-                        "connected_project_id" => $site->proje_id,
-                        "file_order" => $file_name,
-                        "createdAt" => date("Y-m-d H:i:s"),
-                        "createdBy" => active_user_id(),
-                    )
-                );
-
-                // TODO Alert sistemi eklenecek...
-                if ($insert_report) {
-
-                    $alert = array(
-                        "title" => "İşlem Başarılı",
-                        "text" => "Kayıt başarılı bir şekilde eklendi",
-                        "type" => "success"
-                    );
-
-                } else {
-
-                    $alert = array(
-                        "title" => "İşlem Başarısız",
-                        "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                        "type" => "danger"
-                    );
-                }
-
-
-                // İşlemin Sonucunu Session'a yazma işlemi...
-                $this->session->set_flashdata("alert", $alert);
-
                 $this->load->model("Weather_model");
 
                 $weather = $this->Weather_model->get(array('date' => $report_date));
@@ -455,16 +411,7 @@ class Report extends CI_Controller
                     redirect(base_url("Weather/add_date/$report_id"));
                 }
 
-
             } else {
-
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Form verilerinde eksik veya hatalı giriş var.",
-                    "type" => "danger"
-                );
-                $this->session->set_flashdata("alert", $alert);
-
 
                 $viewData = new stdClass();
                 $settings = $this->Settings_model->get();
@@ -472,13 +419,11 @@ class Report extends CI_Controller
 
                 $viewData->settings = $settings;
 
-                
                 $viewData->viewModule = $this->moduleFolder;
                 $viewData->viewFolder = $this->viewFolder;
                 $viewData->subViewFolder = "$this->Add_Folder";
                 $viewData->form_error = true;
                 $viewData->site = $site;
-
 
                 $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
             }
@@ -489,8 +434,11 @@ class Report extends CI_Controller
     {
 
         $report = $this->Report_model->get(array("id" => $id));
-        $project_code = project_code($report->project_id);
-        $site_code = site_code($report->site_id);
+
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+
+
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         $old_report_date = dateFormat('d-m-Y', $report->report_date);
         $new_report_date = dateFormat('d-m-Y', $this->input->post("report_date"));
@@ -510,7 +458,9 @@ class Report extends CI_Controller
             redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
 
         } else {
-            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site_code/Reports/";
+
+            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/";
+
             if ($this->input->post("report_date")) {
                 if (rename($old_folder_dir . $old_report_date, $old_folder_dir . $new_report_date)) {
                     echo 'Klasör adı başarıyla değiştirildi.';
@@ -577,10 +527,10 @@ class Report extends CI_Controller
             foreach ($workgroups_filter as $workgroup) {
                 $insert_workgroup = $this->Report_workgroup_model->add(
                     array(
-                        "site_id" => $report->site_id,
+                        "site_id" => $site->id,
                         "report_id" => $report->id,
-                        "project_id" => $report->proje_id,
-                        "contract_id" => $report->contract_id,
+                        "project_id" => $project->id,
+                        "contract_id" => $site->contract_id,
                         "workgroup" => $workgroup['workgroup'],
                         "number" => $workgroup['worker_count'],
                         "notes" => $workgroup['notes'],
@@ -594,10 +544,10 @@ class Report extends CI_Controller
             foreach ($workmachine_filter as $workmachine) {
                 $insert_workmachine = $this->Report_workmachine_model->add(
                     array(
-                        "site_id" => $report->site_id,
+                        "site_id" => $site->id,
                         "report_id" => $report->id,
-                        "project_id" => $report->proje_id,
-                        "contract_id" => $report->contract_id,
+                        "project_id" => $project->id,
+                        "contract_id" => $site->contract_id,
                         "workmachine" => $workmachine['workmachine'],
                         "number" => $workmachine['machine_count'],
                         "notes" => $workmachine['machine_notes'],
@@ -610,10 +560,10 @@ class Report extends CI_Controller
             foreach ($supplies_filter as $supplies) {
                 $insert_workmachine = $this->Report_supply_model->add(
                     array(
-                        "site_id" => $report->site_id,
+                        "site_id" => $site->id,
                         "report_id" => $report->id,
-                        "project_id" => $report->proje_id,
-                        "contract_id" => $report->contract_id,
+                        "project_id" => $project->id,
+                        "contract_id" => $site->contract_id,
                         "supply" => $supplies['supply'],
                         "qty" => $supplies['qty'],
                         "unit" => $supplies['unit'],
@@ -623,23 +573,6 @@ class Report extends CI_Controller
                     )
                 );
             }
-
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
-
-            $this->session->set_flashdata("alert", $alert);
 
             $this->load->model("Weather_model");
 
@@ -671,39 +604,12 @@ class Report extends CI_Controller
             echo '<br>errors occured';
         }
 
-
         $delete2 = $this->Report_model->delete(
             array(
                 "id" => $report_id
             )
         );
 
-        $file_order_id = get_from_any_and("file_order", "connected_module_id", $report_id, "module", $this->Module_Name);
-        $update_file_order = $this->Order_model->update(
-            array(
-                "id" => $file_order_id
-            ),
-            array(
-                "deletedAt" => date("Y-m-d H:i:s"),
-                "deletedBy" => active_user_id(),
-            )
-        );
-
-        // TODO Alert Sistemi Eklenecek...
-        if ($delete1 and $delete2) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Kayıt başarılı bir şekilde silindi",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Kayıt silme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-        }
-        $this->session->set_flashdata("alert", $alert);
         redirect(base_url("site/$this->Display_route/$site_id"));
     }
 
@@ -862,18 +768,7 @@ class Report extends CI_Controller
 
     }
 
-    public
-    function duplicate_code_check($file_name)
-    {
-        $file_name = "GR-" . $file_name;
 
-        $var = count_data("file_order", "file_order", $file_name);
-        if (($var > 0)) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
 
     public
     function print_report($report_id, $print_pic = null, $P_or_D = null)
@@ -1230,7 +1125,7 @@ class Report extends CI_Controller
 
         $files = glob($baseDirectory . '/*');
 
-        if ($print_pic == 1 and count($files)>0) {
+        if ($print_pic == 1 and count($files) > 0) {
             $pdf->AddPage();
 
             if (count($files) > 6) {
