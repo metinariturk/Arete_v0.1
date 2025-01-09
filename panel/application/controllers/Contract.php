@@ -1199,7 +1199,7 @@ class Contract extends CI_Controller
         exit;
     }
 
-    public function fileDelete_java($id)
+    public function fileDelete_java($module, $id)
     {
         if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
@@ -1210,11 +1210,7 @@ class Contract extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        if ($contract->offer == 1) {
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Offer/";
-        } else {
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Contract/";
-        }
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/$module/";
 
         unlink("$path/$fileName");
     }
@@ -1352,6 +1348,7 @@ class Contract extends CI_Controller
             echo "Güncelleme sırasında bir hata oluştu.";
         }
     }
+
     public function add_main_group($contract_id)
     {
         if (!isAdmin() && !permission_control("contract", "update")) {
