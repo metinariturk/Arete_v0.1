@@ -1,6 +1,7 @@
 <?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
 <h5 class="mb-0">
     <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
+    <br>
     <small style="font-size: 14px;">(
         <?php
         if ($item->isActive == 1) {
@@ -10,6 +11,8 @@
         }
         ?>)
     </small>
+    <br>
+    <?php echo company_name($item->yuklenici); ?>
 </h5>
 <div class="container mt-5">
     <div class="row">
