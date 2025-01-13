@@ -79,7 +79,6 @@
                 $('#' + modalId).click(); // Önce modalı aç
                 $('.modal-backdrop').remove(); // Modal arka planını kaldır
                 $('.datepicker-here').datepicker({
-                    language: 'tr',
                     dateFormat: 'dd-mm-yyyy'
                 });
 
@@ -142,6 +141,7 @@
 
 <script>
     function edit_modal_form(FormURL, ModalForm, ModalId) {
+
         // AJAX ile modal içeriğini yenile
         $.ajax({
             url: FormURL,

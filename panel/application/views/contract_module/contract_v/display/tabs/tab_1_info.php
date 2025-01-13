@@ -1,4 +1,16 @@
 <?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
+<h5 class="mb-0">
+    <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
+    <small style="font-size: 14px;">(
+        <?php
+        if ($item->isActive == 1) {
+            echo "Devam eden sözleşme";
+        } elseif ($item->isActive == 2) {
+            echo "Tamamlanan sözleşme";
+        }
+        ?>)
+    </small>
+</h5>
 <div class="container mt-5">
     <div class="row">
         <!-- Sol Sekmeler ve İçerik -->

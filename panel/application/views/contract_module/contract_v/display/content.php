@@ -57,18 +57,12 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <!-- Başlık -->
-                <h5 class="mb-0">
-                    <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
-                    <small style="font-size: 14px;">(
-                        <?php
-                        if ($item->isActive == 1) {
-                            echo "Devam eden sözleşme";
-                        } elseif ($item->isActive == 2) {
-                            echo "Tamamlanan sözleşme";
-                        }
-                        ?>)
-                    </small>
-                </h5>
+
+                <a data-bs-toggle="modal" class="text-primary"
+                   id="open_edit_contract_modal "
+                   onclick="edit_modal_form('<?php echo base_url("Contract/open_edit_contract_modal/$item->id"); ?>','edit_contract_modal','EditContractModal')">
+                    <i class="fa fa-edit fa-lg"></i>
+                </a>
 
                 <!-- Dropdown Menüsü -->
                 <div class="dropdown">
@@ -95,10 +89,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item"
-                               href="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>">
-                                <i class="fa fa-edit"></i> Düzenle
-                            </a>
+
                         </li>
                         <li>
                             <a class="dropdown-item"
@@ -113,15 +104,20 @@
                                 <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
                                    style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>
                                 <span>
-       <?php echo ($item->isActive == 1) ? 'Tamamlandı Olarak İşaretle' : 'Devam Ediyor Olarak İşaretle'; ?>
-   </span>
+                                   <?php echo ($item->isActive == 1) ? 'Tamamlandı Olarak İşaretle' : 'Devam Ediyor Olarak İşaretle'; ?>
+                               </span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="card-body">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
+                <div id="tab_Contract">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
+                    <div id="edit_contract_modal">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_contract_modal_form"); ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
