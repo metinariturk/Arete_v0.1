@@ -2701,7 +2701,7 @@ class Contract extends CI_Controller
         $viewData->project = $project;
         $viewData->edit_collection = $edit_collection;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_collection_modal_form", $viewData);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/collection/edit_collection_modal_form", $viewData);
     }
 
     public function open_edit_advance_modal($advance)
@@ -2915,10 +2915,16 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_a_collection", $viewData);
+            $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/collection/edit_collection_form_input", $viewData, true);
 
-            //kaydedilen elemanın id nosunu döküman ekleme
-            // sına post ediyoruz
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Tahsilat Güncellendi',
+                'refreshDivId' => 'tab_Collection', // Refresh edilecek div'in ID'si
+                'closeModalId' => 'EditCollectionModal', // Kapatılacak modalın ID'si
+                'dataTableId' => 'collectionTable' // Yenilenecek DataTable ID'si
+            ]);
+
 
         } else {
 
@@ -2941,16 +2947,16 @@ class Contract extends CI_Controller
             $viewData->item = $item;
 
             $viewData->form_error = true;
-            $viewData->error_modal = "EditCollectionModal"; // Hata modali için set edilen değişken
 
-            if (!empty($form_errors)) {
-                $viewData->form_errors = $form_errors;
-            } else {
-                $viewData->form_errors = null;
-            }
+            $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/collection/edit_collection_form_input", $viewData, true);
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_a_collection", $viewData);
-
+            // Hata durumunda JSON yanıt
+            echo json_encode([
+                'status' => 'error',
+                'formErrorHtml' => $formErrorHtml, // Form hatalarını içeren HTML
+                'modalId' => 'EditCollectionModal', // Açık kalması gereken modal
+                'dataTableId' => 'collectionTable' // Yenilenecek DataTable ID'si
+            ]);
         }
     }
 
@@ -3011,7 +3017,7 @@ class Contract extends CI_Controller
             );
 
             $viewData = new stdClass();
-            $item = $this->Contract_model->get(array("id"=>$contract_id));
+            $item = $this->Contract_model->get(array("id" => $contract_id));
             $settings = get_settings();
             $viewData->edit_item = $item;
 
@@ -3022,12 +3028,18 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_1_info", $viewData);
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Contract successfully updated.',
+                'refreshDivId' => 'tab_Contract', // Refresh edilecek div'in ID'si
+                'closeModalId' => 'EditContractModal' // Kapatılacak modalın ID'si
+            ]);
+
 
         } else {
 
             $viewData = new stdClass();
-            $item = $this->Contract_model->get(array("id"=>$contract_id));
+            $item = $this->Contract_model->get(array("id" => $contract_id));
             $settings = get_settings();
 
             $viewData->viewModule = $this->moduleFolder;
@@ -3039,10 +3051,15 @@ class Contract extends CI_Controller
             $viewData->edit_item = $item;
 
             $viewData->form_error = true;
-            $viewData->error_modal = "EditContractModal"; // Hata modali için set edilen değişken
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_1_info", $viewData);
+            // Form hatalarını içeren HTML oluştur
+            $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/modals/edit_contract_form_input", $viewData, true);
 
-
+            // Hata durumunda JSON yanıt
+            echo json_encode([
+                'status' => 'error',
+                'formErrorHtml' => $formErrorHtml, // Form hatalarını içeren HTML
+                'modalId' => 'EditContractModal' // Açık kalması gereken modal
+            ]);
         }
     }
 

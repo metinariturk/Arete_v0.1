@@ -57,40 +57,77 @@
 
 </script>
 <script>
-    function submit_modal_form(formId, modalId, DivId, DataTable = null) {
-        var form = $('#' + formId)[0];  // Form referansını alıyoruz (DOM element olarak)
+    function submit_modal_form(formId, modalId, DivId) {
+        var form = $('#' + formId)[0];
         var url = $(form).data('form-url');
-        var formData = new FormData(form);  // FormData ile form verilerini ve dosyaları alıyoruz
+        var formData = new FormData(form);
 
         $.ajax({
             type: 'POST',
             url: url,
-            data: formData,  // FormData kullanıyoruz
-            contentType: false,  // Dosya yükleme için `false` olmalı
-            processData: false,  // Form verilerini manuel olarak işliyoruz
-            dataType: 'html',
-            success: function (response) {
-                $('#' + DivId).html(response); // Gelen yanıtı Div'e ekle
-                form.reset(); // Formu temizle
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json', // JSON yanıt bekleniyor
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Başarılı durum: Div'i yenile ve modalı kapat
+                    if (response.refreshDivId) {
+                        $('#' + response.refreshDivId).load(location.href + " #" + response.refreshDivId + " > *", function() {
+                            // Div güncellendikten sonra DataTable'ı yeniden başlat
+                            if (response.dataTableId) {
+                                var table = $('#' + response.dataTableId);
+                                if ($.fn.DataTable.isDataTable(table)) {
+                                    table.DataTable().clear().destroy(); // Mevcut DataTable'ı temizle ve yok et
+                                }
+                                table.DataTable({
+                                    "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
+                                    "columnDefs": [
+                                        {
+                                            "targets": 1,  // 1, tarih sütununu belirtir.
+                                            "render": function(data, type, row) {
+                                                if (type === 'display' || type === 'filter') {
+                                                    // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
+                                                    var dateParts = data.split('-');  // Y-m-d formatında ayır
+                                                    var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
+                                                    var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
+                                                    var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
+                                                    // d-m-Y formatında birleştir
+                                                    return day + '-' + month + '-' + year;  // - ile birleştir
+                                                }
+                                                return data;
+                                            }
+                                        }
+                                    ]
+                                }); // DataTable'ı yeniden başlat
+                            }
+                        });
+                    }
 
-                // HTML yanıtı içerisindeki form_error'u kontrol et
-                var formError = $('#form-error').val();
+                    // Datepicker'ı yeniden başlat
+                    $('.datepicker-here').datepicker({
+                        dateFormat: 'dd-mm-yyyy'
+                    });
 
-                $('#' + modalId).click(); // Önce modalı aç
-                $('.modal-backdrop').remove(); // Modal arka planını kaldır
-                $('.datepicker-here').datepicker({
-                    dateFormat: 'dd-mm-yyyy'
-                });
+                    if (response.closeModalId) {
+                        $('#' + response.closeModalId).modal('hide'); // Modalı kapat
+                        $('.modal-backdrop').remove(); // Arkaplanı temizle
+                    }
 
-
+                } else if (response.status === 'error') {
+                    // Hata durumu: Form hatalarını göster ve modalı açık bırak
+                    $('#' + DivId).html(response.formErrorHtml);
+                    $('#' + modalId).modal('show'); // Hata modali açık kalmalı
+                }
             },
-            error: function (xhr, status, error) {
+            error: function(xhr, status, error) {
                 console.error('Form gönderiminde hata oluştu: ', error);
-                console.error('Hata Detayı: ', xhr.responseText); // Sunucudan dönen hata mesajı
+                console.error('Hata Detayı: ', xhr.responseText);
                 alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
             }
         });
     }
+
 
 </script>
 

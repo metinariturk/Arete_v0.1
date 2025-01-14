@@ -71,7 +71,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/modals",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/collection",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,18 +82,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\collection" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modals" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\file_img" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display_new" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\collection" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0004\SOZ-0015\Bond" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0004\SOZ-0015\Collection\8" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\css" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -226,6 +226,7 @@
       <workItem from="1735916073528" duration="2862000" />
       <workItem from="1736070605122" duration="15652000" />
       <workItem from="1736798867479" duration="8353000" />
+      <workItem from="1736880588162" duration="9159000" />
     </task>
     <servers />
   </component>

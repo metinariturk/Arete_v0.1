@@ -208,6 +208,10 @@
                         </div>
                         <div id="tab_Collection">
                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_a_collection"); ?>
+                            <div id="edit_collection_modal">
+                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/edit_collection_modal_form"); ?>
+                            </div>
+
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
