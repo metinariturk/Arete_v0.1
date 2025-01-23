@@ -356,6 +356,34 @@
     });
 
 
+    function saveData() {
+        const data = [];
+        document.querySelectorAll('.qty').forEach(function (input) {
+            const rowId = input.getAttribute('data-row-id');
+            const qty = parseFloat(input.value) || 0;
+            data.push({id: rowId, qty: qty});
+        });
+
+        fetch('<?php echo base_url("contract/update_boqs"); ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Veriler başarıyla güncellendi.');
+                } else {
+                    alert('Bir hata oluştu.');
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+            });
+    }
+
     function refresh_leader_group(anchor) {
         // data-id ve data-url değerlerini al
         const id = anchor.getAttribute('data-id');

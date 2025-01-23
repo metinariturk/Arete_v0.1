@@ -1,5 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script başı -->
 <script>
     $(document).ready(function() {
@@ -830,3 +828,18 @@
 
 </script>
 <!-- Favori İşareti Son-->
+
+<script>
+    $(document).ready(function(){
+        // Tooltip ekli tüm öğeleri seçiyoruz
+        $('[data-toggle="tooltip"]').each(function() {
+            // Tooltip eklendiği öğe ile ilgili bilgileri alıyoruz
+            var element = $(this);
+            var tooltipData = element.data('bs.tooltip'); // Tooltip verisi
+
+            if (tooltipData) {
+                alert('Tooltip şu öğede bulundu: ' + element[0].outerHTML);
+            }
+        });
+    });
+</script>
