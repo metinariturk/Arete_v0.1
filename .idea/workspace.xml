@@ -68,32 +68,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/collection&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/assets/images/charts",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\charts" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\collection" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\modals" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\file_img" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\collection" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0004\SOZ-0015\Bond" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0004\SOZ-0015\Collection\8" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -228,6 +228,7 @@
       <workItem from="1736798867479" duration="8353000" />
       <workItem from="1736880588162" duration="9183000" />
       <workItem from="1737656649186" duration="5382000" />
+      <workItem from="1738087878662" duration="13942000" />
     </task>
     <servers />
   </component>
@@ -311,7 +312,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Export.php</url>
-          <line>2177</line>
+          <line>2254</line>
           <properties>
             <option name="className" value="\Export" />
             <option name="methodName" value="report_download_excel" />

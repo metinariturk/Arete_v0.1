@@ -815,9 +815,9 @@ class Export extends CI_Controller
         $rowNum++;
 
 // "SÜREYE GÖRE İLERLEME" başlığını ekleyelim
-        $sheet->setCellValue("A{$rowNum}", "SÜREYE GÖRE İLERLEME");
-        $sheet->mergeCells("A{$rowNum}:F{$rowNum}");
-        $sheet->getStyle("A{$rowNum}")->applyFromArray([
+        $sheet->setCellValue("B{$rowNum}", "SÜREYE GÖRE İLERLEME");
+        $sheet->mergeCells("B{$rowNum}:K{$rowNum}");
+        $sheet->getStyle("B{$rowNum}")->applyFromArray([
             'font' => [
                 'size' => 8,
                 'bold' => true
@@ -827,70 +827,150 @@ class Export extends CI_Controller
                 'vertical' => Alignment::VERTICAL_CENTER
             ],
         ]);
+
         $rowNum++;
+        $elapsed_Day = fark_gun($contract->sozlesme_tarih);
+        $total_day = $contract->isin_suresi;
+        $percantage = 0;
 
-
-// B14 hücresine değeri yazıyoruz
-        function generateColorGradient($startColor, $endColor, $steps) {
-            list($rStart, $gStart, $bStart) = hexToRgb($startColor);
-            list($rEnd, $gEnd, $bEnd) = hexToRgb($endColor);
-
-            $gradient = [];
-            for ($i = 0; $i < $steps; $i++) {
-                $r = round($rStart + ($rEnd - $rStart) * ($i / ($steps - 1)));
-                $g = round($gStart + ($gEnd - $gStart) * ($i / ($steps - 1)));
-                $b = round($bStart + ($bEnd - $bStart) * ($i / ($steps - 1)));
-
-                $gradient[] = rgbToHex($r, $g, $b);
-            }
-            return $gradient;
+        if ($total_day > 0) {
+            $percantage = ($elapsed_Day / $total_day) * 100;
         }
 
-        function hexToRgb($hex) {
-            $hex = str_replace("#", "", $hex);
-            $r = hexdec(substr($hex, 0, 2));
-            $g = hexdec(substr($hex, 2, 2));
-            $b = hexdec(substr($hex, 4, 2));
-            return [$r, $g, $b];
-        }
+        $percantage = min(max(round($percantage), 0), 100);
 
-        function rgbToHex($r, $g, $b) {
-            return sprintf("%02X%02X%02X", $r, $g, $b);
-        }
+// Renk kodları dizisi
+        $colorCodes = [
+            '006400', '008000', '3bc43b', '88de37', 'bdbd51',
+            'b49c1a', 'de9206', 'bd6217', '7a220e', '540202'
+        ];
 
-// Koyu Yeşilden Koyu Kırmızıya kadar renk geçişini 10 adımda oluştur
-        $colors = generateColorGradient('#006400', '#990000', 10);
+// Yüzdeyi B12 hücresine yazalım
+        $sheet->setCellValue("B{$rowNum}", "$percantage%");
+        $sheet->getStyle("B{$rowNum}")->applyFromArray([
+            'font' => [
+                'size' => 8,
+                'bold' => true
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ],
+        ]);
 
-// Yatayda B14'ten K14'e kadar renk geçişini uygulama
-        for ($i = 0; $i < 10; $i++) {
-            $column = chr(66 + $i); // B, C, D, ... K kolonlarını bulma
-            $sheet->getStyle($column . '14')->getFill()->applyFromArray([
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => $colors[$i]]
+// 10'luk dilimlerde hücreleri renklendirelim ve birleştirelim
+        $startColumn = 'B';
+        $endColumn = 'K';
+        $totalColumns = ord($endColumn) - ord($startColumn) + 1;
+
+// Yüzde dilimlerine göre hücreleri birleştir ve renklendir
+        $percentRange = floor($percantage / 10);
+
+// Yüzde 100'e eşit veya büyükse, yüzdeyi 9'a ayarla
+        $percentRange = min($percentRange, 9); // 9 ile sınırlandırıldı
+
+// Renk kodunu al
+        $color = $colorCodes[$percentRange];
+
+// B12'dan başlayıp, 'B' ile 'K' arasındaki hücreleri dinamik olarak birleştir
+        $mergedRange = $startColumn . "$rowNum:" . chr(ord($startColumn) + $percentRange) . "$rowNum";
+        $sheet->mergeCells($mergedRange);
+        $sheet->getStyle($mergedRange)->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => $color]
+            ],
+        ]);
+
+// Kalan hücreleri gri renkle doldur
+        if ($percentRange < $totalColumns - 1) {
+            $remainingRange = chr(ord($startColumn) + $percentRange + 1) . "$rowNum:" . $endColumn . "$rowNum";
+            $sheet->mergeCells($remainingRange);
+            $sheet->getStyle($remainingRange)->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'D3D3D3']
+                ],
             ]);
         }
 
-// Değeri 10'a bölelim ve kalan kısmı bulalım
-        $value = 9;
-        $step = floor($value / 10);  // Bölüm kısmı (50 / 10 = 5)
-        $remainder = $value % 10;    // Kalan kısmı (50 % 10 = 0)
+        $rowNum++;
+        $rowNum++;
 
-// Alfabedeki harfler (B, C, D, ..., K)
-        $columns = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        foreach ($extimes as $extime) {
+              $elapsed_Day = fark_gun($extime->baslangic_tarih); // Başlangıç tarihinden geçen gün sayısını hesapla
+            $total_day = dateDifference($extime->baslangic_tarih,$extime->bitis_tarih);  // Toplam süreyi al
+             $percantage = $elapsed_Day / $total_day * 100;  // Yüzdeyi hesapla
 
-// Kalan değeri kullanarak doğru hücreyi seçelim (alfabede kalan harfi bulalım)
-        $columnToMerge = $columns[$step];  // 5. indeks B, C, D, E, F, G sırası
-        $mergeRange = $columnToMerge . '14:' . 'K14';  // Örneğin G14:K14
+            // Eğer süreyi aşmışsa, %100 yap
+            if ($elapsed_Day >= $total_day) {
+                $percantage = 100;
+            } else {
+                // Eğer süre tamamlanmamışsa, kalan günü hesapla
+                $remain_day = $total_day - $elapsed_Day;
+            }
 
-// Hücreleri birleştirelim
-        $sheet->mergeCells($mergeRange);
-        $sheet->getStyle($mergeRange)->getFill()->applyFromArray([
-            'fillType' => Fill::FILL_SOLID,
-            'startColor' => ['rgb' => 'D3D3D3']  // Açık gri renk
-        ]);
+            // Süre bitmişse, kalan günleri boş olarak göster
+            if ($elapsed_Day > $total_day) {
+                $elapsed_Day = "-";
+                $remain_day = "-";
+            }
 
-        $sheet->setCellValue($columnToMerge . '14', $value.'%');
+            // Eğer kalan gün negatifse, onu "-"'a çevirelim
+            if ($remain_day < 0) {
+                $remain_day = "-";
+            }
 
+            // Yüzdeyi ve kalan günleri hücrelere yaz
+            $sheet->setCellValue("B{$rowNum}", "$percantage%"); // Yüzdeyi B12 hücresine yaz
+            $sheet->setCellValue("C{$rowNum}", "$remain_day gün kaldı"); // Kalan günleri C12 hücresine yaz
+
+            // Grafik için renk kodları
+            $colorCodes = [
+                '006400', '008000', '3bc43b', '88de37', 'bdbd51',
+                'b49c1a', 'de9206', 'bd6217', '7a220e', '540202'
+            ];
+
+            // Yüzdeyi 0-100 arasında sınırla
+            $percantage = min(max(round($percantage), 0), 100);
+
+            // Yüzde dilimini hesapla
+            $percentRange = floor($percantage / 10);
+            $percentRange = min($percentRange, 9); // 100%'yi geçmemek için
+
+            // Renk kodunu al
+            $color = $colorCodes[$percentRange];
+
+            // Süreyi ve renkli grafik hücreleri için işlemleri yapalım
+            $startColumn = 'B';
+            $endColumn = 'K';
+            $totalColumns = ord($endColumn) - ord($startColumn) + 1;
+
+            // Yüzdeyi hesapladıktan sonra B12:K12 arasındaki hücreleri renklendir
+            $mergedRange = $startColumn . "$rowNum:" . chr(ord($startColumn) + $percentRange) . "$rowNum";
+            $sheet->mergeCells($mergedRange);
+            $sheet->getStyle($mergedRange)->applyFromArray([
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => $color]
+                ],
+            ]);
+
+            // Kalan hücreleri gri renkle doldur
+            if ($percentRange < $totalColumns - 1) {
+                $remainingRange = chr(ord($startColumn) + $percentRange + 1) . "$rowNum:" . $endColumn . "$rowNum";
+                $sheet->mergeCells($remainingRange);
+                $sheet->getStyle($remainingRange)->applyFromArray([
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => 'D3D3D3'] // Gri renk
+                    ],
+                ]);
+            }
+
+            // Satırı bir artır (Bir sonraki satıra geç)
+            $rowNum++;
+        }
 
         $filename = "$contract->contract_name" . " Sözleşme Özeti.xlsx";
 
@@ -1230,7 +1310,6 @@ class Export extends CI_Controller
         $pdf->Output('İmalat Grubu Raporu.pdf', 'I');
     }
 
-
     public function book_download_excel($contract_id)
     {
         if (!isAdmin()) {
@@ -1529,7 +1608,6 @@ class Export extends CI_Controller
         // PDF çıktısını ver
         $pdf->Output('İmalat Grubu Raporu.pdf', 'I');
     }
-
 
     public function group_boq_download_excel($contract_id)
     {
@@ -1847,7 +1925,6 @@ class Export extends CI_Controller
         $filename = "$contract->contract_name" . "- Poz Listesi (Gruplara Göre).pdf";
         $pdf->Output($filename, 'I');
     }
-
 
     public function contract_price_download_excel($contract_id)
     {
@@ -3752,7 +3829,9 @@ class Export extends CI_Controller
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
     }
+
 }
+
 
 
 
