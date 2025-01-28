@@ -19,6 +19,8 @@ use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
 use PhpOffice\PhpSpreadsheet\Chart\Title;
 use PhpOffice\PhpSpreadsheet\Chart\Legend;
 use PhpOffice\PhpSpreadsheet\Chart\Layout;
+use PhpOffice\PhpSpreadsheet\Style\Conditional;
+use PhpOffice\PhpSpreadsheet\Style\Style;
 
 
 $spreadsheet = new Spreadsheet();
@@ -102,7 +104,7 @@ class Export extends CI_Controller
     }
 
 
-    function print_report($contract_id, $P_or_D = null)
+    function contract_report_pdf($contract_id, $P_or_D = null)
     {
         $contract = $this->Contract_model->get(array("id" => $contract_id));
 
@@ -116,10 +118,6 @@ class Export extends CI_Controller
         $advances = $this->Advance_model->get_all(array("contract_id" => $contract_id));
         $bonds = $this->Bond_model->get_all(array("contract_id" => $contract_id));
         $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id), "tahsilat_tarih ASC");
-
-        $viewData = new stdClass();
-
-        $viewData->contract = $contract;
 
         $advance_given = sum_from_table("advance", "avans_miktar", $contract->id);
 
@@ -135,9 +133,6 @@ class Export extends CI_Controller
 
         $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
         $owner = $this->Company_model->get(array("id" => $contract->isveren));
-
-        $viewData->contractor = $contractor;
-        $viewData->owner = $owner;
 
         $yuklenici = company_name($contract->yuklenici);
         $this->load->library('pdf_creator');
@@ -406,43 +401,52 @@ class Export extends CI_Controller
         $pdf->Cell(60, 4, "", 0, 0, "L", 0);
         $pdf->Ln(); // Yeni satıra geç
 
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 7);
+
         if (!empty($collections)) {
-            $pdf->Cell(25, 4, "Topalm Alacak", 1, 0, "C", 0);
-            $pdf->Cell(25, 4, "Yapılan Ödeme", 1, 0, "C", 0);
-            $pdf->Cell(25, 4, "Teminat Kesinti", 1, 0, "C", 0);
-            $pdf->Cell(25, 4, "Diğer Kesinti", 1, 0, "C", 0);
-            $pdf->Cell(25, 4, "Kalan Bedel", 1, 0, "C", 0);
+            $pdf->Cell(190, 6, 'ÖDEME DURUMU', 0, 0, "C", 1);
+        }
+        $pdf->Ln(); // Yeni satıra geç
+
+
+        if (!empty($collections)) {
+            $pdf->Cell(38, 5, "Toplam Alacak", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Yapılan Ödeme", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Teminat Kesinti", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Diğer Kesinti", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Kalan Bedel", 1, 0, "C", 0);
 
             $pdf->SetFont('dejavusans', 'N', 6);
             $pdf->Ln(); // Yeni satıra geç
 
-            $pdf->Cell(25, 4, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 4, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 4, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
-            $pdf->Cell(25, 4, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(38, 5, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(38, 5, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(38, 5, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(38, 5, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "C", 0);
             $pdf->SetFont('dejavusans', 'B', 6);
 
-            $pdf->Cell(25, 4, money_format($total_payment_Kes_e + $total_payment_balance - $total_collections - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(38, 5, money_format($total_payment_Kes_e + $total_payment_balance - $total_collections - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "C", 0);
             $pdf->Ln(); // Yeni satıra geç
         }
 
+        $pdf->Ln(); // Yeni satıra geç
 
-        $pdf->SetX(25); // Yeni satıra geç
         $pdf->SetFont('dejavusans', 'B', 7);
         if (!empty($advances)) {
-            $pdf->Cell(40, 6, 'AVANS DURUMU', 0, 0, "C", 0);
+            $pdf->SetX(12);
+            $pdf->Cell(50, 6, 'AVANS DURUMU', 0, 0, "C", 1);
         }
-        $pdf->Cell(9, 6, "", 0, 0, "C", 0);
 
         if (!empty($bonds)) {
-            $pdf->Cell(111, 6, 'TEMİNAT DURUMU', 0, 0, "C", 0);
+            $pdf->SetX(64);
+            $pdf->Cell(134, 6, 'TEMİNAT DURUMU', 0, 0, "C", 1);
         }
         $pdf->SetFont('dejavusans', 'B', 6);
         $pdf->Ln(); // Yeni satıra geç
         $bonds_start_y = $pdf->GetY();
         if (!empty($advances)) {
             $pdf->SetFont('dejavusans', 'N', 6);
-
 
             $pdf->SetX(12);
             $pdf->SetFont('dejavusans', 'B', 6);
@@ -510,19 +514,22 @@ class Export extends CI_Controller
             $pdf->SetY($last_advance_y); // Yeni satıra geç
         }
 
+        if (!empty($advances) and !empty($bonds) and (count($payments) > 5)) {
+            $pdf->AddPage();
+        }
+
         $pdf->Ln(); // Yeni satıra geç
         $pdf->SetFont('dejavusans', 'B', 7);
         $pdf->SetX(25);
         if (!empty($collections)) {
-            $pdf->Cell(160, 6, 'ÖDEME DURUMU', 0, 0, "C", 0);
+            $pdf->Cell(163, 6, 'ÖDEME TABLOSU', 0, 0, "C", 1);
         }
         $pdf->SetFont('dejavusans', 'B', 6);
-        $pdf->Ln(); // Yeni satıra geç
-        $pdf->Cell(160, 4, '', 0, 0, "C", 0);
         $pdf->Ln(); // Yeni satıra geç
         $bonds_start_y = $pdf->GetY();
 
         if (!empty($collections)) {
+            $total_collections = 0;  // Tahsilat toplamı
             $pdf->SetX(25);
             $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
             $pdf->Cell(15, 6, 'Tarih', 1, 0, "C", 0);
@@ -549,11 +556,15 @@ class Export extends CI_Controller
                 $pdf->Cell(90, 4, $collection->aciklama, 1, 0, "L", 0);
                 $pdf->Cell(4, 4, "", 0, 0, "C", 0);
                 $pdf->Ln(); // Yeni satıra geç
+
+                // Tahsilat miktarını topla
+                $total_collections += $collection->tahsilat_miktar;
             }
 
+            // Avanslar kısmını ekleyelim
             if (!empty($advances)) {
+                $total_advances = 0;  // Avans toplamı
                 $pdf->SetX(25);
-
                 $pdf->Cell(163, 6, "AVANS ÖDEMELERİ", 1, 0, "L", 0);
                 $pdf->Ln(); // Yeni satıra geç
                 $pdf->SetX(25);
@@ -570,15 +581,29 @@ class Export extends CI_Controller
                     $pdf->Cell(90, 4, $advance->aciklama, 1, 0, "L", 0);
                     $pdf->Cell(4, 4, "", 0, 0, "C", 0);
                     $pdf->Ln(); // Yeni satıra geç
+
+                    // Avans miktarını topla
+                    $total_advances += $advance->avans_miktar;
                 }
-              }
+                $pdf->Ln(); // Yeni satıra geç
 
+                $pdf->SetX(25);
+                $pdf->Cell(30, 4, "TOPLAM TAHSİLAT", 1, 0, "C", 0);
+                $pdf->Cell(25, 4, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Ln(); // Yeni satıra geç
+                $pdf->SetX(25);
+                $pdf->Cell(30, 4, "TOPLAM AVANS", 1, 0, "C", 0);
+                $pdf->Cell(25, 4, money_format($total_advances) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Ln(); // Yeni satıra geç
+                $pdf->SetFont('dejavusans', 'B', 6);
 
+                $pdf->SetX(25);
+                $pdf->Cell(30, 4, "TOPLAM ÖDEME", 1, 0, "C", 0);
+                $pdf->Cell(25, 4, money_format($total_collections + $total_advances) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Ln(); // Yeni satıra geç
+
+            }
         }
-
-
-
-
 
 
         $file_name = contract_name($contract->id) . "-İlerlerme Raporu";
@@ -588,6 +613,293 @@ class Export extends CI_Controller
         } else {
             $pdf->Output("$file_name.pdf", "D");
         }
+    }
+
+    public function contract_report_excel($contract_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $contract = $this->Contract_model->get(array("id" => $contract_id));
+
+        if ($contract->parent > 0) {
+            $main_contract = $this->Contract_model->get(array("id" => $contract->parent));
+        }
+
+        $extimes = $this->Extime_model->get_all(array("contract_id" => $contract_id));
+        $costincs = $this->Costinc_model->get_all(array("contract_id" => $contract_id));
+        $payments = $this->Payment_model->get_all(array("contract_id" => $contract_id));
+        $advances = $this->Advance_model->get_all(array("contract_id" => $contract_id));
+        $bonds = $this->Bond_model->get_all(array("contract_id" => $contract_id));
+        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id), "tahsilat_tarih ASC");
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setLeft(0.3937); // 1 cm = 0.3937 inch
+        $sheet->getPageMargins()->setRight(0);     // 0 cm
+
+        $sheet->getStyle('A1:Z1000')->applyFromArray([
+            'font' => [
+                'size' => 8, // Yazı büyüklüğü 8 punto
+            ],
+        ]);
+
+
+        // Logo dosyasının yolu
+        $logoPath = realpath("assets" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "logo.png");
+
+
+// Logo'
+//yu ekleyin
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is your logo');
+        $drawing->setPath($logoPath); // Resim dosyasının yolu
+        $drawing->setCoordinates('B1'); // Resmin yerleştirileceği hücre
+        $drawing->setHeight(60); // Resmin yüksekliği (piksel)
+        $drawing->setWorksheet($sheet);
+
+        $rowNum = 2;
+
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+
+        $sheet->setCellValue("K{$rowNum}", "Tarih :");
+        $sheet->getStyle("B{$rowNum}:F{$rowNum}")->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 10,
+                // Yazıyı koyu yap
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT, // Ortala (isteğe bağlı)
+                'vertical' => Alignment::VERTICAL_CENTER,     // Ortala (isteğe bağlı)
+            ],
+        ]);
+
+        $sheet->setCellValue("L{$rowNum}", dateFormat_dmy($contract->sozlesme_tarih));
+
+        $rowNum++;
+        $rowNum++;
+
+        foreach (range('A', 'L') as $column) {
+            $sheet->getColumnDimension($column)->setWidth(7.7);
+        }
+
+
+        // Başlık yazısı "SÖZLEŞME RAPORU"
+        $sheet->setCellValue('A4', 'SÖZLEŞME RAPORU');
+        $sheet->mergeCells('A4:L4');
+        $sheet->getStyle('A4')->applyFromArray([
+            'font' => [
+                'size' => 12,
+                'bold' => true
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ]
+        ]);
+
+// 2. satırda sözleşme adı ve şirket adı
+        $rowNum = 5; // Başlık altında yerleşecek satır
+        if (!empty($main_contract)) {
+            $sheet->setCellValue("A{$rowNum}", $main_contract->contract_name);
+            $sheet->mergeCells("A{$rowNum}:L{$rowNum}");
+            $sheet->getStyle("A{$rowNum}")->applyFromArray([
+                'font' => [
+                    'size' => 10,
+                    'bold' => true
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER
+                ]
+            ]);
+        }
+        $rowNum++;
+
+// Ana sözleşme adı
+        $sheet->setCellValue("A{$rowNum}", mb_strtoupper($contract->contract_name));
+        $sheet->mergeCells("A{$rowNum}:L{$rowNum}");
+        $sheet->getStyle("A{$rowNum}")->applyFromArray([
+            'font' => [
+                'size' => 10,
+                'bold' => true
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ]
+        ]);
+        $rowNum++;
+
+// Şirket adı
+        $sheet->setCellValue("A{$rowNum}", company_name($contract->yuklenici));
+        $sheet->mergeCells("A{$rowNum}:L{$rowNum}");
+        $sheet->getStyle("A{$rowNum}")->applyFromArray([
+            'font' => [
+                'size' => 10,
+                'bold' => false
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ]
+        ]);
+        $rowNum++;
+
+// Başlık için "Sözleşme Bedeli", "Sözleşme Tarihi", vb. başlıkları ekleyelim
+        $sheet->setCellValue("B{$rowNum}", "Sözleşme Bedeli");
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");
+        $sheet->setCellValue("D{$rowNum}", "Sözleşme Tarihi");
+        $sheet->mergeCells("D{$rowNum}:E{$rowNum}");
+        $sheet->setCellValue("F{$rowNum}", "Yer Teslim Tarihi");
+        $sheet->mergeCells("F{$rowNum}:G{$rowNum}");
+        $sheet->setCellValue("H{$rowNum}", "Süresi");
+        $sheet->mergeCells("H{$rowNum}:I{$rowNum}");
+        $sheet->setCellValue("J{$rowNum}", "Bitiş Tarihi");
+        $sheet->mergeCells("J{$rowNum}:K{$rowNum}");
+        $sheet->getStyle("B{$rowNum}:K{$rowNum}")->applyFromArray([
+            'font' => [
+                'size' => 8,
+                'bold' => true
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ]);
+        $rowNum++;
+
+// Sözleşme bilgilerini dolduralım
+        $sheet->setCellValue("B{$rowNum}", money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi);
+        $sheet->mergeCells("B{$rowNum}:C{$rowNum}");
+        $sheet->setCellValue("D{$rowNum}", dateFormat_dmy($contract->sozlesme_tarih));
+        $sheet->mergeCells("D{$rowNum}:E{$rowNum}");
+        $sheet->setCellValue("F{$rowNum}", dateFormat_dmy($contract->sitedel_date));
+        $sheet->mergeCells("F{$rowNum}:G{$rowNum}");
+        $sheet->setCellValue("H{$rowNum}", $contract->isin_suresi . " Gün");
+        $sheet->mergeCells("H{$rowNum}:I{$rowNum}");
+        $sheet->setCellValue("J{$rowNum}", dateFormat_dmy($contract->sozlesme_bitis));
+        $sheet->mergeCells("J{$rowNum}:K{$rowNum}");
+        $sheet->getStyle("B{$rowNum}:K{$rowNum}")->applyFromArray([
+            'font' => [
+                'size' => 8,
+                'bold' => false
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ]);
+
+        $rowNum++; // Yeni satıra geç
+
+// Ayrım satır ekleyelim
+        $sheet->setCellValue("A{$rowNum}", "");
+        $sheet->mergeCells("A{$rowNum}:F{$rowNum}");
+        $rowNum++;
+
+// "SÜREYE GÖRE İLERLEME" başlığını ekleyelim
+        $sheet->setCellValue("A{$rowNum}", "SÜREYE GÖRE İLERLEME");
+        $sheet->mergeCells("A{$rowNum}:F{$rowNum}");
+        $sheet->getStyle("A{$rowNum}")->applyFromArray([
+            'font' => [
+                'size' => 8,
+                'bold' => true
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ],
+        ]);
+        $rowNum++;
+
+
+// B14 hücresine değeri yazıyoruz
+        function generateColorGradient($startColor, $endColor, $steps) {
+            list($rStart, $gStart, $bStart) = hexToRgb($startColor);
+            list($rEnd, $gEnd, $bEnd) = hexToRgb($endColor);
+
+            $gradient = [];
+            for ($i = 0; $i < $steps; $i++) {
+                $r = round($rStart + ($rEnd - $rStart) * ($i / ($steps - 1)));
+                $g = round($gStart + ($gEnd - $gStart) * ($i / ($steps - 1)));
+                $b = round($bStart + ($bEnd - $bStart) * ($i / ($steps - 1)));
+
+                $gradient[] = rgbToHex($r, $g, $b);
+            }
+            return $gradient;
+        }
+
+        function hexToRgb($hex) {
+            $hex = str_replace("#", "", $hex);
+            $r = hexdec(substr($hex, 0, 2));
+            $g = hexdec(substr($hex, 2, 2));
+            $b = hexdec(substr($hex, 4, 2));
+            return [$r, $g, $b];
+        }
+
+        function rgbToHex($r, $g, $b) {
+            return sprintf("%02X%02X%02X", $r, $g, $b);
+        }
+
+// Koyu Yeşilden Koyu Kırmızıya kadar renk geçişini 10 adımda oluştur
+        $colors = generateColorGradient('#006400', '#990000', 10);
+
+// Yatayda B14'ten K14'e kadar renk geçişini uygulama
+        for ($i = 0; $i < 10; $i++) {
+            $column = chr(66 + $i); // B, C, D, ... K kolonlarını bulma
+            $sheet->getStyle($column . '14')->getFill()->applyFromArray([
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => $colors[$i]]
+            ]);
+        }
+
+// Değeri 10'a bölelim ve kalan kısmı bulalım
+        $value = 9;
+        $step = floor($value / 10);  // Bölüm kısmı (50 / 10 = 5)
+        $remainder = $value % 10;    // Kalan kısmı (50 % 10 = 0)
+
+// Alfabedeki harfler (B, C, D, ..., K)
+        $columns = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+
+// Kalan değeri kullanarak doğru hücreyi seçelim (alfabede kalan harfi bulalım)
+        $columnToMerge = $columns[$step];  // 5. indeks B, C, D, E, F, G sırası
+        $mergeRange = $columnToMerge . '14:' . 'K14';  // Örneğin G14:K14
+
+// Hücreleri birleştirelim
+        $sheet->mergeCells($mergeRange);
+        $sheet->getStyle($mergeRange)->getFill()->applyFromArray([
+            'fillType' => Fill::FILL_SOLID,
+            'startColor' => ['rgb' => 'D3D3D3']  // Açık gri renk
+        ]);
+
+        $sheet->setCellValue($columnToMerge . '14', $value.'%');
+
+
+        $filename = "$contract->contract_name" . " Sözleşme Özeti.xlsx";
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
     }
 
 
@@ -2358,7 +2670,6 @@ class Export extends CI_Controller
         $rowNum++;
 
 
-
         $sheet->setCellValue("B{$rowNum}", '#');
         $sheet->setCellValue("C{$rowNum}", 'Ekip');
         $sheet->setCellValue("D{$rowNum}", 'Çalışma (Gün)');
@@ -2412,7 +2723,6 @@ class Export extends CI_Controller
             ]);
             $rowNum++;
         }
-
 
 
         $total_group_total = 0;
@@ -2879,9 +3189,9 @@ class Export extends CI_Controller
         $i = 1;
         foreach ($all_workgroups as $subgroup) {
             $group_total = sum_anything_and("report_workgroup", "number", "site_id", $site->id, "workgroup", $subgroup['workgroup']);
-            $pdf->Cell(10, 7,$i++, 1,"",'C');
+            $pdf->Cell(10, 7, $i++, 1, "", 'C');
             $pdf->Cell(40, 7, htmlspecialchars(group_name($subgroup['workgroup'])), 1);
-            $pdf->Cell(30, 7, $group_total, 1, 1,  "C");
+            $pdf->Cell(30, 7, $group_total, 1, 1, "C");
         }
         $total_group_total = 0;
         foreach ($all_workgroups as $subgroup) {
@@ -2913,15 +3223,15 @@ class Export extends CI_Controller
             $submachine_total = sum_anything_and("report_workmachine", "number", "site_id", $site->id, "workmachine", $submachine['workmachine']);
             $total_group_total += $group_total;
             $total_submachine_total += $submachine_total;
-            $pdf->Cell(10, 7,$i++, 1,"",'C');
+            $pdf->Cell(10, 7, $i++, 1, "", 'C');
             $pdf->Cell(40, 7, htmlspecialchars(machine_name($submachine['workmachine'])), 1);
-            $pdf->Cell(30, 7, $submachine_total, 1, 1,"C");
+            $pdf->Cell(30, 7, $submachine_total, 1, 1, "C");
         }
 
         $pdf->SetFont('dejavusans', 'B', 8);
 
         $pdf->Cell(50, 7, "Toplam", 1);
-        $pdf->Cell(30, 7, $total_submachine_total, 1, 1,"C");
+        $pdf->Cell(30, 7, $total_submachine_total, 1, 1, "C");
 
         $active_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 1));
         $passive_personel_counts = $this->Workman_model->get_all(array("site_id" => $site->id, "isActive" => 0));
@@ -2944,7 +3254,7 @@ class Export extends CI_Controller
             $group_counts[$group]++;
         }
 
-        $pdf->SetXY(95,68);
+        $pdf->SetXY(95, 68);
         $pdf->Cell(60, 7, "Çalışan Personel", 1);
 
         $i = 1; // Sayaç başlangıcı
@@ -2954,9 +3264,9 @@ class Export extends CI_Controller
         foreach ($group_counts as $group => $count) {
 
             $pdf->SetX(95); // X pozisyonunu korumak için
-            $pdf->Cell(10, 7,$i++, 1,"",'C');
-            $pdf->Cell(40, 7,group_name($group), 1);
-            $pdf->Cell(10, 7,$count, 1,"","C");
+            $pdf->Cell(10, 7, $i++, 1, "", 'C');
+            $pdf->Cell(40, 7, group_name($group), 1);
+            $pdf->Cell(10, 7, $count, 1, "", "C");
             $pdf->Ln(); // İlk satırdan sonra alt satıra geç
         }
 
@@ -2964,12 +3274,12 @@ class Export extends CI_Controller
 
 
         $pdf->SetX(95); // X pozisyonunu korumak için
-        $pdf->Cell(50, 7,"Toplam", 1);
-        $pdf->Cell(10, 7,array_sum($group_counts), 1);
+        $pdf->Cell(50, 7, "Toplam", 1);
+        $pdf->Cell(10, 7, array_sum($group_counts), 1);
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
 
 
-        $pdf->SetXY(160,68);
+        $pdf->SetXY(160, 68);
         $pdf->Cell(60, 7, "Çalışmayan Personel", 1);
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
 
@@ -2987,9 +3297,9 @@ class Export extends CI_Controller
         $i = 1;
         foreach ($passive_group_counts as $group => $count) {
             $pdf->SetX(160); // X pozisyonunu korumak için
-            $pdf->Cell(10, 7,$i++, 1,"",'C');
-            $pdf->Cell(40, 7,group_name($group), 1);
-            $pdf->Cell(10, 7,$count, 1,"","C");
+            $pdf->Cell(10, 7, $i++, 1, "", 'C');
+            $pdf->Cell(40, 7, group_name($group), 1);
+            $pdf->Cell(10, 7, $count, 1, "", "C");
             $pdf->Ln(); // İlk satırdan sonra alt satıra geç
         }
 
@@ -2997,13 +3307,12 @@ class Export extends CI_Controller
 
 
         $pdf->SetX(160); // X pozisyonunu korumak için
-        $pdf->Cell(50, 7,"Toplam", 1);
-        $pdf->Cell(10, 7,array_sum($passive_group_counts), 1,"","C");
+        $pdf->Cell(50, 7, "Toplam", 1);
+        $pdf->Cell(10, 7, array_sum($passive_group_counts), 1, "", "C");
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
 
 
-
-        $pdf->SetXY(225,68);
+        $pdf->SetXY(225, 68);
         $pdf->Cell(60, 7, "Çalışmayan Personel", 1);
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
 
@@ -3022,21 +3331,21 @@ class Export extends CI_Controller
 
         foreach ($all_group_counts as $group => $count) {
             $pdf->SetX(225); // X pozisyonunu korumak için
-            $pdf->Cell(10, 7,$i++, 1,"",'C');
-            $pdf->Cell(40, 7,group_name($group), 1);
-            $pdf->Cell(10, 7,$count, 1,"","C");
+            $pdf->Cell(10, 7, $i++, 1, "", 'C');
+            $pdf->Cell(40, 7, group_name($group), 1);
+            $pdf->Cell(10, 7, $count, 1, "", "C");
             $pdf->Ln(); // İlk satırdan sonra alt satıra geç
         }
 
         $pdf->SetX(225); // X pozisyonunu korumak için
         $pdf->SetFont('dejavusans', 'B', 8);
 
-        $pdf->Cell(50, 7,"Toplam", 1);
-        $pdf->Cell(10, 7,array_sum($all_group_counts), 1,"","C");
+        $pdf->Cell(50, 7, "Toplam", 1);
+        $pdf->Cell(10, 7, array_sum($all_group_counts), 1, "", "C");
         $pdf->Ln(); // İlk satırdan sonra alt satıra geç
 
 
-            // PDF dosyasını oluştur ve kullanıcıya gönder
+        // PDF dosyasını oluştur ve kullanıcıya gönder
         $pdf->Output($site->santiye_ad . '- Depo Stok Raporu.pdf', 'I');
     }
 
@@ -3291,8 +3600,6 @@ class Export extends CI_Controller
         $sheet->setCellValue("C9", "Meslek");  // Hücreye sayıyı yazıyoruz
 
 
-
-
 // $count_of_days kadar döngü oluşturuyoruz
         for ($i = 1; $i <= $count_of_days; $i++) {
             // Excel kolon ismini alıyoruz
@@ -3362,7 +3669,7 @@ class Export extends CI_Controller
         }
 
 // Toplam sayıyı son sütuna yazıyoruz
-        $lastColumn = getExcelColumn($columnIndex_A-1);  // Son kolonu buluyoruz
+        $lastColumn = getExcelColumn($columnIndex_A - 1);  // Son kolonu buluyoruz
         $previousColumn = getExcelColumn($columnIndex_A - 7);  // Son sütundan bir önceki sütunu alıyoruz
 
 // Hücreleri birleştiriyoruz, "TOPLAM" yazısını bir önceki sütuna yerleştiriyoruz
