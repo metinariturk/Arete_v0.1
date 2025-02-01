@@ -196,9 +196,9 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab4-1" role="tabpanel" aria-labelledby="tab4-1-link">
                         <div class="download_links mt-3">
-                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
+                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;"
                                id="openCollectionModal"
-                               data-bs-target="#AddCollectionModal"></i>
+                               onclick="open_modal('AddCollectionModal')"></i>
                             <a href="<?php echo base_url('export/collection_download_excel'); ?>">
                                 <i class="fa fa-file-excel-o fa-2x"></i>
                             </a>
@@ -206,105 +206,108 @@
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>
-                        <div id="tab_Collection">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_a_collection"); ?>
-                            <div id="edit_collection_modal">
-                                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/edit_collection_modal_form"); ?>
-                            </div>
-
+                        <div id="collection_table">
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/collection_table"); ?>
+                        </div>
+                        <div id="add_collection_modal">
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/add_collection_modal"); ?>
+                        </div>
+                        <div id="edit_collection_modal">
+                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/edit_collection_modal_form"); ?>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
-                        <div class="download_links mt-3">
-                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
-                               id="openAdvanceModal"
-                               data-bs-target="#AddAdvanceModal"></i>
-                            <a href="<?php echo base_url('export/advance_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/advance_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="tab_Advance">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_b_advance"); ?>
-                        </div>
+                </div>
+                <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
+                    <div class="download_links mt-3">
+                        <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
+                           id="openAdvanceModal"
+                           data-bs-target="#AddAdvanceModal"></i>
+                        <a href="<?php echo base_url('export/advance_download_excel'); ?>">
+                            <i class="fa fa-file-excel-o fa-2x"></i>
+                        </a>
+                        <a href="<?php echo base_url('export/advance_download_pdf'); ?>">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>
+                        </a>
                     </div>
-                    <div class="tab-pane fade" id="tab4-3" role="tabpanel" aria-labelledby="tab4-3-link">
-                        <div class="download_links mt-3">
-                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
-                               id="openBondModal"
-                               data-bs-target="#AddBondModal"></i>
-                            <a href="<?php echo base_url('export/bond_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/bond_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="tab_Bond">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_c_bond"); ?>
-                        </div>
+                    <div id="tab_Advance">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_b_advance"); ?>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab4-3" role="tabpanel" aria-labelledby="tab4-3-link">
+                    <div class="download_links mt-3">
+                        <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
+                           id="openBondModal"
+                           data-bs-target="#AddBondModal"></i>
+                        <a href="<?php echo base_url('export/bond_download_excel'); ?>">
+                            <i class="fa fa-file-excel-o fa-2x"></i>
+                        </a>
+                        <a href="<?php echo base_url('export/bond_download_pdf'); ?>">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>
+                        </a>
+                    </div>
+                    <div id="tab_Bond">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_c_bond"); ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="tab-pane fade" id="tab5" role="tabpanel"
-         aria-labelledby="tab5-link">
-        <div class="card">
-            <div class="card-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab5-1-link"
-                           data-id="<?php echo $item->id; ?>"
-                           data-url="<?php echo base_url('Contract/refresh_contract_price/'); ?>"
-                           data-bs-toggle="tab" href="#tab5-1" role="tab"
-                           onclick="refresh_contract_price(this)">
-                            <h5>Birim Fiyat Tablo</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);"
-                           id="tab5-2-link"
-                           data-id="<?php echo $item->id; ?>"
-                           data-url="<?php echo base_url('Contract/refresh_leader_group/'); ?>"
-                           data-bs-toggle="tab" href="#tab5-2" role="tab"
-                           onclick="refresh_leader_group(this)">
-                            <h5>Poz Grupları</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-3-link"
-                           data-bs-toggle="tab" href="#tab5-3" role="tab">
-                            <h5>Poz Kitabı</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-4-link"
-                           data-bs-toggle="tab" href="#tab5-4" role="tab">
-                            <h5>Sözleşme İş Grupları</h5>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_price"); ?>
-                </div>
+<div class="tab-pane fade" id="tab5" role="tabpanel"
+     aria-labelledby="tab5-link">
+    <div class="card">
+        <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab5-1-link"
+                       data-id="<?php echo $item->id; ?>"
+                       data-url="<?php echo base_url('Contract/refresh_contract_price/'); ?>"
+                       data-bs-toggle="tab" href="#tab5-1" role="tab"
+                       onclick="refresh_contract_price(this)">
+                        <h5>Birim Fiyat Tablo</h5>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="background-color: rgba(233,231,247,0.38);"
+                       id="tab5-2-link"
+                       data-id="<?php echo $item->id; ?>"
+                       data-url="<?php echo base_url('Contract/refresh_leader_group/'); ?>"
+                       data-bs-toggle="tab" href="#tab5-2" role="tab"
+                       onclick="refresh_leader_group(this)">
+                        <h5>Poz Grupları</h5>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-3-link"
+                       data-bs-toggle="tab" href="#tab5-3" role="tab">
+                        <h5>Poz Kitabı</h5>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-4-link"
+                       data-bs-toggle="tab" href="#tab5-4" role="tab">
+                        <h5>Sözleşme İş Grupları</h5>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_price"); ?>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="tab-pane fade" id="tab6" role="tabpanel"
-         aria-labelledby="tab6-link">
-        <div class="card">
-            <div class="card-body">
-                <h5>Dosya Yöneticisi</h5>
-                <div>
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_contract_file_manager"); ?>
-                </div>
+<div class="tab-pane fade" id="tab6" role="tabpanel"
+     aria-labelledby="tab6-link">
+    <div class="card">
+        <div class="card-body">
+            <h5>Dosya Yöneticisi</h5>
+            <div>
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_contract_file_manager"); ?>
             </div>
         </div>
     </div>
+</div>
 
 </div>

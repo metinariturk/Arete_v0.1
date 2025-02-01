@@ -59,7 +59,7 @@
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);"
-                                       onclick="confirmDelete('<?php echo base_url("Contract/delete_collection/$collection->id"); ?>', '#tab_Collection','collectionTable')"
+                                       onclick="downloadreicpt('<?php echo base_url("Contract/delete_collection/$collection->id"); ?>', '#collection_table','collectionTable')"
                                        title="Makbuz">
                                         <i class="fa fa-file fa-lg"></i>
                                     </a>
@@ -72,7 +72,7 @@
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);"
-                                       onclick="confirmDelete('<?php echo base_url("Contract/delete_collection/$collection->id"); ?>', '#tab_Collection','collectionTable')"
+                                       onclick="confirmDelete('<?php echo base_url("Contract/delete_collection/$collection->id"); ?>', '#collection_table','collectionTable')"
                                        title="Sil">
                                         <i class="fa fa-trash-o fa-lg"></i>
                                     </a>

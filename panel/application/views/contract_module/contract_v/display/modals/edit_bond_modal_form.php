@@ -1,8 +1,4 @@
-<script>
-    $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
-    $('body').removeClass('modal-open');
-    $('body').css('overflow', 'auto');
-</script>
+
 <?php if (isset($edit_bond)) { ?>
     <div class="modal fade" id="EditBondModal" tabindex="-1" aria-labelledby="editBondModalLabel"
          aria-hidden="true">
@@ -177,13 +173,3 @@
     </div>
 <?php } ?>
 
-<?php if (isset($edit_bond)) { ?>
-    <?php if (isset($error_modal) && $error_modal == "EditBondModal") { ?>
-        <script>
-            $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
-            $('body').removeClass('modal-open');
-            $('body').css('overflow', 'auto');
-            $('#EditBondModal').modal('show');
-        </script>
-    <?php } ?>
-<?php } ?>

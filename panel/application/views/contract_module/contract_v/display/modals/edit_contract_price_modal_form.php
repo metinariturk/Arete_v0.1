@@ -1,9 +1,3 @@
-<script>
-    $('.modal-backdrop').remove(); // Eski backdrop varsa kaldır
-    $('body').removeClass('modal-open');
-    $('body').css('overflow', 'auto');
-</script>
-
 <?php if (isset($edit_contract_price)) { ?>
     <div class="modal fade" id="EditContractPriceModal" tabindex="-1" aria-labelledby="EditContractPriceModallLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

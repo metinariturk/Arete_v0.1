@@ -132,11 +132,11 @@
     <div class="row">
         <div class="col-6">
             <div class="col-form-label">Sözleşme İmza Tarihi</div>
-            <input class="datepicker-here form-control digits <?php cms_isset(form_error("sozlesme_tarih"), "is-invalid", ""); ?>"
+            <input class="flatpickr form-control <?php cms_isset(form_error("sozlesme_tarih"), "is-invalid", ""); ?>"
                    type="text"
                    name="sozlesme_tarih"
                    value="<?php echo isset($form_error) ? set_value("sozlesme_tarih") : dateFormat_dmy($edit_item->sozlesme_tarih); ?>"
-                   data-options="{ format: 'DD-MM-YYYY' }">
+                   >
             <?php if (isset($form_error)) { ?>
                 <div class="invalid-feedback"><?php echo form_error("sozlesme_tarih"); ?></div>
             <?php } ?>

@@ -1,133 +1,97 @@
-<!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script başı -->
 <script>
-    $(document).ready(function() {
-        $('#PaymentTable').DataTable({
-            "pageLength": 25, // Her sayfada 25 öğe göster
-            "order": [[0, 'desc']] // 0. sütun (ilk sütun) göre azalan sıralama
-        });
-    });
-
-    $('#collectionTable').DataTable({
-        "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
-        "columnDefs": [
-            {
-                "targets": 1,  // 1, tarih sütununu belirtir.
-                "render": function(data, type, row) {
-                    if (type === 'display' || type === 'filter') {
-                        // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
-                        var dateParts = data.split('-');  // Y-m-d formatında ayır
-                        var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
-                        var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
-                        var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
-                        // d-m-Y formatında birleştir
-                        return day + '-' + month + '-' + year;  // - ile birleştir
+    function start_collection_table() {
+        // DataTable başlat
+        var table = $('#collectionTable').DataTable({
+            "order": [[1, 'desc']], // 2. sütun (Ödeme Tarihi) tarih sıralaması ile başlasın
+            "columnDefs": [
+                {
+                    "targets": 1, // 2. sütun (Ödeme Tarihi)
+                    "render": function(data, type, row, meta) {
+                        // Eğer veri type 'display' ise, tarihi istediğiniz formata dönüştür
+                        if (type === 'display') {
+                            // Y-m-d formatını d-m-Y formatına çevir
+                            var date = new Date(data);
+                            var day = ('0' + date.getDate()).slice(-2);  // Gün
+                            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Ay
+                            var year = date.getFullYear(); // Yıl
+                            return day + '-' + month + '-' + year; // d-m-Y formatı
+                        }
+                        return data;
                     }
-                    return data;
                 }
-            }
-        ]
-    });
-
-    $('#bondTable').DataTable({
-        "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
-    });
-
-    $('#advanceTable').DataTable({
-        "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
-        "columnDefs": [
-            {
-                "targets": 1,  // 1, tarih sütununu belirtir.
-                "render": function(data, type, row) {
-                    if (type === 'display' || type === 'filter') {
-                        // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
-                        var dateParts = data.split('-');  // Y-m-d formatında ayır
-                        var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
-                        var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
-                        var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
-                        // d-m-Y formatında birleştir
-                        return day + '-' + month + '-' + year;  // - ile birleştir
-                    }
-                    return data;
-                }
-            }
-        ]
-    });
-
-</script>
-<script>
-    function submit_modal_form(formId, modalId, DivId) {
-        var form = $('#' + formId)[0];
-        var url = $(form).data('form-url');
-        var formData = new FormData(form);
-
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: formData,
-            contentType: false,
-            processData: false,
-            dataType: 'json', // JSON yanıt bekleniyor
-            success: function(response) {
-                if (response.status === 'success') {
-                    // Başarılı durum: Div'i yenile ve modalı kapat
-                    if (response.refreshDivId) {
-                        $('#' + response.refreshDivId).load(location.href + " #" + response.refreshDivId + " > *", function() {
-                            // Div güncellendikten sonra DataTable'ı yeniden başlat
-                            if (response.dataTableId) {
-                                var table = $('#' + response.dataTableId);
-                                if ($.fn.DataTable.isDataTable(table)) {
-                                    table.DataTable().clear().destroy(); // Mevcut DataTable'ı temizle ve yok et
-                                }
-                                table.DataTable({
-                                    "order": [[1, 'desc']],  // Tarih sütununu yeniden eskiye sıralar (index 1)
-                                    "columnDefs": [
-                                        {
-                                            "targets": 1,  // 1, tarih sütununu belirtir.
-                                            "render": function(data, type, row) {
-                                                if (type === 'display' || type === 'filter') {
-                                                    // Y-m-d formatındaki tarihi d-m-Y formatına dönüştür
-                                                    var dateParts = data.split('-');  // Y-m-d formatında ayır
-                                                    var day = dateParts[2].replace(/\s+/g, '');  // Day kısmındaki boşlukları temizle
-                                                    var month = dateParts[1].replace(/\s+/g, '');  // Month kısmındaki boşlukları temizle
-                                                    var year = dateParts[0].replace(/\s+/g, '');  // Year kısmındaki boşlukları temizle
-                                                    // d-m-Y formatında birleştir
-                                                    return day + '-' + month + '-' + year;  // - ile birleştir
-                                                }
-                                                return data;
-                                            }
-                                        }
-                                    ]
-                                }); // DataTable'ı yeniden başlat
-                            }
-                        });
-                    }
-
-                    // Datepicker'ı yeniden başlat
-                    $('.datepicker-here').datepicker({
-                        dateFormat: 'dd-mm-yyyy'
-                    });
-
-                    if (response.closeModalId) {
-                        $('#' + response.closeModalId).modal('hide'); // Modalı kapat
-                        $('.modal-backdrop').remove(); // Arkaplanı temizle
-                    }
-
-                } else if (response.status === 'error') {
-                    // Hata durumu: Form hatalarını göster ve modalı açık bırak
-                    $('#' + DivId).html(response.formErrorHtml);
-                    $('#' + modalId).modal('show'); // Hata modali açık kalmalı
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Form gönderiminde hata oluştu: ', error);
-                console.error('Hata Detayı: ', xhr.responseText);
-                alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
-            }
+            ],
+            "paging": true, // Sayfalama
+            "searching": true, // Arama
+            "ordering": true, // Sıralama
         });
     }
 
-
+    $(document).ready(function() {
+        // Fonksiyonu çağır
+        start_collection_table();
+    });
 </script>
+
+<script>
+    function submit_modal_form(formId, modalId, successDivId, errorDivId, DataTable = null) {
+        var form = $('#' + formId)[0]; // Form elementini seç
+        var url = $(form).data('form-url'); // Formun action URL'sini al
+        var formData = new FormData(form); // Form verilerini FormData olarak al
+
+        $.ajax({
+            type: 'POST', // POST isteği gönder
+            url: url, // URL'yi belirle
+            data: formData, // Form verilerini ekle
+            contentType: false, // Content-Type'ı false yap (FormData için gerekli)
+            processData: false, // Veriyi işleme (FormData için gerekli)
+            dataType: 'json', // JSON yanıt bekleniyor
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Başarılı cevap gelirse:
+                    $('#' + successDivId).html(response.html); // Div'e yeni içeriği yükle
+
+                    // DataTable'ı kontrol et ve yeniden başlat
+                    if ($.fn.DataTable.isDataTable(DataTable)) {
+                        $(DataTable).DataTable().destroy();
+                    }
+
+                    // DataTable ID'sine göre uygun fonksiyonu çalıştır
+                    if (DataTable === 'collectionTable') {
+                        start_collection_table();
+                    } else if (DataTable === 'advanceTable') {
+                        start_advance_table();
+                    } else if (DataTable === 'bondTable') {
+                        start_bond_table();
+                    } else if (DataTable === 'paymentTable') {
+                        start_payment_table();
+                    }
+
+                    // Modal'ı kapat
+                    $('#' + modalId).modal('hide');
+                    $('body').removeClass('modal-open'); // Body'den modal-open class'ını kaldır
+                    $('.modal-backdrop').remove(); // Modal arka planını temizle
+
+                    // Formdaki inputları temizle
+                    $('#' + formId)[0].reset(); // Formu sıfırla
+
+                } else if (response.status === 'error') {
+                    // Hata cevabı gelirse:
+                    $('#' + errorDivId).html(response.html); // Hata mesajını errorDivId içine yükle
+                    $('#' + modalId).modal('show'); // Modalı açık tut
+                    initializeFlatpickr();
+                }
+            },
+            error: function(xhr, status, error) {
+                // AJAX isteği başarısız olursa:
+                console.error('Form gönderiminde hata oluştu: ', error);
+                console.error('Hata Detayı: ', xhr.responseText);
+                alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
+                initializeFlatpickr(); // Flatpickr tekrar çalıştır
+            }
+        });
+    }
+</script>
+
 
 <script>
     function delete_this_item(element) {
@@ -165,15 +129,6 @@
     }
 </script>
 
-
-<script>
-    $(document).on('hidden.bs.modal', '.modal', function () {
-        $('body').css('padding-right', '');
-        $('body').css('overflow', 'auto');
-    });
-</script>
-<!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script  sonu-->
-
 <script>
     function edit_modal_form(FormURL, ModalForm, ModalId) {
 
@@ -188,9 +143,10 @@
                 // Modalı aç
                 $('#' + ModalId).modal('show');
 
-                $('.datepicker-here').datepicker({
-                    language: 'tr',
-                    dateFormat: 'dd-mm-yyyy'
+                // Flatpickr'ı yeniden başlat
+                $(".flatpickr").flatpickr({
+                    dateFormat: "d-m-Y", // dmy formatı
+                    locale: "tr" // Türkçe dil
                 });
 
                 // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
@@ -222,22 +178,27 @@
                 $.ajax({
                     url: deleteUrl, // Kontrolör URL'sini kullan
                     type: 'POST',
-
+                    dataType: 'json', // JSON veri tipi
                     success: function (response) {
-                        $(refreshDiv).html(response);
+                        if (response.html) {
+                            // HTML içeriğini response'dan al ve div'e ekle
+                            $(refreshDiv).html(response.html);
+                        }
 
+                        // DataTable'ı kontrol et ve yeniden başlat
                         if ($.fn.DataTable.isDataTable(DataTable)) {
                             $(DataTable).DataTable().destroy();
                         }
 
-                        // DataTable yoksa, yeni bir DataTable başlat
-                        if (!$.fn.DataTable.isDataTable('#' + DataTable)) {
-                            $('#' + DataTable).DataTable({
-                                paging: true,
-                                searching: true,
-                                ordering: true,
-                                // Diğer DataTable ayarları
-                            });
+                        // DataTable ID'sine göre uygun fonksiyonu çalıştır
+                        if (DataTable === 'collectionTable') {
+                            start_collection_table();
+                        } else if (DataTable === 'advanceTable') {
+                            start_advance_table();
+                        } else if (DataTable === 'bondTable') {
+                            start_bond_table();
+                        } else if (DataTable === 'paymentTable') {
+                            start_payment_table();
                         }
 
                     },
@@ -252,123 +213,9 @@
             }
         });
     }
+
 </script>
 <!--Stok verisi sil sonu-->
-
-
-<script>
-    function delete_stock_enter() {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Uyarı',
-            text: 'Stok hareketi olan girişi silemezsiniz, önce stok hareketlerini dikkatli bir şekilde temizleyiniz.',
-            confirmButtonText: 'Tamam'
-        });
-    }
-</script>
-
-<script>
-    function empty_stock() {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Uyarı',
-            text: 'Stokta ürün kalmadığı için bu işlemi yapamazsınız.',
-            confirmButtonText: 'Tamam'
-        });
-    }
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#report_table').DataTable({
-            "columnDefs": [
-                {"type": "date", "targets": [1]} // Burada 1, "report_date" sütununun index numarasıdır
-            ],
-            "order": [[1, "desc"]], // İstenilen sıralama
-            language: {
-                "sEmptyTable": "Hiç kayıt yok",
-                "sInfo": "_TOTAL_ kayıttan _START_ - _END_ arası gösteriliyor",
-                "sInfoEmpty": "Kayıt yok",
-                "sInfoFiltered": "(_MAX_ kayıt içinden filtrelendi)",
-                "sLengthMenu": "Sayfa başına _MENU_ kayıt",
-                "sLoadingRecords": "Yükleniyor...",
-                "sProcessing": "İşleniyor...",
-                "sSearch": "Ara:",
-                "sZeroRecords": "Eşleşen kayıt bulunamadı",
-                "oPaginate": {
-                    "sFirst": "İlk",
-                    "sLast": "Son",
-                    "sNext": "Sonraki",
-                    "sPrevious": "Önceki"
-                },
-                "oAria": {
-                    "sSortAscending": ": artan sıralamak için aktif hale getir",
-                    "sSortDescending": ": azalan sıralamak için aktif hale getir"
-                }
-            }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $('#stock-table').DataTable({
-            "columnDefs": [
-                {"width": "5%", "targets": 0}, // İşlem sütunu
-                {"width": "25%", "targets": 1}, // Stok Adı sütunu
-                {"width": "15%", "targets": 2}, // Birim sütunu
-                {"width": "7%", "targets": 3}, // Miktarı sütunu
-                {"width": "7%", "targets": 4}, // Kalan sütunu
-                {"width": "10%", "targets": 5}, // Tarihi sütunu
-                {"width": "30%", "targets": 6}, // Açıklama sütunu
-                {"width": "5%", "targets": 7}   // Sil sütunu
-            ],
-            "autoWidth": false, // Otomatik genişliği kapat
-            ordering: false,
-            "responsive": true, // Mobil uyumluluk
-            "lengthMenu": [10, 15, 20, 25], // Sayfa başına gösterilecek kayıt sayısı
-            "language": {
-                "search": "Ara:",
-                "lengthMenu": "Göster _MENU_ kayıt",
-                "info": "_TOTAL_ kayıt arasından _START_ - _END_ arası gösteriliyor",
-                "paginate": {
-                    "next": "Sonraki",
-                    "previous": "Önceki"
-                }
-            }
-        });
-    });
-</script>
-
-<script>
-    function change_list(div_id, url, DataTable) {
-        // İlk olarak AJAX çağrısı başlatıyoruz
-        $.ajax({
-            url: url, // PHP'den gelen URL
-            type: 'GET', // Yöntem
-            success: function (response) {
-                // AJAX başarılı olursa div'in içeriğini güncelle
-                $("#" + div_id).html(response);
-                // Eğer DataTable varsa önce destroy edelim
-                if ($.fn.DataTable.isDataTable("#personelTable")) {
-                    $("#" + DataTable).DataTable().destroy();
-                }
-
-                // DataTable'ı tekrar başlat
-                $("#" + DataTable).DataTable({
-                    // DataTable ayarlarınızı buraya ekleyebilirsiniz
-                    "paging": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true
-                });
-            },
-            error: function () {
-                // Hata durumu
-                alert("Veri alınırken bir hata oluştu!");
-            }
-        });
-    }
-</script>
 
 
 <script>
@@ -485,61 +332,6 @@
     });
 </script>
 
-
-<script>
-    let isTextEnlarged = false; // Toggle durumu için kontrol değişkeni
-
-    function openPersonModal(iban, bank, name, position, social, date, editUrl) {
-        const modalBody = document.getElementById('personModalBody');
-        modalBody.innerHTML = `
-        <p style="font-size: 1em"><strong>İsim:</strong> ${name}
-            <button onclick="copyToClipboard('${name}')" style="border:none; background:none; cursor:pointer;">
-                📋
-            </button>
-        </p>
-        <p><strong>TC Kimlik No:</strong> ${social}</p>
-        <p style="font-size: 1em" id="ibanText" onclick="toggleTextSize()" ><strong>IBAN:</strong> <span> ${iban}</span>
-            <button onclick="copyToClipboard('${iban}')" style="border:none; background:none; cursor:pointer;">
-                📋
-            </button>
-        </p>
-        <p><strong>Bank:</strong> ${bank}</p>
-        <p><strong>Görev:</strong> ${position}</p>
-        <p><strong>Giriş/Çıkış Tarihi:</strong> ${date}</p>
-       <p class="d-sm-none">
-            <a data-bs-toggle="modal" class="text-primary"
-               onclick="edit_modal_form('${editUrl}', 'edit_personel_modal', 'EditPersonelModal')">
-               <i class="fa fa-edit fa-lg"></i> Düzenle
-            </a>
-        </p>
-    `;
-
-        var myModal = new bootstrap.Modal(document.getElementById('personModal'));
-        myModal.show();
-    }
-
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert(text + ' başarıyla kopyalandı!');
-        }).catch(err => {
-            alert('Kopyalama işlemi başarısız oldu');
-        });
-    }
-
-    function toggleTextSize() {
-        const ibanText = document.getElementById('ibanText');
-        if (isTextEnlarged) {
-            ibanText.style.fontSize = '1em'; // Normal boyuta geri döndür
-            ibanText.style.cursor = 'zoom-in'; // Küçültürken imleci zoom-in yap
-        } else {
-            ibanText.style.fontSize = '2em'; // Büyük boyuta ayarla
-            ibanText.style.cursor = 'zoom-out'; // Büyüdüğünde imleci zoom-out yap
-        }
-        isTextEnlarged = !isTextEnlarged; // Toggle durumunu değiştir
-    }
-</script>
-
-
 <!--İş Grupları-->
 
 <script>
@@ -559,143 +351,6 @@
         })
     }
 
-</script>
-
-<!--Rapor İmza Ayarı-->
-
-
-<script>
-    $(document).ready(function () {
-        $(".sortable").sortable();
-        $(".sortable").on("sortupdate", function (event, ui) {
-            var $data = $(this).sortable("serialize");
-            var $data_url = $(this).data("url");
-            $.post($data_url, {data: $data}, function (response) {
-                // İsteğe bağlı: yanıtı işleyebilirsiniz
-            });
-        });
-    });
-</script>
-
-
-<script>
-    function delete_sign(btn) {
-        var $url = btn.getAttribute('url');
-        var $div = btn.getAttribute('div');
-
-        Swal.fire({
-            title: "Tüm isimler silinecek?",
-            text: "Bu işlem geri alınamaz!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Sil",
-            cancelButtonText: "İptal",
-            reverseButtons: true,
-            dangerMode: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.post($url, {}, function (response) {
-                    $("." + $div).html(response);
-                    $(".sortable").sortable();
-                    $(".sortable").on("sortupdate", function (event, ui) {
-                        var $data = $(this).sortable("serialize");
-                        var $data_url = $(this).data("url");
-                        $.post($data_url, {data: $data}, function (response) {
-                            // İsterseniz burada bir işlem yapabilirsiniz
-                        });
-                    });
-                });
-                Swal.fire("Dosya Başarılı Bir Şekilde Silindi", {
-                    icon: "success",
-                });
-            } else {
-                Swal.fire("Dosya Güvende");
-            }
-        });
-    }
-</script>
-
-
-<script>
-    function add_sign(anchor) {
-        var formId = anchor.getAttribute('form-id');
-        var divId = $("#" + formId).attr("div");
-        var formAction = $("#" + formId).attr("action");
-        var formData = $("#" + formId).serialize();
-
-        $.post(formAction, formData, function (response) {
-            $("." + divId).html(response);
-            $(".sortable").sortable();
-            $(".sortable").on("sortupdate", function (event, ui) {
-                var $data = $(this).sortable("serialize");
-                var $data_url = $(this).data("url");
-                $.post($data_url, {data: $data}, function (response) {
-                })
-            })
-        });
-    }
-</script>
-
-<script>
-    function delete_sign(btn) {
-        var $url = btn.getAttribute('url');
-        var $div = btn.getAttribute('div');
-
-        Swal.fire({
-            title: "Bu isim silinecek?",
-            text: "Bu işlem geri alınamaz!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Sil",
-            cancelButtonText: "İptal",
-            reverseButtons: true,
-            dangerMode: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.post($url, {}, function (response) {
-                    $("." + $div).html(response);
-                    $(".sortable").sortable();
-                    $(".sortable").on("sortupdate", function (event, ui) {
-                        var $data = $(this).sortable("serialize");
-                        var $data_url = $(this).data("url");
-                        $.post($data_url, {data: $data}, function (response) {
-                        });
-                    });
-                });
-
-                Swal.fire("Dosya Başarılı Bir Şekilde Silindi", {
-                    icon: "success",
-                });
-
-            } else {
-                Swal.fire("Dosya Güvende");
-            }
-        });
-    }
-</script>
-<script>
-    $(document).ready(function () {
-        $("#mySelect").select2({
-            matcher: function (params, data) {
-                // Arama kutusu boşsa tüm sonuçları göster
-                if ($.trim(params.term) === '') {
-                    return data;
-                }
-
-                // Küçük-büyük harf farkını kaldır
-                const term = params.term.toLowerCase();
-                const text = data.text.toLowerCase();
-
-                // Aranan terim metnin herhangi bir yerinde geçiyorsa eşleştir
-                if (text.indexOf(term) > -1) {
-                    return data;
-                }
-
-                // Diğerlerini hariç tut
-                return null;
-            }
-        });
-    });
 </script>
 
 
@@ -829,17 +484,24 @@
 </script>
 <!-- Favori İşareti Son-->
 
-<script>
-    $(document).ready(function(){
-        // Tooltip ekli tüm öğeleri seçiyoruz
-        $('[data-toggle="tooltip"]').each(function() {
-            // Tooltip eklendiği öğe ile ilgili bilgileri alıyoruz
-            var element = $(this);
-            var tooltipData = element.data('bs.tooltip'); // Tooltip verisi
 
-            if (tooltipData) {
-                alert('Tooltip şu öğede bulundu: ' + element[0].outerHTML);
-            }
+<script>
+    function initializeFlatpickr() {
+        flatpickr("input[type='text']", {
+            dateFormat: "d-m-Y", // GG-AA-YYYY formatı
+            locale: "tr", // Türkçe dil desteği
+            allowInput: true, // Manuel girişe izin ver
+            disableMobile: true // Mobilde varsayılan datepicker'ı devre dışı bırak
         });
+    }
+
+    // Sayfa yüklendiğinde çalıştır
+    document.addEventListener("DOMContentLoaded", function() {
+        initializeFlatpickr();
     });
+
+    function open_modal(modalId) {
+        var modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
+    }
 </script>

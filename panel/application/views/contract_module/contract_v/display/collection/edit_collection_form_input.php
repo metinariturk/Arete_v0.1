@@ -1,11 +1,10 @@
 <div class="mb-2">
-    <div class="col-form-label">Tahsilat Ödeme Tarihi Edit</div>
-    <input class="datepicker-here form-control digits <?php cms_isset(form_error("tahsilat_tarih"), "is-invalid", ""); ?>"
+    <div class="col-form-label">Tahsilat Ödeme Tarihi</div>
+    <input class="flatpickr form-control <?php cms_isset(form_error("tahsilat_tarih"), "is-invalid", ""); ?>"
            type="text"
            name="tahsilat_tarih"
            value="<?php echo isset($form_error) ? set_value("tahsilat_tarih") : dateFormat_dmy($edit_collection->tahsilat_tarih); ?>"
-           data-options="{ format: 'DD-MM-YYYY' }"
-           data-language="tr">
+    >
     <?php if (isset($form_error)) { ?>
         <div class="invalid-feedback"><?php echo form_error("tahsilat_tarih"); ?></div>
     <?php } ?>

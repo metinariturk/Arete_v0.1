@@ -2279,7 +2279,6 @@ class Contract extends CI_Controller
                 $data = $this->upload->data();
             }
 
-
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
             $viewData = new stdClass();
@@ -2293,10 +2292,12 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_a_collection", $viewData);
 
-            //kaydedilen elemanın id nosunu döküman ekleme
-            // sına post ediyoruz
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/collection_table", $viewData, true)
+            );
+            echo json_encode($response);
 
         } else {
 
@@ -2312,21 +2313,14 @@ class Contract extends CI_Controller
             $viewData->collections = $collections;
             $viewData->settings = $settings;
             $viewData->item = $item;
-
             $viewData->form_error = true;
-            $viewData->error_modal = "AddCollectionModal"; // Hata modali için set edilen değişken
 
-            $form_errors = $this->session->flashdata('form_errors');
-
-            if (!empty($form_errors)) {
-                $viewData->form_errors = $form_errors;
-            } else {
-                $viewData->form_errors = null;
-            }
-
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_a_collection", $viewData);
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/add_collection_form_input", $viewData, true)
+            );
+            echo json_encode($response);
         }
-
     }
 
     public
@@ -2791,18 +2785,6 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
-        $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
-
-        $viewData = new stdClass();
-
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = "contract_v";
-        $viewData->subViewFolder = "display";
-
-        $viewData->project = $project;
-        $viewData->collections = $collections;
-        $viewData->settings = $settings;
-        $viewData->item = $item;
 
         $this->load->library("form_validation");
 
@@ -2898,10 +2880,6 @@ class Contract extends CI_Controller
                 $data = $this->upload->data();
             }
 
-            $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
-            $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
-            $project = $this->Project_model->get(array("id" => $item->proje_id));
-            $settings = $this->Settings_model->get();
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
             $viewData = new stdClass();
@@ -2911,20 +2889,16 @@ class Contract extends CI_Controller
             $viewData->subViewFolder = "display";
 
             $viewData->project = $project;
+            $viewData->item = $item;
             $viewData->collections = $collections;
             $viewData->settings = $settings;
-            $viewData->item = $item;
 
-            $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/collection/edit_collection_form_input", $viewData, true);
-
-            echo json_encode([
+            $response = array(
                 'status' => 'success',
-                'message' => 'Tahsilat Güncellendi',
-                'refreshDivId' => 'tab_Collection', // Refresh edilecek div'in ID'si
-                'closeModalId' => 'EditCollectionModal', // Kapatılacak modalın ID'si
-                'dataTableId' => 'collectionTable' // Yenilenecek DataTable ID'si
-            ]);
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/collection_table", $viewData, true)
+            );
 
+            echo json_encode($response);
 
         } else {
 
@@ -2948,16 +2922,59 @@ class Contract extends CI_Controller
 
             $viewData->form_error = true;
 
-            $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/collection/edit_collection_form_input", $viewData, true);
-
-            // Hata durumunda JSON yanıt
-            echo json_encode([
+            $response = array(
                 'status' => 'error',
-                'formErrorHtml' => $formErrorHtml, // Form hatalarını içeren HTML
-                'modalId' => 'EditCollectionModal', // Açık kalması gereken modal
-                'dataTableId' => 'collectionTable' // Yenilenecek DataTable ID'si
-            ]);
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/edit_collection_form_input", $viewData, true)
+            );
+            echo json_encode($response);
+
         }
+    }
+
+    public function delete_collection($collection_id)
+    {
+        if (!isAdmin() && !permission_control("contract", "read")) {
+            redirect(base_url("error"));
+            return;
+        }
+
+        $this->load->model("Contract_model");
+        $this->load->model("Settings_model");
+
+        $delete_collection = $this->Collection_model->get(array("id" => $collection_id));
+        $item = $this->Contract_model->get(array("id" => $delete_collection->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $delete = $this->Collection_model->delete(array("id" => $collection_id));
+
+        $this->load->helper('file'); // File helper'ını yükle
+
+        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$collection_id";
+
+        delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
+
+        if (is_dir($path)) {
+            rmdir($path);
+        }
+
+        $settings = $this->Settings_model->get();
+        $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = "contract_v";
+        $viewData->subViewFolder = "display";
+        $viewData->project = $project;
+        $viewData->collections = $collections;
+        $viewData->settings = $settings;
+        $viewData->item = $item;
+
+        $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/collection/collection_table", $viewData, true);
+
+        echo json_encode([
+            'html' => $formErrorHtml, // Form hatalarını içeren HTML
+        ]);
     }
 
     function edit_contract($contract_id)
@@ -3057,7 +3074,7 @@ class Contract extends CI_Controller
             // Hata durumunda JSON yanıt
             echo json_encode([
                 'status' => 'error',
-                'formErrorHtml' => $formErrorHtml, // Form hatalarını içeren HTML
+                'html' => $formErrorHtml, // Form hatalarını içeren HTML
                 'modalId' => 'EditContractModal' // Açık kalması gereken modal
             ]);
         }

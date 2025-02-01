@@ -11,7 +11,7 @@
                     <form id="editCollectionForm"
                           data-form-url="<?php echo base_url("$this->Module_Name/edit_collection/$edit_collection->id"); ?>"
                           method="post" enctype="multipart/form-data" autocomplete="off">
-                        <div id="edit_Collection_modal">
+                        <div id="edit_Collection_input">
                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/edit_collection_form_input"); ?>
                         </div>
                     </form>
@@ -20,7 +20,7 @@
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>
                     <button type="button" class="btn btn-primary"
                             id="EditCollectionModal-<?php echo "$edit_collection->id"; ?>"
-                            onclick="submit_modal_form('editCollectionForm', 'EditCollectionModal', 'edit_Collection_modal', 'collectionTable')">
+                            onclick="submit_modal_form('editCollectionForm', 'EditCollectionModal', 'collection_table' ,'edit_Collection_input', 'collectionTable')">
                         Gönder
                     </button>
                 </div>
