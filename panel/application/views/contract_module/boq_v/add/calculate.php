@@ -36,6 +36,13 @@
                     </div>
                 </div>
             </div>
+            <div class="mb-3 row">
+                <label class="col-lg-3 form-label text-lg-start" for="prependedcheckbox">Önceki Hakedişler Toplamı</label>
+                <div class="col-lg-4">
+                    <?php
+                    echo $old_total = $this->Boq_model->sum_all(array('contract_id' => $payment->contract_id, "payment_no <" => $payment->hakedis_no, "boq_id" => $income_contract_price->id), "total"); ?> <?php echo $income_contract_price->unit; ?>
+                </div>
+            </div>
         </fieldset>
     </div>
 </div>

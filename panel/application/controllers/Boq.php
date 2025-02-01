@@ -34,6 +34,7 @@ class Boq extends CI_Controller
         $this->load->model("Project_model");
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
+        $this->load->model("User_model");
         $this->load->model("Bond_model");
 
         $this->Module_Name = "boq";
