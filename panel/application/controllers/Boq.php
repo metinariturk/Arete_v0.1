@@ -59,7 +59,7 @@ class Boq extends CI_Controller
 
     public function new_form($contract_id = null, $payment_no = null, $boq_id = null)
     {
-        if (!isAdmin() && !permission_control("payment", "write")) {
+        if (!isAdmin() && !permission_control("payment", "read")) {
             redirect(base_url("error"));
             return;
         }
