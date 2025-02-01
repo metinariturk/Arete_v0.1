@@ -59,8 +59,9 @@ class Boq extends CI_Controller
 
     public function new_form($contract_id = null, $payment_no = null, $boq_id = null)
     {
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("payment", "write")) {
             redirect(base_url("error"));
+            return;
         }
 
         if (empty($payment_no)) {
@@ -115,8 +116,9 @@ class Boq extends CI_Controller
     public function calculate_render($contract_id, $payment_id, $boq_id)
     {
 
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("payment", "write")) {
             redirect(base_url("error"));
+            return;
         }
 
         $update = $this->Contract_price_model->update(
@@ -167,8 +169,9 @@ class Boq extends CI_Controller
     public function rebar_render($contract_id, $payment_id, $boq_id)
     {
 
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("payment", "write")) {
             redirect(base_url("error"));
+            return;
         }
 
         $update = $this->Contract_price_model->update(
@@ -217,8 +220,9 @@ class Boq extends CI_Controller
 
     public function save($contract_id, $payment_id, $stay = null)
     {
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("payment", "write")) {
             redirect(base_url("error"));
+            return;
         }
 
         $payment = $this->Payment_model->get(array('id' => $payment_id));
@@ -428,9 +432,9 @@ class Boq extends CI_Controller
     public function delete($contract_id, $payment_no, $boq_id)
     {
 
-
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("payment", "delete")) {
             redirect(base_url("error"));
+            return;
         }
 
         $viewData = new stdClass();
@@ -466,6 +470,11 @@ class Boq extends CI_Controller
 
     public function open_sub($contract_id, $sub_id, $payment_id)
     {
+        if (!isAdmin() && !permission_control("payment", "read")) {
+            redirect(base_url("error"));
+            return;
+        }
+
         $sub_cont_items = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_id" => $sub_id));
         $main_group = $this->Contract_price_model->get(array("contract_id" => $contract_id));
         $sub_group = $this->Contract_price_model->get(array("id" => $sub_id));
@@ -496,6 +505,11 @@ class Boq extends CI_Controller
 
     public function back_main($contract_id, $payment_id)
     {
+        if (!isAdmin() && !permission_control("payment", "read")) {
+            redirect(base_url("error"));
+            return;
+        }
+
         $contract = $this->Contract_model->get(array('id' => $contract_id));
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
@@ -521,8 +535,10 @@ class Boq extends CI_Controller
 
     public function template_download($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin()) {
+
+        if (!isAdmin() && !permission_control("payment", "read")) {
             redirect(base_url("error"));
+            return;
         }
 
         // Ödeme bilgilerini al
@@ -581,8 +597,9 @@ class Boq extends CI_Controller
 
     public function template_download_rebar($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("payment", "read")) {
             redirect(base_url("error"));
+            return;
         }
 
         // Ödeme bilgilerini al
@@ -648,7 +665,5 @@ class Boq extends CI_Controller
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
-
-
 
 }
