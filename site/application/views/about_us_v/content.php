@@ -30,7 +30,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="our-story-pic-block">
                             <div class="mt-media our-story-pic">
-                                <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2024.jpg"
+                                <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/kutuphane.jpg"
                                      alt="">
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="our-story-pic-block">
                             <div class="mt-media our-story-pic">
-                                <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/Resim1.png"
+                                <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/kosmyo.png"
                                      alt="">
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="our-story-pic-block">
                             <div class="mt-media our-story-pic">
-                                <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/2023.jpg"
+                                <img src="<?php echo base_url("assets"); ?>/images/gallery/portrait/sedirler.jpg"
                                      alt="">
                             </div>
                         </div>
