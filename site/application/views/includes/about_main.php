@@ -12,6 +12,67 @@
             </div>
         </div>
         <!-- TITLE END -->
+        <div class="section-full mobile-page-padding our-speci_wrap bg-white  p-t80 p-b30 bg-repeat square_shape1"
+             style="background-image:url(<?php echo base_url("assets"); ?>/images/background/bg-5.png);">
+            <div class="container">
+                <!-- IMAGE CAROUSEL START -->
+                <div class="section-content">
+                    <div class="section-head text-white">
+                        <div class="mt-separator-outer separator-left">
+                            <div class="mt-separator">
+                                <h2 class="text-white text-uppercase sep-line-one "><span
+                                            class="font-weight-300 site-text-primary">HİZMETLERİMİZ</span></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6  m-b30">
+                            <h3>Yapım</h3>
+                            <div class="image-effect-one hover-shadow">
+                                <img src="<?php echo base_url("assets"); ?>/images/pic1.jpg" alt=""/>
+                                <div class="figcaption">
+                                    <p>Güvenli ve Kaliteli </p>
+                                    <a href="#"><i class="link-plus site-bg-primary"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 m-b30">
+                            <h3>Tasarım</h3>
+                            <div class="image-effect-one hover-shadow">
+                                <img src="<?php echo base_url("assets"); ?>/images/pic2.jpg" alt=""/>
+                                <div class="figcaption">
+                                    <p>Optimum fayda sağlayacak detaylar </p>
+                                    <a href="#"><i class="link-plus site-bg-primary"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 m-b30">
+                            <h3>Danışmanlık</h3>
+                            <div class="image-effect-one hover-shadow">
+                                <img src="<?php echo base_url("assets"); ?>/images/pic3.jpg" alt=""/>
+                                <div class="figcaption">
+                                    <p>Müşavirlik ve İş Takibi </p>
+                                    <a href="#"><i class="link-plus site-bg-primary"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-lg-12 col-md-6 m-b30">
+                            <h3>&nbsp;</h3>
+
+                            <div class="mt-box our-speciallization-content">
+                                <h3 class="m-t0"><span class="font-weight-100">Tecrübe</span> <br>Betondan sağlamdır.</h3>
+                                <p>Uzun yıllardır sektörde edindiğimiz tüm bilgi birikimimizi paylaşıyoruz. En iyisi için
+                                    gelişmeye ve öğrenmeye devam ediyoruz.</p>
+                                <a href="#" class="site-button btn-effect">BURADAYIZ</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="section-content">
             <div class="row">
@@ -53,6 +114,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="col-lg-3 col-md-12">

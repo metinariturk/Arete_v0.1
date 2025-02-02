@@ -1,16 +1,7 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery should be included first -->
+
 <script src="<?php echo base_url("assets"); ?>/js/bootstrap.min.js"></script><!-- BOOTSTRAP.MIN JS -->
-<script src="<?php echo base_url("assets"); ?>/js/popper.min.js"></script><!-- POPPER.MIN JS -->
-<script src="<?php echo base_url("assets"); ?>/js/magnific-popup.min.js"></script><!-- MAGNIFIC-POPUP JS -->
-<script src="<?php echo base_url("assets"); ?>/js/waypoints.min.js"></script><!-- WAYPOINTS JS -->
-<script src="<?php echo base_url("assets"); ?>/js/counterup.min.js"></script><!-- COUNTERUP JS -->
-<script src="<?php echo base_url("assets"); ?>/js/waypoints-sticky.min.js"></script><!-- COUNTERUP JS -->
-<script src="<?php echo base_url("assets"); ?>/js/isotope.pkgd.min.js"></script><!-- MASONRY  -->
-<script src="<?php echo base_url("assets"); ?>/js/imagesloaded.pkgd.min.js"></script><!-- MASONRY  -->
-<script src="<?php echo base_url("assets"); ?>/js/owl.carousel.min.js"></script><!-- OWL  SLIDER  -->
-<script src="<?php echo base_url("assets"); ?>/js/jquery.owl-filter.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-<script src="<?php echo base_url("assets"); ?>/js/shortcode.js"></script><!-- SHORTCODE FUCTIONS  -->
-<script src="<?php echo base_url("assets"); ?>/js/jquery.bgscroll.js"></script><!-- BACKGROUND SCROLL -->
 
 <!-- SWITCHER FUCTIONS  -->
 <!-- REVOLUTION JS FILES -->

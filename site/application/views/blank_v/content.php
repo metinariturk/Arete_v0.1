@@ -369,7 +369,7 @@
                                     font-weight: 700;
                                     color:#ffffff;
                                     border-width:0px;font-family: 'Poppins', sans-serif; text-transform:uppercase ;">
-                    <div>DANIŞMANLIK & KALİTE KONTROL</div>
+                    <div>DETAY ve ÇÖZÜM ODAKLI</div>
 
                 </div>
 

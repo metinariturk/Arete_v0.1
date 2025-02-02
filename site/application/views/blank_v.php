@@ -14,7 +14,6 @@
     <?php $this->load->view("blank_v/content"); ?>
 
     <?php $this->load->view("includes/about_main"); ?>
-    <?php $this->load->view("includes/quick_contact"); ?>
 
 </div>
 <!-- CONTENT END -->

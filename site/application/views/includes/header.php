@@ -51,7 +51,7 @@
                 <div class="header-nav navbar-collapse collapse">
                     <ul class=" nav navbar-nav">
                         <li class="active">
-                            <a href="#">AnaSayfa</a>
+                            <a href="<?php echo base_url();?>">AnaSayfa</a>
                         </li>
 
                         <li>

@@ -24,16 +24,6 @@
                                             data-bs-target="#web-design-15" type="button">Firma Bilgileri
                                     </button>
                                 </li>
-                                <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab"
-                                            data-bs-target="#graphic-design-15" type="button">Banka Bilgileri
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab"
-                                            data-bs-target="#official-design-15" type="button">Resmi Evraklar
-                                    </button>
-                                </li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="web-design-15">
@@ -47,22 +37,6 @@
                                             <td style="width: 30%">Firma Adı</td>
                                             <td style="width: 60%" id="name"><?php echo $settings->sirket_adi; ?></td>
 
-                                        </tr>
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <img width="20px" onclick="kopyala('vergi_no')"
-                                                     src="<?php echo base_url("assets"); ?>/fonts/copy.svg">
-                                            </td>
-                                            <td>Vergi No</td>
-                                            <td id="vergi_no"><?php echo sprintf("%010d", $settings->vergi_no); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <img width="20px" onclick="kopyala('vergi_daire')"
-                                                     src="<?php echo base_url("assets"); ?>/fonts/copy.svg">
-                                            </td>
-                                            <td>Vergi Dairesi</td>
-                                            <td id="vergi_daire"><?php echo $settings->vergi_daire; ?></td>
                                         </tr>
                                         <tr>
                                             <td style="width: 10%">
@@ -104,57 +78,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="tab-pane fade show" id="graphic-design-15">
-                                    <table>
-                                        <tbody>
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <img width="20px" src="<?php echo base_url("assets"); ?>/fonts/copy.svg"
-                                                     onclick="kopyala('name')">
-                                            </td>
-                                            <td style="width: 30%">Firma Adı</td>
-                                            <td style="width: 60%" id="name"><?php echo $settings->sirket_adi; ?></td>
-
-                                        </tr>
-
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <img width="20px" src="<?php echo base_url("assets"); ?>/fonts/copy.svg"
-                                                     onclick="kopyala('bank1')">
-                                            </td>
-                                            <td style="width: 30%">Halk Bankası<br>Konya OSB Şube</td>
-                                            <td style="width: 60%" id="bank1">TR27 0001 2001 4460 0010 1022 08</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                <div class="tab-pane fade show" id="official-design-15">
-                                    <table>
-                                        <tbody>
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <a href="<?php echo base_url("Home/download_paper/Vergi_Levha"); ?>"><i class="fa fa-download"></i></a>
-                                            </td>
-                                            <td style="width: 30%; text-align: left">Vergi Levhası</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <a href="#"><i class="fa fa-download"></i></a>
-                                            </td>
-                                            <td style="width: 30%; text-align: left">İmza Sirküsü</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="width: 10%">
-                                                <a href="#"><i class="fa fa-download"></i></a>
-                                            </td>
-                                            <td style="width: 30%; text-align: left">Resmi Gazete</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-
                             </div>
                         </div>
                     </div>
