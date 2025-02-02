@@ -114,6 +114,8 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $id));
         if ($item->parent > 0) {
             $main_contract = $this->Contract_model->get(array("id" => $item->parent));
+        } else {
+            $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
         }
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
         $project = $this->Project_model->get(array("id" => $item->proje_id));
@@ -123,6 +125,7 @@ class Contract extends CI_Controller
         $offer_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer";
         $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
         $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no";
+
 
         $companys = $this->Company_model->get_all(array());
 
@@ -204,6 +207,8 @@ class Contract extends CI_Controller
 
         if ($item->parent > 0) {
             $viewData->main_contract = $main_contract;
+        } else {
+            $viewData->sub_contracts = $sub_contracts;
         }
 
         $form_errors = $this->session->flashdata('form_errors');
@@ -2450,8 +2455,11 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_b_advance", $viewData);
-
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/advance_table", $viewData, true)
+            );
+            echo json_encode($response);
             //kaydedilen elemanın id nosunu döküman ekleme
             // sına post ediyoruz
 
@@ -2471,17 +2479,12 @@ class Contract extends CI_Controller
             $viewData->item = $item;
 
             $viewData->form_error = true;
-            $viewData->error_modal = "AddAdvanceModal"; // Hata modali için set edilen değişken
 
-            $form_errors = $this->session->flashdata('form_errors');
-
-            if (!empty($form_errors)) {
-                $viewData->form_errors = $form_errors;
-            } else {
-                $viewData->form_errors = null;
-            }
-
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_b_advance", $viewData);
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/add_advance_form_input", $viewData, true)
+            );
+            echo json_encode($response);
         }
 
     }
@@ -2673,7 +2676,7 @@ class Contract extends CI_Controller
         $viewData->companys = $companys;
         $viewData->project = $project;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_contract_modal_form", $viewData);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/contract/edit_contract_modal_form", $viewData);
     }
 
     public function open_edit_collection_modal($collection_id)
@@ -2717,7 +2720,7 @@ class Contract extends CI_Controller
         $viewData->project = $project;
         $viewData->edit_advance = $edit_advance;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_advance_modal_form", $viewData);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/advance/edit_advance_modal_form", $viewData);
     }
 
     public function open_edit_bond_modal($bond)
@@ -2933,7 +2936,7 @@ class Contract extends CI_Controller
 
     public function delete_collection($collection_id)
     {
-        if (!isAdmin() && !permission_control("contract", "read")) {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
             return;
         }
@@ -2974,6 +2977,53 @@ class Contract extends CI_Controller
 
         echo json_encode([
             'html' => $formErrorHtml, // Form hatalarını içeren HTML
+        ]);
+    }
+
+    public function delete_advance($advance_id)
+    {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+            return;
+        }
+
+        $this->load->model("Contract_model");
+        $this->load->model("Settings_model");
+        $this->load->model("Advance_model");
+
+        $delete_advance = $this->Advance_model->get(array("id" => $advance_id));
+        $item = $this->Contract_model->get(array("id" => $delete_advance->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $delete = $this->Advance_model->delete(array("id" => $advance_id));
+
+        $this->load->helper('file'); // File helper'ını yükle
+
+        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance/$advance_id";
+
+        delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
+
+        if (is_dir($path)) {
+            rmdir($path);
+        }
+
+        $settings = $this->Settings_model->get();
+        $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = "contract_v";
+        $viewData->subViewFolder = "display";
+        $viewData->project = $project;
+        $viewData->advances = $advances;
+        $viewData->settings = $settings;
+        $viewData->item = $item;
+
+        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/advance/advance_table", $viewData, true);
+
+        echo json_encode([
+            'html' => $html, // Form hatalarını içeren HTML
         ]);
     }
 
@@ -3033,9 +3083,20 @@ class Contract extends CI_Controller
                 )
             );
 
-            $viewData = new stdClass();
+
             $item = $this->Contract_model->get(array("id" => $contract_id));
+            $companys = $this->Company_model->get_all(array());
+
+            if ($item->parent > 0) {
+                $main_contract = $this->Contract_model->get(array("id" => $item->parent));
+            } else {
+                $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
+            }
+
             $settings = get_settings();
+
+            $viewData = new stdClass();
+
             $viewData->edit_item = $item;
 
             $viewData->viewModule = $this->moduleFolder;
@@ -3043,40 +3104,59 @@ class Contract extends CI_Controller
             $viewData->subViewFolder = "display";
 
             $viewData->settings = $settings;
+            $viewData->companys = $companys;
+
             $viewData->item = $item;
 
-            echo json_encode([
+            if ($item->parent > 0) {
+                $viewData->main_contract = $main_contract;
+            } else {
+                $viewData->sub_contracts = $sub_contracts;
+            }
+
+            $response = array(
                 'status' => 'success',
-                'message' => 'Contract successfully updated.',
-                'refreshDivId' => 'tab_Contract', // Refresh edilecek div'in ID'si
-                'closeModalId' => 'EditContractModal' // Kapatılacak modalın ID'si
-            ]);
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/contract/contract_table", $viewData, true)
+            );
+
+            echo json_encode($response);
 
 
         } else {
 
             $viewData = new stdClass();
             $item = $this->Contract_model->get(array("id" => $contract_id));
+            $companys = $this->Company_model->get_all(array());
+            if ($item->parent > 0) {
+                $main_contract = $this->Contract_model->get(array("id" => $item->parent));
+            } else {
+                $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
+            }
+
             $settings = get_settings();
 
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = "contract_v";
             $viewData->subViewFolder = "display";
 
+            $viewData->companys = $companys;
             $viewData->settings = $settings;
             $viewData->item = $item;
             $viewData->edit_item = $item;
+            $viewData->item = $item;
+            if ($item->parent > 0) {
+                $viewData->main_contract = $main_contract;
+            } else {
+                $viewData->sub_contracts = $sub_contracts;
+            }
 
             $viewData->form_error = true;
             // Form hatalarını içeren HTML oluştur
-            $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/modals/edit_contract_form_input", $viewData, true);
-
-            // Hata durumunda JSON yanıt
-            echo json_encode([
+            $response = array(
                 'status' => 'error',
-                'html' => $formErrorHtml, // Form hatalarını içeren HTML
-                'modalId' => 'EditContractModal' // Açık kalması gereken modal
-            ]);
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/contract/edit_contract_form_input", $viewData, true)
+            );
+            echo json_encode($response);
         }
     }
 
@@ -3396,8 +3476,12 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_b_advance", $viewData);
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/advance_table", $viewData, true)
+            );
 
+            echo json_encode($response);
 
         } else {
 
@@ -3420,15 +3504,12 @@ class Contract extends CI_Controller
             $viewData->item = $item;
 
             $viewData->form_error = true;
-            $viewData->error_modal = "EditAdvanceModal";
 
-            if (!empty($form_errors)) {
-                $viewData->form_errors = $form_errors;
-            } else {
-                $viewData->form_errors = null;
-            }
-
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_b_advance", $viewData);
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/edit_advance_form_input", $viewData, true)
+            );
+            echo json_encode($response);
 
         }
     }

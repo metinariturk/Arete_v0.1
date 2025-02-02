@@ -4,23 +4,11 @@
     <div class="section-full about-summary-wrap p-t80 p-b50 bg-dark bg-repeat square_shape2 inner-page-padding"
          style="background-image:url(images/background/bg-6.png)">
         <div class="container">
-            <div class="row">
-                <div class="col-6">
-                    <div class="mt-separator-outer separator-center">
-                        <div class="mt-separator text-white">
-                            <h2 class="text-uppercase sep-line-one "><span
-                                        class="font-weight-300 site-text-primary">Yol</span>culuğumuz
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="banner-title-outer">
-                        <div class="banner-title-name text-white">
-                            <h2 class="m-b0">Projelerimizi inşaat olarak değil; medeniyetin bir parçası olarak
-                                görüyoruz.</h2>
-                        </div>
-                    </div>
+            <div class="mt-separator-outer separator-center">
+                <div class="mt-separator text-white">
+                    <h2 class="text-uppercase sep-line-one "><span
+                                class="font-weight-300 site-text-primary">Yol</span>culuğumuz
+                    </h2>
                 </div>
             </div>
             <!-- TITLE END -->
@@ -42,7 +30,7 @@
                             <h4 class="m-b20">Konya Büyükşehir Belediyesi - Şehir Kütüphanesi (Betonarme
                                 İmalatlar)</h4>
                             <p>5cm / 10cm kalıp izli, ahşap dokulu brüt beton yüzey betonarme imalatların
-                                yapımı.  </p>
+                                yapımı. </p>
                             <p>19 farklı temaya sahip birimlerin betonarme imalatları</p>
                             Proje kapsamında tamamlanan işler:
                             <br>Betonarme Kalıp İşleri: 26.000 m²

@@ -54,12 +54,11 @@
 </div>
 <div class="mb-2">
     <div class="col-form-label">Vade Tarihi</div>
-    <input class="datepicker-here form-control digits <?php cms_isset(form_error("vade_tarih"), "is-invalid", ""); ?>"
+    <input class="flatpickr form-control <?php cms_isset(form_error("vade_tarih"), "is-invalid", ""); ?>"
            type="text"
            name="vade_tarih"
            value="<?php echo isset($form_error) ? set_value("vade_tarih") : dateFormat_dmy($edit_collection->vade_tarih); ?>"
-           data-options="{ format: 'DD-MM-YYYY' }"
-           data-language="tr">
+    >
     <?php if (isset($form_error)) { ?>
         <div class="invalid-feedback"><?php echo form_error("vade_tarih"); ?></div>
     <?php } ?>

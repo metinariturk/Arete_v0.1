@@ -30,6 +30,38 @@
         // Fonksiyonu çağır
         start_collection_table();
     });
+
+    function start_advance_table() {
+        // DataTable başlat
+        var table = $('#advanceTable').DataTable({
+            "order": [[1, 'desc']], // 2. sütun (Ödeme Tarihi) tarih sıralaması ile başlasın
+            "columnDefs": [
+                {
+                    "targets": 1, // 2. sütun (Ödeme Tarihi)
+                    "render": function(data, type, row, meta) {
+                        // Eğer veri type 'display' ise, tarihi istediğiniz formata dönüştür
+                        if (type === 'display') {
+                            // Y-m-d formatını d-m-Y formatına çevir
+                            var date = new Date(data);
+                            var day = ('0' + date.getDate()).slice(-2);  // Gün
+                            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Ay
+                            var year = date.getFullYear(); // Yıl
+                            return day + '-' + month + '-' + year; // d-m-Y formatı
+                        }
+                        return data;
+                    }
+                }
+            ],
+            "paging": true, // Sayfalama
+            "searching": true, // Arama
+            "ordering": true, // Sıralama
+        });
+    }
+
+    $(document).ready(function() {
+        // Fonksiyonu çağır
+        start_advance_table();
+    });
 </script>
 
 <script>

@@ -16,7 +16,6 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -41,25 +40,9 @@
                                 <td>
                                     <p><?php echo $collection->aciklama; ?></p>
                                 </td>
-                                <td>
-                                    <?php
-                                    // Dosya varlığını kontrol et
-                                    $file_isset = glob("$path_collection.*") !== [];
 
-                                    // Eğer dosya varsa
-                                    if ($file_isset) { ?>
-                                        <a href="<?php echo base_url("$this->Module_Name/collection_download/$collection->id"); ?>">
-                                            <i class="fa fa-download f-14 ellips"></i>
-                                        </a>
-                                    <?php } else { ?>
-                                        <!-- Dosya mevcut değilse alternatif bir ikon gösterebilirsin -->
-                                        <i class="fa fa-download fa-lg" style="color: grey;"
-                                           title="Dosya mevcut değil"></i>
-                                    <?php } ?>
-                                </td>
                                 <td>
-                                    <a href="javascript:void(0);"
-                                       onclick="downloadreicpt('<?php echo base_url("Contract/delete_collection/$collection->id"); ?>', '#collection_table','collectionTable')"
+                                    <a href="<?php echo base_url("Export/print_collection_bill/$collection->id"); ?>"
                                        title="Makbuz">
                                         <i class="fa fa-file fa-lg"></i>
                                     </a>

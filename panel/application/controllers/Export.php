@@ -898,9 +898,9 @@ class Export extends CI_Controller
         $rowNum++;
 
         foreach ($extimes as $extime) {
-              $elapsed_Day = fark_gun($extime->baslangic_tarih); // Başlangıç tarihinden geçen gün sayısını hesapla
-            $total_day = dateDifference($extime->baslangic_tarih,$extime->bitis_tarih);  // Toplam süreyi al
-             $percantage = $elapsed_Day / $total_day * 100;  // Yüzdeyi hesapla
+            $elapsed_Day = fark_gun($extime->baslangic_tarih); // Başlangıç tarihinden geçen gün sayısını hesapla
+            $total_day = dateDifference($extime->baslangic_tarih, $extime->bitis_tarih);  // Toplam süreyi al
+            $percantage = $elapsed_Day / $total_day * 100;  // Yüzdeyi hesapla
 
             // Eğer süreyi aşmışsa, %100 yap
             if ($elapsed_Day >= $total_day) {
@@ -981,7 +981,6 @@ class Export extends CI_Controller
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
     }
-
 
     public function group_download_excel($contract_id)
     {
@@ -3829,6 +3828,122 @@ class Export extends CI_Controller
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
     }
+
+    function print_collection_bill($collection_id)
+    {
+        $this->load->model("Company_model");
+
+        $collection = $this->Collection_model->get(array("id" => $collection_id));
+
+        $viewData = new stdClass();
+
+        $contract = $this->Contract_model->get(array("id" => $collection->contract_id));
+
+        $viewData->contract = $contract;
+
+        $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
+
+
+        $this->load->library('pdf_creator');
+
+
+        $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
+        $pdf->addTOCPage('L', "A5");
+
+// Çerçeve için boşlukları belirleme
+        $topMargin = 30;  // 4 cm yukarıdan
+        $bottomMargin = 10;  // 4 cm aşağıdan
+        $rightMargin = 10;  // 2 cm sağdan
+        $leftMargin = 10;  // 2 cm soldan
+
+// Çerçeve renk ve kalınlığını ayarla
+        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
+        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
+
+// Çerçeve çizme
+        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
+
+// Metin eklemek (örnek olarak ilk satır)
+        $pdf->SetY(19);
+        $pdf->SetFont('dejavusans', 'B', 17);
+
+        $pdf->Cell(0, 10, 'Tahsilat Makbuzu', 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetY(35);
+
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(160, 6, "Tahsilat Tarihi", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(20, 6, dateFormat_dmy($collection->tahsilat_tarih), 0, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(160, 6, "Tahsilat No", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(20, 6, "$collection->id", 0, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Ln(); // Yeni satıra geç
+
+
+        $pdf->SetY(35); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(10, 6, "", 0, 0, "R", 0);
+        $pdf->Cell(35, 6, "Ödeyen Firma : ", 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(10, 6, "", 0, 0, "L", 0);
+        $pdf->Cell(80, 6, company_name($contract->isveren), 0, 1, "L", 0);
+
+        $pdf->SetCellPaddings("", 1);
+
+        $pdf->SetY(60);
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+        $pdf->SetFont('dejavusans', 'B', 8);
+        $pdf->MultiCell(10, 8, "", 0, "C", 0, 0);
+        $pdf->MultiCell(30, 8, "Ödeme Türü", 1, "C", 0, 0);
+        $pdf->MultiCell(30, 8, "Tahsilat Miktar", 1, "C", 0, 0);
+        $pdf->MultiCell(20, 8, "Vade Tarih", 1, "C", 0, 0);
+        $pdf->MultiCell(20, 8, "Vade", 1, "C", 0, 0);
+        $pdf->MultiCell(70, 8, "Açıklama", 1, "C", 0, 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+        $pdf->SetFont('dejavusans', "", 8);
+        $pdf->MultiCell(10, 5, "", 0, "C", 0, 0);
+        $pdf->MultiCell(30, 5, "$collection->tahsilat_turu", 1, "L", 0, 0);
+        $pdf->MultiCell(30, 5, money_format($collection->tahsilat_miktar), 1, "C", 0, 0);
+        $pdf->MultiCell(20, 5, dateFormat_dmy($collection->vade_tarih), 1, "C", 0, 0);
+        $pdf->MultiCell(20, 5, dateDifference($collection->tahsilat_tarih, $collection->vade_tarih) . " Gün", 1, "C", 0, 0);
+        $pdf->MultiCell(70, 5, $collection->aciklama, 1, "L", 0, 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+        $pdf->SetFont('dejavusans', "", 8);
+        $pdf->MultiCell(10, 5, "", 0, "C", 0, 0);
+        $pdf->SetFont('dejavusans', 'B', 8);
+        $pdf->MultiCell(17, 5, "Yazıyla :", 0, "L", 0, 0);
+        $pdf->SetFont('dejavusans', 'N', 8);
+        $pdf->MultiCell(140, 5, yaziyla_para($collection->tahsilat_miktar), 0, "L", 0, 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetY(90);
+        $pdf->MultiCell(110, 5, "", 0, "C", 0, 0);
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->MultiCell(70, 5, "Ödeme Alan", 0, "C", 0, 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->SetY(100);
+        $pdf->MultiCell(110, 5, "", 0, "C", 0, 0);
+        $pdf->MultiCell(70, 5, company_name($contract->yuklenici), 0, "C", 0, 0);
+
+
+        $file_name = "Tahsilat Makbuzu";
+
+        $pdf->Output("$file_name.pdf", "D");
+
+    }
+
 
 }
 

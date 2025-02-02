@@ -125,7 +125,7 @@
 </div>
 
 <div id="edit_bond_modal">
-    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_bond_modal_form"); ?>
+    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/bond/edit_bond_modal_form"); ?>
 </div>
 
 

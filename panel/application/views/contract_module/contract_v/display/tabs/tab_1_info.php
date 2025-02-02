@@ -1,4 +1,4 @@
-<?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
+
 <h5 class="mb-0">
     <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
     <br>
@@ -41,82 +41,47 @@
                 <?php } ?>
             </div>
             <!-- İçerikler -->
-            <div class="custom-card-body">
-                <table class="table table-sm table-borderless">
-                    <tbody>
-                    <tr>
-                        <td>İmza Tarihi</td>
-                        <td><?php echo $item->sozlesme_tarih ? dateFormat('d-m-Y', $item->sozlesme_tarih) : 'Belirtilmemiş'; ?></td>
-                    </tr>
-                    <tr>
-                        <td>İşin Süresi</td>
-                        <td><?php echo $item->isin_suresi; ?> Gün</td>
-                    </tr>
-                    <tr>
-                        <td>Bitiş Tarihi</td>
-                        <td><?php echo $item->sozlesme_bitis ? dateFormat('d-m-Y', $item->sozlesme_bitis) : 'Belirtilmemiş'; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Yer Teslimi</td>
-                        <td><?php echo date_control($item->sitedel_date) ? dateFormat('d-m-Y', $item->sitedel_date) : 'Veri Yok'; ?></td>
-                    </tr>
-                    <tr>
-                        <td>İşin Türü</td>
-                        <td><?php echo $item->isin_turu; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Teklif Türü</td>
-                        <td><?php echo $item->sozlesme_turu; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Sözleşme Bedeli</td>
-                        <td><?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Toplam Alt Sözleşme Sayısı</td>
-                        <td><?php echo count($sub_contracts); ?></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div id="contract_table">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/contract/contract_table"); ?>
             </div>
         </div>
         <!-- Sağ Alt Sözleşmeler -->
         <?php if (!$item->parent) { ?>
-        <div class="col-md-6">
-            <div class="tabs mb-4">
-                <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
-                    <b>Alt Sözleşmeler<br><?php echo count($sub_contracts); ?> Adet Alt Sözleşme Mevcut</b>
-                    <a href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>" class="ml-2">
-                        <i class="fa fa-plus-circle fa-lg"></i>
-                    </a>
+            <div class="col-md-6">
+                <div class="tabs mb-4">
+                    <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
+                        <b>Alt Sözleşmeler<br><?php echo count($sub_contracts); ?> Adet Alt Sözleşme Mevcut</b>
+                        <a href="<?php echo base_url("contract/new_form_sub/$item->id"); ?>" class="ml-2">
+                            <i class="fa fa-plus-circle fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="custom-card-body">
+                    <?php if (!empty($sub_contracts)) { ?>
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Alt Sözleşme Adı</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php $i = 1;
+                            foreach ($sub_contracts as $sub_contract) { ?>
+                                <tr>
+                                    <td><?php echo $i++; ?></td>
+                                    <td>
+                                        <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>"><?php echo $sub_contract->contract_name; ?></a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    <?php } else { ?>
+                        <p>Henüz alt sözleşme bulunmuyor.</p>
+                    <?php } ?>
                 </div>
             </div>
-            <div class="custom-card-body">
-                <?php if (!empty($sub_contracts)) { ?>
-                    <table class="table table-sm table-borderless">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Alt Sözleşme Adı</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php $i = 1;
-                        foreach ($sub_contracts as $sub_contract) { ?>
-                            <tr>
-                                <td><?php echo $i++; ?></td>
-                                <td>
-                                    <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>"><?php echo $sub_contract->contract_name; ?></a>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                        </tbody>
-                    </table>
-                <?php } else { ?>
-                    <p>Henüz alt sözleşme bulunmuyor.</p>
-                <?php } ?>
-            </div>
-        </div>
         <?php } ?>
     </div>
 </div>

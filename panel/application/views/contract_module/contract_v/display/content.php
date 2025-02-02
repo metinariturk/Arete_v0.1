@@ -115,7 +115,7 @@
                 <div id="tab_Contract">
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
                     <div id="edit_contract_modal">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_contract_modal_form"); ?>
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/contract/edit_contract_modal_form"); ?>
                     </div>
                 </div>
             </div>
@@ -229,8 +229,14 @@
                             <i class="fa fa-file-pdf-o fa-2x"></i>
                         </a>
                     </div>
-                    <div id="tab_Advance">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_b_advance"); ?>
+                    <div id="advance_table">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/advance/advance_table"); ?>
+                    </div>
+                    <div id="add_advance_modal">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/advance/add_advance_modal"); ?>
+                    </div>
+                    <div id="edit_advance_modal">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/advance/edit_advance_modal_form"); ?>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tab4-3" role="tabpanel" aria-labelledby="tab4-3-link">

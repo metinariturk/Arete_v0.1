@@ -803,7 +803,7 @@ class Collection extends CI_Controller
         }
     }
 
-    function print($collection_id, $P_or_D = null)
+    function print_collection_bill($collection_id, $P_or_D = null)
     {
         $this->load->model("Company_model");
 

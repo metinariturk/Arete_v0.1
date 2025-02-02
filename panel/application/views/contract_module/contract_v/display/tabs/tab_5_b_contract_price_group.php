@@ -76,5 +76,5 @@
 </div>
 
 <div id="edit_contract_price_modal">
-    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_contract_price_modal_form"); ?>
+    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/price/edit_contract_price_modal_form"); ?>
 </div>

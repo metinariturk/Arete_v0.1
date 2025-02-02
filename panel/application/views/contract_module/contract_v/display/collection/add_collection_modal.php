@@ -18,7 +18,7 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>
                 <button type="button" class="btn btn-primary"
-                        onclick="submit_modal_form('addCollectionForm', 'AddCollectionModal', 'collection_table' ,'add_Collection_input', 'collectionTable')">
+                        onclick="submit_modal_form('addCollectionForm', 'AddCollectionModal', 'collection_table' ,'edit_contract_form_input', 'collectionTable')">
                     Gönder
                 </button>
             </div>

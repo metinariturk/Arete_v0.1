@@ -1,41 +1,43 @@
-// Custom-flatpickr JS
 (function () {
+  // Türkçe dil desteğini etkinleştir
+  flatpickr.localize(flatpickr.l10ns.tr);
+
+  // Global ayarları tanımla
+  flatpickr.setDefaults({
+    dateFormat: "d.m.Y", // Tarih formatı (gün.ay.yıl)
+    altFormat: "j F, Y", // Alternatif tarih formatı (örneğin: 12 Ekim, 2023)
+    altInput: true, // Alternatif giriş alanı kullan
+    locale: "tr", // Türkçe dil ayarı
+  });
+
   // 1. Default Date
   flatpickr("#datetime-local", {});
 
-  // 2.Human Friendly
-  flatpickr("#human-friendly", {
-    altInput: true,
-    altFormat: "j F, Y",
-    dateFormat: "d-m-Y",
-  });
+  // 2. Human Friendly
+  flatpickr("#human-friendly", {});
 
-  //3. min-max value
+  // 3. Min-Max Value
   flatpickr("#min-max", {
-    dateFormat: "d.m.Y",
     maxDate: "15.12.2017",
   });
 
-  // 4. disabled-date
+  // 4. Disabled Date
   flatpickr("#disabled-date", {
     disable: ["2025-01-30", "2025-02-21", "2025-03-08", new Date(2025, 4, 9)],
-    dateFormat: "Y-m-d",
   });
 
-  //5. multiple-date
+  // 5. Multiple Date
   flatpickr("#multiple-date", {
     mode: "multiple",
-    dateFormat: "Y-m-d",
   });
 
   // 6. Customizing the Conjunction
   flatpickr("#customize-date", {
     mode: "multiple",
-    dateFormat: "Y-m-d",
     conjunction: " :: ",
   });
 
-  // 7.Range-date
+  // 7. Range Date
   flatpickr("#range-date", {
     mode: "range",
   });
@@ -43,13 +45,12 @@
   // 8. Disabled Range
   flatpickr("#preloading-date", {
     mode: "multiple",
-    dateFormat: "Y-m-d",
     defaultDate: ["2016-10-20", "2016-11-04"],
   });
 
   // Time-picker
 
-  //9.Time-picker
+  // 9. Time Picker
   flatpickr("#time-picker", {
     enableTime: true,
     noCalendar: true,
@@ -81,13 +82,13 @@
     defaultDate: "13:45",
   });
 
-  // 13. DateTimePicker with Limited Time Range[min-time]
+  // 13. DateTimePicker with Limited Time Range [min-time]
   flatpickr("#limit-time-range", {
     enableTime: true,
     minTime: "09:00",
   });
 
-  // 14. DateTimePicker with Limited Time Range[min/max-time]
+  // 14. DateTimePicker with Limited Time Range [min/max-time]
   flatpickr("#limit-min-max-range", {
     enableTime: true,
     minTime: "16:00",
@@ -100,9 +101,7 @@
     dateFormat: "Y-m-d H:i",
   });
 
-  // 16. monthSelectPlugin
-
-  //By-default-  Inline Calender
+  // 16. Inline Calendar
   flatpickr("#inline-calender", {
     inline: true,
   });
