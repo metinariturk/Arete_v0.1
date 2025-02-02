@@ -42,7 +42,18 @@
                             <h4 class="m-b20">Konya Büyükşehir Belediyesi - Şehir Kütüphanesi (Betonarme
                                 İmalatlar)</h4>
                             <p>5cm / 10cm kalıp izli, ahşap dokulu brüt beton yüzey betonarme imalatların
-                                yapımı. </p>
+                                yapımı.  </p>
+                            <p>19 farklı temaya sahip birimlerin betonarme imalatları</p>
+                            Proje kapsamında tamamlanan işler:
+                            <br>Betonarme Kalıp İşleri: 26.000 m²
+                            <br>Ahşap İzli Betonarme Kalıp İşleri: 14.000 m²
+                            <br>Betonarme Donatı İşleri: 1100 ton
+                            <br>Beton Döküm İşleri: 10.500 m³
+                            <br>Kalıp Sistemleri:
+                            <br>PERI - Vario
+                            <br>PERI - Handset
+                            <br>PERI – Peri UP
+                            <br>Geleneksel Kalıp
                         </div>
                     </div>
                 </div>

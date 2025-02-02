@@ -71,7 +71,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/site/assets/images/main-slider/slider1",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/site/assets/images/gallery/portrait",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,8 +82,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\main-slider\slider1" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\gallery\portrait" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\main-slider\slider1" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\css\vendors" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\collection" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images\charts" />
@@ -230,7 +230,7 @@
       <workItem from="1737656649186" duration="5382000" />
       <workItem from="1738087878662" duration="14274000" />
       <workItem from="1738432477815" duration="15675000" />
-      <workItem from="1738480599504" duration="8439000" />
+      <workItem from="1738480599504" duration="8891000" />
     </task>
     <servers />
   </component>
