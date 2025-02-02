@@ -29,10 +29,12 @@
             <td>Sözleşme Bedeli</td>
             <td><?php echo money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?></td>
         </tr>
+        <?php if (isset($sub_contracts)){ ?>
         <tr>
             <td>Toplam Alt Sözleşme Sayısı</td>
             <td><?php echo count($sub_contracts); ?></td>
         </tr>
+        <?php } ?>
         </tbody>
     </table>
 </div>
