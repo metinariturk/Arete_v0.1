@@ -62,6 +62,39 @@
         // Fonksiyonu çağır
         start_advance_table();
     });
+
+    function start_bond_table() {
+        // DataTable başlat
+        var table = $('#bondTable').DataTable({
+            "order": [[1, 'desc']], // 2. sütun (Ödeme Tarihi) tarih sıralaması ile başlasın
+            "columnDefs": [
+                {
+                    "targets": 1, // 2. sütun (Ödeme Tarihi)
+                    "render": function(data, type, row, meta) {
+                        // Eğer veri type 'display' ise, tarihi istediğiniz formata dönüştür
+                        if (type === 'display') {
+                            // Y-m-d formatını d-m-Y formatına çevir
+                            var date = new Date(data);
+                            var day = ('0' + date.getDate()).slice(-2);  // Gün
+                            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Ay
+                            var year = date.getFullYear(); // Yıl
+                            return day + '-' + month + '-' + year; // d-m-Y formatı
+                        }
+                        return data;
+                    }
+                }
+            ],
+            "paging": true, // Sayfalama
+            "searching": true, // Arama
+            "ordering": true, // Sıralama
+        });
+    }
+
+    $(document).ready(function() {
+        // Fonksiyonu çağır
+        start_bond_table();
+    });
+
 </script>
 
 <script>
@@ -518,14 +551,12 @@
 
 
 <script>
-    function initializeFlatpickr() {
-        flatpickr("input[type='text']", {
-            dateFormat: "d-m-Y", // GG-AA-YYYY formatı
-            locale: "tr", // Türkçe dil desteği
-            allowInput: true, // Manuel girişe izin ver
-            disableMobile: true // Mobilde varsayılan datepicker'ı devre dışı bırak
-        });
-    }
+    flatpickr("input[type='text'], #flatpickr", {
+        dateFormat: "d-m-Y", // GG-AA-YYYY formatı
+        locale: "tr", // Türkçe dil desteği
+        allowInput: true, // Manuel girişe izin ver
+        disableMobile: true // Mobilde varsayılan datepicker'ı devre dışı bırak
+    });
 
     // Sayfa yüklendiğinde çalıştır
     document.addEventListener("DOMContentLoaded", function() {

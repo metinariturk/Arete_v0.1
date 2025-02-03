@@ -2297,7 +2297,6 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-
             $response = array(
                 'status' => 'success',
                 'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/collection_table", $viewData, true)
@@ -2318,6 +2317,7 @@ class Contract extends CI_Controller
             $viewData->collections = $collections;
             $viewData->settings = $settings;
             $viewData->item = $item;
+
             $viewData->form_error = true;
 
             $response = array(
@@ -2620,8 +2620,11 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
-
+ $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true)
+            );
+            echo json_encode($response);
 //kaydedilen elemanın id nosunu döküman ekleme
 // sına post ediyoruz
 
@@ -2641,17 +2644,11 @@ class Contract extends CI_Controller
             $viewData->item = $item;
 
             $viewData->form_error = true;
-            $viewData->error_modal = "AddBondModal"; // Hata modali için set edilen değişken
-
-            $form_errors = $this->session->flashdata('form_errors');
-
-            if (!empty($form_errors)) {
-                $viewData->form_errors = $form_errors;
-            } else {
-                $viewData->form_errors = null;
-            }
-
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/add_bond_form_input", $viewData, true)
+            );
+            echo json_encode($response);
         }
 
     }
@@ -2742,7 +2739,7 @@ class Contract extends CI_Controller
         $viewData->project = $project;
         $viewData->edit_bond = $edit_bond;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_bond_modal_form", $viewData);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/bond/edit_bond_modal_form", $viewData);
     }
 
     public function open_edit_contract_price($sub_group_id)
@@ -3027,6 +3024,53 @@ class Contract extends CI_Controller
         ]);
     }
 
+    public function delete_bond($bond_id)
+    {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+            return;
+        }
+
+        $this->load->model("Contract_model");
+        $this->load->model("Settings_model");
+        $this->load->model("Advance_model");
+
+        $delete_bond = $this->Bond_model->get(array("id" => $bond_id));
+        $item = $this->Contract_model->get(array("id" => $delete_bond->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $delete = $this->Advance_model->delete(array("id" => $bond_id));
+
+        $this->load->helper('file'); // File helper'ını yükle
+
+        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$bond_id";
+
+        delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
+
+        if (is_dir($path)) {
+            rmdir($path);
+        }
+
+        $settings = $this->Settings_model->get();
+        $bonds = $this->Advance_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = "contract_v";
+        $viewData->subViewFolder = "display";
+        $viewData->project = $project;
+        $viewData->bonds = $bonds;
+        $viewData->settings = $settings;
+        $viewData->item = $item;
+
+        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true);
+
+        echo json_encode([
+            'html' => $html, // Form hatalarını içeren HTML
+        ]);
+    }
+
     function edit_contract($contract_id)
     {
 
@@ -3302,8 +3346,12 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
+ $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true)
+            );
 
+            echo json_encode($response);
 //kaydedilen elemanın id nosunu döküman ekleme
 // sına post ediyoruz
 
@@ -3328,15 +3376,11 @@ class Contract extends CI_Controller
             $viewData->item = $item;
 
             $viewData->form_error = true;
-            $viewData->error_modal = "EditBondModal"; // Hata modali için set edilen değişken
-
-            if (!empty($form_errors)) {
-                $viewData->form_errors = $form_errors;
-            } else {
-                $viewData->form_errors = null;
-            }
-
-            $this->load->view("{$viewData->viewModule}/contract_v/display/tabs/tab_4_c_bond", $viewData);
+           $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/edit_bond_form_input", $viewData, true)
+            );
+            echo json_encode($response);
 
         }
     }
@@ -3604,7 +3648,6 @@ class Contract extends CI_Controller
             $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/";
         }
 
-
         // Görünüm için değişkenlerin set edilmesi
         $viewData = new stdClass();
 
@@ -3615,13 +3658,16 @@ class Contract extends CI_Controller
         $viewData->sub_path = $sub_path;
         $viewData->folder_name = $folder_name;
 
-        $this->load->view("{$viewData->viewModule}/contract_v/display/modules/folder_view", $viewData);
+        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData);
+
+        echo json_encode([
+            'html' => $html, // Form hatalarını içeren HTML
+        ]);
 
     }
 
     public function create_folder($contract_id)
     {
-
         // Gelen ID'ye göre veriyi al
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
@@ -3633,7 +3679,7 @@ class Contract extends CI_Controller
         }
 
         // Formdan gelen klasör adı
-        $folderName = $this->input->post('folderName');
+        $folderName = convertToSEO($this->input->post('folderName'));
 
 
         // Yeni klasör yolu
@@ -3667,7 +3713,11 @@ class Contract extends CI_Controller
         $viewData->folder_name = $folderName;
         $viewData->error_find = $new_folder;
 
-        $this->load->view("{$viewData->viewModule}/contract_v/display/modules/folder_view", $viewData);
+        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/modules/folder_view", $viewData, true);
+
+        echo json_encode([
+            'html' => $html, // Form hatalarını içeren HTML
+        ]);
 
     }
 

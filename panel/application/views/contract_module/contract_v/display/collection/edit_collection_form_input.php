@@ -1,7 +1,7 @@
 <div class="mb-2">
     <div class="col-form-label">Tahsilat Ödeme Tarihi</div>
     <input class="flatpickr form-control <?php cms_isset(form_error("tahsilat_tarih"), "is-invalid", ""); ?>"
-           type="text"
+           type="text" id="flatpickr"
            name="tahsilat_tarih"
            value="<?php echo isset($form_error) ? set_value("tahsilat_tarih") : dateFormat_dmy($edit_collection->tahsilat_tarih); ?>"
     >
@@ -55,7 +55,7 @@
 <div class="mb-2">
     <div class="col-form-label">Vade Tarihi</div>
     <input class="flatpickr form-control <?php cms_isset(form_error("vade_tarih"), "is-invalid", ""); ?>"
-           type="text"
+           type="text" id="flatpickr"
            name="vade_tarih"
            value="<?php echo isset($form_error) ? set_value("vade_tarih") : dateFormat_dmy($edit_collection->vade_tarih); ?>"
     >

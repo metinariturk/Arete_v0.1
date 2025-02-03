@@ -66,7 +66,8 @@ if (is_dir($main_path)) {
                                                      onclick="sendFolderData('<?= htmlspecialchars($folder['name'], ENT_QUOTES, 'UTF-8') ?>', <?= $item->id ?>)">
                                                     <div>
                                                         <i data-feather="folder"></i>
-                                                        <?= module_name(htmlspecialchars($folder['name'], ENT_QUOTES, 'UTF-8')) ?> (<?= $folder['file_count'] ?>)
+                                                        <?= module_name(htmlspecialchars($folder['name'], ENT_QUOTES, 'UTF-8')) ?>
+                                                        (<?= $folder['file_count'] ?>)
                                                     </div>
                                                     <div style="margin-left: auto; font-size: 0.9em;">
                                                         <?= $folder['size_text'] ?>
@@ -88,7 +89,28 @@ if (is_dir($main_path)) {
             </div>
         </div>
         <div class="col-xl-9 col-md-12 box-col-12">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/folder_view"); ?>
+            <?php
+
+            // Dizin içeriğini al
+            $files = scandir($sub_path);
+
+            // Klasör sayısını hesaplamak için bir değişken
+            $folder_count = 0;
+
+            // Dizin içindeki her dosyayı kontrol et
+            foreach ($files as $file) {
+                if ($file != '.' && $file != '..') {
+                    $file_path = $sub_path . DIRECTORY_SEPARATOR . $file;
+                    // Eğer bu bir klasörse
+                    if (is_dir($file_path)) {
+                        $folder_count++;
+                    }
+                }
+            }
+            ?>
+            <div class="file-content" id="sub_folder">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/folder/sub_folder"); ?>
+            </div>
         </div>
     </div>
 </div>

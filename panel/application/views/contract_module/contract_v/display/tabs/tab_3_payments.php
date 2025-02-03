@@ -104,8 +104,8 @@
                         <div class="col-form-label">Son İmalat
                             Tarihi
                         </div>
-                        <input class="datepicker-here form-control digits <?php cms_isset(form_error("imalat_tarihi"), "is-invalid", ""); ?>"
-                               type="text" style="width: 100%"
+                        <input class="flatpickr form-control <?php cms_isset(form_error("imalat_tarihi"), "is-invalid", ""); ?>"
+                               type="text" id="flatpickr" style="width: 100%"
                                name="imalat_tarihi"
                                value="<?php echo isset($form_error) ? set_value("imalat_tarihi") : ""; ?>"
                                data-options="{ format: 'DD-MM-YYYY' }"

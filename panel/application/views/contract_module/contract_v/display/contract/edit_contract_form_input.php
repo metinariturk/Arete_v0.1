@@ -133,7 +133,7 @@
         <div class="col-6">
             <div class="col-form-label">Sözleşme İmza Tarihi</div>
             <input class="flatpickr form-control <?php cms_isset(form_error("sozlesme_tarih"), "is-invalid", ""); ?>"
-                   type="text"
+                   type="text" id="flatpickr"
                    name="sozlesme_tarih"
                    value="<?php echo isset($form_error) ? set_value("sozlesme_tarih") : dateFormat_dmy($edit_item->sozlesme_tarih); ?>"
                    >
