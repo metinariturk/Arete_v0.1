@@ -2768,7 +2768,12 @@ class Contract extends CI_Controller
         $viewData->leaders = $leaders;
         $viewData->edit_contract_price = $sub_group;
 
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_contract_price_modal_form", $viewData);
+        $response = array(
+            'status' => 'success',
+            'html' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/contract/edit_contract_price_form", $viewData, true)
+        );
+
+        echo json_encode($response);
     }
 
 
