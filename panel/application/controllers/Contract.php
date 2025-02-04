@@ -1256,10 +1256,8 @@ class Contract extends CI_Controller
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "code ASC");
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
 
-
         $viewData = new stdClass();
         $viewData->leaders = $leaders;
-
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -1270,9 +1268,13 @@ class Contract extends CI_Controller
         $viewData->subViewFolder = "display";
 
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true);
+        $response = [
+            'subgroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true),
+            'pricegroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/pricegroup/pricegroup_table", $viewData, true),
+            'contractprice' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_a_contract_price_table", $viewData, true),
+        ];
 
-        echo $render_boq;
+        echo json_encode($response);
 
     }
 
@@ -1346,12 +1348,18 @@ class Contract extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
+        $viewData->prices_main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
         $viewData->subViewFolder = "display";
 
 
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true);
-        echo $render_boq;
+        $response = [
+            'subgroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true),
+            'pricegroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/pricegroup/pricegroup_table", $viewData, true),
+            'contractprice' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_a_contract_price_table", $viewData, true),
+        ];
+
+        echo json_encode($response);
 
     }
 
@@ -1579,9 +1587,13 @@ class Contract extends CI_Controller
         $viewData->prices_main_groups = $prices_main_groups;
         $viewData->subViewFolder = "display";
 
+        $response = [
+            'firstDivHtml' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/pricegroup/pricegroup_table", $viewData, true),
+            'secondDivHtml' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_a_contract_price_table", $viewData, true),
+        ];
 
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price_group", $viewData, true);
-        echo $render_html;
+        echo json_encode($response);
+
 
     }
 
@@ -2620,7 +2632,7 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
- $response = array(
+            $response = array(
                 'status' => 'success',
                 'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true)
             );
@@ -2663,7 +2675,7 @@ class Contract extends CI_Controller
 
         $settings = $this->Settings_model->get();
 
-        // Görünüm için değişkenlerin set edilmesi
+
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -2685,7 +2697,7 @@ class Contract extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
-        // Görünüm için değişkenlerin set edilmesi
+
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -2707,7 +2719,7 @@ class Contract extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
-        // Görünüm için değişkenlerin set edilmesi
+
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -2729,7 +2741,6 @@ class Contract extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
-        // Görünüm için değişkenlerin set edilmesi
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -2742,40 +2753,29 @@ class Contract extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/bond/edit_bond_modal_form", $viewData);
     }
 
-    public function open_edit_contract_price($sub_group_id)
+    public function open_edit_pricegroup_modal($pricegroup)
     {
-        if (!isAdmin() && !permission_control("contract", "read")) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Boq_model");
-
-
-        $viewData = new stdClass();
-        /** Tablodan Verilerin Getirilmesi.. */
-        $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
-        $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
-        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, 'leader' => 1));
-        $item = $this->Contract_model->get(array('id' => $sub_group->contract_id));
-
+        // Verilerin getirilmesi
+        $edit_pricegroup = $this->Contract_price_model->get(array("id" => $pricegroup));
+        $main_group = $this->Contract_price_model->get(array("id" => $edit_pricegroup->parent));
+        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $edit_pricegroup->contract_id, 'leader' => 1));
+        $item = $this->Contract_model->get(array("id" => $edit_pricegroup->contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
-        $viewData->sub_group = $sub_group;
         $viewData->main_group = $main_group;
-        $viewData->item = $item;
         $viewData->leaders = $leaders;
-        $viewData->edit_contract_price = $sub_group;
+        $viewData->settings = $settings;
+        $viewData->item = $item;
+        $viewData->project = $project;
+        $viewData->edit_pricegroup = $edit_pricegroup;
 
-        $response = array(
-            'status' => 'success',
-            'html' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/contract/edit_contract_price_form", $viewData, true)
-        );
-
-        echo json_encode($response);
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/pricegroup/edit_pricegroup_modal_form", $viewData);
     }
-
 
     function edit_collection($collection_id)
     {
@@ -3351,7 +3351,7 @@ class Contract extends CI_Controller
             $viewData->settings = $settings;
             $viewData->item = $item;
 
- $response = array(
+            $response = array(
                 'status' => 'success',
                 'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true)
             );
@@ -3381,7 +3381,7 @@ class Contract extends CI_Controller
             $viewData->item = $item;
 
             $viewData->form_error = true;
-           $response = array(
+            $response = array(
                 'status' => 'error',
                 'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/edit_bond_form_input", $viewData, true)
             );
@@ -3653,7 +3653,7 @@ class Contract extends CI_Controller
             $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/";
         }
 
-        // Görünüm için değişkenlerin set edilmesi
+
         $viewData = new stdClass();
 
         $viewData->viewModule = $this->moduleFolder;

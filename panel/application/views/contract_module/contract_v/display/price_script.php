@@ -1,6 +1,46 @@
-
-
 <script>
+    function submit_subgroup_leaders(formId, modalId, firstDiv = null, secondDiv = null, thirdDiv = null) {
+        var form = $('#' + formId)[0]; // Form elementini seç
+        var url = $(form).data('form-url'); // Formun action URL'sini al
+        var formData = new FormData(form); // Form verilerini FormData olarak al
+
+        $.ajax({
+            type: 'POST', // POST isteği gönder
+            url: url, // URL'yi belirle
+            data: formData, // Form verilerini ekle
+            contentType: false, // Content-Type'ı false yap (FormData için gerekli)
+            processData: false, // Veriyi işleme (FormData için gerekli)
+            dataType: 'json', // JSON yanıt bekleniyor (response zaten otomatik JSON olacak)
+            success: function(response) {
+                // JSON.parse() GEREKSİZ! Doğrudan response nesnesini kullan
+                if (firstDiv && response.firstDivHtml) {
+                    $('#' + firstDiv).html(response.firstDivHtml);
+                }
+                if (secondDiv && response.secondDivHtml) {
+                    $('#' + secondDiv).html(response.secondDivHtml);
+                }
+                if (thirdDiv && response.thirdDivHtml) {
+                    $('#' + thirdDiv).html(response.thirdDivHtml);
+                }
+
+                // Modal'ı kapat
+                $('#' + modalId).modal('hide');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+
+                // Formdaki inputları temizle
+                $('#' + formId)[0].reset();
+            },
+            error: function(xhr, status, error) {
+                Swal.fire(
+                    'Hata!',
+                    'Bir hata oluştu, lütfen tekrar deneyin.',
+                    'error'
+                );
+            }
+        });
+    }
+
 
     function update_group(anchor) {
 
@@ -10,7 +50,12 @@
         var formData = $("#" + $form).serialize(); // Form verilerini alır ve seri hale getirir
 
         $.post(formAction, formData, function (response) {
-            $(".refresh_tab_5").html(response);
+            var data = JSON.parse(response); // Backend'den JSON formatında dönen veriyi ayrıştır
+
+            $("#refresh_tab_5").html(data.subgroup); // ID'ye göre içerik güncelleme
+            $("#pricegroup_table").html(data.pricegroup); // ID'ye göre içerik güncelleme
+            $("#contract_price_div").html(data.contractprice); // refresh_tab_5 div'ini güncelle
+
         });
     }
 
@@ -42,8 +87,14 @@
             if (result.isConfirmed) {
                 // Onay verildiyse silme işlemini gerçekleştir
                 $.post(formAction, function (response) {
-                    // Silme işleminden sonra sayfayı güncelle
-                    $(".refresh_group").html(response);
+                    var data = JSON.parse(response); // Backend'den JSON formatında dönen veriyi ayrıştır
+
+                    // Silme işleminden sonra ilgili div'leri güncelle
+                    $("#pricegroup_table").html(data.pricegroup); // pricegroup_table div'ini güncelle
+                    $("#refresh_tab_5").html(data.subgroup); // refresh_tab_5 div'ini güncelle
+                    $("#contract_price_div").html(data.contractprice); // refresh_tab_5 div'ini güncelle
+
+                    // Silme işlemi başarılı olduğunda bilgilendirme mesajı göster
                     Swal.fire(
                         'Silindi!',
                         'Grup başarıyla silindi.',
@@ -60,6 +111,7 @@
             }
         });
     }
+
 
     // Input alanlarının değişikliklerini dinlemek için event listener ekle
     var inputElements = document.querySelectorAll('input[id$="_qty"], input[id$="_price"]');
@@ -397,23 +449,6 @@
             alert('Bir hata oluştu, lütfen tekrar deneyin.');
         });
     }
-
-    function refresh_contract_price(anchor) {
-        // data-id ve data-url değerlerini al
-        const id = anchor.getAttribute('data-id');
-        const url = anchor.getAttribute('data-url') + id;
-
-        // jQuery ile AJAX POST isteği
-        $.post(url, {}, function (response) {
-            $("#contract_price_div").html(response);
-        }).fail(function (xhr, status, error) {
-            console.error('Hata:', error);
-            alert('Bir hata oluştu, lütfen tekrar deneyin.');
-        });
-    }
-
-
-
 
 
 </script>

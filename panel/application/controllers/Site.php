@@ -1596,7 +1596,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $edit_expense->site_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
 
-        // Görünüm için değişkenlerin set edilmesi
+        
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -2042,7 +2042,7 @@ class Site extends CI_Controller
             }
             $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
-            // Görünüm için değişkenlerin set edilmesi
+            
             $viewData = new stdClass();
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -2085,7 +2085,7 @@ class Site extends CI_Controller
         $sites = $this->Site_model->get_all(array("is_Active" => 1));
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
 
-        // Görünüm için değişkenlerin set edilmesi
+        
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -2116,7 +2116,7 @@ class Site extends CI_Controller
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
             $sites = $this->Site_model->get_all(array("is_Active" => 1));
 
-            // Görünüm için değişkenlerin set edilmesi
+            
             $viewData = new stdClass();
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -2472,7 +2472,7 @@ class Site extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
-        // Görünüm için değişkenlerin set edilmesi
+        
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
