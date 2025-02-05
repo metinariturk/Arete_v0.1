@@ -40,6 +40,8 @@
                     $('body').css('overflow', 'auto'); // Overflow'u sıfırla
                     $('body').css('padding-right', ''); // Padding-right'ı sıfırla
 
+                    initializeFlatpickr();
+
                     // Eğer DataTable parametresi verilmişse
                     if (DataTable) {
                         // Eğer mevcut DataTable varsa, onu yok et

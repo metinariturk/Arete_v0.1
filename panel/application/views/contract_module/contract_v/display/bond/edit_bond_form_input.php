@@ -1,6 +1,6 @@
 <div class="mb-2">
     <div class="col-form-label">Teminat Tarihi</div>
-    <input class="datepicker-here form-control digits <?php cms_isset(form_error("teslim_tarih"), "is-invalid", ""); ?>"
+    <input class="flatpickr form-control digits <?php cms_isset(form_error("teslim_tarih"), "is-invalid", ""); ?>"
            type="text" id="flatpickr"
            name="teslim_tarih"
            value="<?php echo isset($form_error) ? set_value("teslim_tarih") : dateFormat_dmy($edit_bond->teslim_tarih); ?>"
@@ -74,7 +74,7 @@
 </div>
 <div class="mb-2">
     <div class="col-form-label">Geçerlilik Tarihi</div>
-    <input class="datepicker-here form-control digits <?php cms_isset(form_error("gecerlilik_tarih"), "is-invalid", ""); ?>"
+    <input class="flatpickr form-control digits <?php cms_isset(form_error("gecerlilik_tarih"), "is-invalid", ""); ?>"
            type="text" id="flatpickr"
            name="gecerlilik_tarih"
            value="<?php echo isset($form_error) ? set_value("gecerlilik_tarih") : dateFormat_dmy($edit_bond->gecerlilik_tarih); ?>"

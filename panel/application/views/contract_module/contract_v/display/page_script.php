@@ -209,9 +209,11 @@
                 $('#' + ModalId).modal('show');
 
                 // Flatpickr'ı yeniden başlat
-                $(".flatpickr").flatpickr({
-                    dateFormat: "d-m-Y", // dmy formatı
-                    locale: "tr" // Türkçe dil
+                flatpickr(".flatpickr", {
+                    dateFormat: "d-m-Y",
+                    locale: "tr",
+                    allowInput: true,
+                    disableMobile: true
                 });
 
                 // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
@@ -551,20 +553,22 @@
 
 
 <script>
-    flatpickr("input[type='text'], #flatpickr", {
-        dateFormat: "d-m-Y", // GG-AA-YYYY formatı
-        locale: "tr", // Türkçe dil desteği
-        allowInput: true, // Manuel girişe izin ver
-        disableMobile: true // Mobilde varsayılan datepicker'ı devre dışı bırak
-    });
+    function initializeFlatpickr() {
+        flatpickr(".flatpickr", {
+            dateFormat: "d-m-Y",
+            locale: "tr",
+            allowInput: true,
+            disableMobile: true
+        });
+    }
 
-    // Sayfa yüklendiğinde çalıştır
-    document.addEventListener("DOMContentLoaded", function() {
-        initializeFlatpickr();
+    $(document).ready(function () {
+        initializeFlatpickr(); // Sayfa yüklendiğinde çalıştır
     });
 
     function open_modal(modalId) {
         var modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
+        initializeFlatpickr(); // Modal açılınca Flatpickr'ı çalıştır
     }
 </script>

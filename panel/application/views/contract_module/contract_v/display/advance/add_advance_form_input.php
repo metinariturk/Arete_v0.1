@@ -8,7 +8,6 @@
     <?php if (isset($form_error)) { ?>
         <div class="invalid-feedback"><?php echo form_error("avans_tarih"); ?></div>
     <?php } ?>
-
 </div>
 
 <div class="mb-2">

@@ -112,12 +112,12 @@ class Export extends CI_Controller
             $main_contract = $this->Contract_model->get(array("id" => $contract->parent));
         }
 
-        $extimes = $this->Extime_model->get_all(array("contract_id" => $contract_id));
-        $costincs = $this->Costinc_model->get_all(array("contract_id" => $contract_id));
-        $payments = $this->Payment_model->get_all(array("contract_id" => $contract_id));
-        $advances = $this->Advance_model->get_all(array("contract_id" => $contract_id));
-        $bonds = $this->Bond_model->get_all(array("contract_id" => $contract_id));
-        $collections = $this->Collection_model->get_all(array("contract_id" => $contract_id), "tahsilat_tarih ASC");
+        $extimes = $this->Extime_model->get_all(array("contract_id" => $contract->id));
+        $costincs = $this->Costinc_model->get_all(array("contract_id" => $contract->id));
+        $payments = $this->Payment_model->get_all(array("contract_id" => $contract->id));
+        $advances = $this->Advance_model->get_all(array("contract_id" => $contract->id));
+        $bonds = $this->Bond_model->get_all(array("contract_id" => $contract->id));
+        $collections = $this->Collection_model->get_all(array("contract_id" => $contract->id), "tahsilat_tarih ASC");
 
         $advance_given = sum_from_table("advance", "avans_miktar", $contract->id);
 
@@ -3915,8 +3915,8 @@ class Export extends CI_Controller
         $pdf->MultiCell(30, 5, "$collection->tahsilat_turu", 1, "L", 0, 0);
         $pdf->MultiCell(30, 5, money_format($collection->tahsilat_miktar), 1, "C", 0, 0);
         $pdf->MultiCell(20, 5, dateFormat_dmy($collection->vade_tarih), 1, "C", 0, 0);
-        if (isset($collection->vade_tarih)){
-            if (dateDifference($collection->tahsilat_tarih, $collection->vade_tarih)>0){
+        if (isset($collection->vade_tarih)) {
+            if (dateDifference($collection->tahsilat_tarih, $collection->vade_tarih) > 0) {
                 $pdf->MultiCell(20, 5, dateDifference($collection->tahsilat_tarih, $collection->vade_tarih) . " Gün", 1, "C", 0, 0);
             } else {
                 $pdf->MultiCell(20, 5, "", 1, "C", 0, 0);
@@ -4038,8 +4038,8 @@ class Export extends CI_Controller
         $pdf->MultiCell(30, 5, "$advance->avans_turu", 1, "L", 0, 0);
         $pdf->MultiCell(30, 5, money_format($advance->avans_miktar), 1, "C", 0, 0);
         $pdf->MultiCell(20, 5, dateFormat_dmy($advance->vade_tarih), 1, "C", 0, 0);
-        if (isset($advance->vade_tarih)){
-            if (dateDifference($advance->avans_tarih, $advance->vade_tarih)>0){
+        if (isset($advance->vade_tarih)) {
+            if (dateDifference($advance->avans_tarih, $advance->vade_tarih) > 0) {
                 $pdf->MultiCell(20, 5, dateDifference($advance->avans_tarih, $advance->vade_tarih) . " Gün", 1, "C", 0, 0);
             } else {
                 $pdf->MultiCell(20, 5, "", 1, "C", 0, 0);
@@ -4072,6 +4072,1557 @@ class Export extends CI_Controller
         $file_name = "Tahsilat Makbuzu";
 
         $pdf->Output("$file_name.pdf", "D");
+
+    }
+
+    public
+    function print_payment_all($payment_id, $mode = null)
+    {
+        $this->load->model("Payment_model");
+        $this->load->model("Payment_sign_model");
+        $this->load->model("Boq_model");
+        $this->load->model("Extime_model");
+        $this->load->model("Costinc_model");
+        $this->load->model("Advance_model");
+        $this->load->model("Bond_model");
+        $this->load->model("Collection_model");
+        $this->load->model("Company_model");
+
+
+        $payment = $this->Payment_model->get(array("id" => $payment_id));
+        $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
+
+
+        $contractor_sign = (array)$this->Payment_sign_model->get(array("contract_id" => $payment->contract_id, "sign_page" => "contractor_sign"));
+        $works_done = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "works_done_sign"), "rank ASC");
+        $works_main = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "main_sign"), "rank ASC");
+        $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
+        $green_signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "green_sign"), "rank ASC");
+        $calculate_signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "calculate_sign"), "rank ASC");
+
+        $contract_report = $this->input->post('contract_report');
+
+        $report_cover = $this->input->post('report_cover');
+        $report_calculate = $this->input->post('report_calculate');
+
+        $wd_all = $this->input->post('wd_all');
+        $wd_hide_zero = $this->input->post('wd_hide_zero');
+
+        $green_hide_zero = $this->input->post('green_hide_zero');
+        $green_all = $this->input->post('green_all');
+
+        $all_calculate = $this->input->post('calculate_all');
+        $calculate_seperate_sub = $this->input->post('calculate_seperate_sub');
+
+        $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "code ASC");
+        $work_group = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "group_sign"), "rank ASC");
+
+        $advance_given = sum_from_table("advance", "avans_miktar", $contract->id);
+        $sum_old_advance = $this->Payment_model->sum_all(array('contract_id' => $payment->contract_id, "hakedis_no" => $payment->hakedis_no), "I");
+
+        $this->load->library('pdf_creator');
+        $pdf = new Pdf_creator();
+
+        if ($contract->parent > 0) {
+            $main_contract = $this->Contract_model->get(array("id" => $contract->parent));
+        }
+
+        $extimes = $this->Extime_model->get_all(array("contract_id" => $contract->id));
+        $costincs = $this->Costinc_model->get_all(array("contract_id" => $contract->id));
+        $payments = $this->Payment_model->get_all(array("contract_id" => $contract->id));
+        $advances = $this->Advance_model->get_all(array("contract_id" => $contract->id));
+        $bonds = $this->Bond_model->get_all(array("contract_id" => $contract->id));
+        $collections = $this->Collection_model->get_all(array("contract_id" => $contract->id), "tahsilat_tarih ASC");
+
+        $advance_given = sum_from_table("advance", "avans_miktar", $contract->id);
+
+        $total_payment_A = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "A");
+        $total_payment_B = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "B");
+        $total_payment_F = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "F");
+        $total_payment_G = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "G");
+        $total_payment_H = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "H");
+        $total_payment_I = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "I");
+        $total_payment_Kes_e = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "Kes_e");
+        $total_payment_balance = $this->Payment_model->sum_all(array('contract_id' => $contract->id), "balance");
+        $total_collections = $this->Collection_model->sum_all(array('contract_id' => $contract->id), "tahsilat_miktar");
+
+        $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
+        $owner = $this->Company_model->get(array("id" => $contract->isveren));
+
+        $yuklenici = company_name($contract->yuklenici);
+
+        $pdf->SetPageOrientation('P');
+
+        $page_width = $pdf->getPageWidth();
+
+
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+
+
+// Çerçeve için boşlukları belirleme
+        $topMargin = 20;  // 4 cm yukarıdan
+        $bottomMargin = 20;  // 4 cm aşağıdan
+        $rightMargin = 10;  // 2 cm sağdan
+        $leftMargin = 10;  // 2 cm soldan
+
+// Çerçeve renk ve kalınlığını ayarla
+        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
+        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
+
+// Çerçeve çizme
+        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
+
+        $pdf->SetFont('dejavusans', 'B', 12);
+
+// Metin eklemek (örnek olarak ilk satır)
+        $yPosition = $topMargin; // 5 cm yukarıdan başla
+        $xPosition = $leftMargin; // 2 cm soldan başla
+        $pdf->SetXY($xPosition, $yPosition);
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı
+        $pdf->Cell(190, 10, 'SÖZLEŞME RAPORU', 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetX(20);
+        $pdf->SetFont('dejavusans', 'B', 8);
+
+        if (!empty($main_contract)) {
+            $pdf->Cell(170, 7, $main_contract->contract_name, 0, 1, "C", 0); // PDF'ye yazdır
+        }
+        $pdf->SetX(20);
+
+        $pdf->Cell(170, 7, mb_strtoupper($contract->contract_name), 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetX(20);
+        $pdf->Cell(170, 7, company_name($contract->yuklenici), 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetX(25);
+        $pdf->SetFont('dejavusans', 'B', 7);
+        $pdf->Cell(32, 5, "Sözleşme Bedeli", 1, 0, "C", 0);
+        $pdf->Cell(32, 5, "Sözleşme Tarihi", 1, 0, "C", 0);
+        $pdf->Cell(32, 5, "Yer Teslim Tarihi", 1, 0, "C", 0);
+        $pdf->Cell(32, 5, "Süresi", 1, 0, "C", 0);
+        $pdf->Cell(32, 5, "Bitiş Tarihi", 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(25);
+        $pdf->SetFont('dejavusans', 'N', 6);
+        $pdf->Cell(32, 5, money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi, 1, 0, "C", 0);
+        $pdf->Cell(32, 5, dateFormat_dmy($contract->sozlesme_tarih), 1, 0, "C", 0);
+        $pdf->Cell(32, 5, dateFormat_dmy($contract->sitedel_date), 1, 0, "C", 0);
+        $pdf->Cell(32, 5, $contract->isin_suresi . " Gün", 1, 0, "C", 0);
+        $pdf->Cell(32, 5, dateFormat_dmy($contract->sozlesme_bitis), 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(20);
+        $pdf->Cell(170, 3, "", 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(20);
+        $pdf->SetFont('dejavusans', 'B', 7);
+        $pdf->Cell(170, 6, 'SÜREYE GÖRE İLERLEME', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 6);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $sonSatirY = $pdf->GetY();
+
+        $contrac_start_y = $sonSatirY;
+        $bar_height = 8;
+        $start_x = 25;
+        $bar_width = 70;
+        $last_x = $start_x + $bar_width;
+        $row_height = 8;
+
+        $elapsed_Day = fark_gun($contract->sozlesme_tarih);
+        $total_day = $contract->isin_suresi;
+        $percantage = $elapsed_Day / $total_day * 100;
+        $pdf->progress_bar($percantage, $bar_height, $bar_width, $contrac_start_y, $start_x, $last_x); // Yeni satıra geç
+        $remain_day = ($total_day - $elapsed_Day);
+        if ($elapsed_Day > $total_day) {
+            $elapsed_Day = " -";
+        }
+        if ($remain_day < 0) {
+            $remain_day = " -";
+        }
+        $pdf->SetY($contrac_start_y); // Yeni satıra geç
+        $pdf->SetX(95); // Yeni satıra geç
+        $pdf->Cell(30, 4, "Sözleşme Süresi", 1, 0, "C", 0);
+        $pdf->Cell(30, 4, 'Geçen Süre', 1, 0, "C", 0);
+        $pdf->Cell(30, 4, 'Kalan Süre', 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(95); // Yeni satıra geç
+        $pdf->Cell(30, 4, $contract->isin_suresi . " Gün", 1, 0, "C", 0);
+        $pdf->Cell(30, 4, $elapsed_Day . " Gün", 1, 0, "C", 0);
+        $pdf->Cell(30, 4, $remain_day . " Gün", 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->Cell(30, 2, "", 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $contract_time_end_Y = $pdf->GetY();
+
+        $extime_start_y = $contract_time_end_Y;
+        $i = 1;
+        foreach ($extimes as $extime) {
+            $elapsed_Day = fark_gun($extime->baslangic_tarih);
+            $total_day = $extime->uzatim_miktar;
+            $percantage = $elapsed_Day / $total_day * 100;
+            $pdf->progress_bar($percantage, $bar_height, $bar_width, $extime_start_y, $start_x, $last_x); // Yeni satıra geç
+            $remain_day = ($total_day - $elapsed_Day);
+            if ($elapsed_Day > $total_day) {
+                $elapsed_Day = " -";
+            }
+            if ($remain_day < 0) {
+                $remain_day = " -";
+            }
+            $pdf->SetY($extime_start_y); // Yeni satıra geç
+            $pdf->SetX(95); // Yeni satıra geç
+            $pdf->Cell(30, 4, $i . "- Süre Uzatımı", 1, 0, "C", 0);
+            $pdf->Cell(30, 4, 'Geçen Süre', 1, 0, "C", 0);
+            $pdf->Cell(30, 4, 'Kalan Süre', 1, 0, "C", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(95); // Yeni satıra geç
+            $pdf->Cell(30, 4, $extime->uzatim_miktar . " Gün", 1, 0, "C", 0);
+            $pdf->Cell(30, 4, $elapsed_Day . " Gün", 1, 0, "C", 0);
+            $pdf->Cell(30, 4, $remain_day . " Gün", 1, 0, "C", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $extime_start_y += 10;
+
+        }
+        $pdf->Cell(30, 2, "", 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+
+        $pdf->SetX(20); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 7);
+        $pdf->Cell(170, 6, 'FİNANSAL İLERLEME', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 6);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $extime_end_Y = $pdf->GetY();
+
+        $contract_price_start_Y = $extime_end_Y;
+
+        $total_payment = $total_payment_A;
+        $contract_price = $contract->sozlesme_bedel;
+
+        $percantage = $total_payment / $contract_price * 100;
+        $pdf->progress_bar($percantage, $bar_height, $bar_width, $contract_price_start_Y, $start_x, $last_x); // Yeni satıra geç
+        if ($total_payment > $contract_price) {
+            $remain_contract = "0";
+        } else {
+            $remain_contract = $contract_price - $total_payment;
+        }
+
+        $pdf->SetY($contract_price_start_Y); // Yeni satıra geç
+        $pdf->SetX(95); // Yeni satıra geç
+        $pdf->Cell(30, 4, "Sözleşme Bedel", 1, 0, "C", 0);
+        $pdf->Cell(30, 4, "Hakediş Toplam", 1, 0, "C", 0);
+        $pdf->Cell(30, 4, "Sözleşmeden Kalan", 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(95); // Yeni satıra geç
+        $pdf->Cell(30, 4, money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi, 1, 0, "C", 0);
+        $pdf->Cell(30, 4, money_format($total_payment) . " " . $contract->para_birimi, 1, 0, "C", 0);
+        $pdf->Cell(30, 4, money_format($remain_contract) . " " . $contract->para_birimi . " Gün", 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->Cell(30, 2, "", 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $contract_price_end_y = $pdf->GetY();
+
+        $costinc_start_y = $contract_price_end_y;
+        $i = 1;
+        foreach ($costincs as $costinc) {
+            $total_payment = $total_payment_A - $contract_price;
+            $total_costinc = +$costinc->artis_miktar;
+            $percantage = $total_payment / $total_costinc * 100;
+            $pdf->progress_bar($percantage, $bar_height, $bar_width, $costinc_start_y, $start_x, $last_x); // Yeni satıra geç
+            if ($total_payment > $total_costinc) {
+                $used_costinc = $costinc->artis_miktar;
+                $remain_costinc = "0";
+            } else {
+                $used_costinc = $contract_price + $total_costinc - $total_payment_A;
+                $remain_costinc = $total_costinc - ($contract_price + $total_costinc - $total_payment_A);
+            }
+            $pdf->SetX(95); // Yeni satıra geç
+            $pdf->Cell(30, 4, $i++ . " No'lu Keşif Artışı", 1, 0, "C", 0);
+            $pdf->Cell(30, 4, "Hakediş Toplam", 1, 0, "C", 0);
+            $pdf->Cell(30, 4, "Sözleşmeden Kalan", 1, 0, "C", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(95); // Yeni satıra geç
+            $pdf->Cell(30, 4, money_format($costinc->artis_miktar) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(30, 4, money_format($used_costinc) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(30, 4, money_format($remain_costinc) . " " . $contract->para_birimi . " Gün", 1, 0, "C", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->Ln(); // Yeni satıra geç
+            $costinc_start_y += 10;
+        }
+        $costinc_end_y = $pdf->GetY();
+
+        $graph_y_start = $costinc_end_y;
+        $pdf->SetX(10); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 7);
+        $pdf->Cell(190, 6, 'HAKEDİŞ DURUMU', 0, 0, "C", 1);
+        $pdf->SetFont('dejavusans', 'N', 6);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(10);
+        $pdf->SetFont('dejavusans', 'B', 6);
+        $pdf->Cell(8, 5, "No", 1, 0, "C", 0);
+        $pdf->Cell(28, 5, "Hakediş Tutar", 1, 0, "C",);
+        $pdf->Cell(25, 5, "Fiyat Farkı", 1, 0, "C", 0);
+        $pdf->Cell(25, 5, "Tahhuk Tutarı", 1, 0, "C", 0);
+        $pdf->Cell(25, 5, "Teminat", 1, 0, "C", 0);
+        $pdf->Cell(25, 5, "Kesinti", 1, 0, "C", 0);
+        $pdf->Cell(25, 5, "Avans Mahsubu", 1, 0, "C", 0);
+        $pdf->Cell(29, 5, "Net Bedel", 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'N', 6);
+
+        foreach ($payments as $payment) {
+            $pdf->SetX(10);
+            $pdf->Cell(8, 5, "$payment->hakedis_no", 1, 0, "C", 0);
+            $pdf->Cell(28, 5, money_format($payment->A) . " " . $contract->para_birimi, 1, 0, "R",);
+            $pdf->Cell(25, 5, money_format($payment->B) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(25, 5, money_format($payment->G) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(25, 5, money_format($payment->Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(25, 5, money_format($payment->H - $payment->Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(25, 5, money_format($payment->I) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Cell(29, 5, money_format($payment->balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Ln(); // Yeni satıra geç
+        }
+        $pdf->SetFont('dejavusans', 'B', 6);
+
+        $pdf->SetX(10);
+        $pdf->Cell(8, 4, "∑", 1, 0, "C", 0);
+        $pdf->Cell(28, 4, money_format($total_payment_A) . " " . $contract->para_birimi, 1, 0, "R",);
+        $pdf->Cell(25, 4, money_format($total_payment_B) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        $pdf->Cell(25, 4, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        $pdf->Cell(25, 4, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        $pdf->Cell(25, 4, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        $pdf->Cell(25, 4, money_format($total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        $pdf->Cell(29, 4, money_format($total_payment_balance) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->Cell(32, 2, "", 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(10);
+        $pdf->SetFont('dejavusans', 'B', 5);
+
+        $pdf->Cell(60, 4, "*Teminat Kesintisi : " . money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(10);
+        $pdf->Cell(60, 4, "*Toplam KDV : " . money_format($total_payment_F) . " " . $contract->para_birimi, 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->Cell(60, 4, "", 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 7);
+
+        if (!empty($collections)) {
+            $pdf->Cell(190, 6, 'ÖDEME DURUMU', 0, 0, "C", 1);
+        }
+        $pdf->Ln(); // Yeni satıra geç
+
+
+        if (!empty($collections)) {
+            $pdf->Cell(38, 5, "Toplam Alacak", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Yapılan Ödeme", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Teminat Kesinti", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Diğer Kesinti", 1, 0, "C", 0);
+            $pdf->Cell(38, 5, "Kalan Bedel", 1, 0, "C", 0);
+
+            $pdf->SetFont('dejavusans', 'N', 6);
+            $pdf->Ln(); // Yeni satıra geç
+
+            $pdf->Cell(38, 5, money_format($total_payment_G) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(38, 5, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(38, 5, money_format($total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Cell(38, 5, money_format($total_payment_H - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->SetFont('dejavusans', 'B', 6);
+
+            $pdf->Cell(38, 5, money_format($total_payment_Kes_e + $total_payment_balance - $total_collections - $total_payment_Kes_e) . " " . $contract->para_birimi, 1, 0, "C", 0);
+            $pdf->Ln(); // Yeni satıra geç
+        }
+
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetFont('dejavusans', 'B', 7);
+        if (!empty($advances)) {
+            $pdf->SetX(12);
+            $pdf->Cell(50, 6, 'AVANS DURUMU', 0, 0, "C", 1);
+        }
+
+        if (!empty($bonds)) {
+            $pdf->SetX(64);
+            $pdf->Cell(134, 6, 'TEMİNAT DURUMU', 0, 0, "C", 1);
+        }
+        $pdf->SetFont('dejavusans', 'B', 6);
+        $pdf->Ln(); // Yeni satıra geç
+        $bonds_start_y = $pdf->GetY();
+        if (!empty($advances)) {
+            $pdf->SetFont('dejavusans', 'N', 6);
+
+            $pdf->SetX(12);
+            $pdf->SetFont('dejavusans', 'B', 6);
+
+            $pdf->Cell(20, 4, "TOPLAM", 1, 0, "L", 0);
+            $pdf->Cell(30, 4, money_format($advance_given) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(12);
+
+            $pdf->Cell(20, 4, "Mahsup Edilen", 1, 0, "L", 0);
+            $pdf->Cell(30, 4, money_format($total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetX(12);
+
+            $pdf->Cell(20, 4, "Kalan Avans", 1, 0, "L", 0);
+            $pdf->Cell(30, 4, money_format($advance_given - $total_payment_I) . " " . $contract->para_birimi, 1, 0, "R", 0);
+        }
+        $last_advance_y = $pdf->GetY();
+
+
+        if (!empty($bonds)) {
+            $pdf->SetFont('dejavusans', 'B', 6);
+            if (empty($advances)) {
+                $pdf->SetXY(12, $bonds_start_y);
+            } else {
+                $pdf->SetXY(64, $bonds_start_y);
+            }
+            $pdf->Cell(5, 5, 'No', 1, 0, "C", 0);
+            $pdf->Cell(20, 5, 'Tür', 1, 0, "C", 0);
+            $pdf->Cell(25, 5, 'Gerekçe', 1, 0, "C", 0);
+            $pdf->Cell(21, 5, 'Teminat Miktar', 1, 0, "C", 0);
+            $pdf->Cell(21, 5, 'Veriliş Tarihi', 1, 0, "C", 0);
+            $pdf->Cell(21, 5, 'Vade Tarih', 1, 0, "C", 0);
+            $pdf->Cell(21, 5, 'İade Durumu', 1, 0, "C", 0);
+            $pdf->Ln(); // Yeni satıra geç
+            $pdf->SetFont('dejavusans', 'N', 6);
+
+            $i = 1;
+            foreach ($bonds as $bond) {
+                if (empty($advances)) {
+                    $pdf->SetX(12);
+                } else {
+                    $pdf->SetX(64);
+                }
+                $pdf->Cell(5, 6, $i++, 1, 0, "C", 0);
+                $pdf->Cell(20, 6, $bond->teminat_turu, 1, 0, "C", 0);
+                $pdf->Cell(25, 6, module_name($bond->teminat_gerekce), 1, 0, "C", 0);
+                $pdf->Cell(21, 6, money_format($bond->teminat_miktar) . " " . $contract->para_birimi, 1, 0, "C", 0);
+                $pdf->Cell(21, 6, dateFormat_dmy($bond->teslim_tarih), 1, 0, "C", 0);
+                $pdf->Cell(21, 6, dateFormat_dmy($bond->gecerlilik_tarih), 1, 0, "C", 0);
+                if ($bond->teminat_durumu == 1) {
+                    $durum = "İade Edildi";
+                } else {
+                    $durum = "İşveren";
+                }
+                $pdf->Cell(21, 6, $durum, 1, 0, "C", 0);
+                $pdf->Ln(); // Yeni satıra geç
+            }
+        }
+
+        $last_bond_y = $pdf->GetY();
+        if ($last_bond_y > $last_advance_y) {
+            $pdf->SetY($last_bond_y); // Yeni satıra geç
+        } else {
+            $pdf->SetY($last_advance_y); // Yeni satıra geç
+        }
+
+        if (!empty($advances) and !empty($bonds) and (count($payments) > 5)) {
+            $pdf->AddPage();
+        }
+
+
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+
+
+// Çerçeve için boşlukları belirleme
+        $topMargin = 20;  // 4 cm yukarıdan
+        $bottomMargin = 20;  // 4 cm aşağıdan
+        $rightMargin = 10;  // 2 cm sağdan
+        $leftMargin = 10;  // 2 cm soldan
+
+// Çerçeve renk ve kalınlığını ayarla
+        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
+        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
+
+// Çerçeve çizme
+        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
+
+        $pdf->SetFont('dejavusans', 'B', 12);
+
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetFont('dejavusans', 'B', 7);
+        $pdf->SetXY(25,24);
+        if (!empty($collections)) {
+            $pdf->Cell(163, 6, 'ÖDEME TABLOSU', 0, 0, "C", 1);
+        }
+        $pdf->SetFont('dejavusans', 'B', 6);
+        $pdf->Ln(); // Yeni satıra geç
+        $bonds_start_y = $pdf->GetY();
+
+        if (!empty($collections)) {
+            $total_collections = 0;  // Tahsilat toplamı
+            $pdf->SetX(25);
+            $pdf->Cell(5, 6, 'No', 1, 0, "C", 0);
+            $pdf->Cell(15, 6, 'Tarih', 1, 0, "C", 0);
+            $pdf->Cell(25, 6, 'Miktar', 1, 0, "C", 0);
+            $pdf->Cell(28, 6, 'Türü', 1, 0, "C", 0);
+            $pdf->Cell(90, 6, 'Aciklama', 1, 0, "C", 0);
+            $collection_y = $pdf->GetY();
+            $pdf->Ln(); // Yeni satıra geç
+
+            $pdf->SetFont('dejavusans', 'N', 6);
+
+            $i = 1;
+            foreach ($collections as $collection) {
+                if ($collection->tahsilat_turu == "Çek") {
+                    $notice_date = "/ " . dateFormat_dmy($collection->vade_tarih);
+                } else {
+                    $notice_date = "";
+                }
+                $pdf->SetX(25);
+                $pdf->Cell(5, 4, $i++, 1, 0, "C", 0);
+                $pdf->Cell(15, 4, dateFormat_dmy($collection->tahsilat_tarih), 1, 0, "C", 0);
+                $pdf->Cell(25, 4, money_format($collection->tahsilat_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Cell(28, 4, $collection->tahsilat_turu . $notice_date, 1, 0, "C", 0);
+                $pdf->Cell(90, 4, $collection->aciklama, 1, 0, "L", 0);
+                $pdf->Cell(4, 4, "", 0, 0, "C", 0);
+                $pdf->Ln(); // Yeni satıra geç
+
+                // Tahsilat miktarını topla
+                $total_collections += $collection->tahsilat_miktar;
+            }
+
+            // Avanslar kısmını ekleyelim
+            if (!empty($advances)) {
+                $total_advances = 0;  // Avans toplamı
+                $pdf->SetX(25);
+                $pdf->Cell(163, 6, "AVANS ÖDEMELERİ", 1, 0, "L", 0);
+                $pdf->Ln(); // Yeni satıra geç
+                $pdf->SetX(25);
+
+                $pdf->SetFont('dejavusans', 'N', 6);
+
+                $i = 1;
+                foreach ($advances as $advance) {
+                    $pdf->SetX(25);
+                    $pdf->Cell(5, 4, $i++, 1, 0, "C", 0);
+                    $pdf->Cell(15, 4, dateFormat_dmy($advance->avans_tarih), 1, 0, "C", 0);
+                    $pdf->Cell(25, 4, money_format($advance->avans_miktar) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                    $pdf->Cell(28, 4, $advance->avans_turu, 1, 0, "C", 0);
+                    $pdf->Cell(90, 4, $advance->aciklama, 1, 0, "L", 0);
+                    $pdf->Cell(4, 4, "", 0, 0, "C", 0);
+                    $pdf->Ln(); // Yeni satıra geç
+
+                    // Avans miktarını topla
+                    $total_advances += $advance->avans_miktar;
+                }
+                $pdf->Ln(); // Yeni satıra geç
+
+                $pdf->SetX(25);
+                $pdf->Cell(30, 4, "TOPLAM TAHSİLAT", 1, 0, "C", 0);
+                $pdf->Cell(25, 4, money_format($total_collections) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Ln(); // Yeni satıra geç
+                $pdf->SetX(25);
+                $pdf->Cell(30, 4, "TOPLAM AVANS", 1, 0, "C", 0);
+                $pdf->Cell(25, 4, money_format($total_advances) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Ln(); // Yeni satıra geç
+                $pdf->SetFont('dejavusans', 'B', 6);
+
+                $pdf->SetX(25);
+                $pdf->Cell(30, 4, "TOPLAM ÖDEME", 1, 0, "C", 0);
+                $pdf->Cell(25, 4, money_format($total_collections + $total_advances) . " " . $contract->para_birimi, 1, 0, "R", 0);
+                $pdf->Ln(); // Yeni satıra geç
+
+            }
+        }
+
+
+        //Hakediş Raporu Kapak Baskı Kontrolü
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+        $pdf->SetPageOrientation('P');
+
+        $logoPath = K_PATH_IMAGES . 'logo_example.jpg';
+        $logoWidth = 50; // Logo genişliği
+
+        $pdf->Image($logoPath, 20, 10, $logoWidth);
+
+        //Buraya Ana Rapor Ekle Başlangıç
+
+
+        //Buraya Ana Rapor Ekle Bitiş
+
+
+
+// Çerçeve için boşlukları belirleme
+        $topMargin = 40;  // 4 cm yukarıdan
+        $bottomMargin = 40;  // 4 cm aşağıdan
+        $rightMargin = 20;  // 2 cm sağdan
+        $leftMargin = 20;  // 2 cm soldan
+
+// Çerçeve renk ve kalınlığını ayarla
+        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
+        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
+
+// Çerçeve çizme
+        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
+
+        $pdf->SetFont('dejavusans', 'B', 12);
+
+// Metin eklemek (örnek olarak ilk satır)
+        $yPosition = $topMargin + 5; // 5 cm yukarıdan başla
+        $xPosition = $leftMargin + 2; // 2 cm soldan başla
+        $pdf->SetY($yPosition);
+
+        $pdf->Cell(0, 10, 'HAKEDİŞ RAPORU', 0, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetX($xPosition);
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(72, 6, "Tarih", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(72, 6, dateFormat_dmy($payment->imalat_tarihi), 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX($xPosition);
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(72, 6, "No", 0, 0, "R", 0);
+        $pdf->Cell(5, 6, ':', 0, 0, "C", 0);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(72, 6, "$payment->hakedis_no", 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->Cell(72, 8, "", 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $rows = array(
+            "Yapılan İşin Adı" => $contract->contract_name,
+            "Yüklenicinin Adı" => $contractor->company_name,
+            "Sözleşme Bedeli" => money_format($contract->sozlesme_bedel) . " " . $contract->para_birimi,
+            "İhale Tarihi" => "",
+            "İhale Kom. Karar Tarihi ve No.su" => "",
+            "Sözleşme Tarihi" => dateFormat_dmy($contract->sozlesme_tarih),
+            "İşyeri Teslim Tarihi" => dateFormat_dmy($contract->sitedel_date),
+            "Sözleşmeye Göre İşin Süresi" => $contract->isin_suresi,
+            "Sözleşmeye Göre İşin Bitim Tarihi" => dateFormat_dmy($contract->sozlesme_bitis),
+            "Verilen Avanslar Toplamı" => money_format($advance_given) . " " . $contract->para_birimi,
+            "Mahsubu Yapılan Avansın Toplam Tutarı" => money_format($sum_old_advance) . " " . $contract->para_birimi,
+        );
+
+
+        foreach ($rows as $row => $value) {
+            $pdf->SetX($xPosition);
+            $pdf->SetFont('dejavusans', 'B', 9);
+            $pdf->Cell(72, 8, $row, 0, 0, "L", 0);
+            $pdf->Cell(5, 8, ':', 0, 0, "C", 0);
+            $pdf->SetFont('dejavusans', 'N', 9);
+            $pdf->Cell(72, 8, $value, 0, 0, "L", 0);
+            $pdf->Ln(); // Yeni satıra geç
+        }
+
+        $pdf->Cell("", 8, "", 0, 0, "L", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX($xPosition);
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+        $pdf->SetFont('dejavusans', 'B', 8);
+        $pdf->MultiCell(41, 10, "Sözleşme Bedeli", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 10, "Sözleşme Artış \n Onayının Tarih ve Nosu", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 10, "Ek Sözleşme \n Bedeli", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 10, "Toplam Sözleşme \n Bedeli", 1, "C", 0, 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $row_numbers = range(1, 4);
+        foreach ($row_numbers as $row_number) {
+            $pdf->SetX($xPosition);
+            $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+            $pdf->SetFont('dejavusans', 'B', 7);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Ln(); // Yeni satıra geç
+        }
+
+        $pdf->SetX($xPosition);
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+        $pdf->SetFont('dejavusans', 'B', 8);
+        $pdf->MultiCell(41, 11, "Süre Uzatım Kararlarının \n Karar Tarihi | Sayısı", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 11, "Verilen Süre", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 11, "İş Bitim Tarihi", 1, "C", 0, 0);
+        $pdf->MultiCell(41, 11, "Uzatım Sebebi", 1, "C", 0, 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $row_numbers = range(1, 4);
+        foreach ($row_numbers as $row_number) {
+            $pdf->SetX($xPosition);
+            $pdf->SetLineWidth(0.1); // Çizgi kalınlığı (ince çizgi)
+            $pdf->SetFont('dejavusans', 'B', 7);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Cell(41, 6, "", 1, 0, "L", 0);
+            $pdf->Ln(); // Yeni satıra geç
+        }
+        //Hakediş Raporu Kapak Baskı Kontrolü
+
+        //Hakediş Raporu Hesap Kapağı Baskı Kontrolü
+        $pdf->SetPageOrientation('P');
+
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+
+
+// Çerçeve için boşlukları belirleme
+        $topMargin = 20;  // 4 cm yukarıdan
+        $bottomMargin = 20;  // 4 cm aşağıdan
+        $rightMargin = 20;  // 2 cm sağdan
+        $leftMargin = 20;  // 2 cm soldan
+
+// Çerçeve renk ve kalınlığını ayarla
+        $pdf->SetDrawColor(0, 0, 0); // Siyah renk
+        $pdf->SetLineWidth(0.5); // Çizgi kalınlığı
+
+// Çerçeve çizme
+        $pdf->Rect($leftMargin, $topMargin, $pdf->getPageWidth() - $rightMargin - $leftMargin, $pdf->getPageHeight() - $bottomMargin - $topMargin);
+
+        $pdf->SetFont('dejavusans', 'B', 12);
+
+// Metin eklemek (örnek olarak ilk satır)
+        $yPosition = $topMargin; // 5 cm yukarıdan başla
+        $xPosition = $leftMargin; // 2 cm soldan başla
+        $pdf->SetXY($xPosition, $yPosition);
+        $pdf->SetLineWidth(0.1); // Çizgi kalınlığı
+
+        $pdf->Cell(170, 10, 'HAKEDİŞ RAPORU', 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $pdf->SetX(20);
+        $pdf->SetFont('dejavusans', 'B', 9);
+        $pdf->Cell(120, 7, mb_strtoupper($contract->contract_name), 1, 0, "L", 0);
+        $pdf->Cell(50, 7, "Hakediş No : " . $payment->hakedis_no, 1, 0, "R", 0);
+        $pdf->Ln(); // Yeni satıra geç
+        $pdf->SetX(20);
+        $pdf->SetFont('dejavusans', 'N', 9);
+        $pdf->Cell(170, 7, dateFormat_dmy($payment->imalat_tarihi) . " TARİHİNE KADAR YAPILAN İŞİN", 1, 0, "C", 0);
+        $pdf->Ln(); // Yeni satıra geç
+
+        $cells = array(
+            array(
+                array("text" => "A", "width" => "10", "font_size" => "N", "justify" => "C", "border" => 1),
+                array("text" => "Sözleşme Fiyatları ile Yapılan İşin Tutarı", "width" => "110", "font_size" => "N", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->A) . " " . $contract->para_birimi, "width" => "50", "font_size" => "N", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "B", "width" => "10", "font_size" => "N", "justify" => "C", "border" => 1),
+                array("text" => "Fiyat Farkı Tutarı", "width" => "110", "font_size" => "N", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->B) . " " . $contract->para_birimi, "width" => "50", "font_size" => "N", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "C", "width" => "10", "font_size" => "B", "justify" => "C", "border" => 1),
+                array("text" => "Toplam Tutar (A+B)", "width" => "110", "font_size" => "B", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->C) . " " . $contract->para_birimi, "width" => "50", "font_size" => "B", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "170", "font_size" => "B", "justify" => "C", "border" => 1)
+            ),
+            array(
+                array("text" => "D", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Bir Önceki Hakedişin Toplam Tutarı", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->D) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "E", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Bu Hakedişin Tutarı (C-D)", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->E) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "F", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "KDV (E x %" . $payment->F_a . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->E * $payment->F_a / 100) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "G", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Taahhuk Tutarı", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->G) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "a) Gelir / Kurumlar Vergisi (E X %" . $payment->Kes_a_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_a) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "b) Damga Vergisi (E X %" . $payment->Kes_b_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_b) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "c) KDV Tevkifatı (F X (" . ($payment->Kes_c_s * 10) . "/10))", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_c) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "d) Sosyal Sigortalar Kurumu Kesintisi", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_d) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "e) Geçici Kabul Kesintisi (G x %" . $payment->Kes_e_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_e) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "f) İş Makinesi Kiraları", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_f) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "g) Gecikme Cezası", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_g) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "h) İş Sağlığı ve Güvenliği Cezası", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_h) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "i) Diğer", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_i) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 0),
+                array("text" => "j) Bu Hakedişte Ödenen Fiyat Farkı Teminatı Kesintisi (B X %" . $payment->Kes_j_s . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->Kes_j) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "H", "width" => "10", "font_size" => "b", "justify" => "C", "border" => 1),
+                array("text" => "Kesinti ve Mahsuplar Toplamı", "width" => "110", "font_size" => "b", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->H) . " " . $contract->para_birimi, "width" => "50", "font_size" => "b", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "I", "width" => "10", "font_size" => "n", "justify" => "C", "border" => 1),
+                array("text" => "Avans Mahsubu (A X %" . "$payment->I_s" . ")", "width" => "110", "font_size" => "n", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->I) . " " . $contract->para_birimi, "width" => "50", "font_size" => "n", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "", "width" => "10", "font_size" => "B", "justify" => "C", "border" => 1),
+                array("text" => "Yükleniciye Ödenecek Tutar (G-H-I)", "width" => "110", "font_size" => "B", "justify" => "L", "border" => 1),
+                array("text" => money_format($payment->balance) . " " . $contract->para_birimi, "width" => "50", "font_size" => "B", "justify" => "R", "border" => 1)
+            ),
+            array(
+                array("text" => "Yazıyla : " . yaziyla_para($payment->balance) . " " . $contract->para_birimi, "width" => "170", "font_size" => "B", "justify" => "R", "border" => 1),
+            ),
+        );
+
+
+        foreach ($cells as $row) {
+            $pdf->SetX(20);
+
+            foreach ($row as $cell) {
+                $text = $cell["text"];
+                $width = $cell["width"];
+                $justify = $cell["justify"];
+                $font_size = $cell["font_size"];
+                $border = $cell["border"];
+                $pdf->SetFont('dejavusans', $font_size, 9);
+                $pdf->Cell($width, 6, $text, $border, 0, $justify, 0);
+            }
+            $pdf->Ln(); // Bir alt satıra geç
+        }
+
+        $pdf->SetXY(20, 176);
+        $pdf->SetFont('dejavusans', "B", 9);
+        $pdf->Cell(50, 10, "YÜKLENİCİ", 0, 0, "C", 0);
+        $pdf->Cell(120, 10, "KONTROL", 0, 0, "C", 0);
+        $pdf->Rect(20, 176, 50, 101);
+        $pdf->Rect(70, 176, 120, 101);
+        $pdf->SetFont('dejavusans', "N", 8);
+
+        $pdf->Ln(); // Bir alt satıra geç
+        $pdf->SetXY(20, 200);
+        $pdf->SetFont('dejavusans', "N", 8);
+        $pdf->MultiCell(50, 20, "\n" . upper_tr($contractor->company_name), 0, "C", "0", 0);
+        $pdf->Ln(); // Bir alt satıra geç
+        $pdf->SetXY(70, 203);
+
+        $signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "report_sign", "approved" => null), "rank ASC");
+
+        $sign_number = count($signs);
+
+        foreach ($signs as $key => $sign) {
+            if ($sign_number == 1) {
+                $pdf->MultiCell(120, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 2) {
+                $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 3) {
+                $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 4) {
+                if ($key == 2) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($sign_number == 5) {
+                if ($key == 3) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                if ($key > 2) {
+                    $pdf->MultiCell(60, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                } else {
+                    $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+                }
+            } elseif ($sign_number == 6) {
+                if ($key == 3) {
+                    $pdf->Ln(30);
+                    $pdf->SetX(70);
+                }
+                $pdf->MultiCell(40, 20, $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            }
+        }
+
+        $approved_signs = $this->Payment_sign_model->get_all(array("contract_id" => $contract->id, "sign_page" => "report_sign", "approved !=" => null), "rank ASC");
+
+        $approved_signs_number = count($approved_signs);
+
+        $pdf->SetXY(70, 260);
+
+        foreach ($approved_signs as $key => $sign) {
+            if ($approved_signs_number == 1) {
+                $pdf->MultiCell(120, 10, ". . / . . / . . . . " . "\n" . $sign->approved . "\n" . $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            } elseif ($approved_signs_number == 2) {
+                $pdf->MultiCell(60, 10, ". . / . . / . . . ." . "\n" . $sign->approved . "\n" . $sign->name . "\n" . $sign->position, 0, "C", 0, 0);
+            }
+        }
+        //Hakediş Raporu Hesap Kapağı Baskı Kontrolü
+
+        //Yapılan İşler İcmalı Baskı Kontrolü
+
+        $pdf->AddPage();
+        $pdf->headerSubText = "İşin Adı : " . contract_name($payment->contract_id);
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment->hakedis_no;
+        $pdf->headerText = "03 - YAPILAN İŞLER İCMALİ";
+        $pdf->Header();
+
+        $contract_id = get_from_id("payment", "contract_id", "$payment_id");
+
+
+        $signs = array_merge([$contractor_sign], $works_main);
+
+        $footer_sign = array();
+        foreach ($signs as $item) {
+            if (is_object($item)) {
+                $item = (array)$item;
+            }
+// Her bir öğenin beklenen özelliklere sahip olduğunu kontrol edin
+            if (isset($item["position"]) && isset($item["name"])) {
+                $footer_sign[$item["position"]] = $item["name"];
+            } else {
+                // Eksik özellikler varsa veya tanımsızsa, bir hata işleyin veya gerekli işlemi gerçekleştirin.
+                // Örneğin:
+                // echo "Hata: Position veya name eksik!";
+            }
+        }
+
+        $pdf->custom_footer = $footer_sign;
+
+        $item = $this->Payment_model->get(
+            array(
+                "id" => $payment_id
+            )
+        );
+        $viewData = new stdClass();
+        $viewData->item = $item;
+
+
+        $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
+
+
+        $pdf->SetFontSize(8);
+        $pdf->SetFillColor(150, 150, 150); // Gri rengi ayarlayın (RGB renk kodu)
+
+        $pdf->Ln();
+        $pdf->SetFillColor(210, 210, 210);
+        $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+        $pdf->setLineWidth(0.1);
+        $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
+        $pdf->Cell(15, 5, "Sıra No", 1, 0, "C", 1);
+        $pdf->Cell(20, 5, "Grup No", 1, 0, "C", 1);
+        $pdf->Cell(56, 5, "Grup Adı", 1, 0, "L", 1);
+        $pdf->SetFont('dejavusans', 'B', 6.5); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+        $pdf->Cell(33, 5, "Yapılan İşler Toplamı", 1, 0, "C", 1);
+        $pdf->Cell(33, 5, "Önceki Hakediş Toplamı", 1, 0, "C", 1);
+        $pdf->Cell(33, 5, "Bu Hakediş Toplamı", 1, 0, "C", 1);
+
+
+        $i = 1;
+        $x = 0;
+        $y = 0;
+        foreach ($main_groups as $main_group) {
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_group" => 1, "parent" => $main_group->id));
+            $c = 0;
+            $d = 0;
+            foreach ($sub_groups as $sub_group) {
+                $sum_group_items = $this->Boq_model->get_all(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "sub_id" => $sub_group->id));
+                $a = array_reduce($sum_group_items, function ($carry, $sum_group_item) {
+                    $contract_price = get_from_any("contract_price", "price", "id", "$sum_group_item->boq_id");
+                    return $carry + $sum_group_item->total * $contract_price;
+                }, 0);
+                $sum_group_old_items = $this->Boq_model->get_all(array('contract_id' => $payment->contract_id, "payment_no <" => $payment->hakedis_no, "sub_id" => $sub_group->id));
+                $b = array_reduce($sum_group_old_items, function ($carry, $sum_group_old_item) {
+                    $contract_price = get_from_any("contract_price", "price", "id", "$sum_group_old_item->boq_id");
+                    return $carry + $sum_group_old_item->total * $contract_price;
+                }, 0);
+                $c += $a;
+                $d += $b;
+            }
+            $pdf->Ln();
+
+            $pdf->SetFont('dejavusans', 'N', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+            $pdf->Cell(15, 5, $i++, 1, 0, "C", 0);
+            $pdf->Cell(20, 5, $main_group->code, 1, 0, "L", 0);
+            $pdf->Cell(56, 5, upper_tr($main_group->name), 1, 0, "L", 0);
+            $pdf->Cell(33, 5, money_format($c + $d), 1, 0, "R", 0);
+            $pdf->Cell(33, 5, money_format($d), 1, 0, "R", 0);
+            $pdf->Cell(33, 5, money_format($c), 1, 0, "R", 0);
+            $x += $d;
+            $y += $c;
+        }
+        $pdf->Ln();
+
+        $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+        $pdf->Cell(91, 5, "TOPLAM", 1, 0, "R", 0);
+        $pdf->Cell(33, 5, money_format($x + $y), 1, 0, "R", 0);
+        $pdf->Cell(33, 5, money_format($x), 1, 0, "R", 0);
+        $pdf->Cell(33, 5, money_format($y), 1, 0, "R", 0);
+
+        $pdf->Footer();
+        //Yapılan İşler İcmalı Baskı Kontrolü
+
+        //Yapılan İşler Grup İcmali Baskı Kontrolü
+        //print_group_total
+        $pdf->AddPage();
+        $pdf->headerSubText = "İşin Adı : " . contract_name($contract->id);
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment->hakedis_no;
+        $pdf->headerText = "04 - YAPILAN İŞLER GRUP İCMALLERİ";
+
+        $pdf->Header();
+
+        $page_width = $pdf->getPageWidth();
+
+        $signs = array_merge([$contractor_sign], $work_group);
+
+        $footer_sign = array();
+        foreach ($signs as $item) {
+            if (is_object($item)) {
+                $item = (array)$item;
+            }
+            // Her bir öğenin beklenen özelliklere sahip olduğunu kontrol edin
+            if (isset($item["position"]) && isset($item["name"])) {
+                $footer_sign[$item["position"]] = $item["name"];
+            } else {
+                // Eksik özellikler varsa veya tanımsızsa, bir hata işleyin veya gerekli işlemi gerçekleştirin.
+                // Örneğin:
+                // echo "Hata: Position veya name eksik!";
+            }
+        }
+        $pdf->custom_footer = $footer_sign;
+
+        $pdf->SetFontSize(8);
+        $pdf->Cell($page_width, 5, "", 0, 0, "L", 0);
+        $pdf->SetFillColor(150, 150, 150); // Gri rengi ayarlayın (RGB renk kodu)
+
+        $i = 0;
+        foreach ($main_groups as $main_group) {
+            $is_item_in_main = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "main_id" => $main_group->id));
+            if (!empty($is_item_in_main)) {
+                $i = $i + 2;
+                $k = 1;
+
+                $count_items = $this->Boq_model->get_all(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no));
+                $say = count($count_items);
+
+                $last_cell = $i + $say;
+                if ($last_cell > 24) {
+                    $pdf->AddPage(); // Yeni bir sayfa ekleyin
+                    $i = 1;
+                }
+                $pdf->Ln();
+
+                $pdf->SetFont('dejavusans', 'B', 9); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                $pdf->setLineWidth(0.1);
+                $pdf->SetFillColor(160, 160, 160);
+                $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
+                $pdf->Ln();
+                $pdf->SetFillColor(210, 210, 210);
+                $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                $pdf->setLineWidth(0.1);
+                $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
+                $pdf->Cell(15, 5, "Sıra No", 1, 0, "C", 1);
+                $pdf->Cell(20, 5, "Grup No", 1, 0, "C", 1);
+                $pdf->Cell(56, 5, "Grup Adı", 1, 0, "L", 1);
+                $pdf->SetFont('dejavusans', 'B', 6.5); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+                $pdf->Cell(33, 5, "Yapılan İşler Toplamı", 1, 0, "C", 1);
+                $pdf->Cell(33, 5, "Önceki Hakediş Toplamı", 1, 0, "C", 1);
+                $pdf->Cell(33, 5, "Bu Hakediş Toplamı", 1, 0, "C", 1);
+
+                $pdf->Ln();
+                $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_group" => 1, "parent" => $main_group->id));
+                $i = 1;
+
+                $c = 0;
+                $d = 0;
+                foreach ($sub_groups as $sub_group) :
+                    $sum_group_items = $this->Boq_model->get_all(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "sub_id" => $sub_group->id));
+                    $a = array_reduce($sum_group_items, function ($carry, $sum_group_item) {
+                        $contract_price = get_from_any("contract_price", "price", "id", "$sum_group_item->boq_id");
+                        return $carry + $sum_group_item->total * $contract_price;
+                    }, 0);
+
+
+                    $sum_group_old_items = $this->Boq_model->get_all(array('contract_id' => $payment->contract_id, "payment_no <" => $payment->hakedis_no, "sub_id" => $sub_group->id));
+                    $b = array_reduce($sum_group_old_items, function ($carry, $sum_group_old_item) {
+                        $contract_price = get_from_any("contract_price", "price", "id", "$sum_group_old_item->boq_id");
+                        return $carry + $sum_group_old_item->total * $contract_price;
+                    }, 0);
+                    $pdf->SetFont('dejavusans', 'N', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+                    $pdf->Cell(15, 5, $i++, 1, 0, "C", 0);
+                    $pdf->Cell(20, 5, $main_group->code . "." . $sub_group->code, 1, 0, "L", 0);
+                    $pdf->Cell(56, 5, upper_tr($sub_group->name), 1, 0, "L", 0);
+                    $pdf->Cell(33, 5, money_format($a + $b), 1, 0, "R", 0);
+                    $pdf->Cell(33, 5, money_format($b), 1, 0, "R", 0);
+                    $pdf->Cell(33, 5, money_format($a), 1, 0, "R", 0);
+                    $pdf->Ln();
+                    $c += $a;
+                    $d += $b;
+                endforeach;
+            }
+
+            $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+            $pdf->Cell($page_width - 119, 5, "TOPLAM", 1, 0, "R", 0);
+            $pdf->Cell(33, 5, money_format($d + $c), 1, 0, "R", 0);
+            $pdf->Cell(33, 5, money_format($d), 1, 0, "R", 0);
+            $pdf->Cell(33, 5, money_format($c), 1, 0, "R", 0);
+
+            $pdf->Ln();
+            $pdf->Cell($page_width, 5, "", 0, 0, "R", 0);
+
+        }
+
+        $pdf->Footer();
+
+        //Yapılan İşler Grup İcmali Baskı Kontrolü
+
+        //Yapılan İşler Listesi Tümünü Yazdır Baskı Kontrolü
+        $pdf->AddPage();
+        $pdf->SetPageOrientation('L');
+
+        $pdf->headerSubText = "İşin Adı : " . contract_name($payment->contract_id);
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment->hakedis_no;
+        $pdf->headerText = "YAPILAN İŞLER LİSTESİ";
+
+        $pdf->Header();
+
+        $page_width = $pdf->getPageWidth();
+
+        $signs = array_merge([$contractor_sign], $works_done);
+
+        $footer_sign = array();
+        foreach ($signs as $item) {
+            if (is_object($item)) {
+                $item = (array)$item;
+            }
+            if (isset($item["position"]) && isset($item["name"])) {
+                $footer_sign[$item["position"]] = $item["name"];
+            }
+        }
+        $pdf->custom_footer = $footer_sign;
+
+
+        $pdf->Header();
+        $pdf->custom_footer = $footer_sign;
+
+        $pdf->parametre = 1;
+
+        $pdf->custom_footer = $footer_sign;
+
+        $i = 0;
+        foreach ($main_groups as $main_group) {
+            $i = $i + 2;
+            $k = 1;
+
+            $count_items = $this->Boq_model->get_all(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no));
+            $say = count($count_items);
+
+            $last_cell = $i + $say;
+            if ($last_cell > 24) {
+                $pdf->AddPage();
+                $i = 1;
+            }
+            $pdf->Ln();
+            $pdf->SetFont('dejavusans', 'B', 9);
+            $pdf->setLineWidth(0.1);
+            $pdf->SetFillColor(160, 160, 160);
+            $pdf->SetFont('dejavusans', 'B', 8);
+            $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
+            $pdf->Ln();
+
+            $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_group" => 1, "parent" => $main_group->id));
+            foreach ($sub_groups as $sub_group) {
+                $pdf->setLineWidth(0.1);
+                $pdf->SetFont('dejavusans', 'BI', 8);
+                $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
+                $pdf->Ln();
+                $pdf->SetFillColor(210, 210, 210);
+                $pdf->SetFont('dejavusans', 'B', 7);
+                $pdf->setLineWidth(0.1);
+                $pdf->SetDrawColor(0, 0, 0);
+                $pdf->Ln();
+
+                $pdf->Cell(12, 10, "Sıra No", 1, 0, "C", 1);
+                $pdf->Cell(25, 10, "Poz No", 1, 0, "C", 1);
+                $pdf->Cell(85, 10, "Yapılan İşin Cinsi", 1, 0, "L", 1);
+                $pdf->Cell(11, 10, "Birimi", 1, 0, "C", 1);
+
+                $pdf->Cell(21, 5, "A", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "B", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "C", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "D=B-C", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "E=AxB", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "F=AxC", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "G=E-F", 1, 0, "C", 1);
+                $pdf->Ln();
+                $pdf->Cell(133, 5, "", 0, 0, "C", 0);
+                $pdf->SetFont('dejavusans', 'B', 6); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+                $pdf->Cell(21, 5, "Birim Fiyat", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "Toplam Miktar", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "Önceki Hakediş", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "Bu Hakediş", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "Toplam İmalat", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "Önceki Tutar", 1, 0, "C", 1);
+                $pdf->Cell(21, 5, "Bu Hakediş", 1, 0, "C", 1);
+
+                $pdf->Ln();
+
+                $pdf->SetFont('dejavusans', 'N', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+                $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_id" => $sub_group->id));
+                $i = 1;
+                foreach ($contract_items as $contract_item) {
+                    $calculate = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "boq_id" => $contract_item->id));
+                    $old_total = $this->Boq_model->sum_all(array('contract_id' => $payment->contract_id, "payment_no <" => $payment->hakedis_no, "boq_id" => $contract_item->id), "total");
+                    $this_total = isset($calculate->total) ? $calculate->total : 0;
+                    $pdf->Cell(12, 5, $k++, 1, 0, "C", 0);
+                    $pdf->Cell(25, 5, $contract_item->code, 1, 0, "L", 0);
+                    $pdf->Cell(85, 5, $contract_item->name, 1, 0, "L", 0);
+                    $pdf->Cell(11, 5, $contract_item->unit, 1, 0, "C", 0);
+                    $pdf->Cell(21, 5, money_format($contract_item->price), 1, 0, "R", 0);
+                    $pdf->Cell(21, 5, money_format($old_total + $this_total), 1, 0, "R", 0);
+                    $pdf->Cell(21, 5, money_format($old_total), 1, 0, "R", 0);
+                    $pdf->Cell(21, 5, money_format($this_total), 1, 0, "R", 0);
+                    $pdf->Cell(21, 5, money_format(($old_total + $this_total) * $contract_item->price), 1, 0, "R", 0);
+                    $pdf->Cell(21, 5, money_format($old_total * $contract_item->price), 1, 0, "R", 0);
+                    $pdf->Cell(21, 5, money_format($this_total * $contract_item->price), 1, 0, "R", 0);
+                    $pdf->Ln();
+                }
+                $pdf->Cell(265, 2, '', 0, 1); // 0 genişlik, 10 yükseklik, boş içerik
+            }
+        }
+
+        $pdf->Footer();
+        //Yapılan İşler Listesi Tümünü Yazdır Baskı Kontrolü
+
+        //Metraj İcmali Listesi Tümünü Yazdır Baskı Kontrolü
+
+        $pdf->AddPage();
+        $pdf->SetPageOrientation('L');
+
+        $pdf->headerSubText = "İşin Adı : " . contract_name($payment->contract_id);
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment->hakedis_no;
+        $pdf->headerText = "METRAJ İCMALİ";
+
+        $pdf->Header();
+
+        $signs = array_merge([$contractor_sign], $green_signs);
+        $footer_sign = array();
+        foreach ($signs as $item) {
+            if (is_object($item)) {
+                $item = (array)$item;
+            }
+            // Her bir öğenin beklenen özelliklere sahip olduğunu kontrol edin
+            if (isset($item["position"]) && isset($item["name"])) {
+                $footer_sign[$item["position"]] = $item["name"];
+            } else {
+                // Eksik özellikler varsa veya tanımsızsa, bir hata işleyin veya gerekli işlemi gerçekleştirin.
+                // Örneğin:
+                // echo "Hata: Position veya name eksik!";
+            }
+        }
+
+        $pdf->custom_footer = $footer_sign;
+
+
+        $page_width = $pdf->getPageWidth();
+
+        $pdf->SetFontSize(10);
+        $pdf->Cell($page_width, 5, "", 0, 0, "L", 0);
+        $pdf->SetFillColor(150, 150, 150); // Gri rengi ayarlayın (RGB renk kodu)
+
+        $i = 0;
+        foreach ($main_groups as $main_group) {
+            $isset_main = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "main_id" => $main_group->id));
+            if (!empty($isset_main)) {
+                $i = $i + 2;
+                $k = 1;
+
+                $count_items = $this->Boq_model->get_all(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no));
+                $say = count($count_items);
+
+                $last_cell = $i + $say;
+                if ($last_cell > 24) {
+                    $pdf->AddPage(); // Yeni bir sayfa ekleyin
+                    $i = 1;
+                }
+                $pdf->Ln();
+                $pdf->SetFont('dejavusans', 'B', 9); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+
+                $pdf->setLineWidth(0.1);
+                $pdf->SetFillColor(160, 160, 160);
+                $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
+                $pdf->Ln();
+
+
+                $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_group" => 1, "parent" => $main_group->id));
+
+                foreach ($sub_groups as $sub_group) {
+                    $isset_sub = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "sub_id" => $sub_group->id));
+                    if (!empty($isset_sub)) {
+                        $pdf->setLineWidth(0.1);
+                        $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                        $pdf->Cell($page_width, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
+                        $pdf->Ln();
+                        $pdf->SetFillColor(210, 210, 210);
+                        $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                        $pdf->setLineWidth(0.1);
+                        $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
+                        $pdf->Cell(13, 10, "Sıra No", 1, 0, "C", 1);
+                        $pdf->Cell(32, 10, "Poz No", 1, 0, "C", 1);
+                        $pdf->Cell(138, 10, "Yapılan İşin Cinsi", 1, 0, "L", 1);
+                        $pdf->Cell(13, 10, "Birimi", 1, 0, "C", 1);
+                        $pdf->Cell(84, 5, "Hakediş Miktarları", 1, 0, "C", 1);
+                        $pdf->Ln();
+                        $pdf->Cell(196, 5, "", 0, 0, "C", 0);
+                        $pdf->Cell(28, 5, "Toplam", 1, 0, "C", 1);
+                        $pdf->Cell(28, 5, "Önceki Hak.", 1, 0, "C", 1);
+                        $pdf->Cell(28, 5, "Bu Hak.", 1, 1, "C", 1);
+
+
+                        $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_id" => $sub_group->id));
+                        $i = 1;
+                        foreach ($contract_items as $contract_item) {
+                            $calculate = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "boq_id" => $contract_item->id));
+                            $old_total = $this->Boq_model->sum_all(array('contract_id' => $payment->contract_id, "payment_no <" => $payment->hakedis_no, "boq_id" => $contract_item->id), "total");
+                            $this_total = isset($calculate->total) ? $calculate->total : 0;
+                            $pdf->SetFont('dejavusans', '', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                            $pdf->setLineWidth(0.1);
+                            $pdf->Cell(13, 5, $k++, 1, 0, "C", 0);
+                            $pdf->Cell(32, 5, $contract_item->code, 1, 0, "L", 0);
+                            $pdf->Cell(138, 5, $contract_item->name, 1, 0, "L", 0);
+                            $pdf->Cell(13, 5, $contract_item->unit, 1, 0, "C", 0);
+                            $pdf->Cell(28, 5, money_format($old_total + $this_total), 1, 0, "R", 0);
+                            $pdf->Cell(28, 5, money_format($old_total), 1, 0, "R", 0);
+                            $pdf->Cell(28, 5, money_format($this_total), 1, 0, "R", 0);
+                            $pdf->Ln();
+                        }
+                        $pdf->Cell(265, 2, '', 0, 1); // 0 genişlik, 10 yükseklik, boş içerik
+                    }
+                }
+            }
+        }
+
+        $pdf->Footer();
+
+        $pdf->SetPrintHeader(false);
+        $pdf->AddPage();
+        $pdf->SetPageOrientation('P');
+
+        $pdf->headerSubText = "İşin Adı : " . contract_name($payment->contract_id);
+        $pdf->headerPaymentNo = "Hakediş No : " . $payment->hakedis_no;
+        $pdf->headerText = "METRAJ CETVELİ";
+
+        $pdf->Header();
+
+        $signs = array_merge([$contractor_sign], $calculate_signs);
+        $footer_sign = array();
+        foreach ($signs as $item) {
+            if (is_object($item)) {
+                $item = (array)$item;
+            }
+            // Her bir öğenin beklenen özelliklere sahip olduğunu kontrol edin
+            if (isset($item["position"]) && isset($item["name"])) {
+                $footer_sign[$item["position"]] = $item["name"];
+            } else {
+                // Eksik özellikler varsa veya tanımsızsa, bir hata işleyin veya gerekli işlemi gerçekleştirin.
+                // Örneğin:
+                // echo "Hata: Position veya name eksik!";
+            }
+        }
+
+        $pdf->custom_footer = $footer_sign;
+
+        $page_width = $pdf->getPageWidth() - $pdf->getMargins()['left'] - $pdf->getMargins()['right'];
+
+        $k = 1;
+
+        foreach ($main_groups as $index => $main_group) {
+            $isset_main = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "main_id" => $main_group->id));
+            if (!empty($isset_main)) {
+                $pdf->setLineWidth(0.1);
+                $pdf->SetFillColor(160, 160, 160);
+                $pdf->SetFont('dejavusans', 'B', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                $pdf->Cell($page_width, 5, $main_group->code . " - " . upper_tr($main_group->name), 0, 0, "L", 0);
+                $pdf->Ln();
+
+                $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_group" => 1, "parent" => $main_group->id));
+                foreach ($sub_groups as $sub_group) {
+                    $isset_sub = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "sub_id" => $sub_group->id));
+                    if (!empty($isset_sub)) {
+                        $pdf->setLineWidth(0.1);
+                        $pdf->SetFont('dejavusans', 'BI', 8); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                        $pdf->Cell($page_width / 100, 4, $main_group->code . "." . $sub_group->code . " - " . upper_tr($sub_group->name), 0, 0, "L", 0);
+                        $pdf->Ln();
+                        $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $payment->contract_id, "sub_id" => $sub_group->id));
+                        foreach ($contract_items as $contract_item) {
+                            $calculate = $this->Boq_model->get(array('contract_id' => $payment->contract_id, "payment_no" => $payment->hakedis_no, "boq_id" => $contract_item->id));
+                            if (isset($calculate)) {
+                                $pdf->SetFont('dejavusans', 'BI', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                                $pdf->SetFillColor(210, 210, 210);
+                                $pdf->setLineWidth(0.1);
+                                $pdf->Cell($page_width * 18 / 100, 5, $contract_item->code, 1, 0, "L", 1);
+                                $pdf->Cell($page_width * 82 / 100, 5, $contract_item->name . " - " . $contract_item->unit, 1, 0, "L", 1);
+                                $pdf->Ln();
+                                $k = $k + 1;
+                                $pdf->SetFillColor(240, 240, 240);
+                                $pdf->SetFont('dejavusans', 'B', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                                $pdf->setLineWidth(0.1);
+                                $pdf->SetDrawColor(0, 0, 0); // Çizgi rengi (Siyah: RGB 0,0,0)
+                                if ($contract_item->type == "rebar") {
+                                    $pdf->Cell($page_width * 18 / 100, 5, "Bölüm", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 32 / 100, 5, "Açıklama", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Çap (mm)", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Benzer", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Adet", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Uzunluk (m)", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 14 / 100, 5, "Toplam (kg)", 1, 0, "C", 1);
+                                } else {
+                                    $pdf->Cell($page_width * 18 / 100, 5, "Bölüm", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 32 / 100, 5, "Açıklama", 1, 0, "L", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Miktar", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "En", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Boy", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 9 / 100, 5, "Yükseklik", 1, 0, "C", 1);
+                                    $pdf->Cell($page_width * 14 / 100, 5, "Toplam", 1, 0, "C", 1);
+                                }
+
+                                $pdf->Ln();
+                                $k = $k + 1;
+                                $pdf->SetFillColor();
+
+                                foreach (json_decode($calculate->calculation, true) as $calculation_data) {
+                                    if ($k > 43) {
+                                        $pdf->Footer();
+                                        $pdf->AddPage(); // Örneğin, A4 boyutunda bir sayfa (210mm genişlik, 297mm yükseklik)
+                                        $pdf->Header();
+                                        $k = 1;
+                                    }
+                                    $pdf->SetFont('dejavusans', '', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                                    $pdf->setLineWidth(0.1);
+
+                                    $pdf->Cell($page_width * 18 / 100, 5, $calculation_data["s"], 1, 0, "L", 0);
+                                    $pdf->Cell($page_width * 32 / 100, 5, $calculation_data["n"], 1, 0, "L", 0);
+                                    if ($contract_item->type == "rebar") {
+                                        if (!empty($calculation_data["q"])) {
+                                            $pdf->Cell($page_width * 9 / 100, 5, "Ø" . $calculation_data["q"], 1, 0, "R", 0);
+                                        } else {
+                                            $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                        }
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["q"]), 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["w"])) {
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["w"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["h"])) {
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["h"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["l"])) {
+                                        $pdf->Cell($page_width * 9 / 100, 5, money_format($calculation_data["l"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 9 / 100, 5, "", 1, 0, "R", 0);
+                                    }
+
+                                    if (!empty($calculation_data["t"])) {
+                                        $pdf->Cell($page_width * 14 / 100, 5, money_format($calculation_data["t"]), 1, 0, "R", 0);
+                                    } else {
+                                        $pdf->Cell($page_width * 14 / 100, 5, "", 1, 0, "R", 0);
+                                    }
+
+                                    $pdf->Ln();
+                                    $k = $k + 1;
+
+                                }
+                                $pdf->SetFont('dejavusans', 'BI', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
+                                $pdf->Cell($page_width * 86 / 100, 5, "Toplam", 1, 0, "R", 0);
+                                $pdf->Cell($page_width * 14 / 100, 5, money_format($calculate->total), 1, 0, "R", 0);
+                                $pdf->Ln();
+                                $pdf->Cell($page_width, 1, "", 0, 0, "L",);
+                                $pdf->Ln();
+                                $k = $k + 1;
+                            }
+                        }
+                    }
+                }
+                if ($index < count($main_groups) - 1) {
+                    // Son ana grup değilse bir sonraki sayfaya geçiş yap
+                    $pdf->Footer();
+                    $pdf->AddPage();
+                    $pdf->Header();
+
+                    $k = 1;
+
+                }
+                $pdf->Footer();
+
+            }
+        }
+
+        $file_name = $contract->contract_name . "Hakediş No - $payment->hakedis_no";
+
+
+        if ($mode == "new_tab"){
+            $pdf->Output("$file_name.pdf", 'I');
+        } elseif ($mode == "download"){
+            $pdf->Output("$file_name.pdf", 'D');
+        }
+
+
 
     }
 

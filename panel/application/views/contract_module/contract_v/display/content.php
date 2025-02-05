@@ -151,7 +151,6 @@
                        style="cursor: pointer;" data-bs-toggle="modal"
                        data-bs-target="#AddPaymentModal" title="Yeni Hakediş Oluştur"
                        aria-hidden="true">
-
                     </i>
 
                     <a href="<?php echo base_url("export/sitestock_download_excel/$item->id"); ?>">
@@ -162,8 +161,14 @@
                     </a>
                 </div>
 
-                <div id="tab_Payment">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_3_payments"); ?>
+                <div id="payment_table">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/payment/payment_table"); ?>
+                </div>
+                <div id="add_payment_modal">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/payment/add_payment_modal"); ?>
+                </div>
+                <div id="edit_payment_modal">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/payment/edit_payment_modal_form"); ?>
                 </div>
             </div>
         </div>
