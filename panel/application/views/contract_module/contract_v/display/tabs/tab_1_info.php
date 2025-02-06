@@ -1,7 +1,8 @@
-
+<?php if ($item->parent) { ?>
+    <h6><?php echo mb_strtoupper(contract_code($item->parent) . " / " . contract_name($item->parent)); ?></h6>
+<?php } ?>
 <h5 class="mb-0">
-    <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
-    <br>
+    <?php echo mb_strtoupper($item->dosya_no . " / " . $item->contract_name); ?>
     <small style="font-size: 14px;">(
         <?php
         if ($item->isActive == 1) {
@@ -11,9 +12,8 @@
         }
         ?>)
     </small>
-    <br>
-    <?php echo company_name($item->yuklenici); ?>
 </h5>
+<?php echo mb_strtoupper(company_name($item->yuklenici)); ?>
 <div class="container mt-5">
     <div class="row">
         <!-- Sol Sekmeler ve İçerik -->

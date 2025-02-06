@@ -11,8 +11,13 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
 <div class="card-body">
     <div class="card-header bg-dark text-white p-3 rounded">
         <h6 class="mb-0">SÖZLEŞME RAPORU</h6>
-        <hr>
-        <h5 class="mb-0"><?= mb_strtoupper($item->contract_name); ?></h5>
+        <hr style="margin: 3px;">
+        <?php if ($item->parent) { ?>
+            <h6 ><?php echo mb_strtoupper(contract_code($item->parent) . " / " . contract_name($item->parent)); ?></h6>
+            <hr style="margin: 3px;">
+        <?php } ?>
+        <h5 class="mb-0">    <?php echo $item->dosya_no . " / " . $item->contract_name; ?>
+            <?= mb_strtoupper($item->dosya_no . " / " . $item->contract_name); ?></h5>
         <div class="title"><p class="mb-0 text-uppercase"><?= company_name($item->yuklenici); ?></p></div>
     </div>
 

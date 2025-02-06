@@ -126,7 +126,7 @@
          aria-labelledby="tab2-link">
         <div class="card">
             <div class="card-body">
-                <h5>Sözleşme Raporasdf</h5>
+                <h5>Sözleşme Rapor</h5>
                 <div class="download_links mt-3">
                     <a href="<?php echo base_url("export/contract_report_excel/$item->id"); ?>">
                         <i class="fa fa-file-excel-o fa-2x"></i>
