@@ -63,7 +63,9 @@ if (is_dir($main_path)) {
                                         <?php foreach ($folders as $folder): ?>
                                             <li>
                                                 <div class="btn btn-light d-flex justify-content-between"
-                                                     onclick="sendFolderData('<?= htmlspecialchars($folder['name'], ENT_QUOTES, 'UTF-8') ?>', <?= $item->id ?>)">
+                                                     data-folder-name="<?= htmlspecialchars($folder['name'], ENT_QUOTES, 'UTF-8') ?>"
+                                                     data-contract-id="<?= $item->id ?>"
+                                                     onclick="sendFolderData(this)">
                                                     <div>
                                                         <i data-feather="folder"></i>
                                                         <?= module_name(htmlspecialchars($folder['name'], ENT_QUOTES, 'UTF-8')) ?>
@@ -73,6 +75,7 @@ if (is_dir($main_path)) {
                                                         <?= $folder['size_text'] ?>
                                                     </div>
                                                 </div>
+
                                             </li>
                                         <?php endforeach; ?>
                                     <?php else: ?>
@@ -89,25 +92,6 @@ if (is_dir($main_path)) {
             </div>
         </div>
         <div class="col-xl-9 col-md-12 box-col-12">
-            <?php
-
-            // Dizin içeriğini al
-            $files = scandir($sub_path);
-
-            // Klasör sayısını hesaplamak için bir değişken
-            $folder_count = 0;
-
-            // Dizin içindeki her dosyayı kontrol et
-            foreach ($files as $file) {
-                if ($file != '.' && $file != '..') {
-                    $file_path = $sub_path . DIRECTORY_SEPARATOR . $file;
-                    // Eğer bu bir klasörse
-                    if (is_dir($file_path)) {
-                        $folder_count++;
-                    }
-                }
-            }
-            ?>
             <div class="file-content" id="sub_folder">
                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/folder/sub_folder"); ?>
             </div>

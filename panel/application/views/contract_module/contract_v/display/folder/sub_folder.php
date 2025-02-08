@@ -45,7 +45,7 @@
             <div class="row">
                 <?php
                 // Dizin içindeki klasörleri listele
-                foreach ($files as $file) {
+                foreach ($folders as $folder) {
                     if ($file != '.' && $file != '..') {
                         $file_path = $sub_path . DIRECTORY_SEPARATOR . $file;
                         if (is_dir($file_path)) {

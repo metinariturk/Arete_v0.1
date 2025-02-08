@@ -2841,7 +2841,7 @@ class Contract extends CI_Controller
 
         $edit_payment = $this->Payment_model->get(array("id" => $payment_id));
         $item = $this->Contract_model->get(array("id" => $edit_payment->contract_id));
-        $before_payment = $this->Payment_model->get(array("contract_id" => $edit_payment->contract_id, "hakedis_no" => ($edit_payment->hakedis_no-1) ));
+        $before_payment = $this->Payment_model->get(array("contract_id" => $edit_payment->contract_id, "hakedis_no" => ($edit_payment->hakedis_no - 1)));
 
         $this->load->library("form_validation");
 
@@ -3638,8 +3638,10 @@ class Contract extends CI_Controller
         $folder_id = $this->input->post('folder_id'); // folder_id parametresi
         $folder_name = $this->input->post('folder_name'); // folder_name parametresi
         $contract_id = $this->input->post('contractID');     // folder_id parametresi
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
+
         if ($folder_id != null) {
             $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$folder_id";
             $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$folder_id/";
@@ -3648,6 +3650,18 @@ class Contract extends CI_Controller
             $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/";
         }
 
+        $filter = scandir($sub_path);
+
+// . ve .. hariç tutarak, sadece klasörleri ve dosyaları alıyoruz
+        $files = array_filter($filter, function($item) use ($sub_path) {
+            // . ve ..'i hariç tutuyoruz ve sadece dosya ya da klasörleri alıyoruz
+            return $item !== '.' && $item !== '..' && !is_dir($sub_path . DIRECTORY_SEPARATOR . $item);
+        });
+
+        $folders = array_filter($filter, function($item) use ($sub_path) {
+            // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
+            return $item !== '.' && $item !== '..' && is_dir($sub_path . DIRECTORY_SEPARATOR . $item);
+        });
 
         $viewData = new stdClass();
 
@@ -3657,6 +3671,9 @@ class Contract extends CI_Controller
         $viewData->folder_id = $folder_id;
         $viewData->sub_path = $sub_path;
         $viewData->folder_name = $folder_name;
+        $viewData->folders = $folders;
+        $viewData->folder_count = count($folders);
+        $viewData->files = $files;
 
         $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData);
 

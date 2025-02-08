@@ -422,15 +422,18 @@
 
 
 <script>
-    function sendFolderData(folderName, contractID, folderID = null) {
+    function sendFolderData(element) {
+
+        let folderName = element.dataset.folderName || "";
+        let contractID = element.dataset.contractId || "";
         // AJAX isteği
+
         $.ajax({
             url: '<?= base_url('Contract/folder_open') ?>', // Controller ve method yolu
             type: 'POST',
             data: {
                 folder_name: folderName,
                 contractID: contractID, // Klasör ID'sini de gönderiyoruz
-                folder_id: folderID // folder_id null olabilir
             },
             success: function(response) {
                 // Eğer başarılıysa yapılacak işlemler
