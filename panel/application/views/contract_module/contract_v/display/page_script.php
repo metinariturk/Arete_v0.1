@@ -426,6 +426,7 @@
 
         let folderName = element.dataset.folderName || "";
         let contractID = element.dataset.contractId || "";
+        let parentName = element.dataset.parentName || "";
         // AJAX isteği
 
         $.ajax({
@@ -434,6 +435,7 @@
             data: {
                 folder_name: folderName,
                 contractID: contractID, // Klasör ID'sini de gönderiyoruz
+                parent_name: parentName, // Klasör ID'sini de gönderiyoruz
             },
             success: function(response) {
                 // Eğer başarılıysa yapılacak işlemler

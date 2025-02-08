@@ -55,16 +55,25 @@ if (is_dir($main_path)) {
                             <div class="card-body">
                                 <ul>
                                     <li>
-                                        <div class="btn btn-primary">
-                                            <i data-feather="home"></i>Ana Klasör
+                                        <div class="btn btn-primary"
+                                               data-folder-name=""
+                                               data-contract-id="<?= $item->id ?>"
+                                               data-folder-id=""
+                                               onclick="sendFolderData(this)">
+                                            <div>
+                                                <i data-feather="folder"></i>
+                                                Ana Klasör
+                                            </div>
                                         </div>
                                     </li>
+
                                     <?php if (!empty($folders)): ?>
                                         <?php foreach ($folders as $folder): ?>
                                             <li>
                                                 <div class="btn btn-light d-flex justify-content-between"
                                                      data-folder-name="<?= htmlspecialchars($folder['name'], ENT_QUOTES, 'UTF-8') ?>"
                                                      data-contract-id="<?= $item->id ?>"
+                                                     data-folder-id="" style="cursor: pointer"
                                                      onclick="sendFolderData(this)">
                                                     <div>
                                                         <i data-feather="folder"></i>
@@ -75,7 +84,6 @@ if (is_dir($main_path)) {
                                                         <?= $folder['size_text'] ?>
                                                     </div>
                                                 </div>
-
                                             </li>
                                         <?php endforeach; ?>
                                     <?php else: ?>

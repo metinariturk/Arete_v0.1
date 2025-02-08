@@ -126,6 +126,17 @@ class Contract extends CI_Controller
         $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
         $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no";
 
+        $filter_main = scandir($main_path);
+
+
+        $main_folders = array_filter($filter_main, function($item) use ($main_path) {
+            // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
+            return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
+        });
+
+
+
+
 
         $companys = $this->Company_model->get_all(array());
 
@@ -158,6 +169,7 @@ class Contract extends CI_Controller
 
         $viewData = new stdClass();
 
+        $item = $this->Contract_model->get(array("id" => $id));
         $collections = $this->Collection_model->get_all(array('contract_id' => $id), "tahsilat_tarih ASC");
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
@@ -170,7 +182,6 @@ class Contract extends CI_Controller
         $sites = $this->Site_model->get_all(array('contract_id' => $id));
         $settings = $this->Settings_model->get();
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
-
         $site = $this->Site_model->get(array("proje_id" => $item->proje_id));
 
 
@@ -180,13 +191,14 @@ class Contract extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->item = $item;
         $viewData->companys = $companys;
         $viewData->project = $project;
 
         $viewData->upload_function = $upload_function;
         $viewData->path = $path;
         $viewData->main_path = $main_path;
-        $viewData->sub_path = $main_path;
+        $viewData->main_folders = $main_folders;
         $viewData->advances = $advances;
         $viewData->collections = $collections;
         $viewData->bonds = $bonds;
@@ -219,7 +231,6 @@ class Contract extends CI_Controller
             $viewData->form_errors = null;
         }
 
-        $viewData->item = $this->Contract_model->get(array("id" => $id));
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/index", $viewData);
     }
@@ -3635,22 +3646,25 @@ class Contract extends CI_Controller
 
     public function folder_open()
     {
-        $folder_id = $this->input->post('folder_id'); // folder_id parametresi
-        $folder_name = $this->input->post('folder_name'); // folder_name parametresi
-        $contract_id = $this->input->post('contractID');     // folder_id parametresi
+        $folder_name = $this->input->post('folder_name');
+        $contract_id= $this->input->post('contractID');
+        $parent_name= $this->input->post('parent_name');
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
 
-        if ($folder_id != null) {
-            $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$folder_id";
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$folder_id/";
+        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+
+        if ($parent_name != null) {
+            $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$parent_name";
+            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$parent_name/";
         } else {
             $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name";
             $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/";
         }
 
         $filter = scandir($sub_path);
+        $filter_main = scandir($main_path);
 
 // . ve .. hariç tutarak, sadece klasörleri ve dosyaları alıyoruz
         $files = array_filter($filter, function($item) use ($sub_path) {
@@ -3663,12 +3677,19 @@ class Contract extends CI_Controller
             return $item !== '.' && $item !== '..' && is_dir($sub_path . DIRECTORY_SEPARATOR . $item);
         });
 
+        $main_folders = array_filter($filter_main, function($item) use ($main_path) {
+            // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
+            return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
+        });
+
         $viewData = new stdClass();
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->item = $item;
         $viewData->path = $path;
-        $viewData->folder_id = $folder_id;
+        $viewData->main_folders = $main_folders;
+        $viewData->folder_id = $parent_name;
+        $viewData->main_path = $main_path;
         $viewData->sub_path = $sub_path;
         $viewData->folder_name = $folder_name;
         $viewData->folders = $folders;
