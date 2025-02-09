@@ -100,7 +100,7 @@ if (is_dir($main_path)) {
             </div>
         </div>
         <div class="col-xl-9 col-md-12 box-col-12">
-            <div class="file-content" id="folder_table">
+            <div class="file-content" id="sub_folder">
                 <?php $this->load->view("contract_module/contract_v/display/folder/sub_folder"); ?>
             </div>
         </div>

@@ -21,7 +21,7 @@
                                         <!-- Çöp Kutusu İkonu -->
                                         <i class="fa fa-times text-danger position-absolute"
                                            style="top: 5px; right: 5px; cursor: pointer; font-size: 16px;"
-                                           onclick="confirmDelete('<?php echo base_url("Contract/delete_folder/$item->id/$folder/$folder_name"); ?>', '#folder_table','')">
+                                           onclick="confirmDelete('<?php echo base_url("Contract/delete_folder/$item->id/$folder/$folder_name"); ?>', '#sub_folder','')">
                                         </i>
 
                                         <div class="card-body text-center">
