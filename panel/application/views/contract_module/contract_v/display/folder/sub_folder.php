@@ -17,18 +17,26 @@
                                 $sub_file_count = count($sub_files) - 2; // "." ve ".." dosyalarını çıkar
                                 ?>
                                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                                    <div class="card folder-box">
+                                    <div class="card folder-box position-relative">
+                                        <!-- Çöp Kutusu İkonu -->
+                                        <i class="fa fa-times text-danger position-absolute"
+                                           style="top: 5px; right: 5px; cursor: pointer; font-size: 16px;"
+                                           data-folder-name="<?= htmlspecialchars($folder_name, ENT_QUOTES, 'UTF-8') ?>"
+                                           data-contract-id="<?= $item->id ?>"
+                                           onclick="deleteFolder(this)"></i>
+
                                         <div class="card-body text-center">
                                             <i class="fa fa-folder f-36 txt-warning" style="cursor: pointer"
-                                               data-folder-name="<?= $folder_name ?>"
+                                               data-folder-name="<?= htmlspecialchars($folder_name, ENT_QUOTES, 'UTF-8') ?>"
                                                data-contract-id="<?= $item->id ?>"
                                                data-parent-name="<?= htmlspecialchars($folder, ENT_QUOTES, 'UTF-8') ?>"
                                                onclick="sendFolderData(this)"></i>
-                                            <h6 class="mt-3"><?= $folder ?></h6>
+                                            <h6 class="mt-3"><?= htmlspecialchars($folder, ENT_QUOTES, 'UTF-8') ?></h6>
                                             <p><?= $sub_file_count ?> dosya</p>
                                         </div>
                                     </div>
                                 </div>
+
                                 <?php
                             }
                         }
@@ -119,7 +127,7 @@
                             onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
                                 // AJAX isteği ile dosyanın sunucudan silinmesi
                                 $.ajax({
-                                    url: "<?php echo base_url("Contract/filedelete_java/$folder_name/"); ?>" + itemId,
+                                    url: "<?php echo base_url("Contract/filedelete_java/$item->id/$folder_name/$folder_id"); ?>",
                                     type: 'POST',
                                     data: {
                                         fileName: item.name // Dosyanın adı
@@ -192,7 +200,14 @@
                             $sub_file_count = count($sub_files) - 2; // "." ve ".." dosyalarını çıkar
                             ?>
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                                <div class="card folder-box">
+                                <div class="card folder-box position-relative">
+                                    <!-- Çöp Kutusu İkonu -->
+                                    <i class="fa fa-times text-danger position-absolute"
+                                       style="top: 5px; right: 5px; cursor: pointer; font-size: 16px;"
+                                       data-folder-name="<?= $main_folder ?>"
+                                       data-contract-id="<?= $item->id ?>"
+                                       onclick="deleteFolder(this)"></i>
+
                                     <div class="card-body text-center">
                                         <i class="fa fa-folder f-36 txt-warning" style="cursor: pointer"
                                            data-folder-name="<?= $main_folder ?>"
@@ -204,6 +219,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <?php
                         }
                     }

@@ -422,6 +422,43 @@
 
 
 <script>
+
+    function deleteFolder(icon) {
+        var folderName = icon.getAttribute("data-folder-name");
+        var contractId = icon.getAttribute("data-contract-id");
+
+        Swal.fire({
+            title: folderName + " klasörünü silmek istediğinize emin misiniz?",
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Evet, sil!",
+            cancelButtonText: "Vazgeç"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= base_url('Contract/delete_folder') ?>",
+                    type: "POST",
+                    data: { folderName: folderName, contractId: contractId },
+                    success: function(response) {
+                        if (response.success) {
+                            $(icon).closest('.col-12').remove(); // Kartı kaldır
+                            Swal.fire("Silindi!", "Klasör başarıyla silindi.", "success");
+                        } else {
+                            Swal.fire("Hata!", "Silme işlemi başarısız: " + response.message, "error");
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Hata!", "Bir hata oluştu, lütfen tekrar deneyin.", "error");
+                    }
+                });
+            }
+        });
+    }
+
+
     function sendFolderData(element) {
 
         let folderName = element.dataset.folderName || "";

@@ -236,6 +236,8 @@
       <workItem from="1738691091392" duration="16030000" />
       <workItem from="1738779599694" duration="7977000" />
       <workItem from="1738940743181" duration="5073000" />
+      <workItem from="1739036004056" duration="4095000" />
+      <workItem from="1739103927876" duration="3599000" />
     </task>
     <servers />
   </component>
@@ -337,7 +339,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>851</line>
+          <line>862</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="hard_delete" />
@@ -346,7 +348,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>887</line>
+          <line>898</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="file_upload" />

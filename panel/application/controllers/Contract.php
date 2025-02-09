@@ -960,7 +960,7 @@ class Contract extends CI_Controller
         exit;
     }
 
-    public function fileDelete_java($module, $id)
+    public function fileDelete_java($contract_id, $folder_name, $folder_id = null )
     {
         if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
@@ -968,12 +968,20 @@ class Contract extends CI_Controller
 
         $fileName = $this->input->post('fileName');
 
-        $contract = $this->Contract_model->get(array("id" => $id));
+        $contract = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/$module/";
+        $path = $this->Upload_Folder . DIRECTORY_SEPARATOR .
+            $this->Module_Main_Dir . DIRECTORY_SEPARATOR .
+            $project->project_code . DIRECTORY_SEPARATOR .
+            $contract->dosya_no . DIRECTORY_SEPARATOR .
+            $folder_name . DIRECTORY_SEPARATOR .
+            $folder_id . DIRECTORY_SEPARATOR .
+            $fileName;
 
-        unlink("$path/$fileName");
+        echo $path;
+
+        unlink($path);
     }
 
     public function download_all($cont_id, $where = null)
@@ -2556,6 +2564,70 @@ class Contract extends CI_Controller
 
     }
 
+    public function create_folder($contract_id)
+    {
+        if (!isAdmin() && !permission_control("contract", "update")) {
+            redirect(base_url("error"));
+        }
+
+        // Gelen ID'ye göre veriyi al
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        // Eğer $item bulunamazsa işlem durdurulur
+        if (!$item) {
+            echo "Geçersiz Contract ID!";
+            return;
+        }
+
+        // Formdan gelen klasör adı
+        $folderName = convertToSEO($this->input->post('new_folder_name'));
+
+
+        // Yeni klasör yolu
+        $new_folder = "{$this->File_Dir_Prefix}/{$project->project_code}/{$item->dosya_no}/$folderName";
+
+
+        // Gelen verilerle işlem yap
+        if (!empty($folderName)) {
+            if (!is_dir($new_folder)) {
+
+                if (mkdir("$new_folder", 0777, TRUE)) { // Klasör oluştur
+                    echo "Klasör başarıyla oluşturuldu!";
+                } else {
+                    echo "Klasör oluşturulurken bir hata oluştu!";
+                }
+            } else {
+                echo "Klasör zaten mevcut!";
+            }
+        } else {
+            echo "Eksik veri gönderildi!";
+        }
+
+        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+
+        $filter_main = scandir($main_path);
+
+        $main_folders = array_filter($filter_main, function($item) use ($main_path) {
+            // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
+            return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
+        });
+
+        $viewData = new stdClass();
+
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->item = $item;
+        $viewData->main_folders = $main_folders;
+        $viewData->main_path = $main_path;
+
+        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData);
+
+        echo json_encode([
+            'html' => $html, // Form hatalarını içeren HTML
+        ]);
+
+    }
+
     public function open_edit_contract_modal($contract_id)
     {
         // Verilerin getirilmesi
@@ -3697,61 +3769,6 @@ class Contract extends CI_Controller
         $viewData->files = $files;
 
         $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData);
-
-        echo json_encode([
-            'html' => $html, // Form hatalarını içeren HTML
-        ]);
-
-    }
-
-    public function create_folder($contract_id)
-    {
-        // Gelen ID'ye göre veriyi al
-        $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
-
-        // Eğer $item bulunamazsa işlem durdurulur
-        if (!$item) {
-            echo "Geçersiz Contract ID!";
-            return;
-        }
-
-        // Formdan gelen klasör adı
-        $folderName = convertToSEO($this->input->post('folderName'));
-
-
-        // Yeni klasör yolu
-        $new_folder = "{$this->File_Dir_Prefix}/{$project->project_code}/{$item->dosya_no}/$folderName";
-
-
-        // Gelen verilerle işlem yap
-        if (!empty($folderName)) {
-            if (!is_dir($new_folder)) {
-
-                if (mkdir("$new_folder", 0777, TRUE)) { // Klasör oluştur
-                    echo "Klasör başarıyla oluşturuldu!";
-                } else {
-                    echo "Klasör oluşturulurken bir hata oluştu!";
-                }
-            } else {
-                echo "Klasör zaten mevcut!";
-            }
-        } else {
-            echo "Eksik veri gönderildi!";
-        }
-
-        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
-
-        $viewData = new stdClass();
-
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->item = $item;
-        $viewData->path = $path;
-        $viewData->sub_path = $new_folder;
-        $viewData->folder_name = $folderName;
-        $viewData->error_find = $new_folder;
-
-        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/modules/folder_view", $viewData, true);
 
         echo json_encode([
             'html' => $html, // Form hatalarını içeren HTML
