@@ -3179,7 +3179,7 @@ class Contract extends CI_Controller
         $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/folder_table", $viewData, true);
 
         echo json_encode([
-            'html' => "deneme", // Form hatalarını içeren HTML
+            'html' => "$html", // Form hatalarını içeren HTML
         ]);
     }
 
