@@ -21,9 +21,8 @@
                                         <!-- Çöp Kutusu İkonu -->
                                         <i class="fa fa-times text-danger position-absolute"
                                            style="top: 5px; right: 5px; cursor: pointer; font-size: 16px;"
-                                           data-folder-name="<?= htmlspecialchars($folder_name, ENT_QUOTES, 'UTF-8') ?>"
-                                           data-contract-id="<?= $item->id ?>"
-                                           onclick="deleteFolder(this)"></i>
+                                           onclick="confirmDelete('<?php echo base_url("Contract/delete_folder/$item->id/$folder/$folder_name"); ?>', '#folder_table','')">
+                                        </i>
 
                                         <div class="card-body text-center">
                                             <i class="fa fa-folder f-36 txt-warning" style="cursor: pointer"
@@ -204,9 +203,8 @@
                                     <!-- Çöp Kutusu İkonu -->
                                     <i class="fa fa-times text-danger position-absolute"
                                        style="top: 5px; right: 5px; cursor: pointer; font-size: 16px;"
-                                       data-folder-name="<?= $main_folder ?>"
-                                       data-contract-id="<?= $item->id ?>"
-                                       onclick="deleteFolder(this)"></i>
+                                       onclick="confirmDelete('<?php echo base_url("Contract/delete_folder/$item->id/$main_folder/"); ?>', '#advance_table','advanceTable')">
+                                    </i>
 
                                     <div class="card-body text-center">
                                         <i class="fa fa-folder f-36 txt-warning" style="cursor: pointer"

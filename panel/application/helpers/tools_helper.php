@@ -400,12 +400,10 @@ function module_name($module_name)
         "Finansal" => "finance",
         "Ödemeler" => "collection",
         "Kullanıcı Rolleri" => "user_roles"
-
     );
 
     $ext = array_search(mb_strtolower($module_name), $module_types);
     return empty($ext) ? $module_name : $ext;
-
 }
 
 function cms_isset($var, $true, $false)

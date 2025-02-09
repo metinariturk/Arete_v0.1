@@ -56,10 +56,10 @@ if (is_dir($main_path)) {
                                 <ul>
                                     <li>
                                         <div class="btn btn-primary"
-                                               data-folder-name=""
-                                               data-contract-id="<?= $item->id ?>"
-                                               data-folder-id=""
-                                               onclick="sendFolderData(this)">
+                                             data-folder-name=""
+                                             data-contract-id="<?= $item->id ?>"
+                                             data-folder-id=""
+                                             onclick="sendFolderData(this)">
                                             <div>
                                                 <i data-feather="folder"></i>
                                                 Ana Klasör
@@ -100,8 +100,8 @@ if (is_dir($main_path)) {
             </div>
         </div>
         <div class="col-xl-9 col-md-12 box-col-12">
-            <div class="file-content" id="sub_folder">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/folder/sub_folder"); ?>
+            <div class="file-content" id="folder_table">
+                <?php $this->load->view("contract_module/contract_v/display/folder/sub_folder"); ?>
             </div>
         </div>
     </div>

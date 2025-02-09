@@ -129,13 +129,10 @@ class Contract extends CI_Controller
         $filter_main = scandir($main_path);
 
 
-        $main_folders = array_filter($filter_main, function($item) use ($main_path) {
+        $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
             // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
             return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
         });
-
-
-
 
 
         $companys = $this->Company_model->get_all(array());
@@ -960,7 +957,7 @@ class Contract extends CI_Controller
         exit;
     }
 
-    public function fileDelete_java($contract_id, $folder_name, $folder_id = null )
+    public function fileDelete_java($contract_id, $folder_name, $folder_id = null)
     {
         if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
@@ -2169,32 +2166,37 @@ class Contract extends CI_Controller
             $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$record_id";
-            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-            }
+            if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
+                // Yükleme yapılacak dosya yolu oluşturuluyor
+                $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
 
-            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+                // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+                if (!is_dir($path)) {
+                    mkdir("$path", 0777, TRUE);
+                }
 
+                $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
 
-            // Yükleme ayarları belirleniyor
-            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
-            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
-            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+                // Yükleme ayarları belirleniyor
+                $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+                $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+                $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+                $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
-            // Yükleme kütüphanesi yükleniyor
-            $this->load->library("upload", $config);
+                // Yükleme kütüphanesi yükleniyor
+                $this->load->library("upload", $config);
 
-
-            // Dosya yükleme işlemi
-            if (!$this->upload->do_upload("file")) {
-                // Yükleme başarısız olduysa hata mesajı döndürülüyor
-                $error = $this->upload->display_errors();
+                // Dosya yükleme işlemi
+                if (!$this->upload->do_upload("file")) {
+                    // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                    $error = $this->upload->display_errors();
+                } else {
+                    // Yükleme başarılıysa devam eden işlemler
+                    $data = $this->upload->data();
+                }
             } else {
-                // Yükleme başarılıysa devam eden işlemler
-                $data = $this->upload->data();
+                // Dosya gönderilmemişse hata mesajı veya işlem yapılabilir
+                $error = "Dosya gönderilmedi!";
             }
 
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
@@ -2323,33 +2325,37 @@ class Contract extends CI_Controller
 
             $record_id = $this->db->insert_id();
 
-            // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance/$record_id";
-            // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-            }
+            if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
+                // Yükleme yapılacak dosya yolu oluşturuluyor
+                $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
 
-            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+                // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+                if (!is_dir($path)) {
+                    mkdir("$path", 0777, TRUE);
+                }
 
+                $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
 
-            // Yükleme ayarları belirleniyor
-            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
-            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
-            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+                // Yükleme ayarları belirleniyor
+                $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+                $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+                $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+                $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
-            // Yükleme kütüphanesi yükleniyor
-            $this->load->library("upload", $config);
+                // Yükleme kütüphanesi yükleniyor
+                $this->load->library("upload", $config);
 
-
-            // Dosya yükleme işlemi
-            if (!$this->upload->do_upload("file")) {
-                // Yükleme başarısız olduysa hata mesajı döndürülüyor
-                $error = $this->upload->display_errors();
+                // Dosya yükleme işlemi
+                if (!$this->upload->do_upload("file")) {
+                    // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                    $error = $this->upload->display_errors();
+                } else {
+                    // Yükleme başarılıysa devam eden işlemler
+                    $data = $this->upload->data();
+                }
             } else {
-                // Yükleme başarılıysa devam eden işlemler
-                $data = $this->upload->data();
+                // Dosya gönderilmemişse hata mesajı veya işlem yapılabilir
+                $error = "Dosya gönderilmedi!";
             }
 
 
@@ -2456,12 +2462,6 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond";
-
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-            }
-
             if ($this->input->post("teslim_tarih")) {
                 $teslim_tarihi = dateFormat('Y-m-d', $this->input->post("teslim_tarih"));
             } else {
@@ -2488,33 +2488,37 @@ class Contract extends CI_Controller
 
             $record_id = $this->db->insert_id();
 
-// Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
-// Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
-            if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-            }
+            if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
+                // Yükleme yapılacak dosya yolu oluşturuluyor
+                $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
 
-            $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+                // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
+                if (!is_dir($path)) {
+                    mkdir("$path", 0777, TRUE);
+                }
 
+                $file_name = convertToSEO(pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME)) . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
 
-// Yükleme ayarları belirleniyor
-            $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
-            $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
-            $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
-            $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
+                // Yükleme ayarları belirleniyor
+                $config["allowed_types"] = "*"; // Her tür dosya yüklemeye izin veriliyor
+                $config["upload_path"] = "$path"; // Dosya yolu belirleniyor
+                $config["file_name"] = $file_name; // Dosya adı kaydın ID'si olarak belirleniyor
+                $config["max_size"] = 10000; // Maksimum dosya boyutu 10 MB (10000 KB)
 
-// Yükleme kütüphanesi yükleniyor
-            $this->load->library("upload", $config);
+                // Yükleme kütüphanesi yükleniyor
+                $this->load->library("upload", $config);
 
-
-// Dosya yükleme işlemi
-            if (!$this->upload->do_upload("file")) {
-// Yükleme başarısız olduysa hata mesajı döndürülüyor
-                $error = $this->upload->display_errors();
+                // Dosya yükleme işlemi
+                if (!$this->upload->do_upload("file")) {
+                    // Yükleme başarısız olduysa hata mesajı döndürülüyor
+                    $error = $this->upload->display_errors();
+                } else {
+                    // Yükleme başarılıysa devam eden işlemler
+                    $data = $this->upload->data();
+                }
             } else {
-// Yükleme başarılıysa devam eden işlemler
-                $data = $this->upload->data();
+                // Dosya gönderilmemişse hata mesajı veya işlem yapılabilir
+                $error = "Dosya gönderilmedi!";
             }
 
 
@@ -2583,48 +2587,72 @@ class Contract extends CI_Controller
         // Formdan gelen klasör adı
         $folderName = convertToSEO($this->input->post('new_folder_name'));
 
-
-        // Yeni klasör yolu
         $new_folder = "{$this->File_Dir_Prefix}/{$project->project_code}/{$item->dosya_no}/$folderName";
 
+        $this->load->library("form_validation");
 
-        // Gelen verilerle işlem yap
-        if (!empty($folderName)) {
+        $this->form_validation->set_rules('new_folder_name', 'Klasör Adı', "required|callback_unique_folder_name[$new_folder]");
+
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+            )
+        );
+
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+
             if (!is_dir($new_folder)) {
-
-                if (mkdir("$new_folder", 0777, TRUE)) { // Klasör oluştur
-                    echo "Klasör başarıyla oluşturuldu!";
-                } else {
-                    echo "Klasör oluşturulurken bir hata oluştu!";
-                }
-            } else {
-                echo "Klasör zaten mevcut!";
+                mkdir($new_folder, 0777, TRUE);
             }
+            $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+
+            $filter_main = scandir($main_path);
+
+            $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
+                // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
+                return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
+            });
+
+            $viewData = new stdClass();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->item = $item;
+            $viewData->main_folders = $main_folders;
+            $viewData->main_path = $main_path;
+
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData, true)
+            );
+            echo json_encode($response);
+
         } else {
-            echo "Eksik veri gönderildi!";
+
+            $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+
+            $filter_main = scandir($main_path);
+
+            $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
+                // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
+                return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
+            });
+            $viewData = new stdClass();
+            $viewData->main_folders = $main_folders;
+            $viewData->main_path = $main_path;
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->item = $item;
+
+            $viewData->form_error = true;
+
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/folder/add_folder_form_input", $viewData, true)
+            );
+            echo json_encode($response);
         }
-
-        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
-
-        $filter_main = scandir($main_path);
-
-        $main_folders = array_filter($filter_main, function($item) use ($main_path) {
-            // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
-            return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
-        });
-
-        $viewData = new stdClass();
-
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->item = $item;
-        $viewData->main_folders = $main_folders;
-        $viewData->main_path = $main_path;
-
-        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData);
-
-        echo json_encode([
-            'html' => $html, // Form hatalarını içeren HTML
-        ]);
 
     }
 
@@ -3104,6 +3132,54 @@ class Contract extends CI_Controller
 
         echo json_encode([
             'html' => $html, // Form hatalarını içeren HTML
+        ]);
+    }
+
+    public function delete_folder($contract_id, $module, $folder_name = null)
+    {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+            return;
+        }
+
+        $this->load->model("Contract_model");
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $this->load->helper('file'); // File helper'ını yükle
+
+        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$module/$folder_name";
+
+        delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
+
+        if (is_dir($path)) {
+            rmdir($path);
+        }
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+
+        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+
+        $filter_main = scandir($main_path);
+
+        $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
+            // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
+            return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
+        });
+
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+
+        $viewData->item = $item;
+        $viewData->main_folders = $main_folders;
+        $viewData->main_path = $main_path;
+
+        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/folder_table", $viewData, true);
+
+        echo json_encode([
+            'html' => "deneme", // Form hatalarını içeren HTML
         ]);
     }
 
@@ -3719,8 +3795,8 @@ class Contract extends CI_Controller
     public function folder_open()
     {
         $folder_name = $this->input->post('folder_name');
-        $contract_id= $this->input->post('contractID');
-        $parent_name= $this->input->post('parent_name');
+        $contract_id = $this->input->post('contractID');
+        $parent_name = $this->input->post('parent_name');
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
@@ -3739,17 +3815,17 @@ class Contract extends CI_Controller
         $filter_main = scandir($main_path);
 
 // . ve .. hariç tutarak, sadece klasörleri ve dosyaları alıyoruz
-        $files = array_filter($filter, function($item) use ($sub_path) {
+        $files = array_filter($filter, function ($item) use ($sub_path) {
             // . ve ..'i hariç tutuyoruz ve sadece dosya ya da klasörleri alıyoruz
             return $item !== '.' && $item !== '..' && !is_dir($sub_path . DIRECTORY_SEPARATOR . $item);
         });
 
-        $folders = array_filter($filter, function($item) use ($sub_path) {
+        $folders = array_filter($filter, function ($item) use ($sub_path) {
             // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
             return $item !== '.' && $item !== '..' && is_dir($sub_path . DIRECTORY_SEPARATOR . $item);
         });
 
-        $main_folders = array_filter($filter_main, function($item) use ($main_path) {
+        $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
             // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
             return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
         });
@@ -3814,6 +3890,31 @@ class Contract extends CI_Controller
             echo "Dosya bulunamadı!";
         }
     }
+
+    public function unique_folder_name($folder_name, $new_folder)
+    {
+        // $new_folder'dan bir üst dizini al
+        $parent_folder = dirname($new_folder);
+
+        // Eğer parent_folder mevcut değilse, kontrol yapmaya gerek yok
+        if (!is_dir($parent_folder)) {
+            return TRUE;
+        }
+
+        // Klasör içindeki tüm alt klasörleri al (sadece dizinler)
+        $existing_folders = array_filter(scandir($parent_folder), function ($item) use ($parent_folder) {
+            return $item !== '.' && $item !== '..' && is_dir($parent_folder . DIRECTORY_SEPARATOR . $item);
+        });
+
+        // Mevcut klasör isimlerini küçük harfe çevir ve kontrol et
+        if (in_array(strtolower($folder_name), array_map('strtolower', $existing_folders))) {
+            $this->form_validation->set_message('unique_folder_name', 'Bu klasör adı zaten kullanılıyor.');
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+
 
 
 }
