@@ -767,6 +767,34 @@ function getModuleList()
     return $modules;
 
 }
+
+function get_dir_contents($path, $type = 'both') {
+    if (!is_dir($path)) return [];
+
+    $items = scandir($path);
+    if ($items === false) return [];
+
+    return array_filter($items, function ($item) use ($path, $type) {
+        $fullPath = $path . DIRECTORY_SEPARATOR . $item;
+        if (in_array($item, ['.', '..'])) return false;
+
+        if ($type === 'dir') return is_dir($fullPath);
+        if ($type === 'file') return is_file($fullPath);
+        return true; // both
+    });
+}
+
+function createDirectories($basePath, $subdirectories) {
+    foreach ($subdirectories as $dir) {
+        $path = $basePath . '/' . $dir;
+        if (!is_dir($path) && !mkdir($path, 0777, true)) {
+            log_message('error', "Directory creation failed: {$path}");
+            // Hata yönetimi ekleyebilirsiniz
+        }
+    }
+}
+
+
 function var_yok_option($field, $form_error)
 {
     if (isset($form_error)) {

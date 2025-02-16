@@ -47,6 +47,7 @@
         </div>
         <!-- Sağ Alt Sözleşmeler -->
         <?php if (!$item->parent) { ?>
+           <?php $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id)); ?>
             <div class="col-md-6">
                 <div class="tabs mb-4">
                     <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">

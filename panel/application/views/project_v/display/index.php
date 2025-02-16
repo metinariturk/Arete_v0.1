@@ -4,20 +4,12 @@
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("{$viewFolder}/common/page_style.php"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
 
-    <style>
-        .btn-outline-none {
-            background: none;
-            border: none;
-            padding: 0;
-            color: inherit;
-        }
-
-        .btn-outline-none:focus {
-            outline: none;
-            box-shadow: none;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <!-- Choices.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
 </head>
 <body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>"> 
@@ -36,18 +28,14 @@
         <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
+<?php $this->load->view("includes/footer"); ?>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/file_upload_script.php"); ?>
-<?php $this->load->view("{$viewFolder}/common/page_script"); ?>
+<?php $this->load->view("includes/include_form_script"); ?>
+<?php $this->load->view("includes/include_datatable"); ?>
+<?php $this->load->view("{$viewFolder}/{$subViewFolder}/page_script"); ?>
+<script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
 
-<?php if (isset($form_error)){ ?>
-    <script>
-        // Sayfa tamamen yüklendiğinde modalı aç
-        $(document).ready(function() {
-            $('#exampleModalgetbootstrap').modal('show');
-        });
-    </script>
-<?php } ?>
 </body>
 </html>
 <?php $this->session->set_flashdata("alert", null); ?>

@@ -1,165 +1,354 @@
-<div class="container-fluid">
-    <div class="email-wrap bookmark-wrap">
-        <div class="row">
-            <div class="col-xl-2 box-col-6">
-                <div class="email-left-aside">
-                    <div class="card">
-                        <div class="card-body">
-                            <div>
-                                <a  style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#exampleModalgetbootstrap" data-whatever="@getbootstrap"><i class="fa fa-edit fa-2x"></i> Proje Düzenle</a>
-                                <div class="modal fade" id="exampleModalgetbootstrap" tabindex="-1" role="dialog" aria-labelledby="exampleModalgetbootstrap" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-toggle-wrapper social-profile text-start dark-sign-up">
-                                                <h3 class="modal-header justify-content-center border-0">Proje Bilgilerini Düzenle</h3>
-                                                <div class="modal-body">
-                                                    <form class="row g-3 needs-validation" novalidate="" action="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>" method="post" enctype="multipart/form-data">
-                                                        <div class="mb-3">
-                                                            <div class="col-form-label">Proje Kodu</div>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text" id="inputGroupPrepend"><?php echo $item->project_code; ?></span>
+<div class="text-center">
+    <ul class="nav nav-tabs search-list" id="top-tab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active"
+               id="tab1-link" data-bs-toggle="tab" href="#tab1" role="tab"
+               tabindex="active"
+               aria-selected="true">
+                Genel
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="tab2-link" data-bs-toggle="tab" href="#tab2" role="tab"
+               tabindex="-1"
+               aria-selected="false">
+                Sözleşmeler
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="tab3-link" data-bs-toggle="tab" href="#tab3" role="tab"
+               tabindex="-1"
+               aria-selected="false">
+                Şantiyeler
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="tab4-link" data-bs-toggle="tab" href="#tab4" role="tab"
+               tabindex="-1"
+               aria-selected="false">
+                Finansal Durum
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="tab6-link" data-bs-toggle="tab" href="#tab6" role="tab"
+               tabindex="-1"
+               aria-selected="false">
+                Dosya Yöneticisi
+            </a>
+        </li>
+    </ul>
+</div>
 
-                                                            </div>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <input class="form-control <?php echo cms_isset(form_error("project_name"), "is-invalid", "$item->project_name"); ?>"
-                                                                   placeholder="Proje Adı" aria-describedby="inputGroupPrepend" name="project_name"
-                                                                   value="<?php echo isset($form_error) ? set_value("project_name") : "$item->project_name"; ?>">
-                                                            <?php if (isset($form_error)) { ?>
-                                                                <div class="invalid-feedback"><?php echo form_error("project_name"); ?></div>
-                                                            <?php } ?>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <input type="text" class="form-control" name="notes" value="<?php echo $item->notes; ?>">
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <button class="btn btn-primary" type="submit">Değişiklikleri Kaydet</button>
-                                                        </div>
-                                                        <?php print_r(validation_errors()); ?>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <a onclick="changeIcon(this)" style="cursor: pointer;"
-                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
-                               id="myBtn">
-                                <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?> fa-2x"></i> Ana Sayfaya Ekle
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <!-- Başlık -->
+
+                <a data-bs-toggle="modal" class="text-primary"
+                   id="open_edit_contract_modal "
+                   onclick="edit_modal_form('<?php echo base_url("Project/open_edit_project_modal/$item->id"); ?>','edit_project_modal','EditProjectModal')">
+                    <i class="fa fa-edit fa-lg"></i>
+                </a>
+
+                <!-- Dropdown Menüsü -->
+                <div class="dropdown">
+                    <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h fa-2x"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" onclick="changeIcon(this)" style="cursor: pointer;"
+                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>">
+                                <i class="fa <?php echo $fav ? 'fa-times' : 'fa-star'; ?>"
+                                   style="<?php echo $fav ? 'color: tomato;' : 'color: gold;'; ?>"></i>
+                                <span><?php echo $fav ? 'Favori Çıkart' : 'Favori Ekle'; ?></span>
                             </a>
-                            <hr>
-                            <div class="email-app-sidebar left-bookmark">
-                                <ul class="nav main-menu" role="tablist">
-                                    <li>
-                                        <span class="title"><b><?php echo $item->project_code; ?> </b><br> <?php echo $item->project_name; ?></span>
-                                    </li>
-                                    <li>
-                                        <hr>
-                                    </li>
-                                    <li>
-                                        <a class="show" id="pills-shared-tab" data-bs-toggle="pill" href="#pills-shared"
-                                           role="tab" aria-controls="pills-shared" aria-selected="false"><span
-                                                    class="title">Sözleşmeler</span></a>
-                                    </li>
-                                    <li><a class="show" id="pills-favourites-tab" data-bs-toggle="pill"
-                                           href="#pills-favourites" role="tab" aria-controls="pills-favourites"
-                                           aria-selected="false"><span class="title"> Teklifler</span></a></li>
-                                    <li><a class="show" id="pills-notification-tab" data-bs-toggle="pill"
-                                           href="#pills-notification" role="tab" aria-controls="pills-notification"
-                                           aria-selected="false"><span class="title"> Şantiyeler</span></a></li>
-                                </ul>
-                            </div>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo base_url('export/'); ?>">
+                                <i class="fa fa-file-excel-o"></i> Excel'e Aktar
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo base_url('export/'); ?>">
+                                <i class="fa fa-file-pdf-o"></i> PDF'e Aktar
+                            </a>
+                        </li>
+                        <li>
+
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                                <i class="fa fa-trash"></i> Sil
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" onclick="change_Status(this)"
+                               url="<?php echo base_url("$this->Module_Name/changeStatus/$item->id"); ?>"
+                               style="cursor: pointer;">
+                                <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
+                                   style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>
+                                <span>
+                                   <?php echo ($item->isActive == 1) ? 'Tamamlandı Olarak İşaretle' : 'Devam Ediyor Olarak İşaretle'; ?>
+                               </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="tab_Contract">
+                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
+                    <div id="add_contract_modal">
+                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/contract/add_contract_modal_form"); ?>
+                    </div>
+                    <div id="add_site_modal">
+                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/site/add_site_modal_form"); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab2" role="tabpanel"
+         aria-labelledby="tab2-link">
+        <div class="card">
+            <div class="card-body">
+                <h5>Sözleşme Rapor</h5>
+                <div class="download_links mt-3">
+                    <a href="<?php echo base_url("export/contract_report_excel/$item->id"); ?>">
+                        <i class="fa fa-file-excel-o fa-2x"></i>
+                    </a>
+                    <a href="<?php echo base_url("export/contract_report_pdf/$item->id/1"); ?>">
+                        <i class="fa fa-file-pdf-o fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab3" role="tabpanel"
+         aria-labelledby="tab3-link">
+        <div class="card">
+            <div class="card-body">
+                <h5>Hakediş Listesi</h5>
+                <div class="download_links mt-3">
+                    <i class="fa fa-plus fa-2x text-primary" id="openPaymentModal"
+                       style="cursor: pointer;" data-bs-toggle="modal"
+                       data-bs-target="#AddPaymentModal" title="Yeni Hakediş Oluştur"
+                       aria-hidden="true">
+                    </i>
+
+                    <a href="<?php echo base_url("export/sitestock_download_excel/$item->id"); ?>">
+                        <i class="fa fa-file-excel-o fa-2x"></i>
+                    </a>
+                    <a href="<?php echo base_url("export/sitestock_download_pdf/$item->id"); ?>">
+                        <i class="fa fa-file-pdf-o fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab4" role="tabpanel"
+         aria-labelledby="tab4-link">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab4-1-link"
+                           data-bs-toggle="tab" href="#tab4-1" role="tab">
+                            <h5>Ödemeler</h5>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab4-2-link"
+                           data-bs-toggle="tab" href="#tab4-2" role="tab">
+                            <h5>Avanslar</h5>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab4-3-link"
+                           data-bs-toggle="tab" href="#tab4-3" role="tab">
+                            <h5>Teminatlar</h5>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab4-1" role="tabpanel" aria-labelledby="tab4-1-link">
+                        <div class="download_links mt-3">
+                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;"
+                               id="openCollectionModal"
+                               onclick="open_modal('AddCollectionModal')"></i>
+                            <a href="<?php echo base_url('export/collection_download_excel'); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url('export/collection_download_pdf'); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div id="collection_table">
+                        </div>
+                        <div id="add_collection_modal">
+                        </div>
+                        <div id="edit_collection_modal">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
+                        <div class="download_links mt-3">
+                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
+                               id="openAdvanceModal"
+                               data-bs-target="#AddAdvanceModal"></i>
+                            <a href="<?php echo base_url('export/advance_download_excel'); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url('export/advance_download_pdf'); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div id="advance_table">
+                        </div>
+                        <div id="add_advance_modal">
+                        </div>
+                        <div id="edit_advance_modal">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab4-3" role="tabpanel" aria-labelledby="tab4-3-link">
+                        <div class="download_links mt-3">
+                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
+                               id="openBondModal"
+                               data-bs-target="#AddBondModal"></i>
+                            <a href="<?php echo base_url('export/bond_download_excel'); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url('export/bond_download_pdf'); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div id="bond_table">
+                        </div>
+                        <div id="add_bond_modal">
+                        </div>
+                        <div id="edit_bond_modal">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-7 col-md-12 box-col-12">
-                <div class="email-right-aside bookmark-tabcontent">
-                    <div class="card email-body radius-left">
-                        <div class="ps-0">
-                            <div class="tab-content">
-                                <div class="fade tab-pane active show" id="pills-shared" role="tabpanel"
-                                     aria-labelledby="pills-shared-tab">
-                                    <div class="card mb-0">
-                                        <div class="card-header d-flex">
-                                            <h6 class="mb-0">Ana Sözleşmeler</h6>
-                                            <ul>
-                                                <li>
-                                                    <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("contract/new_form_main/$item->id"); ?>">
-                                                        <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
-                                                        Sözleşme Ekle
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php if (!empty($contracts)) { ?>
-                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_contract"); ?>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="fade tab-pane" id="pills-favourites" role="tabpanel"
-                                     aria-labelledby="pills-favourites-tab">
+        </div>
+    </div>
 
-                                    <div class="card mb-0">
-                                        <div class="card-header d-flex">
-                                            <h6 class="mb-0">Teklifler</h6>
-                                            <ul>
-                                                <li>
-                                                    <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("contract/new_form_offer/$item->id"); ?>">
-                                                        <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
-                                                        Teklif Ekle
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php if (!empty($offers)) { ?>
-                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_offer"); ?>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="fade tab-pane" id="pills-notification" role="tabpanel"
-                                     aria-labelledby="pills-notification-tab">
-                                    <div class="card mb-0">
-                                        <div class="card-header d-flex">
+    <div class="tab-pane fade" id="tab5" role="tabpanel"
+         aria-labelledby="tab5-link">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab5-1-link"
+                           data-bs-toggle="tab" href="#tab5-1" role="tab">
+                            <h5>Birim Fiyat Tablo</h5>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);"
+                           id="tab5-2-link"
+                           data-bs-toggle="tab" href="#tab5-2" role="tab">
+                            <h5>Poz Grupları</h5>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-3-link"
+                           data-bs-toggle="tab" href="#tab5-3" role="tab">
+                            <h5>Poz Kitabı</h5>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-4-link"
+                           data-bs-toggle="tab" href="#tab5-4" role="tab">
+                            <h5>Sözleşme İş Grupları</h5>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab5-1" role="tabpanel" aria-labelledby="tab5-1-link">
+                        <div class="download_links mt-3">
+                            <a href="<?php echo base_url("export/report_download_excel/$item->id"); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div id="tab_contract_price_table">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab5-2" role="tabpanel" aria-labelledby="tab5-2-link">
+                        <div class="download_links mt-3">
+                            <a href="<?php echo base_url('export/'); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url("export/$item->id"); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div id="pricegroup_table">
+                        </div>
 
-                                            <h6 class="mb-0">Şantiyeler</h6>
-                                            <ul>
-                                                <li>
-                                                    <a class="pager-btn btn btn-info btn-outline"
-                                                       href="<?php echo base_url("site/new_form/$item->id"); ?>">
-                                                        <i class="menu-icon fa fa-plus" aria-hidden="true"></i>Yeni
-                                                        Şantiye Ekle
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php if (!empty($sites)) { ?>
-                                                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/connected_site"); ?>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div id="edit_pricegroup_modal">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab5-3" role="tabpanel" aria-labelledby="tab5-3-link">
+                        <div class="download_links mt-3">
+                            <a href="<?php echo base_url("export/book_download_excel/$item->id"); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div id="tab_price_book">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab5-4" role="tabpanel" aria-labelledby="tab5-4-link">
+                        <div class="download_links mt-3">
+                            <a href="<?php echo base_url("export/book_download_excel/$item->id"); ?>">
+                                <i class="fa fa-file-excel-o fa-2x"></i>
+                            </a>
+                            <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
+                                <i class="fa fa-file-pdf-o fa-2x"></i>
+                            </a>
+                        </div>
+                        <div class="refresh_tab_5" name="refresh_tab_5" id="refresh_tab_5">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-12 box-col-12">
-                <div class="card mb-0">
-                        <?php $this->load->view("{$viewFolder}/$this->Common_Files/add_document"); ?>
-                    </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab6" role="tabpanel"
+         aria-labelledby="tab6-link">
+        <div class="card">
+            <div class="card-body">
+                <h5>Dosya Yöneticisi</h5>
+                <div class="download_links mt-3">
+                    <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;"
+                       id="openCollectionModal"
+                       onclick="open_modal('AddFolderModal')"></i>
+                </div>
+                <div id="folder_table">
+                </div>
+                <div id="add_folder_modal">
+                </div>
+                <div id="edit_folder_modal">
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 

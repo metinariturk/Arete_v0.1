@@ -31,6 +31,7 @@ class Project extends CI_Controller
         $this->load->model("Report_workgroup_model");
         $this->load->model("Report_workmachine_model");
         $this->load->model("Contract_model");
+        $this->load->model("Company_model");
         $this->load->model("User_model");
         $this->load->model("Order_model");
 
@@ -90,11 +91,13 @@ class Project extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $item = $this->Project_model->get(
-            array(
-                "id" => $id
-            )
-        );
+        $item = $this->Project_model->get(array("id" => $id));
+        $companys = $this->Company_model->get_all(array());
+        $main_contracts = $this->Contract_model->get_all(array("proje_id" => $id, "parent" => 0));
+        $sites = $this->Site_model->get_all(array("proje_id" => $id));
+        $next_contract_name = get_next_file_code("Contract");
+        $next_site_name = get_next_file_code("Site");
+        $users = $this->User_model->get_all(array());
 
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->project_code/main/";
@@ -109,17 +112,6 @@ class Project extends CI_Controller
             "module_id" => $id,
         ));
 
-        $offers = $this->Contract_model->get_all(array(
-                "proje_id" => $id, "offer" => 1
-            )
-        );
-
-        $sites = $this->Site_model->get_all(array('proje_id' => $id));
-        $contracts = $this->Contract_model->get_all(
-            array(
-                "proje_id" => $id,
-            )
-        );
 
         $viewData = new stdClass();
         $settings = $this->Settings_model->get();
@@ -127,11 +119,14 @@ class Project extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->settings = $settings;
-        $viewData->offers = $offers;
+        $viewData->next_contract_name = $next_contract_name;
+        $viewData->next_site_name = $next_site_name;
+        $viewData->users = $users;
+        $viewData->companys = $companys;
         $viewData->upload_function = $upload_function;
         $viewData->path = $path;
         $viewData->sites = $sites;
-        $viewData->contracts = $contracts;
+        $viewData->main_contracts = $main_contracts;
         $viewData->fav = $fav;
         $viewData->display_route = $this->display_route;
         $viewData->item = $item;
@@ -595,7 +590,6 @@ class Project extends CI_Controller
             $project_name = get_from_id("projects", "project_name", $project_id);
 
             $path = "uploads/project_v/$project_code/main";
-            echo $path;
 
             $files = glob($path . '/*');
 
@@ -663,6 +657,234 @@ class Project extends CI_Controller
                 )
             );
             echo "favoriye eklendi";
+        }
+    }
+
+    public function create_contract($project_id = null, $parent_contract = null)
+    {
+        // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
+        if (!isAdmin() && !permission_control("contract", "write")) {
+            redirect(base_url("error"));
+        }
+
+
+        $project_code = project_code($project_id);
+
+        $file_name = "SOZ-" . get_next_file_code("Contract");
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|trim");
+        $this->form_validation->set_rules("contract_name", "Sözleşme Ad", "required|trim");
+        $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
+        $this->form_validation->set_rules("yuklenici", "Yüklenici", "required|trim");
+        $this->form_validation->set_rules("sozlesme_tarih", "Sözleşme Tarih", "required|trim");
+        $this->form_validation->set_rules("sozlesme_turu", "Sözleşme Türü", "required|trim");
+        $this->form_validation->set_rules("isin_turu", "İşin Türü", "required|trim");
+        $this->form_validation->set_rules("isin_suresi", "İşin Süresi", "greater_than[0]|required|trim|integer");
+        $this->form_validation->set_rules("sozlesme_bedel", "Sözleşme Bedel", "greater_than[0]|required|trim|numeric");
+        $this->form_validation->set_rules("para_birimi", "Para Birimi", "required|trim");
+
+
+        // Form Validation Hatalarını Tanımla
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
+                "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
+                "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük olmalıdır",
+                "less_than_equal_to" => "<b>{field}</b> uygulaması seçilmelidir",
+                "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
+            )
+        );
+
+        // Form Validation'u Çalıştır
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            // Dizin oluşturma işlemi
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name";
+            !is_dir($path) || mkdir($path, 0777, TRUE);
+
+            // Tarih ve adı biçimlendirme işlemleri
+            $sozlesme_tarih = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
+            $sozlesme_bitis = dateFormat('Y-m-d', date_plus_days($this->input->post("sozlesme_tarih"), $this->input->post("isin_suresi") - 1));
+            $contract_name = mb_convert_case($this->input->post("contract_name"), MB_CASE_TITLE, "UTF-8");
+
+
+            // Veritabanına Ekleme İşlemi
+            $insert = $this->Contract_model->add(
+                array(
+                    "proje_id" => $project_id,
+                    "dosya_no" => $file_name,
+                    "contract_name" => $contract_name,
+                    "isveren" => $this->input->post("isveren"),
+                    "yuklenici" => $this->input->post("yuklenici"),
+                    "sozlesme_tarih" => $sozlesme_tarih,
+                    "sozlesme_turu" => $this->input->post("sozlesme_turu"),
+                    "isin_turu" => $this->input->post("isin_turu"),
+                    "isin_suresi" => $this->input->post("isin_suresi"),
+                    "sozlesme_bitis" => $sozlesme_bitis,
+                    "sozlesme_bedel" => $this->input->post("sozlesme_bedel"),
+                    "para_birimi" => $this->input->post("para_birimi"),
+                    "isActive" => "1",
+                )
+            );
+
+            $viewData = new stdClass();
+
+            $item = $this->Project_model->get(array("id" => $project_id));
+            $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id, "parent" => 0));
+            $settings = $this->Settings_model->get();
+
+            // View'e gönderilecek Değişkenlerin Set Edilmesi
+            $viewData->item = $item;
+            $viewData->main_contracts = $main_contracts;
+            $viewData->settings = $settings;
+
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("project_v/display/contract/contract_table", $viewData, true)
+            );
+            echo json_encode($response);
+
+        } else {
+            // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
+            $viewData = new stdClass();
+
+
+            $item = $this->Project_model->get(array("id" => $project_id));
+            $settings = $this->Settings_model->get();
+            $companys = $this->Company_model->get_all(array());
+            $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id, "parent" => 0));
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->companys = $companys;
+            $viewData->main_contracts = $main_contracts;
+            $viewData->item = $item;
+            $viewData->settings = $settings;
+            $viewData->form_error = true;
+
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("project_v/display/contract/add_contract_form_input", $viewData, true)
+            );
+            echo json_encode($response);
+        }
+    }
+
+    public function create_site($project_id = null)
+    {
+        // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
+        if (!isAdmin() && !permission_control("contract", "write")) {
+            redirect(base_url("error"));
+        }
+
+        $next_site_name = get_next_file_code("Site");
+        $file_name = "SNT-" . $next_site_name;
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("contract_id", "Sözleşme", "required|trim|integer");
+        $this->form_validation->set_rules("santiye_sefi", "Şantiye Şefi", "greater_than[0]|required|trim");
+        $this->form_validation->set_rules("santiye_ad", "Şantiye Adı", "required|trim|is_unique[site.santiye_ad]");
+
+        $this->form_validation->set_message(
+            array(
+                "integer" => "<b>{field}</b> alanı doldurulmalıdır",
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "greater_than" => "<b>{field}</b> Seçilmelidir",
+                "is_unique" => "<b>Aynı İsimde Şanitye Mevcut</b> Farklı İsim Seçiniz",
+            )
+        );
+
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+
+            $project_code = project_code($project_id);
+            $path = "$this->Upload_Folder/project_v/$project_code/$file_name/Main/";
+
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+            }
+
+            if ($this->input->post("teslim_tarihi")) {
+                $teslim_tarihi = dateFormat('Y-m-d', $this->input->post("teslim_tarihi"));
+            } else {
+                $teslim_tarihi = null;
+            }
+
+            $personeller = $this->input->post('teknik_personeller');
+
+            if (!empty($personeller)) {
+                $data_personel = implode(",", array_unique($personeller));
+            } else {
+                $data_personel = null;
+            }
+
+            $sub_contracts = $this->input->post('sub_contract');
+
+            $insert = $this->Site_model->add(
+                array(
+                    "proje_id" => $project_id,
+                    "contract_id" => $this->input->post('contract_id'),
+                    "dosya_no" => $file_name,
+                    "santiye_ad" => $this->input->post("santiye_ad"),
+                    "santiye_sefi" => $this->input->post("santiye_sefi"),
+                    "teknik_personel" => $data_personel,
+                    "is_Active" => "1",
+                )
+            );
+
+            $viewData = new stdClass();
+
+            $item = $this->Project_model->get(array("id" => $project_id));
+            $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id, "parent" => 0));
+            $settings = $this->Settings_model->get();
+            $sites = $this->Site_model->get_all(array("proje_id" => $project_id));
+
+            // View'e gönderilecek Değişkenlerin Set Edilmesi
+            $viewData->item = $item;
+            $viewData->main_contracts = $main_contracts;
+            $viewData->settings = $settings;
+            $viewData->sites = $sites;
+
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("project_v/display/site/site_table", $viewData, true)
+            );
+            echo json_encode($response);
+
+        } else {
+            // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
+            $viewData = new stdClass();
+
+            $item = $this->Project_model->get(array("id" => $project_id));
+            $settings = $this->Settings_model->get();
+            $companys = $this->Company_model->get_all(array());
+            $sites = $this->Site_model->get_all(array("proje_id" => $project_id));
+            $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id, "parent" => 0));
+            $next_site_name = get_next_file_code("Site");
+            $users = $this->User_model->get_all();
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->companys = $companys;
+            $viewData->sites = $sites;
+            $viewData->next_site_name = $next_site_name;
+            $viewData->main_contracts = $main_contracts;
+            $viewData->item = $item;
+            $viewData->settings = $settings;
+            $viewData->users = $users;
+
+            $viewData->form_error = true;
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("project_v/display/site/add_site_form_input", $viewData, true)
+            );
+            echo json_encode($response);
         }
     }
 }

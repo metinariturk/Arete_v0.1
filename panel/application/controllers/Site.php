@@ -254,7 +254,6 @@ class Site extends CI_Controller
                 array(
                     "contract_id" => $contract_id,
                     "proje_id" => $project_id,
-                    "contract_id" => $this->input->post('contract_id'),
                     "dosya_no" => $file_name,
                     "santiye_ad" => $this->input->post("santiye_ad"),
                     "santiye_sefi" => $this->input->post("santiye_sefi"),
