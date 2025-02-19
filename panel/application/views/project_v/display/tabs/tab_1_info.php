@@ -15,7 +15,7 @@
 <div class="container mt-5">
     <div class="row">
         <!-- Sağ Alt Sözleşmeler -->
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="tabs mb-4">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
                     <b>Proje Ana Sözleşmeler<br> <?php echo count($main_contracts); ?> Adet Sözleşme Mevcut</b>
@@ -30,10 +30,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="tabs mb-4">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
-                    <b>Şantiyeler</b>
+                    <b>Şantiyeler<br> <?php echo count($sites); ?> Adet Şantiye Mevcut</b>
                     <i class="fa fa-plus me-0" style="cursor: pointer;"
                        id="openSiteModal"
                        onclick="open_modal('AddSiteModal')"></i>

@@ -311,7 +311,7 @@
                 '</div>',
             theme: 'dragdrop',
             upload: {
-                url: "<?php echo base_url('Contract/file_upload/'); ?>" + itemId,
+                url: "<?php echo base_url('Project/file_upload/'); ?>" + itemId,
                 data: null,
                 type: 'POST',
                 enctype: 'multipart/form-data',
@@ -377,7 +377,7 @@
             onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
                 // AJAX isteği ile dosyanın sunucudan silinmesi
                 $.ajax({
-                    url: "<?php echo base_url('Contract/filedelete_java/'); ?>" + itemId,
+                    url: "<?php echo base_url('Project/filedelete_java/'); ?>" + itemId,
                     type: 'POST',
                     data: {
                         fileName: item.name // Dosyanın adı
@@ -451,7 +451,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "<?= base_url('Contract/delete_folder') ?>",
+                    url: "<?= base_url('Project/delete_folder') ?>",
                     type: "POST",
                     data: { folderName: folderName, contractId: contractId },
                     success: function(response) {
@@ -479,7 +479,7 @@
         // AJAX isteği
 
         $.ajax({
-            url: '<?= base_url('Contract/folder_open') ?>', // Controller ve method yolu
+            url: '<?= base_url('Project/folder_open') ?>', // Controller ve method yolu
             type: 'POST',
             data: {
                 folder_name: folderName,
@@ -513,7 +513,7 @@
 
             // AJAX ile form ve itemID'yi gönder
             $.ajax({
-                url: '<?= base_url("Contract/create_folder/") ?>' + itemID, // PHP kontrolör yolu
+                url: '<?= base_url("Project/create_folder/") ?>' + itemID, // PHP kontrolör yolu
                 type: 'POST',
                 data: formData, // Form verilerini POST ile gönder
                 success: function (response) {
@@ -537,7 +537,7 @@
     function deleteFile(encodedPath) {
         // Silme işlemi için AJAX
         $.ajax({
-            url: '<?php echo base_url("Contract/delete_file/"); ?>' + encodedPath,
+            url: '<?php echo base_url("Project/delete_file/"); ?>' + encodedPath,
             type: 'GET',
             success: function(response) {
                 // Dosya başarıyla silindiyse, sayfayı yenileyin veya başarı mesajı gösterin

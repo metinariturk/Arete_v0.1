@@ -32,6 +32,7 @@ class Project extends CI_Controller
         $this->load->model("Report_workmachine_model");
         $this->load->model("Contract_model");
         $this->load->model("Company_model");
+        $this->load->model("Workman_model");
         $this->load->model("User_model");
         $this->load->model("Order_model");
 
@@ -757,10 +758,12 @@ class Project extends CI_Controller
             $settings = $this->Settings_model->get();
             $companys = $this->Company_model->get_all(array());
             $main_contracts = $this->Contract_model->get_all(array("proje_id" => $project_id, "parent" => 0));
+            $next_contract_name = get_next_file_code("Contract");
 
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->companys = $companys;
+            $viewData->next_contract_name = $next_contract_name;
             $viewData->main_contracts = $main_contracts;
             $viewData->item = $item;
             $viewData->settings = $settings;

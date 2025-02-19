@@ -128,6 +128,10 @@
                     <a href="<?php echo base_url("export/contract_report_pdf/$item->id/1"); ?>">
                         <i class="fa fa-file-pdf-o fa-2x"></i>
                     </a>
+                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_2_contracts_info"); ?>
+                    <div id="add_subcontract_modal">
+                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/subcontract/add_subcontract_modal_form"); ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,20 +141,13 @@
          aria-labelledby="tab3-link">
         <div class="card">
             <div class="card-body">
-                <h5>Hakediş Listesi</h5>
+                <h5>Şantiyeler</h5>
                 <div class="download_links mt-3">
-                    <i class="fa fa-plus fa-2x text-primary" id="openPaymentModal"
-                       style="cursor: pointer;" data-bs-toggle="modal"
-                       data-bs-target="#AddPaymentModal" title="Yeni Hakediş Oluştur"
-                       aria-hidden="true">
-                    </i>
+                    <i class="fa fa-plus me-0" style="cursor: pointer;"
+                       id="openSiteModal"
+                       onclick="open_modal('AddSiteModal')"></i>
+                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_3_sites_info"); ?>
 
-                    <a href="<?php echo base_url("export/sitestock_download_excel/$item->id"); ?>">
-                        <i class="fa fa-file-excel-o fa-2x"></i>
-                    </a>
-                    <a href="<?php echo base_url("export/sitestock_download_pdf/$item->id"); ?>">
-                        <i class="fa fa-file-pdf-o fa-2x"></i>
-                    </a>
                 </div>
             </div>
         </div>
@@ -342,10 +339,31 @@
                        onclick="open_modal('AddFolderModal')"></i>
                 </div>
                 <div id="folder_table">
-                </div>
-                <div id="add_folder_modal">
-                </div>
-                <div id="edit_folder_modal">
+                    <div class="file-content">
+                        <div class="fileuploader fileuploader-theme-dragdrop">
+                            <form method="post" enctype="multipart/form-data">
+                                <?php
+                                $uploadDir = $path;
+                                $preloadedFiles = array();
+                                $uploadsFiles = array_diff(scandir($uploadDir), array('.', '..'));
+                                foreach ($uploadsFiles as $file) {
+                                    if (is_dir($uploadDir . $file))
+                                        continue;
+                                    $preloadedFiles[] = array(
+                                        "name" => $file,
+                                        "auc_id" => $item->id,
+                                        "type" => FileUploader::mime_content_type($uploadDir . $file),
+                                        "size" => filesize($uploadDir . $file),
+                                        "file" => base_url($path) . $file,
+                                        "local" => base_url($path) . $file,
+                                    );
+                                }
+                                $preloadedFiles = json_encode($preloadedFiles);
+                                ?>
+                                <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
