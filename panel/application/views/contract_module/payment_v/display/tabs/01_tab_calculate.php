@@ -1,8 +1,3 @@
-<div class="fade tab-pane <?php if ($active_tab == "calculate" or $active_tab == null) {
-    echo "active show";
-} ?>"
-     id="calculate" role="tabpanel"
-     aria-labelledby="calculate-tab">
 
 
     <div class="content">
