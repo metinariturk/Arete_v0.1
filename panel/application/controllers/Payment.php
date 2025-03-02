@@ -2025,7 +2025,6 @@ class Payment extends CI_Controller
         $pdf->custom_footer = $footer_sign;
 
         $page_width = $pdf->getPageWidth();
-        $pdf->AddPage();
         $pdf->SetFontSize(8);
         $pdf->Cell($page_width, 5, "", 0, 0, "L", 0);
         $pdf->SetFillColor(150, 150, 150); // Gri rengi ayarlayın (RGB renk kodu)

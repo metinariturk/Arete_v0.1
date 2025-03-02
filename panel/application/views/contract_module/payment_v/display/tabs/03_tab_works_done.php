@@ -1,9 +1,3 @@
-<div class="fade tab-pane <?php if ($active_tab == "works_done") {
-    echo "active show";
-} ?>"
-     id="works_done" role="tabpanel"
-     aria-labelledby="works_done-tab">
-
     <div class="content">
         <div class="card-body">
             <div class="row">
@@ -117,10 +111,21 @@
                         </tr>
                         <?php $contract_items = $this->Contract_price_model->get_all(array('contract_id' => $item->contract_id, "sub_id" => $sub_group->id)); ?>
                         <?php $i = 1; ?>
+                        <?php
+                        $total_X = 0;
+                        $total_Y = 0;
+                        $total_Z = 0;
+                        ?>
                         <?php foreach ($contract_items as $contract_item) { ?>
                             <?php $calculate = $this->Boq_model->get(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "boq_id" => $contract_item->id)); ?>
                             <?php $old_total = $this->Boq_model->sum_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "boq_id" => $contract_item->id), "total"); ?>
                             <?php $this_total = isset($calculate->total) ? $calculate->total : 0; ?>
+                            <?php
+                            $total_X += ($old_total + $this_total) * $contract_item->price;
+                            $total_Y += $old_total * $contract_item->price;
+                            $total_Z += $this_total * $contract_item->price;
+                            ?>
+
                             <tr>
                                 <td class="total-group-row-center"><?php echo $i++; ?>
                                 </td>
@@ -156,8 +161,17 @@
                                 </td>
                             </tr>
                         <?php } ?>
+                        <tr>
+                            <td colspan="8">
+
+                            </td>
+                            <td class="total-group-row-right"><?php echo money_format($total_X);?></td>
+                            <td class="total-group-row-right"><?php echo money_format($total_Y);?></td>
+                            <td class="total-group-row-right"><?php echo money_format($total_Z);?></td>
+                        </tr>
                     <?php } ?>
                     </tbody>
+
                 </table>
             <?php } ?>
             <div class="card-body">
@@ -200,4 +214,3 @@
             </div>
         </div>
     </div>
-</div>

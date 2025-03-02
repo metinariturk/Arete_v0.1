@@ -1,8 +1,4 @@
-<div class="fade tab-pane <?php if ($active_tab == "main_total") {
-    echo "active show";
-} ?>"
-     id="main_total" role="tabpanel"
-     aria-labelledby="group_total-tab">
+
     <div class="content">
         <div class="card-body">
             <div class="row">
@@ -118,38 +114,5 @@
                 </tfoot>
                 </tbody>
             </table>
-            <div class="card-body">
-                <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
-                    <div class="h-100 checkbox-checked">
-                        <h6 class="sub-title">05 - Yapılan İşler Grup İcmalleri</h6>
-                        <div style="height: 50px;" hidden>
-                            <div class="form-check radio radio-success">
-                                <input class="form-check-input" id="mt1"
-                                       data-url="<?php echo base_url("payment/print_main_total/$item->id"); ?>"
-                                       type="radio" name="mt" value="main" checked="">
-                                <label class="form-check-label" for="mt1">Tümünü Yazdır</label>
-                            </div>
-                        </div>
-                        <div class="form-check radio radio-success">
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <div class="btn-group btn-group-pill" role="group" aria-label="Basic example">
-                                        <button class="btn btn-outline-success" name="mt"
-                                                onclick="handleButtonClick(1)" type="button"><i
-                                                    class="fa fa-download"></i>
-                                            İndir
-                                        </button>
-                                        <button class="btn btn-outline-success" name="mt"
-                                                onclick="handleButtonClick(0)" type="button"><i
-                                                    class="fa fa-file-pdf-o"></i>Önizle
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-</div>

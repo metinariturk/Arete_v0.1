@@ -71,7 +71,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/assets/images",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,18 +82,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\settings_v\display\structure" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\display" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\folder" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0012\SOZ-0050\Collection" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\price" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\bond" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\advance" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\site\assets\images\main-slider\slider1" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -242,7 +242,7 @@
       <workItem from="1739717058776" duration="16900000" />
       <workItem from="1739995089678" duration="7351000" />
       <workItem from="1740427992707" duration="3655000" />
-      <workItem from="1740922893684" duration="14601000" />
+      <workItem from="1740922893684" duration="22088000" />
     </task>
     <servers />
   </component>
@@ -254,7 +254,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>3008</line>
+          <line>3007</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="sign_rankSetter" />
@@ -372,7 +372,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>4345</line>
+          <line>4344</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
