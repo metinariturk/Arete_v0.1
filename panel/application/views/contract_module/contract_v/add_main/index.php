@@ -23,6 +23,6 @@
 <?php $this->load->view("includes/include_form_script"); ?>
 </body>
 </html>
-<?php $this->session->set_flashdata("alert", null); ?>
+
 
 

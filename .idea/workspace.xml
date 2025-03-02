@@ -71,7 +71,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/project_v/display/tabs",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,11 +82,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\settings_v\display\structure" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\display" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\folder" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\bond" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0012\SOZ-0050\Collection" />
@@ -240,7 +240,9 @@
       <workItem from="1739103927876" duration="8921000" />
       <workItem from="1739218975445" duration="9491000" />
       <workItem from="1739717058776" duration="16900000" />
-      <workItem from="1739995089678" duration="6955000" />
+      <workItem from="1739995089678" duration="7351000" />
+      <workItem from="1740427992707" duration="3655000" />
+      <workItem from="1740922893684" duration="14601000" />
     </task>
     <servers />
   </component>
@@ -342,7 +344,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>454</line>
+          <line>581</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="hard_delete" />
@@ -351,7 +353,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>490</line>
+          <line>617</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="file_upload" />

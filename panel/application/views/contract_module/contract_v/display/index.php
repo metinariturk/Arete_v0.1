@@ -6,7 +6,14 @@
     <?php $this->load->view("includes/head"); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/custom.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
-
+<style>
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        white-space: nowrap;
+    }
+</style>
 </head>
 <body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -21,9 +28,9 @@
         <div class="page-body">
             <?php $this->load->view("{$viewModule}/{$viewFolder}/display/content"); ?>
         </div>
+        <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
-<?php $this->load->view("includes/footer"); ?>
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
@@ -31,9 +38,6 @@
 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/price_script"); ?>
 <script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
-
-
-<?php $this->session->set_flashdata("alert", null); ?>
 </body>
 </html>
 

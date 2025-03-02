@@ -399,7 +399,8 @@ function module_name($module_name)
         "Kullanıcılar" => "user",
         "Finansal" => "finance",
         "Ödemeler" => "collection",
-        "Kullanıcı Rolleri" => "user_roles"
+        "Kullanıcı Rolleri" => "user_roles",
+        "Varsayılan İş Grupları" => "default_workgroup"
     );
 
     $ext = array_search(mb_strtolower($module_name), $module_types);

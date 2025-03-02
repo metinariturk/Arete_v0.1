@@ -40,6 +40,7 @@ class Settings extends CI_Controller
         
         $viewData->viewFolder = $this->viewFolder;
         $viewData->item = $item;
+        $viewData->default_groups = json_decode($item->default_groups, true);
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -79,10 +80,6 @@ class Settings extends CI_Controller
 
         $validate = $this->form_validation->run();
 
-        $surec_durumlar = str_getcsv(durum_name($this->input->post("surec_durum")));
-        $fill_default_colour = array_fill_keys($surec_durumlar, 'primary');
-        $surec_color = json_encode($fill_default_colour);
-
         if ($validate) {
 
             $insert = $this->Settings_model->add(
@@ -105,7 +102,6 @@ class Settings extends CI_Controller
                     "odeme_turu" => $this->input->post("odeme_turu"), //16
                     "meslek" => $this->input->post("meslek"), //17
                     "surec_durum" => durum_name($this->input->post("surec_durum")), //18
-                    "surec_color" => $surec_color, //19
                     "department" => $this->input->post("department"), //20
                     "is_grubu" => $this->input->post("is_grubu"), //21
                     "sozlesme_turu" => $this->input->post("sozlesme_turu"), //22
@@ -173,36 +169,6 @@ class Settings extends CI_Controller
 
     }
 
-    public function pick_color_save($id)
-    {
-
-        $arr1 = ($this->input->post("surec"));
-        $arr2 = ($this->input->post("group"));
-
-        print_r($arr1);
-        echo "1. Array<br>";
-        print_r($arr2);
-        echo "2. Array<br>";
-
-        $res = array_combine(array_intersect_key($arr1, $arr2), array_intersect_key($arr2, $arr1));
-
-        $d = json_encode($res);
-
-        $data = array(
-            "surec_color" => $d, //1
-        );
-
-        $update = $this->Settings_model->update(array("id" => $id), $data);
-        // TODO Alert sistemi eklenecek...
-        if ($update) {
-
-            redirect(base_url("settings/pick_color/$id"));
-
-        } else {
-
-            "Eroor";
-        }
-    }
 
     public function update($id)
     {
@@ -226,12 +192,6 @@ class Settings extends CI_Controller
 
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
-
-        $surec_durumlar = str_getcsv(durum_name($this->input->post("surec_durum")));
-        $fill_default_colour = array_fill_keys($surec_durumlar, 'primary');
-        $surec_color = json_encode($fill_default_colour);
-
-
 
         if ($validate) {
 
@@ -277,7 +237,6 @@ class Settings extends CI_Controller
                 "units" => $this->input->post("units"), //30
                 "theme_colour" => $this->input->post("theme_colour"), //28
                 "theme_panelfold" => $this->input->post("theme_panelfold"), //28
-
             );
 
             $update = $this->Settings_model->update(array("id" => $id), $data);
@@ -337,72 +296,21 @@ class Settings extends CI_Controller
             )
         );
 
+        $main_groups = $item->main_groups;
+
         
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
+        $viewData->main_groups = $main_groups;
 
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function pick_color($id)
+    public function update_default_group()
     {
-        $viewData = new stdClass();
-
-        /** Tablodan Verilerin Getirilmesi.. */
-        $item = $this->Settings_model->get(
-            array(
-                "id" => $id,
-            )
-        );
-
-        
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "pick_color";
-        $viewData->item = $item;
-
-        $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+      echo "burda";
     }
 
-    public function logo_upload($id)
-    {
 
-        $file_name = "firma_logo" . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-
-        $config["allowed_types"] = "jpg|jpeg|png";
-        $config["upload_path"] = "uploads/$this->viewFolder/";
-        $config["file_name"] = $file_name;
-
-        $this->load->library("upload", $config);
-
-        $upload = $this->upload->do_upload("file");
-
-        if ($upload) {
-
-            $data = array(
-                "logo" => $file_name, //1
-            );
-
-            $this->Settings_model->update(array("id" => $id), $data);
-
-        } else {
-            echo "islem basarisiz";
-        }
-
-    }
-
-    public function logo_del($logo, $id)
-    {
-
-        $data = array(
-            "logo" => "", //1
-        );
-
-        $this->Settings_model->update(array("id" => $id), $data);
-
-        unlink("uploads/{$this->viewFolder}/$logo");
-        redirect(base_url("settings"));
-
-
-    }
 }

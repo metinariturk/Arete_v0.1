@@ -35,7 +35,7 @@
                                href="#v-pills-home" role="tab"
                                aria-controls="v-pills-home"
                                aria-selected="true">Genel</a>
-                            <?php $setting_tabs = array("finance", "project", "contract", "site"); ?>
+                            <?php $setting_tabs = array("finance", "project", "contract", "site", "default_workgroup"); ?>
                             <?php foreach ($setting_tabs as $setting_tab) { ?>
                                 <a class="nav-link"
                                    id="v-pills-<?php echo $setting_tab; ?>-tab"

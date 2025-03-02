@@ -117,6 +117,9 @@
                     <div id="edit_contract_modal">
                         <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/contract/edit_contract_modal_form"); ?>
                     </div>
+                    <div id="add_sub_contract_modal">
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/sub_contract/add_sub_contract_modal_form"); ?>
+                    </div>
                 </div>
             </div>
         </div>

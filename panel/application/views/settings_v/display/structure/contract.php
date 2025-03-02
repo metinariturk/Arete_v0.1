@@ -44,21 +44,22 @@ $cont_input9 = array(
 
 
 
+
 $contract_input_rows = array(
     "row1" => array($cont_input2, $cont_input3),
     "row2" => array($cont_input4,$cont_input5),
     "row3" => array($cont_input6,$cont_input7 ),
-    "row4" => array($cont_input8,$cont_input9)
+    "row4" => array($cont_input8,$cont_input9),
 )
 ?>
 
 <?php foreach ($contract_input_rows as $contract_inputs) { ?>
     <div class="card-body">
         <div class="row g-3">
-            <?php foreach ($contract_inputs as $finance_input) {
-                $name = $finance_input["name"];
-                $tag = $finance_input["tag"];
-                $width = $finance_input["width"]; ?>
+            <?php foreach ($contract_inputs as $contract_input) {
+                $name = $contract_input["name"];
+                $tag = $contract_input["tag"];
+                $width = $contract_input["width"]; ?>
                 <div class="<?php echo $width; ?>">
                     <label class="form-label" for="validationCustom01"><?php echo $tag; ?></label>
                     <input type="text"
@@ -76,3 +77,6 @@ $contract_input_rows = array(
         </div>
     </div>
 <?php } ?>
+
+
+

@@ -24,6 +24,6 @@
 <?php $this->load->view("includes/include_datatable"); ?>
 </body>
 </html>
-<?php $this->session->set_flashdata("alert", null); ?>
+
 
 

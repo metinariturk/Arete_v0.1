@@ -196,7 +196,6 @@
 
 <script>
     function edit_modal_form(FormURL, ModalForm, ModalId) {
-
         // AJAX ile modal içeriğini yenile
         $.ajax({
             url: FormURL,

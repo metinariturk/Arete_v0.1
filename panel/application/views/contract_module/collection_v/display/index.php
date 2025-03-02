@@ -28,6 +28,6 @@
 
 </body>
 </html>
-<?php $this->session->set_flashdata("alert", null); ?>
+
 
 

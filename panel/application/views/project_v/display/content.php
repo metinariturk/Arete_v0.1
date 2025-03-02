@@ -80,9 +80,6 @@
                             </a>
                         </li>
                         <li>
-
-                        </li>
-                        <li>
                             <a class="dropdown-item"
                                href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
                                 <i class="fa fa-trash"></i> Sil
@@ -120,19 +117,7 @@
          aria-labelledby="tab2-link">
         <div class="card">
             <div class="card-body">
-                <h5>Sözleşme Rapor</h5>
-                <div class="download_links mt-3">
-                    <a href="<?php echo base_url("export/contract_report_excel/$item->id"); ?>">
-                        <i class="fa fa-file-excel-o fa-2x"></i>
-                    </a>
-                    <a href="<?php echo base_url("export/contract_report_pdf/$item->id/1"); ?>">
-                        <i class="fa fa-file-pdf-o fa-2x"></i>
-                    </a>
-                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_2_contracts_info"); ?>
-                    <div id="add_subcontract_modal">
-                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/subcontract/add_subcontract_modal_form"); ?>
-                    </div>
-                </div>
+                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_2_contracts_info"); ?>
             </div>
         </div>
     </div>
@@ -141,14 +126,7 @@
          aria-labelledby="tab3-link">
         <div class="card">
             <div class="card-body">
-                <h5>Şantiyeler</h5>
-                <div class="download_links mt-3">
-                    <i class="fa fa-plus me-0" style="cursor: pointer;"
-                       id="openSiteModal"
-                       onclick="open_modal('AddSiteModal')"></i>
-                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_3_sites_info"); ?>
-
-                </div>
+                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_3_sites_info"); ?>
             </div>
         </div>
     </div>
@@ -161,13 +139,13 @@
                     <li class="nav-item">
                         <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab4-1-link"
                            data-bs-toggle="tab" href="#tab4-1" role="tab">
-                            <h5>Ödemeler</h5>
+                            <h5>Alınan Ödemeler</h5>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab4-2-link"
                            data-bs-toggle="tab" href="#tab4-2" role="tab">
-                            <h5>Avanslar</h5>
+                            <h5>Yapılan Ödemeler</h5>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -239,7 +217,6 @@
             </div>
         </div>
     </div>
-
     <div class="tab-pane fade" id="tab5" role="tabpanel"
          aria-labelledby="tab5-link">
         <div class="card">
@@ -360,7 +337,8 @@
                                 }
                                 $preloadedFiles = json_encode($preloadedFiles);
                                 ?>
-                                <input type="file" name="files" data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
+                                <input type="file" name="files"
+                                       data-fileuploader-files='<?php echo $preloadedFiles; ?>'>
                             </form>
                         </div>
                     </div>

@@ -135,6 +135,7 @@ class Contract extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
         $site = $this->Site_model->get(array("proje_id" => $item->proje_id));
+        $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
 
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
         $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no";
@@ -157,6 +158,7 @@ class Contract extends CI_Controller
         $viewData->leaders = $leaders;
         $viewData->main_bond = $main_bond;
         $viewData->main_folders = $main_folders;
+        $viewData->sub_contracts = $sub_contracts;
         $viewData->main_groups = $main_groups;
         $viewData->main_path = $main_path;
         $viewData->newprices = $newprices;
@@ -262,6 +264,131 @@ class Contract extends CI_Controller
             $viewData->form_error = true;
 
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        }
+    }
+
+    public function add_sub_contract($parent_contract)
+    {
+        // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
+        if (!isAdmin() && !permission_control("contract", "write")) {
+            redirect(base_url("error"));
+        }
+
+        $item = $this->Contract_model->get(array("id"=>$parent_contract));
+        $project = $this->Project_model->get(array("id"=>$item->proje_id));
+        $next_contract_name = get_next_file_code("Contract");
+        $file_name = "SOZ-". $next_contract_name;
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("sub_dosya_no", "Dosya No", "greater_than[0]|trim");
+        $this->form_validation->set_rules("sub_contract_name", "Sözleşme Ad", "required|trim");
+        $this->form_validation->set_rules("sub_isveren", "İşveren", "required|trim");
+        $this->form_validation->set_rules("sub_yuklenici", "Yüklenici", "required|trim");
+        $this->form_validation->set_rules("sub_sozlesme_tarih", "Sözleşme Tarih", "required|trim");
+        $this->form_validation->set_rules("sub_sozlesme_turu", "Sözleşme Türü", "required|trim");
+        $this->form_validation->set_rules("sub_isin_turu", "İşin Türü", "required|trim");
+        $this->form_validation->set_rules("sub_isin_suresi", "İşin Süresi", "greater_than[0]|required|trim|integer");
+        $this->form_validation->set_rules("sub_sozlesme_bedel", "Sözleşme Bedel", "greater_than[0]|required|trim|numeric");
+        $this->form_validation->set_rules("sub_para_birimi", "Para Birimi", "required|trim");
+
+
+        // Form Validation Hatalarını Tanımla
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "integer" => "<b>{field}</b> alanı pozitif tam sayı olmalıdır",
+                "numeric" => "<b>{field}</b> alanı rakamlardan oluşmalıdır",
+                "greater_than" => "<b>{field}</b> <b>{param}</b> 'den büyük olmalıdır",
+                "less_than_equal_to" => "<b>{field}</b> uygulaması seçilmelidir",
+                "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
+            )
+        );
+
+        // Form Validation'u Çalıştır
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            // Dizin oluşturma işlemi
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$file_name";
+            if (!is_dir($path)) {
+                try {
+                    mkdir($path, 0777, TRUE);
+                } catch (Exception $e) {
+                    log_message('error', 'Dizin oluşturulamadı: ' . $e->getMessage());
+                }
+            }
+            // Tarih ve adı biçimlendirme işlemleri
+            $sozlesme_tarih = $this->input->post("sub_sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sub_sozlesme_tarih")) : null;
+            $sozlesme_bitis = dateFormat('Y-m-d', date_plus_days($this->input->post("sub_sozlesme_tarih"), $this->input->post("sub_isin_suresi") - 1));
+            $contract_name = mb_convert_case($this->input->post("sub_contract_name"), MB_CASE_TITLE, "UTF-8");
+
+
+            // Veritabanına Ekleme İşlemi
+            $insert = $this->Contract_model->add(
+                array(
+                    "proje_id" => $project->id,
+                    "dosya_no" => $file_name,
+                    "contract_name" => $contract_name,
+                    "isveren" => $item->yuklenici,
+                    "yuklenici" => $this->input->post("sub_yuklenici"),
+                    "sozlesme_tarih" => $sozlesme_tarih,
+                    "sozlesme_turu" => $this->input->post("sub_sozlesme_turu"),
+                    "isin_turu" => $this->input->post("sub_isin_turu"),
+                    "isin_suresi" => $this->input->post("sub_isin_suresi"),
+                    "sozlesme_bitis" => $sozlesme_bitis,
+                    "sozlesme_bedel" => $this->input->post("sub_sozlesme_bedel"),
+                    "para_birimi" => $this->input->post("sub_para_birimi"),
+                    "parent" => $item->id,
+                    "isActive" => "1",
+                )
+            );
+
+            $viewData = new stdClass();
+
+            $item = $this->Contract_model->get(array("id"=>$parent_contract));
+            $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
+
+            $settings = $this->Settings_model->get();
+
+            // View'e gönderilecek Değişkenlerin Set Edilmesi
+            $viewData->item = $item;
+            $viewData->sub_contracts = $sub_contracts;
+            $viewData->settings = $settings;
+
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("contract_module/contract_v/display/sub_contract/sub_contract_table", $viewData, true)
+            );
+            echo json_encode($response);
+
+        } else {
+            // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
+            $viewData = new stdClass();
+
+            $item = $this->Contract_model->get(array("id"=>$parent_contract));
+            $settings = $this->Settings_model->get();
+            $companys = $this->Company_model->get_all(array());
+            $next_contract_name = get_next_file_code("Contract");
+            $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
+
+            $viewData->companys = $companys;
+            $viewData->next_contract_name = $next_contract_name;
+            $viewData->item = $item;
+            $viewData->sub_contracts = $sub_contracts;
+            $viewData->settings = $settings;
+            $viewData->form_error = true;
+
+            $viewData->viewModule = $this->moduleFolder;
+            $viewData->viewFolder = $this->viewFolder;
+            $viewData->subViewFolder = "display";
+
+
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("contract_module/contract_v/display/sub_contract/add_sub_contract_form_input", $viewData, true)
+            );
+            echo json_encode($response);
         }
     }
 
@@ -843,6 +970,7 @@ class Contract extends CI_Controller
                     )
                 );
             }
+
             if (isset($values['new_sub'])) {
                 if (!empty($values['new_sub']['code'] || !empty($values['new_sub']['name']))) {
                     $insert = $this->Contract_price_model->add(
@@ -856,8 +984,6 @@ class Contract extends CI_Controller
                     );
                 }
             }
-
-
         }
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
@@ -2272,6 +2398,32 @@ class Contract extends CI_Controller
         $viewData->project = $project;
 
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/contract/edit_contract_modal_form", $viewData);
+    }
+
+    public function open_add_sub_contract_modal($contract_id)
+    {
+        // Verilerin getirilmesi
+
+        $item = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $companys = $this->Company_model->get_all(array());
+        $next_contract_name = get_next_file_code("Contract");
+
+        $settings = $this->Settings_model->get();
+
+
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+
+        $viewData->subViewFolder = "display";
+        $viewData->settings = $settings;
+        $viewData->next_contract_name = $next_contract_name;
+        $viewData->item = $item;
+        $viewData->companys = $companys;
+        $viewData->project = $project;
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/sub_contract/add_sub_contract_modal_form", $viewData);
     }
 
     public function open_edit_collection_modal($collection_id)

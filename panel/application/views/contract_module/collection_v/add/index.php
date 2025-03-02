@@ -25,6 +25,6 @@
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 </body>
 </html>
-<?php $this->session->set_flashdata("alert", null); ?>
+
 
 
