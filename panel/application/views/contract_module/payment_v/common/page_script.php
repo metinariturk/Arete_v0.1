@@ -226,4 +226,45 @@
     });
 </script>
 
+<script>
+    document.getElementById("filterInput").addEventListener("keyup", function () {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById("filterInput");
+        filter = normalizeText(input.value);
+        table = document.getElementById("contract_price");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td");
+            let rowVisible = false;
+
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = normalizeText(td[j].textContent || td[j].innerText);
+                    if (txtValue.includes(filter)) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+            }
+
+            tr[i].style.display = rowVisible ? "" : "none";
+        }
+    });
+
+    // Türkçe karakterleri normalleştirme fonksiyonu
+    function normalizeText(text) {
+        return text
+            .replace(/İ/g, "i") // Büyük İ'yi küçük i yap
+            .replace(/ı/g, "i") // Küçük ı'yı da i'ye çevir
+            .toLowerCase()      // Son olarak tüm metni küçük harfe çevir
+            .replace(/ş/g, "s")
+            .replace(/ç/g, "c")
+            .replace(/ğ/g, "g")
+            .replace(/ü/g, "u")
+            .replace(/ö/g, "o");
+    }
+</script>
+
+
 

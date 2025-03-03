@@ -1,8 +1,3 @@
-<div class="fade tab-pane <?php if ($active_tab == "sign") {
-    echo "active show";
-} ?>"
-     id="sign" role="tabpanel"
-     aria-labelledby="sign-tab">
 
     <div class="container-fluid">
         <div class="row">
@@ -29,6 +24,6 @@
             </div>
         </div>
     </div>
-</div>
+
 
 

@@ -68,25 +68,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/assets/images&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/payment_v/display/tabs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\settings_v\display\structure" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\display\tabs" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\display" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
@@ -243,7 +243,7 @@
       <workItem from="1739995089678" duration="7351000" />
       <workItem from="1740427992707" duration="3655000" />
       <workItem from="1740922893684" duration="22642000" />
-      <workItem from="1741023479656" duration="4991000" />
+      <workItem from="1741023479656" duration="17037000" />
     </task>
     <servers />
   </component>
@@ -255,7 +255,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>3017</line>
+          <line>2822</line>
           <properties>
             <option name="className" value="\Payment" />
             <option name="methodName" value="sign_rankSetter" />
@@ -361,6 +361,15 @@
           </properties>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
+          <line>1281</line>
+          <properties>
+            <option name="className" value="\Payment" />
+            <option name="methodName" value="print_green" />
+          </properties>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>
           <line>5</line>
@@ -373,7 +382,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
-          <line>4354</line>
+          <line>4159</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">

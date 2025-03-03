@@ -22,11 +22,16 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" id="tab5-link" data-bs-toggle="tab" href="#tab5" role="tab" aria-selected="false">
-                Sözleşme Fiyatları
+                Hakediş İmza Ayarları
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="tab6-link" data-bs-toggle="tab" href="#tab6" role="tab" aria-selected="false">
+               Sözleşme Fiyatları
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="tab7-link" data-bs-toggle="tab" href="#tab7" role="tab" aria-selected="false">
                 Dosya Yöneticisi
             </a>
         </li>
@@ -60,7 +65,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item" target="_blank"
-                                   href="<?php echo base_url("payment/print_report/$item->id"); ?>">
+                                   href="<?php echo base_url("payment/print_all/$item->id"); ?>">
                                     <i class="fa fa-file-pdf-o"></i> Tüm Hakedişi İndir
                                 </a>
                             </li>
@@ -147,13 +152,13 @@
                                 <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
                                     <li>
                                         <a class="dropdown-item" target="_blank"
-                                           href="<?php echo base_url("payment/print_works_done_print_all/$item->id"); ?>">
+                                           href="<?php echo base_url("payment/print_works_done/$item->id"); ?>">
                                             <i class="fa fa-file-pdf-o"></i> Sıfır Olanları Yazdırma
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" target="_blank"
-                                           href="<?php echo base_url("payment/print_works_done_hide_zero/$item->id/1"); ?>">
+                                           href="<?php echo base_url("payment/print_works_done/$item->id/1"); ?>">
                                             <i class="fa fa-file-pdf-o"></i> Tümünü Yazdır
                                         </a>
                                     </li>
@@ -166,14 +171,19 @@
                     </div>
                     <div class="tab-pane fade" id="tab2-3" role="tabpanel" aria-labelledby="tab2-3-link">
                         <div class="download_links mt-3">
-                            <a target="_blank" href=" <?php echo base_url("payment/lead_hide_zero/$item->id"); ?>">
-                                <i class="my-icon">
-                                    <svg width="24" height="24"></svg>
-                                </i>
-                            </a>
-                            <a target="_blank" href="<?php echo base_url("payment/lead_all/$item->id"); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
+                            <div class="dropdown">
+                                <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h fa-2x"></i>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                           href="<?php echo base_url("payment/print_group_total/$item->id"); ?>">
+                                            <i class="fa fa-file-pdf-o"></i> PDF İndir
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="card-body">
                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/04_tab_group_total"); ?>
@@ -181,12 +191,19 @@
                     </div>
                     <div class="tab-pane fade" id="tab2-4" role="tabpanel" aria-labelledby="tab2-4-link">
                         <div class="download_links mt-3">
-                            <a target="_blank" href="<?php echo base_url("payment/print_main_total/$item->id"); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a target="_blank" href="<?php echo base_url("payment/print_main_total/$item->id"); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
+                            <div class="dropdown">
+                                <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h fa-2x"></i>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                           href="<?php echo base_url("payment/print_main_total/$item->id"); ?>">
+                                            <i class="fa fa-file-pdf-o"></i> PDF İndir
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="card-body">
                             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/05_tab_main_total"); ?>
@@ -216,8 +233,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab3-3-link"
-                           data-bs-toggle="tab" href="#tab3-3" role="tab">
+                        <a class="nav-link" href="javascript:void(0);"
+                           onclick="window.location.href='<?php echo base_url('boq/new_form/' . $item->contract_id . '/' . $item->hakedis_no); ?>';"
+                           style="background-color: rgba(233,231,247,0.38);">
                             <h5>Metraj İşlemleri</h5>
                         </a>
                     </li>
@@ -226,36 +244,51 @@
                     <div class="tab-pane fade show active" id="tab3-1" role="tabpanel"
                          aria-labelledby="tab3-1-link">
                         <div class="download_links mt-3">
-                            <a href="<?php echo base_url('export/collection_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/collection_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
+                            <div class="dropdown">
+                                <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h fa-2x"></i>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                           href="<?php echo base_url("payment/print_green/$item->id/1"); ?>">
+                                            <i class="fa fa-file-pdf-o"></i> Sıfır Olanları Yazdırma
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                           href="<?php echo base_url("payment/print_green/$item->id"); ?>">
+                                            <i class="fa fa-file-pdf-o"></i> Tümünü Yazdır
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/02_tab_green"); ?>
                     </div>
                     <div class="tab-pane fade" id="tab3-2" role="tabpanel" aria-labelledby="tab3-2-link">
                         <div class="download_links mt-3">
-                            <a href="<?php echo base_url('export/advance_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/advance_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
+                            <div class="dropdown">
+                                <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h fa-2x"></i>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                           href="<?php echo base_url("payment/print_calculate/$item->id/0"); ?>">
+                                            <i class="fa fa-file-pdf-o"></i> Tüm Metrajlar
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" target="_blank"
+                                           href="<?php echo base_url("payment/print_calculate/$item->id/2"); ?>">
+                                            <i class="fa fa-file-pdf-o"></i> Alt Gruplardan Ayır
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        7. olay
-                    </div>
-                    <div class="tab-pane fade" id="tab3-3" role="tabpanel" aria-labelledby="tab3-3-link">
-                        <div class="download_links mt-3">
-                            <a href="<?php echo base_url('export/advance_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/advance_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        8. olay
+                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/01_tab_calculate"); ?>
                     </div>
                 </div>
             </div>
@@ -264,9 +297,7 @@
     <div class="tab-pane fade" id="tab4" role="tabpanel"
          aria-labelledby="tab4-link">
         <div class="card">
-            <div class="card-body">
-                <h5>Finansal Ayarlar</h5>
-            </div>
+            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/settings_content"); ?>
         </div>
     </div>
 
@@ -274,28 +305,26 @@
          aria-labelledby="tab5-link">
         <div class="card">
             <div class="card-body">
-                <h5>Birim Fiyatlar</h5>
-
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
             </div>
         </div>
     </div>
 
     <div class="tab-pane fade" id="tab6" role="tabpanel"
-         aria-labelledby="tab6-link">
+         aria-labelledby="tab5-link">
+        <div class="card">
+            <div class="card-body">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_contract_price"); ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab7" role="tabpanel"
+         aria-labelledby="tab7-link">
         <div class="card">
             <div class="card-body">
                 <h5>Dosya Yöneticisi</h5>
-                <div class="download_links mt-3">
-                    <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;"
-                       id="openCollectionModal"
-                       onclick="open_modal('AddFolderModal')"></i>
-                </div>
-                <div id="folder_table">
-                </div>
-                <div id="add_folder_modal">
-                </div>
-                <div id="edit_folder_modal">
-                </div>
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_uploads"); ?>
             </div>
         </div>
     </div>
