@@ -4,16 +4,6 @@
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
-
-    <style>
-        .my-icon {
-            background-image: url('<?php echo base_url("assets/images/pdf_not_zero.svg"); ?>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            display: inline-block;
-        }
-    </style>
-
 </head>
 <body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>

@@ -69,9 +69,8 @@ class Payment extends CI_Controller
 
         /** Tablodan Verilerin Getirilmesi.. */
         $items = $this->Payment_model->get_all(array());
-        $contracts = $this->Contract_model->get_all(array(),"sozlesme_tarih DESC");
+        $contracts = $this->Contract_model->get_all(array(), "sozlesme_tarih DESC");
 
-        
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -90,7 +89,7 @@ class Payment extends CI_Controller
         $active_contracts = $this->Contract_model->get_all(array()
         );
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "select";
@@ -106,8 +105,8 @@ class Payment extends CI_Controller
         $payment = $this->Payment_model->get(array("id" => $id));
         $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
-        $prev_payment = $this->Payment_model->get(array("hakedis_no" => $payment->hakedis_no-1, "contract_id" =>$payment->contract_id));
-        $next_payment = $this->Payment_model->get(array("hakedis_no" => $payment->hakedis_no+1, "contract_id" =>$payment->contract_id));
+        $prev_payment = $this->Payment_model->get(array("hakedis_no" => $payment->hakedis_no - 1, "contract_id" => $payment->contract_id));
+        $next_payment = $this->Payment_model->get(array("hakedis_no" => $payment->hakedis_no + 1, "contract_id" => $payment->contract_id));
 
         $leaders = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "leader" => 1), "code ASC");
         $main_groups = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => 1), "code ASC");
@@ -121,7 +120,7 @@ class Payment extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Display_Folder";
@@ -291,10 +290,10 @@ class Payment extends CI_Controller
             $this->load->model("User_model");
 
             $alert = array(
-            "title" => "İşlem Başarısız",
-            "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
-            "type" => "danger"
-        );
+                "title" => "İşlem Başarısız",
+                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
+                "type" => "danger"
+            );
             $this->session->set_flashdata("alert", $alert);
 
             if (!isAdmin()) {
@@ -399,7 +398,7 @@ class Payment extends CI_Controller
 
 
             $this->load->view("{$viewData->viewModule}/contract_v/display/index", $viewData);
-            }
+        }
 
     }
 
@@ -543,7 +542,7 @@ class Payment extends CI_Controller
 
             $viewData = new stdClass();
 
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->active_tab = $active_tab;
@@ -571,7 +570,7 @@ class Payment extends CI_Controller
 
             $viewData = new stdClass();
 
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->active_tab = $active_tab;
@@ -598,15 +597,15 @@ class Payment extends CI_Controller
     public
     function delete($payment_id)
     {
-        $payment = $this->Payment_model->get(array("id"=>$payment_id));
+        $payment = $this->Payment_model->get(array("id" => $payment_id));
 
         $hakedis_no = $payment->hakedis_no;
         $last_payment = last_payment("$payment->contract_id");
 
         if ($hakedis_no == $last_payment) {
 
-            $contract = $this->Contract_model->get(array("id"=>$payment->contract_id));
-            $project = $this->Project_model->get(array("id"=>$contract->proje_id));
+            $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
+            $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
             $project_code = $project->project_code;
             $contract_code = $contract->dosya_no;
@@ -783,7 +782,7 @@ class Payment extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->active_tab = $active_tab;
@@ -1834,7 +1833,7 @@ class Payment extends CI_Controller
             }
         }
 
-        $file_name = "03 - Yapılan İşler Listesi-" . contract_name($contract_id) . "-Hak " . $payment_no;
+        $file_name = "Yapılan İşler Listesi - " . contract_name($contract_id) . " - Hak " . $payment_no;
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
@@ -1844,7 +1843,7 @@ class Payment extends CI_Controller
     }
 
     public
-    function lead_hide_zero($payment_id, $P_or_D = null)
+    function print_lead_report($payment_id, $print_zero = null)
     {
         $contract_id = get_from_id("payment", "contract_id", "$payment_id");
 
@@ -1942,7 +1941,7 @@ class Payment extends CI_Controller
             $old_price = $old_total * $leader->price;
             $this_price = $this_total * $leader->price;
 
-            if (($old_total + $this_total) != 0) {
+            if ($print_zero == 1) {
                 $pdf->Cell(12, 5, $i++, 1, 0, "C", 0);
                 $pdf->Cell(20, 5, $leader->code, 1, 0, "L", 0);
                 $pdf->Cell(60, 5, $leader->name, 1, 0, "L", 0);
@@ -1955,7 +1954,23 @@ class Payment extends CI_Controller
                 $pdf->Cell(30, 5, money_format($old_price), 1, 0, "R", 0);
                 $pdf->Cell(30, 5, money_format($this_price), 1, 0, "R", 0);
                 $pdf->Ln();
+            } else {
+                if (($old_total + $this_total) != 0) {
+                    $pdf->Cell(12, 5, $i++, 1, 0, "C", 0);
+                    $pdf->Cell(20, 5, $leader->code, 1, 0, "L", 0);
+                    $pdf->Cell(60, 5, $leader->name, 1, 0, "L", 0);
+                    $pdf->Cell(11, 5, $leader->unit, 1, 0, "C", 0);
+                    $pdf->Cell(20, 5, money_format($leader->price), 1, 0, "R", 0);
+                    $pdf->Cell(20, 5, money_format($old_total + $this_total), 1, 0, "R", 0);
+                    $pdf->Cell(20, 5, money_format($old_total), 1, 0, "R", 0);
+                    $pdf->Cell(20, 5, money_format($this_total), 1, 0, "R", 0);
+                    $pdf->Cell(30, 5, money_format($old_price + $this_price), 1, 0, "R", 0);
+                    $pdf->Cell(30, 5, money_format($old_price), 1, 0, "R", 0);
+                    $pdf->Cell(30, 5, money_format($this_price), 1, 0, "R", 0);
+                    $pdf->Ln();
+                }
             }
+
 
             $old_price_total += $old_price;
             $this_price_total += $this_price;
@@ -1972,13 +1987,9 @@ class Payment extends CI_Controller
 
         $pdf->Cell(265, 2, '', 0, 1); // 0 genişlik, 10 yükseklik, boş içerik
 
-        $file_name = "06A - Pozlar İcmali-" . contract_name($contract_id) . "-Hak " . $payment_no;
+        $file_name = "Pozlar İcmali - " . contract_name($contract_id) . " - Hak " . $payment_no;
 
-        if ($P_or_D == 0) {
-            $pdf->Output("$file_name.pdf");
-        } else {
-            $pdf->Output("$file_name.pdf", "D");
-        }
+        $pdf->Output("$file_name.pdf");
     }
 
     public
@@ -2832,7 +2843,7 @@ class Payment extends CI_Controller
             $this->session->set_flashdata("alert", $alert);
 
             $viewData = new stdClass();
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -2855,7 +2866,7 @@ class Payment extends CI_Controller
 
             $viewData = new stdClass();
 
-            
+
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
 
@@ -2866,7 +2877,6 @@ class Payment extends CI_Controller
                     "id" => $id
                 )
             );
-
 
 
             $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
@@ -2905,7 +2915,7 @@ class Payment extends CI_Controller
 
         $viewData = new stdClass();
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
@@ -4390,9 +4400,7 @@ class Payment extends CI_Controller
         //Metraj Cetveli Alt Gruplardan Ayırarak Yazdır Baskı Kontrolü
 
 
-
-
-        $file_name = $contract->contract_name. "Hakediş No - $payment->hakedis_no";
+        $file_name = $contract->contract_name . "Hakediş No - $payment->hakedis_no";
 
         if ($P_or_D == 0) {
             $pdf->Output("$file_name.pdf");
