@@ -450,7 +450,6 @@ class Contract extends CI_Controller
         }
 
         $contract = $this->Contract_model->get(array("id" => $id));
-
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
         $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
@@ -460,7 +459,6 @@ class Contract extends CI_Controller
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
 
         $viewData = new stdClass();
-
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -3662,8 +3660,4 @@ class Contract extends CI_Controller
         return TRUE;
     }
 
-
 }
-
-
-

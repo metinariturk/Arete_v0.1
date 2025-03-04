@@ -57,7 +57,7 @@
                     <?php } else { ?>
                         <?php foreach ($bonds as $bond) { ?>
                             <?php echo $bond->dosya_no; ?> -  <?php echo money_format($bond->teminat_miktar) . " " . $contract->para_birimi; ?> - <?php echo dateFormat_dmy($bond->teslim_tarihi); ?>
-                                                            <a target="_blank" href="<?php echo base_url("bond/file_form/$advance->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
+                                                            <a target="_blank" href="<?php echo base_url("bond/file_form/$bond->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
 
                             <br>
                         <?php } ?>
@@ -69,7 +69,7 @@
                     <?php } else { ?>
                         <?php foreach ($costincs as $costinc) { ?>
                             <?php echo $costinc->dosya_no; ?> -  <?php echo money_format($costinc->artis_miktar) . " " . $contract->para_birimi; ?> - <?php echo dateFormat_dmy($costinc->artis_tarih); ?>
-                                                            <a target="_blank" href="<?php echo base_url("costinc/file_form/$advance->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
+                                                            <a target="_blank" href="<?php echo base_url("costinc/file_form/$costinc->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
 
                             <br>
                         <?php } ?>
@@ -82,7 +82,7 @@
                     <?php } else { ?>
                         <?php foreach ($collections as $collection) { ?>
                             <?php echo $collection->dosya_no; ?> -  <?php echo money_format($collection->tahsilat_miktar) . " " . $contract->para_birimi; ?> - <?php echo dateFormat_dmy($collection->tahsilat_tarih); ?>
-                                                            <a target="_blank" href="<?php echo base_url("collection/file_form/$advance->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
+                                                            <a target="_blank" href="<?php echo base_url("collection/file_form/$collection->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
 
                             <br>
                         <?php } ?>
@@ -94,7 +94,7 @@
                     <?php } else { ?>
                         <?php foreach ($extimes as $extime) { ?>
                             <?php echo $extime->dosya_no; ?> -  <?php echo money_format($extime->uzatim_miktar) . " Gün"; ?> - <?php echo dateFormat_dmy($extime->karar_tarih); ?>
-                                                            <a target="_blank" href="<?php echo base_url("extime/file_form/$advance->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
+                                                            <a target="_blank" href="<?php echo base_url("extime/file_form/$extime->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
 
                             <br>
                         <?php } ?>
@@ -107,7 +107,7 @@
                     <?php } else { ?>
                         <?php foreach ($newprices as $newprice) { ?>
                             <?php echo $newprice->dosya_no; ?> -  <?php echo money_format($newprice->ybf_tutar) . " Gün"; ?> - <?php echo dateFormat_dmy($extime->ybf_tarih); ?>
-                                                            <a target="_blank" href="<?php echo base_url("newprice/file_form/$advance->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
+                                                            <a target="_blank" href="<?php echo base_url("newprice/file_form/$newprice->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
 
                             <br>
                         <?php } ?>
@@ -119,7 +119,7 @@
                     <?php } else { ?>
                         <?php foreach ($payments as $payment) { ?>
                             <?php echo $payment->hakedis_no." No'lu Hakediş"; ?> -  <?php echo money_format($payment->balance) . " " . $contract->para_birimi; ?> - <?php echo dateFormat_dmy($payment->imalat_tarihi); ?>
-                                                            <a target="_blank" href="<?php echo base_url("payment/file_form/$advance->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
+                                                            <a target="_blank" href="<?php echo base_url("payment/file_form/$payment->id"); ?>" ><i style="color: green; font-size: 12pt" class="fa fa-arrow-circle-right"></i> </a>
 
                             <br>
                         <?php } ?>

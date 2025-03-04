@@ -1038,7 +1038,7 @@ class Payment extends CI_Controller
                                     $pdf->SetFont('dejavusans', '', 7); // İkinci parametre olarak boş bir dize ile boyut 8 ayarlanır
                                     $pdf->setLineWidth(0.1);
 
-                                    $pdf->Cell($page_width * 18 / 100, 5, $data.$calculation_data["s"], 1, 0, "L", 0);
+                                    $pdf->Cell($page_width * 18 / 100, 5, $calculation_data["s"], 1, 0, "L", 0);
                                     $pdf->Cell($page_width * 32 / 100, 5, $calculation_data["n"], 1, 0, "L", 0);
                                     if ($contract_item->type == "rebar") {
                                         if (!empty($calculation_data["q"])) {
