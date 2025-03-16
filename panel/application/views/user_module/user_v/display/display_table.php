@@ -86,6 +86,7 @@
                         <hr>
                         YETKİLER
                         <?php $permissions = json_decode($item->permissions, true); ?>
+                        <?php $modules = json_decode($item->permissions, true); ?>
                         <table class="table">
                             <thead>
                             <tr>
@@ -100,10 +101,10 @@
                             <?php foreach ($permissions as $module => $permission) { ?>
                                 <tr>
                                     <td><?php echo module_name($module); ?></td>
-                                    <td class="w20c"><?php echo isset($permission['read']) ? '✔' : ''; ?></td>
-                                    <td class="w20c"><?php echo isset($permission['write']) ? '✔' : ''; ?></td>
-                                    <td class="w20c"><?php echo isset($permission['update']) ? '✔' : ''; ?></td>
-                                    <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : ''; ?></td>
+                                    <td class="w20c"><?php echo isset($permission['read']) ? '✔' : 'X'; ?></td>
+                                    <td class="w20c"><?php echo isset($permission['write']) ? '✔' : 'X'; ?></td>
+                                    <td class="w20c"><?php echo isset($permission['update']) ? '✔' : 'X'; ?></td>
+                                    <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : 'X'; ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>

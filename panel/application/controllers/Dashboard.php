@@ -45,7 +45,7 @@ class Dashboard extends CI_Controller
         );
 
 
-        $notes = $this->Notes_model->get_all(array("owner"=> active_user_id()));
+        $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
         $last_created_elements = $this->Order_model->get_all_or(array(
             "createdBy" => active_user_id(),
             "deletedBy" => active_user_id(),
@@ -58,36 +58,185 @@ class Dashboard extends CI_Controller
         $viewData->favorites = $favorites;
         $viewData->last_created_elements = $last_created_elements;
 
-        $viewData->subViewFolder = "list";
-
-        $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("dashboard_v/index", $viewData);
     }
 
-    public function save_note()
+    public function add_notes()
     {
+        $title = $this->input->post("title");
+        $topic = $this->input->post("topic");
         $note = $this->input->post("note");
+        $reminder = $this->input->post("reminder") ? dateFormat('Y-m-d', $this->input->post("reminder")) : null;
 
-        $insert = $this->Notes_model->add(
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("title", "Başlık", "required|trim");
+        $this->form_validation->set_rules("note", "Açıklama", "required|trim");
+
+
+        // Form Validation Hatalarını Tanımla
+        $this->form_validation->set_message(
             array(
-                "note" => $note,
-                "isActive" => 1,
-                "owner" => active_user_id(),
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
             )
         );
 
-        $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
+        // Form Validation'u Çalıştır
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            // Dizin oluşturma işlemi
+
+            $insert = $this->Notes_model->add(
+                array(
+                    "title" => $title,
+                    "topic" => $topic,
+                    "note" => $note,
+                    "owner" => active_user_id(),
+                    "reminder" => $reminder,
+                    "isActive" => 1,
+                )
+            );
+
+            $id = $this->db->insert_id();
+
+            $path = "Uploads/Notes/$id";
+            if (!is_dir($path)) {
+                try {
+                    mkdir($path, 0777, TRUE);
+                } catch (Exception $e) {
+                    log_message('error', 'Dizin oluşturulamadı: ' . $e->getMessage());
+                }
+            }
+
+            $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
+
+            $viewData = new stdClass();
+
+            $viewData->notes = $notes;
+
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("dashboard_v/notes/notes_table", $viewData, true)
+            );
+
+            echo json_encode($response);
+
+
+        } else {
+
+            $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
+
+            $viewData = new stdClass();
+
+            $viewData->notes = $notes;
+
+            $viewData->form_error = true;
+
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("dashboard_v/notes/add_notes_form_input", $viewData, true)
+            );
+            echo json_encode($response);
+        }
+    }
+
+    public function edit_notes($note_id)
+    {
+        $title = $this->input->post("title");
+        $topic = $this->input->post("topic");
+        $note = $this->input->post("note");
+        $reminder = $this->input->post("reminder") ? dateFormat('Y-m-d', $this->input->post("reminder")) : null;
+
+        $this->load->library("form_validation");
+
+        $this->form_validation->set_rules("title", "Başlık", "required|trim");
+        $this->form_validation->set_rules("note", "Açıklama", "required|trim");
+
+
+        // Form Validation Hatalarını Tanımla
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+            )
+        );
+
+        // Form Validation'u Çalıştır
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+            // Dizin oluşturma işlemi
+
+            $update = $this->Notes_model->update(
+                array(
+                    "id" => $note_id
+                ),
+                array(
+                    "title" => $title,
+                    "topic" => $topic,
+                    "note" => $note,
+                    "owner" => active_user_id(),
+                    "reminder" => $reminder,
+                )
+            );
+
+            $id = $this->db->insert_id();
+
+            $path = "Uploads/Notes/$id";
+            if (!is_dir($path)) {
+                try {
+                    mkdir($path, 0777, TRUE);
+                } catch (Exception $e) {
+                    log_message('error', 'Dizin oluşturulamadı: ' . $e->getMessage());
+                }
+            }
+
+            $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
+
+            $viewData = new stdClass();
+
+            $viewData->notes = $notes;
+
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("dashboard_v/notes/notes_table", $viewData, true)
+            );
+
+            echo json_encode($response);
+
+
+        } else {
+
+            $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
+
+            $viewData = new stdClass();
+
+            $viewData->notes = $notes;
+
+            $viewData->form_error = true;
+
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("dashboard_v/notes/edit_notes_form_input", $viewData, true)
+            );
+            echo json_encode($response);
+        }
+    }
+
+    public function open_edit_notes_modal($edit_note_id)
+    {
+
+        $edit_note = $this->Notes_model->get(array("id" => $edit_note_id));
 
         $viewData = new stdClass();
+        $viewData->edit_note = $edit_note;
 
-        $viewData->notes = $notes;
-
-        $render_html = $this->load->view("dashboard_v/list/todo", $viewData, true);
-
-        echo $render_html;
+        $this->load->view("dashboard_v/notes/edit_notes_modal_form", $viewData);
 
     }
 
-    public function delete($id)
+
+    public function delete_notes($note_id)
     {
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -95,7 +244,7 @@ class Dashboard extends CI_Controller
 
         $delete = $this->Notes_model->delete(
             array(
-                "id" => $id,
+                "id" => $note_id,
                 "owner" => active_user_id()
             )
         );
@@ -106,10 +255,48 @@ class Dashboard extends CI_Controller
 
         $viewData->notes = $notes;
 
-        $render_html = $this->load->view("dashboard_v/list/todo", $viewData, true);
+        $html = $this->load->view("dashboard_v/notes/notes_table", $viewData, true);
 
-        echo $render_html;
+        echo json_encode([
+            'html' => $html, // Form hatalarını içeren HTML
+        ]);
     }
+
+    public function change_status($note_id)
+    {
+        if (!isAdmin()) {
+            redirect(base_url("error"));
+        }
+
+        $note = $this->Notes_model->get(array("id" => $note_id));
+        if ($note->isActive == 1){
+            $change = 0;
+        } else {
+            $change = 1;
+        }
+
+        $update = $this->Notes_model->update(
+            array(
+                "id" => $note_id
+            ),
+            array(
+                "isActive" => $change,
+            )
+        );
+
+        $viewData = new stdClass();
+
+        $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
+
+        $viewData->notes = $notes;
+
+        $html = $this->load->view("dashboard_v/notes/notes_table", $viewData, true);
+
+        echo json_encode([
+            'html' => $html, // Form hatalarını içeren HTML
+        ]);
+    }
+
 
     public function delete_all()
     {
