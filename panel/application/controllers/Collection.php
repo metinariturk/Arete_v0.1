@@ -158,7 +158,7 @@ class Collection extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Collection/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Collection/";
 
         $viewData = new stdClass();
 
@@ -240,7 +240,7 @@ class Collection extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project->project_code/$contract->dosya_no/Collection";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$contract->dosya_no/Collection";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -336,11 +336,11 @@ class Collection extends CI_Controller
             $item = $this->Contract_model->get(array("id" => $contract->id));
             $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
             $project = $this->Project_model->get(array("id" => $item->proje_id));
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Contract/";
-            $collection_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection";
-            $advance_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance";
-            $offer_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Offer";
-            $payment_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Payment";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Contract/";
+            $collection_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
+            $advance_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance";
+            $offer_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Offer";
+            $payment_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Payment";
 
             $companys = $this->Company_model->get_all(array());
 
@@ -645,7 +645,7 @@ class Collection extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $Collection->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Collection/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Collection/";
 
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
@@ -691,7 +691,7 @@ class Collection extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Collection/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Collection/";
 
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
@@ -746,7 +746,7 @@ class Collection extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $collection->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Collection";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Collection";
 
         unlink("$path/$fileName");
     }
@@ -758,7 +758,7 @@ class Collection extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$contract->dosya_no/Collection";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Collection";
 
         unlink("$path/$fileName");
     }

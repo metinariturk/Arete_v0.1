@@ -22,7 +22,7 @@
     </script>
 <?php endif; ?>
 
-<?php $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel";
+<?php $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel";
 
 // Klasördeki tüm dosya ve klasörleri alıyoruz
 $files = scandir($file_path);

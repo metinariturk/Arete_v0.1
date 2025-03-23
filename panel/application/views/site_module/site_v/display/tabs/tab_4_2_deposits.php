@@ -22,7 +22,7 @@
     </script>
 <?php endif; ?>
 
-<?php $path_sitewallet = base_url("uploads/$project->project_code/$item->dosya_no/Sitewallet/"); ?>
+<?php $path_sitewallet = base_url("uploads/$project->dosya_no/$item->dosya_no/Sitewallet/"); ?>
 
 <div class="card-body">
     <div class="row">

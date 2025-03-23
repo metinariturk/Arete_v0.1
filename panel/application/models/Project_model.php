@@ -3,7 +3,7 @@
 class Project_model extends CI_Model
 {
 
-    public $tableName = "projects";
+    public $tableName = "project";
 
     public function __construct()
     {

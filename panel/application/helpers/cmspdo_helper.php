@@ -147,7 +147,7 @@ function project_code($id)
         "id" => $id
     ));
 
-    return $project->project_code;
+    return $project->dosya_no;
 }
 
 function all_projects()
@@ -253,12 +253,12 @@ function project_code_name($id)
 {
     $ci =& get_instance();
     $ci->load->database();
-    $sql = "SELECT * FROM `projects` where `id` =" . $id;
+    $sql = "SELECT * FROM `project` where `id` =" . $id;
     $q = $ci->db->query($sql);
     if ($q->num_rows() > 0) {
         foreach ($q->result() as $data) {
             $project_name = $data->project_name;
-            $project_code = $data->project_code;
+            $project_code = $data->dosya_no;
         }
     }
     return $project_code . " / " . $project_name;
@@ -284,7 +284,7 @@ function project_name($id)
 {
     $ci =& get_instance();
     $ci->load->database();
-    $sql = "SELECT * FROM `projects` where `id` =" . $id;
+    $sql = "SELECT * FROM `project` where `id` =" . $id;
     $q = $ci->db->query($sql);
     if ($q->num_rows() > 0) {
         foreach ($q->result() as $data) {

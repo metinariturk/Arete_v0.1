@@ -137,7 +137,6 @@
                 if (response.status === 'success') {
                     console.log(response);
 
-                    alert("oldu");
                     // Başarılı cevap gelirse:
                     $('#' + successDivId).html(response.html); // Div'e yeni içeriği yükle
 

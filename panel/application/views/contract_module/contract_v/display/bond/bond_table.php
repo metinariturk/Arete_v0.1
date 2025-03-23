@@ -1,4 +1,4 @@
-<?php $path_bond = base_url("uploads/$project->project_code/$item->dosya_no/Bond/"); ?>
+<?php $path_bond = base_url("uploads/$project->dosya_no/$item->dosya_no/Bond/"); ?>
 
 <div class="card-body">
     <div class="row">

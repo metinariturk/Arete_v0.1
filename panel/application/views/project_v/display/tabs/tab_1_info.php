@@ -1,5 +1,5 @@
 <h5 class="mb-0">
-    <?php echo mb_strtoupper($item->project_code . " / " . $item->project_name); ?>
+    <?php echo mb_strtoupper($item->dosya_no . " / " . $item->project_name); ?>
     <small style="font-size: 14px;">(
         <?php
         if ($item->isActive == 1) {

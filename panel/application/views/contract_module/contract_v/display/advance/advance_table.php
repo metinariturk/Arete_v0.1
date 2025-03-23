@@ -1,4 +1,4 @@
-<?php $path_advance = base_url("uploads/$project->project_code/$item->dosya_no/Advance/"); ?>
+<?php $path_advance = base_url("uploads/$project->dosya_no/$item->dosya_no/Advance/"); ?>
 <div class="card-body">
     <div class="row">
         <div class="col-md-12">

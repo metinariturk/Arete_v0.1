@@ -5,7 +5,7 @@
             <div class="tabs">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
                     <a class="text-blink full-link" href="<?php echo base_url("project/file_form/$project->id"); ?>">Proje
-                        <br><?php echo $project->project_code; ?>
+                        <br><?php echo $project->dosya_no; ?>
                     </a>
                 </div>
                 <div class="tab-item" style="background-color: rgba(229,217,201,0.55);">

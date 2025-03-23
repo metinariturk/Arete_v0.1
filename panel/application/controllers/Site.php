@@ -356,9 +356,9 @@ class Site extends CI_Controller
         $sites = $this->Site_model->get_all(array("is_Active" => 1));
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/main/";
-        $path_sitewallet = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/Sitewallet/";
-        $path_personel = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$item->dosya_no/Personel/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$item->dosya_no/main/";
+        $path_sitewallet = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$item->dosya_no/Sitewallet/";
+        $path_personel = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$item->dosya_no/Personel/";
 
         !is_dir($path) && mkdir($path, 0777, TRUE);
         !is_dir($path_sitewallet) && mkdir($path_sitewallet, 0777, TRUE);
@@ -593,7 +593,7 @@ class Site extends CI_Controller
         $project_id = project_id_site($id);
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $project_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/main/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/main/";
 
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
@@ -644,7 +644,7 @@ class Site extends CI_Controller
         $project_id = project_id_site($id);
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $project_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/main/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/main/";
 
         $fileName = $this->input->post('fileName');
 
@@ -659,7 +659,7 @@ class Site extends CI_Controller
         $site_code = site_code($site_id);
         $project_id = project_id_site($site_id);
         $project_code = project_code($project_id);
-        $project_name = get_from_id("projects", "project_name", $project_id);
+        $project_name = get_from_id("project", "project_name", $project_id);
 
         $path = "uploads/project_v/$project_code/$site_code";
         $zip_name = $project_name;
@@ -1174,7 +1174,7 @@ class Site extends CI_Controller
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
         $project = $this->Project_model->get(array("id" => $site->proje_id));
 
-        $file_path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$data_id/$file_name";
+        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
 
         if ($file_path) {
             if (file_exists($file_path)) {
@@ -1194,7 +1194,7 @@ class Site extends CI_Controller
         $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         // Dosya yolunu oluşturmak
-        $file_path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$data_id/$file_name";
+        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
 
 
         $zip_name = "Harcama - $data_id";
@@ -1212,7 +1212,7 @@ class Site extends CI_Controller
         $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         // Dosya yolunu oluşturmak
-        $file_path = "$this->File_Dir_Prefix/$project->project_code/$site->dosya_no/Sitewallet/$data_id/$file_name";
+        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
 
         // Dosya yolu var mı diye kontrol
         if ($file_path) {
@@ -1312,7 +1312,7 @@ class Site extends CI_Controller
             $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$record_id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1452,7 +1452,7 @@ class Site extends CI_Controller
             $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$record_id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1538,7 +1538,7 @@ class Site extends CI_Controller
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
 
-        $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$sitewallet->id";
+        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$sitewallet->id";
 
         $delete = $this->Sitewallet_model->delete(
             array(
@@ -1669,7 +1669,7 @@ class Site extends CI_Controller
 
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet/$expense_id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$expense_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1752,7 +1752,7 @@ class Site extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         // Dosya yolu
-        $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Sitewallet";
+        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet";
 
         // Klasördeki tüm dosyaları alıyoruz
         $files = scandir($file_path);
@@ -2230,7 +2230,7 @@ class Site extends CI_Controller
             $record_id = $this->db->insert_id();
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel/$record_id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -2388,7 +2388,7 @@ class Site extends CI_Controller
 
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel/$edit_personel->id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel/$edit_personel->id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);

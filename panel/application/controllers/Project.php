@@ -73,10 +73,12 @@ class Project extends CI_Controller
         $settings = $this->Settings_model->get();
         $users = $this->User_model->get_all();
 
+        $next_project_name = get_next_file_code("Project");
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";
+        $viewData->next_project_name = $next_project_name;
         $viewData->items = $items;
         $viewData->users = $users;
         $viewData->settings = $settings;
@@ -114,6 +116,7 @@ class Project extends CI_Controller
         ));
 
 
+
         $viewData = new stdClass();
         $settings = $this->Settings_model->get();
         $viewData->viewModule = $this->moduleFolder;
@@ -145,14 +148,13 @@ class Project extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $file_name_len = file_name_digits();
 
-        $project_code = "PRJ-" . $this->input->post("project_code");
+        $next_project_name = get_next_file_code("Project");
 
         $this->load->library("form_validation");
 
-        $this->form_validation->set_rules("project_code", "Proje Kodu", "exact_length[$file_name_len]|numeric|required|trim|callback_duplicate_code_check");
-        $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[projects.project_name]");
+        $this->form_validation->set_rules("project_code", "Proje Kodu", "numeric|required|trim|callback_duplicate_code_check");
+        $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[project.project_name]");
 
         $this->form_validation->set_message(
             array(
@@ -160,7 +162,7 @@ class Project extends CI_Controller
                 "exact_length" => "<b>{field}</b> <b>{param}</b> karakterden oluşmalıdır",
                 "numeric" => "<b>{field}</b> alanı bir sayı olmalıdır",
                 "is_unique" => "<b>{field}</b> 'na sahip başka bir proje mevcut",
-                "duplicate_code_check" => "<b>{field}</b> - '$project_code' daha önce kullanılmış.
+                "duplicate_code_check" => "<b>{field}</b> - '$next_project_name' daha önce kullanılmış.
                                             <br> Sistem sıradaki dosya numarasını otomatik atamaktadır.<br> Özel bir gerekçe yoksa değiştirmeyiniz.",
             )
         );
@@ -171,7 +173,7 @@ class Project extends CI_Controller
 
         if ($validate) {
 
-            $project_code = "PRJ-" . convertToSEO($this->input->post("project_code"));
+            $project_code = $next_project_name;
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code";
 
             if (!is_dir($path)) {
@@ -182,7 +184,7 @@ class Project extends CI_Controller
 
             $insert = $this->Project_model->add(
                 array(
-                    "project_code" => $project_code,
+                    "dosya_no" => $project_code,
                     "project_name" => yazim_duzen($this->input->post("project_name")),
                     "notes" => $this->input->post("notes"),
                     "createdAt" => date("Y-m-d H:i:s")
@@ -191,56 +193,10 @@ class Project extends CI_Controller
 
             $record_id = $this->db->insert_id();
 
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $this->db->insert_id(),
-                    "file_order" => $project_code,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id()
-                )
-            );
 
-
-            // TODO Alert sistemi eklenecek...
-            if ($insert) {
-
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Kayıt başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-                $this->session->set_flashdata("alert", $alert);
-
-
-            } else {
-
-
-                $viewData = new stdClass();
-
-                $items = $this->Project_model->get_all();
-                $settings = $this->Settings_model->get();
-
-
-                $viewData->viewModule = $this->moduleFolder;
-                $viewData->viewFolder = $this->viewFolder;
-                $viewData->subViewFolder = "add";
-                $viewData->items = $items;
-                $viewData->settings = $settings;
-
-                $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Kayıt Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-                $this->session->set_flashdata("alert", $alert);
-
-            }
+            redirect(base_url("$this->Module_Name/file_form/$record_id"));
 
             // İşlemin Sonucunu Session'a yazma işlemi...
-            redirect(base_url("$this->Module_Name/file_form/$record_id"));
 
         } else {
 
@@ -288,7 +244,7 @@ class Project extends CI_Controller
         $this->load->library("form_validation");
 
         if ($updated_name != $project->project_name) {
-            $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[projects.project_name]");
+            $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim|is_unique[project.project_name]");
         } else {
             $this->form_validation->set_rules("project_name", "Proje Adı", "required|trim");
         }
@@ -440,7 +396,7 @@ class Project extends CI_Controller
                 );
 
 
-                $folder_name = $project->project_code;
+                $folder_name = $project->dosya_no;
                 $project_name = $project->project_name;
                 $path = "$this->Upload_Folder/$this->viewFolder/$folder_name/";
 
@@ -522,7 +478,7 @@ class Project extends CI_Controller
         if (isAdmin() || permission_control("project", "update")) {
 
             $project = $this->Project_model->get(array("id" => $id));
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/main/";
 
             if (!is_dir($path)) {
                 mkdir($path, 0777, TRUE);
@@ -572,7 +528,7 @@ class Project extends CI_Controller
 
             $project = $this->Project_model->get(array("id" => $id));
 
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/main/";
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/main/";
 
             unlink("$path/$fileName");
         } else {
@@ -588,7 +544,7 @@ class Project extends CI_Controller
             $this->zip->compression_level = 0;
 
             $project_code = project_code($project_id);
-            $project_name = get_from_id("projects", "project_name", $project_id);
+            $project_name = get_from_id("project", "project_name", $project_id);
 
             $path = "uploads/project_v/$project_code/main";
 
@@ -616,7 +572,7 @@ class Project extends CI_Controller
         $viewData->settings = $settings;
 
         $file_name = "PRJ-" . $str;
-        $var = count_data("projects", "project_code", $file_name);
+        $var = count_data("project", "dosya_no", $file_name);
         if (($var > 0)) {
             return FALSE;
         } else {
@@ -627,7 +583,7 @@ class Project extends CI_Controller
     public
     function duplicate_name_check($str)
     {
-        $var = count_data("projects", "project_name", $str);
+        $var = count_data("project", "project_name", $str);
 
         if (($var > 0)) {
             return FALSE;

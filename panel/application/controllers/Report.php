@@ -190,7 +190,7 @@ class Report extends CI_Controller
 
         $date = dateFormat_dmy($item->report_date);
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/$date/";
 
         $reports = $this->Report_model->get_all(array("site_id" => $item->site_id), "report_date ASC");
 
@@ -459,7 +459,7 @@ class Report extends CI_Controller
 
         } else {
 
-            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/";
+            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/";
 
             if ($this->input->post("report_date")) {
                 if (rename($old_folder_dir . $old_report_date, $old_folder_dir . $new_report_date)) {
@@ -630,7 +630,7 @@ class Report extends CI_Controller
 
         $date = dateFormat_dmy($item->report_date);
 
-        $path = rtrim($this->Upload_Folder, '/') . '/' . $this->Module_Main_Dir . "/$project->project_code/$site->dosya_no/Reports/$date/";
+        $path = rtrim($this->Upload_Folder, '/') . '/' . $this->Module_Main_Dir . "/$project->dosya_no/$site->dosya_no/Reports/$date/";
 
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
@@ -727,8 +727,8 @@ class Report extends CI_Controller
 
         $date = dateFormat_dmy($item->report_date);
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date";
-        $thumb_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$site->dosya_no/Reports/$date/thumbnails";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/$date";
+        $thumb_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/$date/thumbnails";
 
         $fileName = $this->input->post('fileName');
 

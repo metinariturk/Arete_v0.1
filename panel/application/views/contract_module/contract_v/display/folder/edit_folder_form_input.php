@@ -73,7 +73,7 @@
     <?php } ?>
 </div>
 <?php
-$file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance/$edit_advance->id";
+$file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance/$edit_advance->id";
 
 if (!is_dir($file_path)) {
     mkdir($file_path, 0777, true);

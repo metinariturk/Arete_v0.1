@@ -1,4 +1,4 @@
-<?php $path_collection = base_url("uploads/$project->project_code/$item->dosya_no/Collection/"); ?>
+<?php $path_collection = base_url("uploads/$project->dosya_no/$item->dosya_no/Collection/"); ?>
 
 <div class="card-body">
     <div class="row">

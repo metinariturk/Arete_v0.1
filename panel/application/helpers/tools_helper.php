@@ -437,24 +437,6 @@ function file_name_len()
 }
 
 
-function db_name($module_name)
-{
-    $module_names =
-        array(
-            'projects' => 'project',
-            'contract' => 'contract',
-            'bond' => 'bond',
-        );
-
-    $ext = array_search(mb_strtolower($module_name), $module_names);
-    if (empty($ext)) {
-        echo 'None';
-    } else {
-        echo $ext;
-    }
-
-}
-
 function tevkifat($seperated)
 {
     $aranacak_string = "/";

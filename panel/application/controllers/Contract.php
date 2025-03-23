@@ -138,7 +138,7 @@ class Contract extends CI_Controller
         $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
 
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no";
+        $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no";
         $subdirs = ['Contract', 'Collection', 'Advance', 'Offer', 'Payment'];
         createDirectories($main_path, $subdirs);
         $main_folders = get_dir_contents($main_path, 'dir');
@@ -310,7 +310,7 @@ class Contract extends CI_Controller
 
         if ($validate) {
             // Dizin oluşturma işlemi
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->project_code/$file_name";
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$file_name";
             if (!is_dir($path)) {
                 try {
                     mkdir($path, 0777, TRUE);
@@ -623,7 +623,7 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
 
-        $path = $this->Upload_Folder . DIRECTORY_SEPARATOR . $this->Module_Main_Dir . DIRECTORY_SEPARATOR . $project->project_code . DIRECTORY_SEPARATOR . $item->dosya_no . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR;
+        $path = $this->Upload_Folder . DIRECTORY_SEPARATOR . $this->Module_Main_Dir . DIRECTORY_SEPARATOR . $project->dosya_no . DIRECTORY_SEPARATOR . $item->dosya_no . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR;
 
         if ($sub_folder !== null) {
             $path .= $sub_folder . DIRECTORY_SEPARATOR;
@@ -690,7 +690,7 @@ class Contract extends CI_Controller
 
         $path = $this->Upload_Folder . DIRECTORY_SEPARATOR .
             $this->Module_Main_Dir . DIRECTORY_SEPARATOR .
-            $project->project_code . DIRECTORY_SEPARATOR .
+            $project->dosya_no . DIRECTORY_SEPARATOR .
             $contract->dosya_no . DIRECTORY_SEPARATOR .
             $folder_name . DIRECTORY_SEPARATOR .
             $folder_id . DIRECTORY_SEPARATOR .
@@ -1732,7 +1732,7 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project->project_code/$contract->dosya_no/Payment/$hak_no";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$contract->dosya_no/Payment/$hak_no";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1854,7 +1854,7 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1887,7 +1887,7 @@ class Contract extends CI_Controller
             // Yükleme yapılacak dosya yolu oluşturuluyor
             if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
                 // Yükleme yapılacak dosya yolu oluşturuluyor
-                $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
+                $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$record_id";
 
                 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
                 if (!is_dir($path)) {
@@ -2014,7 +2014,7 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance";
 
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -2046,7 +2046,7 @@ class Contract extends CI_Controller
 
             if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
                 // Yükleme yapılacak dosya yolu oluşturuluyor
-                $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
+                $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$record_id";
 
                 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
                 if (!is_dir($path)) {
@@ -2209,7 +2209,7 @@ class Contract extends CI_Controller
 
             if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
                 // Yükleme yapılacak dosya yolu oluşturuluyor
-                $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$record_id";
+                $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$record_id";
 
                 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
                 if (!is_dir($path)) {
@@ -2306,7 +2306,7 @@ class Contract extends CI_Controller
         // Formdan gelen klasör adı
         $folderName = convertToSEO($this->input->post('new_folder_name'));
 
-        $new_folder = "{$this->File_Dir_Prefix}/{$project->project_code}/{$item->dosya_no}/$folderName";
+        $new_folder = "{$this->File_Dir_Prefix}/{$project->dosya_no}/{$item->dosya_no}/$folderName";
 
         $this->load->library("form_validation");
 
@@ -2325,7 +2325,7 @@ class Contract extends CI_Controller
             if (!is_dir($new_folder)) {
                 mkdir($new_folder, 0777, TRUE);
             }
-            $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+            $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
 
             $filter_main = scandir($main_path);
 
@@ -2349,7 +2349,7 @@ class Contract extends CI_Controller
 
         } else {
 
-            $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+            $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
 
             $filter_main = scandir($main_path);
 
@@ -2584,7 +2584,7 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
 
             if ($this->input->post("tahsilat_tarih")) {
                 $tahsilat_tarihi = dateFormat('Y-m-d', $this->input->post("tahsilat_tarih"));
@@ -2611,7 +2611,7 @@ class Contract extends CI_Controller
             );
 
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$collection_id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection/$collection_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -2805,7 +2805,7 @@ class Contract extends CI_Controller
 
         $this->load->helper('file'); // File helper'ını yükle
 
-        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Collection/$collection_id";
+        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection/$collection_id";
 
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
 
@@ -2852,7 +2852,7 @@ class Contract extends CI_Controller
 
         $this->load->helper('file'); // File helper'ını yükle
 
-        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance/$advance_id";
+        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance/$advance_id";
 
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
 
@@ -2894,7 +2894,7 @@ class Contract extends CI_Controller
 
         $this->load->helper('file'); // File helper'ını yükle
 
-        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$module/$folder_name";
+        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$module/$folder_name";
 
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
 
@@ -2905,7 +2905,7 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
 
-        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+        $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
 
         $filter_main = scandir($main_path);
 
@@ -2947,7 +2947,7 @@ class Contract extends CI_Controller
 
         $this->load->helper('file'); // File helper'ını yükle
 
-        $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$bond_id";
+        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$bond_id";
 
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
 
@@ -3176,7 +3176,7 @@ class Contract extends CI_Controller
 
         if ($validate) {
 
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond";
 
             if ($this->input->post("teslim_tarih")) {
                 $teslim_tarihi = dateFormat('Y-m-d', $this->input->post("teslim_tarih"));
@@ -3205,7 +3205,7 @@ class Contract extends CI_Controller
             );
 
 // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Bond/$bond_id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$bond_id";
 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -3380,7 +3380,7 @@ class Contract extends CI_Controller
             );
 
 // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Advance/$advance_id";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance/$advance_id";
 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -3546,14 +3546,14 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->proje_id));
 
-        $main_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/";
+        $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
 
         if ($parent_name != null) {
-            $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$parent_name";
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/$parent_name/";
+            $sub_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name/$parent_name";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name/$parent_name/";
         } else {
-            $sub_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name";
-            $path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/$folder_name/";
+            $sub_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name";
+            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name/";
         }
 
         $filter = scandir($sub_path);

@@ -125,7 +125,7 @@
                             <!-- Dosya Yükle -->
                             <?php
 
-                            $file_path = "$this->File_Dir_Prefix/$project->project_code/$item->dosya_no/Personel/$edit_personel->id";
+                            $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel/$edit_personel->id";
 
                             if (!is_dir($file_path)) {
                                 mkdir($file_path, 0777, true);
