@@ -173,7 +173,7 @@ class Project extends CI_Controller
 
         if ($validate) {
 
-            $project_code = $next_project_name;
+            $project_code = "PRJ-".$next_project_name;
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code";
 
             if (!is_dir($path)) {
