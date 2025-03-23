@@ -103,7 +103,7 @@ class Project extends CI_Controller
         $users = $this->User_model->get_all(array());
 
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->project_code/main/";
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->dosya_no/main/";
 
 
         !is_dir($path) && mkdir($path, 0777, TRUE);
@@ -317,7 +317,7 @@ class Project extends CI_Controller
             );
 
             $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->project_code/main/";
+            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$item->dosya_no/main/";
 
 
             !is_dir($path) && mkdir($path, 0777, TRUE);
