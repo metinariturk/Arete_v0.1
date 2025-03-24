@@ -38,3 +38,23 @@
     }
 </script>
 
+<script>
+    function initializeFlatpickr() {
+        flatpickr(".flatpickr", {
+            dateFormat: "d-m-Y",
+            locale: "tr",
+            allowInput: true,
+            disableMobile: true
+        });
+    }
+
+    $(document).ready(function () {
+        initializeFlatpickr(); // Sayfa yüklendiğinde çalıştır
+    });
+
+    function open_modal(modalId) {
+        var modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
+        initializeFlatpickr(); // Modal açılınca Flatpickr'ı çalıştır
+    }
+</script>

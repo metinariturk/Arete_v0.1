@@ -68,25 +68,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/dashboard_v/notes&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/user_module/user_v/list/user",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list\user" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\notes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\list" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v" />
@@ -247,6 +247,7 @@
       <workItem from="1741081357452" duration="16624000" />
       <workItem from="1742123504867" duration="8639000" />
       <workItem from="1742764238802" duration="2774000" />
+      <workItem from="1742851144439" duration="4490000" />
     </task>
     <servers />
   </component>

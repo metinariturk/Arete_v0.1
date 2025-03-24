@@ -75,8 +75,7 @@ class user extends CI_Controller
         $user = $this->User_model->get(array(
             "id" => $user->id
         ));
-
-        
+        $settings = $this->Settings_model->get();
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -86,30 +85,11 @@ class user extends CI_Controller
         $viewData->contracts = $contracts;
         $viewData->sites = $sites;
         $viewData->user = $user;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-    }
-
-    public function new_form()
-    {
-
-        $viewData = new stdClass();
-        $settings = $this->Settings_model->get();
-        $items = $this->User_model->get_all(array(
-            "user_role" => 1
-        ));
-        $companys = $this->Company_model->get_all();
-
-
-        
         $viewData->settings = $settings;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->companys = $companys;
-        $viewData->subViewFolder = "add";
-        $viewData->items = $items;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
 
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
 
     public function file_form($id)
     {
@@ -131,7 +111,7 @@ class user extends CI_Controller
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
 
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
 
@@ -165,7 +145,6 @@ class user extends CI_Controller
         $companys = $this->Company_model->get_all();
 
 
-        
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Update_Folder";
@@ -196,10 +175,16 @@ class user extends CI_Controller
         $this->form_validation->set_rules("user_role", "Kullanıcı Türü", "required|trim");
         $this->form_validation->set_rules("name", "Ad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("surname", "Soyad", "callback_name_control|min_length[3]|required|trim");
-        $this->form_validation->set_rules("company", "Firma", "required|trim");
         $this->form_validation->set_rules("email", "E-Posta", "valid_email|required|trim");
         $this->form_validation->set_rules("password", "Şifre", "required|trim|min_length[8]");
         $this->form_validation->set_rules("password_check", "Şifre Kontrol", "matches[password]|required|trim");
+
+// Yeni eklemeler:
+        $this->form_validation->set_rules("unvan", "Ünvan", "trim|max_length[100]"); // Ünvan
+        $this->form_validation->set_rules("createdAt", "Giriş Tarihi", "trim"); // Giriş Tarihi
+        $this->form_validation->set_rules("banka", "Banka", "trim|max_length[100]"); // Banka
+        $this->form_validation->set_rules("IBAN", "IBAN", "trim|max_length[34]|alpha_numeric"); // IBAN
+
 
         $this->form_validation->set_message(
             array(
@@ -223,11 +208,12 @@ class user extends CI_Controller
 
             $name = mb_convert_case($this->input->post("name"), MB_CASE_TITLE, "UTF-8");
             $surname = mb_strtoupper($this->input->post("surname"), "UTF-8");
+            $user_role = $this->input->post("user_role") ? 1 : 0; // Eğer checkbox işaretliyse 1, değilse 0 alır
 
             $insert = $this->User_model->add(
                 array(
                     "user_name" => $this->input->post("user_name"),
-                    "user_role" => $this->input->post("user_role"),
+                    "user_role" => $user_role, // Checkbox'tan gelen değer burada kullanılıyor
                     "profession" => $this->input->post("profession"),
                     "company" => $this->input->post("company"),
                     "unvan" => $this->input->post("unvan"),
@@ -237,40 +223,36 @@ class user extends CI_Controller
                     "email" => $this->input->post("email"),
                     "password" => $this->encryption->encrypt($this->input->post("password")),
                     "isActive" => "1",
-                    "createdAt" => date("Y-m-d H:i:s")
+                    "createdAt" => date("Y-m-d H:i:s"),
+                    "banka" => $this->input->post("teminat_banka"),  // Banka adı
+                    "IBAN" => $this->input->post("IBAN"),  // IBAN numarası
+                    "address" => $this->input->post("address")  // Adres, eğer varsa
                 )
             );
+
 
             $record_id = $this->db->insert_id();
             $path = "$this->File_Dir_Prefix/$record_id";
 
+// Güvenlik için dosya yolunu doğrulamak (path güvenli olmalı)
+            $path = realpath($path) ? $path : "$this->File_Dir_Prefix/$record_id";
+
+// Dizin oluşturulmadan önce var olup olmadığını kontrol et
             if (!is_dir($path)) {
-                mkdir("$path", 0777, TRUE);
-                echo "Dosya Yolu Oluşturuldu: " . $path;
+                if (mkdir($path, 0755, true)) { // 0755 genellikle daha güvenli izinler sağlar
+                    echo "Dosya Yolu Başarıyla Oluşturuldu: " . $path;
+                } else {
+                    // Hata mesajı ve loglama
+                    echo "<p>Hata: Dizin oluşturulamadı: " . $path . "</p>";
+                    log_message('error', 'Dizin oluşturulamadı: ' . $path); // Hata loglama
+                }
             } else {
-                echo "<p>Aynı İsimde Dosya Mevcut: " . $path . "</p>";
-            }
-
-
-            if ($insert) {
-
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "$file_name - Sistem Kullanıcısı başarılı bir şekilde eklendi",
-                    "type" => "success"
-                );
-
-            } else {
-
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "$file_name - Sistem Kullanıcısı ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
+                // Aynı isimde dosya mevcutsa daha profesyonel bir mesaj
+                echo "<p><strong>Uyarı:</strong> Aynı isimde bir dosya veya dizin zaten mevcut: " . $path . "</p>";
             }
 
             // İşlemin Sonucunu Session'a yazma işlemi...
-            $this->session->set_flashdata("alert", $alert);
+
             redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
         } else {
 
@@ -283,7 +265,6 @@ class user extends CI_Controller
             $companys = $this->Company_model->get_all();
 
 
-            
             $viewData->settings = $settings;
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -405,7 +386,6 @@ class user extends CI_Controller
             $companys = $this->Company_model->get_all();
 
 
-            
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "$this->Update_Folder";
@@ -429,7 +409,7 @@ class user extends CI_Controller
         if (!isAdmin()) {
             redirect(base_url("error"));
         }
-        
+
         $path = "$this->File_Dir_Prefix/$id";
         echo $path;
 

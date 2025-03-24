@@ -16,7 +16,6 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/common/title"); ?>
             <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
