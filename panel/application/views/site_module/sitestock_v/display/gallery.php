@@ -8,7 +8,7 @@
                 $site_code = get_from_any("site", "dosya_no", "id", "$site_id");
                 $contract_id = get_from_any("site", "contract_id", "id", "$site_id");
                 $contract_code = get_from_any("contract", "dosya_no", "id", "$contract_id");
-                $project_id = get_from_any("site", "proje_id", "id", "$site_id");
+                $project_id = get_from_any("site", "project_id", "id", "$site_id");
                 $project_code = get_from_any("projects", "project_code", "id", "$project_id");
 
                 if ($contract_id > 0) {

@@ -21,8 +21,8 @@
             <!-- Sekmeler -->
             <div class="tabs mb-4">
                 <div class="tab-item" style="background-color: rgba(199,172,134,0.43);">
-                    <a class="text-blink" href="<?php echo base_url("project/file_form/$item->proje_id"); ?>">
-                        Proje <br><?php echo project_code($item->proje_id); ?>
+                    <a class="text-blink" href="<?php echo base_url("project/file_form/$item->project_id"); ?>">
+                        Proje <br><?php echo project_code($item->project_id); ?>
                     </a>
                 </div>
                 <?php if (isset($site)) { ?>

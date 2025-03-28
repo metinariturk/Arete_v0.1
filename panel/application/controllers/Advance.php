@@ -120,7 +120,7 @@ class Advance extends CI_Controller
 
         $item = $this->Advance_model->get(array("id"=>$id));
         $contract = $this->Contract_model->get(array("id"=>$item->contract_id));
-        $project = $this->Project_model->get(array("id"=>$contract->proje_id));
+        $project = $this->Project_model->get(array("id"=>$contract->project_id));
         $payment_settings = $this->Payment_settings_model->get(array("contract_id"=>$contract->id));
         $settings = $this->Settings_model->get();
 
@@ -182,7 +182,7 @@ class Advance extends CI_Controller
     public function save($contract_id)
     {
         $contract = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $contract->proje_id));
+        $project = $this->Project_model->get(array("id" => $contract->project_id));
 
         if (!isAdmin()) {
             redirect(base_url("error"));
@@ -314,7 +314,7 @@ class Advance extends CI_Controller
 
             $item = $this->Contract_model->get(array("id" => $contract->id));
             $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $project = $this->Project_model->get(array("id" => $item->project_id));
             $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Contract/";
             $collection_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
             $advance_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance";
