@@ -36,7 +36,6 @@ class Contract extends CI_Controller
         // Modelleri yükleme
         $models = [
             'Advance_model',
-            'Attendance_model',
             'Boq_model',
             'Bond_model',
             'City_model',
@@ -55,10 +54,6 @@ class Contract extends CI_Controller
             'Order_model',
             'Payment_model',
             'Project_model',
-            'Report_model',
-            'Report_supply_model',
-            'Report_workgroup_model',
-            'Report_workmachine_model',
             'Settings_model',
             'Site_model',
             'User_model',
@@ -105,7 +100,7 @@ class Contract extends CI_Controller
 
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "list";
+        $viewData->subViewFolder = "list_contract";
         $viewData->items = $items;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
@@ -137,9 +132,9 @@ class Contract extends CI_Controller
         $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "code ASC");
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
-        $site = $this->Site_model->get(array("project_id" => $item->project_id));
+        $site = $this->Site_model->get(array("proje_id" => $item->proje_id));
         $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
 
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
@@ -233,7 +228,7 @@ class Contract extends CI_Controller
             // Veritabanına Ekleme İşlemi
             $insert = $this->Contract_model->add(
                 array(
-                    "project_id" => $project_id,
+                    "proje_id" => $project_id,
                     "dosya_no" => $file_name,
                     "contract_name" => $contract_name,
                     "isveren" => $this->input->post("isveren"),
@@ -279,10 +274,10 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $item = $this->Contract_model->get(array("id" => $parent_contract));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $item = $this->Contract_model->get(array("id"=>$parent_contract));
+        $project = $this->Project_model->get(array("id"=>$item->proje_id));
         $next_contract_name = get_next_file_code("Contract");
-        $file_name = "SOZ-" . $next_contract_name;
+        $file_name = "SOZ-". $next_contract_name;
 
         $this->load->library("form_validation");
 
@@ -332,7 +327,7 @@ class Contract extends CI_Controller
             // Veritabanına Ekleme İşlemi
             $insert = $this->Contract_model->add(
                 array(
-                    "project_id" => $project->id,
+                    "proje_id" => $project->id,
                     "dosya_no" => $file_name,
                     "contract_name" => $contract_name,
                     "isveren" => $item->yuklenici,
@@ -351,7 +346,7 @@ class Contract extends CI_Controller
 
             $viewData = new stdClass();
 
-            $item = $this->Contract_model->get(array("id" => $parent_contract));
+            $item = $this->Contract_model->get(array("id"=>$parent_contract));
             $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
 
             $settings = $this->Settings_model->get();
@@ -371,7 +366,7 @@ class Contract extends CI_Controller
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
             $viewData = new stdClass();
 
-            $item = $this->Contract_model->get(array("id" => $parent_contract));
+            $item = $this->Contract_model->get(array("id"=>$parent_contract));
             $settings = $this->Settings_model->get();
             $companys = $this->Company_model->get_all(array());
             $next_contract_name = get_next_file_code("Contract");
@@ -454,9 +449,7 @@ class Contract extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $item = $this->Contract_model->get(array("id" => $id));
-        $sub_contracts = $this->Contract_model->get_all(array("parent" => $id));
-        $sites = $this->Site_model->get_all(array("contract_id" => $id));
+        $contract = $this->Contract_model->get(array("id" => $id));
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
         $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
@@ -470,9 +463,7 @@ class Contract extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "delete_form";
-        $viewData->item = $item;
-        $viewData->sub_contracts = $sub_contracts;
-        $viewData->sites = $sites;
+        $viewData->contract = $contract;
         $viewData->advances = $advances;
         $viewData->bonds = $bonds;
         $viewData->costincs = $costincs;
@@ -485,99 +476,142 @@ class Contract extends CI_Controller
 
     }
 
-    public function hard_delete($id)
+    public function delete($id)
     {
-        // İzin kontrolü
         if (!isAdmin() && !permission_control("contract", "delete")) {
             redirect(base_url("error"));
         }
 
-        // Sözleşme verisini al
-        $contract = $this->Contract_model->get(array("id" => $id));
+        $project_id = get_from_id("contract", "proje_id", $id);
+        $project_code = project_code($project_id);
+        $contract_code = get_from_id("contract", "dosya_no", $id);
 
-        // Sözleşme bulunamazsa hata sayfasına yönlendir
-        if (!$contract) {
-            redirect(base_url("error"));
-        }
-
-        // Proje ve şantiye verilerini al
-        $sub_contract = $this->Contract_model->get(array("parent" => $id));
-
-        if (!empty($sub_contract)) {
-            redirect(base_url("error"));
-        }
-
-        $project = $this->Project_model->get(array("id" => $contract->project_id));
-        $site = $this->Site_model->get(array("contract_id" => $id));
+        $file_ids = array();
 
 
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no";
+        if (!empty($file_ids)) {
 
-        $site_path = '';
-        if (isset($site)) {
-            $site_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no";
-        }
+            $viewData = new stdClass();
 
-        // Klasör silme işlemi - Sözleşme yolu
-        if (!deleteDirectory($path)) {
-            log_message('error', "Sözleşme klasörü silinemedi: $path");
+            if (isset($error_log)) {
+                $update_error = $this->Delete_model->update(
+                    array(
+                        "id" => $error_log->id
+                    ),
+                    array(
+                        "error_list" => json_encode($file_ids),
+                    )
+                );
+
+            } else {
+                $add_error = $this->Delete_model->add(
+                    array(
+                        "module_name" => "Contract",
+                        "module_id" => "$id",
+                        "error_list" => json_encode($file_ids)
+                    )
+                );
+            }
+
+            $delete_error_id = get_from_any_and("delete_error", "module_name", "Contract", "module_id", $id);
+
+            redirect(base_url("Contract/delete_form/$delete_error_id"));
+
         } else {
-            log_message('info', "Sözleşme klasörü silindi: $path");
+            $viewData = new stdClass();
+
+            $viewData->item = $this->Delete_model->delete(
+                array(
+                    "id" => $error_log->id
+                )
+            );
+
+            $delete_contract = $this->Contract_model->delete(array("id" => $id));
+
+            $this->Favorite_model->delete(
+                array(
+                    "module" => "contract",
+                    "module_id" => $id,
+                    "user_id" => active_user_id()
+                )
+            );
+
+            $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
+
+            $update_file_order = $this->Order_model->update(
+                array(
+                    "id" => $file_order_id
+                ),
+                array(
+                    "deletedAt" => date("Y-m-d H:i:s"),
+                    "deletedBy" => active_user_id(),
+                )
+            );
+
+            $path = "$this->File_Dir_Prefix/$project_code/$contract_code";
+
+            $sil = deleteDirectory($path);
+
+
+            if ($sil) {
+                echo '<br>deleted successfully';
+            } else {
+                echo '<br>errors occured';
+            }
+
+
+            redirect(base_url("$this->Module_Parent_Name/$this->Display_route/$project_id"));
         }
-
-        // Şantiye varsa, şantiye klasörünü sil
-        if ($site_path && !deleteDirectory($site_path)) {
-            log_message('error', "Şantiye klasörü silinemedi: $site_path");
-        } elseif ($site_path) {
-            log_message('info', "Şantiye klasörü silindi: $site_path");
-        }
-
-        // Transaction başlat
-        $this->db->trans_start();
-
-        // Tüm ilgili kayıtları sil
-        $delete_status = [
-            $this->Advance_model->delete(array("contract_id" => $id)),
-            $this->Attendance_model->delete(array("contract_id" => $id)),
-            $this->Bond_model->delete(array("contract_id" => $id)),
-            $this->Boq_model->delete(array("contract_id" => $id)),
-            $this->Collection_model->delete(array("contract_id" => $id)),
-            $this->Contract_price_model->delete(array("contract_id" => $id)),
-            $this->Costinc_model->delete(array("contract_id" => $id)),
-            $this->Extime_model->delete(array("contract_id" => $id)),
-            $this->Newprice_model->delete(array("contract_id" => $id)),
-            $this->Payment_model->delete(array("contract_id" => $id)),
-            $this->Payment_settings_model->delete(array("contract_id" => $id)),
-            $this->Payment_sign_model->delete(array("contract_id" => $id)),
-            $this->Contract_model->delete(array("parent" => $id)), // Alt sözleşmeleri sil
-            $this->Favorite_model->delete(array("module" => "contract", "module_id" => $id)),
-            $this->Report_model->delete(array("contract_id" => $id)), //
-            $this->Report_supply_model->delete(array("contract_id" => $id)),
-            $this->Report_workgroup_model->delete(array("contract_id" => $id)),
-            $this->Report_workmachine_model->delete(array("contract_id" => $id)),
-            $this->Site_model->delete(array("contract_id" => $id)),
-        ];
-
-        // Eğer herhangi bir silme işlemi başarısız olursa, transaction'ı geri al
-        if (in_array(false, $delete_status, true)) {
-            $this->db->trans_rollback();
-            redirect(base_url("error"));
-        }
-
-        // Transaction'ı tamamla
-        $this->db->trans_complete();
-
-        // Eğer işlemde bir hata varsa, hata sayfasına yönlendir
-        if ($this->db->trans_status() === FALSE) {
-            redirect(base_url("error"));
-        }
-
-        // Başarılıysa, proje sayfasına yönlendir
-        $this->Contract_model->delete(array("id" => $id));
-
-        redirect(base_url("project/file_form/$project->id"));
     }
 
+    public function hard_delete($id)
+    {
+        if (!isAdmin() && !permission_control("contract", "delete")) {
+            redirect(base_url("error"));
+        }
+
+        $contract = $this->Contract_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
+
+        $project_id = $contract->proje_id;
+        $project_code = project_code($project_id);
+        $sub_folder = get_from_id("contract", "dosya_no", $id);
+
+        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$sub_folder";
+        $sil = deleteDirectory($path);
+
+        $models = [
+            'Advance_model',
+            'Attendance_model',
+            'Bond_model',
+            'Boq_model',
+            'Collection_model',
+            'Contract_price_model',
+            'Costinc_model',
+            'Extime_model',
+            'Newprice_model',
+            'Payment_model',
+            'Payment_settings_model',
+            'Payment_sign_model',
+            'Report_sign_model',
+        ];
+
+        $this->db->trans_start(); // Transaction başlat
+
+        foreach ($models as $model) {
+            if (property_exists($this, $model)) {
+                $this->$model->delete(['contract_id' => $id]); // Silme işlemi
+            }
+        }
+
+        $delete_contract = $this->Contract_model->delete(array("id" => $id));
+        $delete_sub_contract = $this->Contract_model->delete(array("parent" => $id));
+        $delete_favorite = $this->Favorite_model->delete(array("module" => "contract", "module_id" => "$id"));
+
+        if ($delete_contract) {
+            redirect(base_url("project/file_form/$project->id"));
+        }
+    }
 
     public function file_upload($type, $contract_id, $sub_folder = null)
     {
@@ -587,7 +621,7 @@ class Contract extends CI_Controller
         }
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         $path = $this->Upload_Folder . DIRECTORY_SEPARATOR . $this->Module_Main_Dir . DIRECTORY_SEPARATOR . $project->dosya_no . DIRECTORY_SEPARATOR . $item->dosya_no . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR;
 
@@ -652,7 +686,7 @@ class Contract extends CI_Controller
         $fileName = $this->input->post('fileName');
 
         $contract = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $contract->project_id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
 
         $path = $this->Upload_Folder . DIRECTORY_SEPARATOR .
             $this->Module_Main_Dir . DIRECTORY_SEPARATOR .
@@ -677,7 +711,7 @@ class Contract extends CI_Controller
         $this->load->library('zip');
         $this->zip->compression_level = 0;
 
-        $project_id = get_from_id("contract", "project_id", $cont_id);
+        $project_id = get_from_id("contract", "proje_id", $cont_id);
         $project_code = project_code($project_id);
         $cont_code = get_from_id("contract", "dosya_no", $cont_id);
         $cont_name = get_from_id("contract", "contract_name", $cont_id);
@@ -715,7 +749,7 @@ class Contract extends CI_Controller
         $this->zip->compression_level = 1;
 
         $contract = $this->Contract_model->get(array("id" => $cont_id));
-        $project_code = project_code($contract->project_id);
+        $project_code = project_code($contract->proje_id);
 
         $path = FCPATH . "uploads/project_v/$project_code/$contract->dosya_no/";
 
@@ -1664,7 +1698,7 @@ class Contract extends CI_Controller
         }
 
         $contract = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $contract->project_id));
+        $project = $this->Project_model->get(array("id" => $contract->proje_id));
         $last_payment = $this->Payment_model->last_payment(array("contract_id" => $contract_id));
 
         $start_date = ($contract->sitedel_date != null)
@@ -1777,7 +1811,7 @@ class Contract extends CI_Controller
         $this->load->model("Settings_model");
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
@@ -1937,7 +1971,7 @@ class Contract extends CI_Controller
         $this->load->model("Settings_model");
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
@@ -2102,7 +2136,7 @@ class Contract extends CI_Controller
         $this->load->model("Settings_model");
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
@@ -2261,7 +2295,7 @@ class Contract extends CI_Controller
 
         // Gelen ID'ye göre veriyi al
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         // Eğer $item bulunamazsa işlem durdurulur
         if (!$item) {
@@ -2346,7 +2380,7 @@ class Contract extends CI_Controller
         // Verilerin getirilmesi
 
         $edit_item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $edit_item->project_id));
+        $project = $this->Project_model->get(array("id" => $edit_item->proje_id));
         $companys = $this->Company_model->get_all(array());
 
         $settings = $this->Settings_model->get();
@@ -2369,7 +2403,7 @@ class Contract extends CI_Controller
         // Verilerin getirilmesi
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $companys = $this->Company_model->get_all(array());
         $next_contract_name = get_next_file_code("Contract");
 
@@ -2396,7 +2430,7 @@ class Contract extends CI_Controller
 
         $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
 
@@ -2418,7 +2452,7 @@ class Contract extends CI_Controller
 
         $edit_advance = $this->Advance_model->get(array("id" => $advance));
         $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
 
@@ -2440,7 +2474,7 @@ class Contract extends CI_Controller
 
         $edit_bond = $this->Bond_model->get(array("id" => $bond));
         $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();
@@ -2462,7 +2496,7 @@ class Contract extends CI_Controller
         $main_group = $this->Contract_price_model->get(array("id" => $edit_pricegroup->parent));
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $edit_pricegroup->contract_id, 'leader' => 1));
         $item = $this->Contract_model->get(array("id" => $edit_pricegroup->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();

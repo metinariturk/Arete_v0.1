@@ -71,7 +71,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/project_v",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/user_module/user_v/list/user",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,18 +82,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list\user" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\notes" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\list" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\payment_v\display\tabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\notes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0012\SOZ-0050\Collection" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\price" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -247,8 +247,7 @@
       <workItem from="1741081357452" duration="16624000" />
       <workItem from="1742123504867" duration="8639000" />
       <workItem from="1742764238802" duration="2774000" />
-      <workItem from="1742851144439" duration="4765000" />
-      <workItem from="1743190146772" duration="8452000" />
+      <workItem from="1742851144439" duration="4490000" />
     </task>
     <servers />
   </component>
@@ -278,7 +277,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
-          <line>434</line>
+          <line>474</line>
           <properties>
             <option name="className" value="\Project" />
             <option name="methodName" value="file_upload" />
@@ -350,7 +349,16 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>581</line>
+          <line>579</line>
+          <properties>
+            <option name="className" value="\Contract" />
+            <option name="methodName" value="hard_delete" />
+          </properties>
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
+          <line>615</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="file_upload" />
@@ -365,15 +373,6 @@
             <option name="methodName" value="print_green" />
           </properties>
           <option name="timeStamp" value="58" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>450</line>
-          <properties>
-            <option name="className" value="\Contract" />
-            <option name="methodName" value="delete_form" />
-          </properties>
-          <option name="timeStamp" value="59" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

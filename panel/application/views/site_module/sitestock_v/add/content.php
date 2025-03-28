@@ -39,7 +39,7 @@ if (empty($site->id)) { ?>
                                 <div class="btn btn-light">
                                     <a href="<?php echo base_url("site/file_form/$site->id"); ?>">
                                         <i data-feather="home"></i>
-                                        <?php echo project_code_name($site->project_id); ?>
+                                        <?php echo project_code_name($site->proje_id); ?>
                                     </a>
                                 </div>
                             </li>

@@ -385,7 +385,7 @@ class Guest extends CI_Controller
             $boxHeight = ($pageHeight - $offset) / 2;
 
             $date = dateFormat_dmy($report->report_date);
-            $project_code = project_code($site->project_id);
+            $project_code = project_code($site->proje_id);
 
 
             $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";

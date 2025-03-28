@@ -196,7 +196,7 @@ function project_id_cont($contract_id)
         "id" => $contract_id
     ));
 
-    return $contract->project_id;
+    return $contract->proje_id;
 }
 
 function project_id_site($site_id)
@@ -207,7 +207,7 @@ function project_id_site($site_id)
         "id" => $site_id
     ));
 
-    return $site->project_id;
+    return $site->proje_id;
 }
 
 function contract_id_module($module, $id)

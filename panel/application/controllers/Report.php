@@ -184,7 +184,7 @@ class Report extends CI_Controller
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
 
-        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
 
@@ -229,7 +229,7 @@ class Report extends CI_Controller
         $viewData->path = $path;
         $viewData->upload_function = $upload_function;
         $viewData->item = $item;
-        $viewData->project_id = $project->id;
+        $viewData->proje_id = $project->id;
         $viewData->weather = $weather;
         $viewData->workgroups = $workgroups;
         $viewData->previous_report = $previous_report;
@@ -340,7 +340,7 @@ class Report extends CI_Controller
                 $insert_report = $this->Report_model->add(
                     array(
                         "site_id" => $site_id,
-                        "project_id" => $site->project_id,
+                        "project_id" => $site->proje_id,
                         "contract_id" => $site->contract_id,
                         "report_date" => $report_date,
                         "createdAt" => date("Y-m-d"),
@@ -357,7 +357,7 @@ class Report extends CI_Controller
                         array(
                             "site_id" => $site_id,
                             "report_id" => $report_id,
-                            "project_id" => $site->project_id,
+                            "project_id" => $site->proje_id,
                             "contract_id" => $site->contract_id,
                             "workgroup" => $workgroup['workgroup'],
                             "number" => $workgroup['worker_count'],
@@ -373,7 +373,7 @@ class Report extends CI_Controller
                         array(
                             "site_id" => $site_id,
                             "report_id" => $report_id,
-                            "project_id" => $site->project_id,
+                            "project_id" => $site->proje_id,
                             "contract_id" => $site->contract_id,
                             "workmachine" => $workmachine['workmachine'],
                             "number" => $workmachine['machine_count'],
@@ -389,7 +389,7 @@ class Report extends CI_Controller
                         array(
                             "site_id" => $site_id,
                             "report_id" => $report_id,
-                            "project_id" => $site->project_id,
+                            "project_id" => $site->proje_id,
                             "contract_id" => $site->contract_id,
                             "supply" => $supplies['supply'],
                             "qty" => $supplies['qty'],
@@ -438,7 +438,7 @@ class Report extends CI_Controller
         $site = $this->Site_model->get(array("id" => $report->site_id));
 
 
-        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         $old_report_date = dateFormat('d-m-Y', $report->report_date);
         $new_report_date = dateFormat('d-m-Y', $this->input->post("report_date"));
@@ -591,7 +591,7 @@ class Report extends CI_Controller
         $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
         $site_id = get_from_any("report", "site_id", "id", $report_id);
 
-        $project_id = get_from_id("site", "project_id", $site_id);
+        $project_id = get_from_id("site", "proje_id", $site_id);
         $project_code = project_code($project_id);
         $site_code = get_from_id("site", "dosya_no", $site_id);
         $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
@@ -626,7 +626,7 @@ class Report extends CI_Controller
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
 
-        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         $date = dateFormat_dmy($item->report_date);
 
@@ -723,7 +723,7 @@ class Report extends CI_Controller
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
 
-        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         $date = dateFormat_dmy($item->report_date);
 
@@ -754,7 +754,7 @@ class Report extends CI_Controller
         $date = dateFormat_dmy($report->report_date);
         $site = $this->Site_model->get(array("id" => $report->site_id));
 
-        $project_code = project_code("$site->project_id");
+        $project_code = project_code("$site->proje_id");
         $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
 
         $files = glob($path . '/*');
@@ -1106,7 +1106,7 @@ class Report extends CI_Controller
 
 
         $date = dateFormat_dmy($report->report_date);
-        $project_code = project_code($site->project_id);
+        $project_code = project_code($site->proje_id);
 
 
         $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";

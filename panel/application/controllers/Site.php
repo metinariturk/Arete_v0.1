@@ -157,12 +157,12 @@ class Site extends CI_Controller
 
         $contracts = $this->Contract_model->get_all(array(
             "isActive" => 1,
-            'project_id' => $project_id
+            'proje_id' => $project_id
         ));
 
         $subcontracts = $this->Contract_model->get_all(array(
             'isActive' => 1,
-            'project_id' => $project_id
+            'proje_id' => $project_id
         ));
 
         $projects = $this->Project_model->get_all(array(
@@ -253,7 +253,7 @@ class Site extends CI_Controller
             $insert = $this->Site_model->add(
                 array(
                     "contract_id" => $contract_id,
-                    "project_id" => $project_id,
+                    "proje_id" => $project_id,
                     "dosya_no" => $file_name,
                     "santiye_ad" => $this->input->post("santiye_ad"),
                     "santiye_sefi" => $this->input->post("santiye_sefi"),
@@ -302,13 +302,13 @@ class Site extends CI_Controller
 
             $contracts = $this->Contract_model->get_all(array(
                 "isActive" => 1,
-                'project_id' => $project_id
+                'proje_id' => $project_id
 
             ));
 
             $subcontracts = $this->Contract_model->get_all(array(
                 'isActive' => 1,
-                'project_id' => $project_id
+                'proje_id' => $project_id
             ));
 
             $projects = $this->Project_model->get_all(array(
@@ -351,7 +351,7 @@ class Site extends CI_Controller
             )
         );
 
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
         $sites = $this->Site_model->get_all(array("is_Active" => 1));
         $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
@@ -482,18 +482,18 @@ class Site extends CI_Controller
 
         $viewData = new stdClass();
 
-        $project_id = get_from_id("site", "project_id", "$id");
+        $project_id = get_from_id("site", "proje_id", "$id");
         $contract_id = get_from_id("site", "contract_id", "$id");
 
         $active_conn_contracts = $this->Contract_model->get_all(array(
             "isActive" => 1,
-            'project_id' => $project_id
+            'proje_id' => $project_id
 
         ));
 
         $active_subcontracts = $this->Contract_model->get_all(array(
             'isActive' => 1,
-            'project_id' => $project_id
+            'proje_id' => $project_id
         ));
 
         $users = $this->User_model->get_all(array());
@@ -527,7 +527,7 @@ class Site extends CI_Controller
         }
 
         $site_code = get_from_id("site", "dosya_no", $id);
-        $project_id = get_from_id("site", "project_id", $id);
+        $project_id = get_from_id("site", "proje_id", $id);
         $project_code = project_code($project_id);
         $path = "$this->File_Dir_Prefix/$project_code/$site_code";
 
@@ -1172,7 +1172,7 @@ class Site extends CI_Controller
 
         $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
-        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
 
@@ -1191,7 +1191,7 @@ class Site extends CI_Controller
 
         $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
-        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         // Dosya yolunu oluşturmak
         $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
@@ -1209,7 +1209,7 @@ class Site extends CI_Controller
         // İlgili verileri almak
         $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
-        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $project = $this->Project_model->get(array("id" => $site->proje_id));
 
         // Dosya yolunu oluşturmak
         $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
@@ -1254,7 +1254,7 @@ class Site extends CI_Controller
         // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
         $item = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
 
         // Form validation kütüphanesini yüklüyoruz
@@ -1395,7 +1395,7 @@ class Site extends CI_Controller
         // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
         $item = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
 
         // Form validation kütüphanesini yüklüyoruz
@@ -1536,7 +1536,7 @@ class Site extends CI_Controller
         $sitewallet = $this->Sitewallet_model->get(array("id" => $sitewallet_id));
         $item = $this->Site_model->get(array("id" => $sitewallet->site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$sitewallet->id";
 
@@ -1593,7 +1593,7 @@ class Site extends CI_Controller
 
         $edit_expense = $this->Sitewallet_model->get(array("id" => $expense_id));
         $item = $this->Site_model->get(array("id" => $edit_expense->site_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         
         $viewData = new stdClass();
@@ -1614,7 +1614,7 @@ class Site extends CI_Controller
         $edit_expense = $this->Sitewallet_model->get(array("id" => $expense_id));
         $item = $this->Site_model->get(array("id" => $edit_expense->site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
 
         // Form validation kütüphanesini yüklüyoruz
@@ -1749,7 +1749,7 @@ class Site extends CI_Controller
     {
         $site_stock = $this->Sitewallet_model->get(array("id" => $sitestock_id));
         $item = $this->Site_model->get(array("id" => $site_stock->site_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         // Dosya yolu
         $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet";
@@ -2160,7 +2160,7 @@ class Site extends CI_Controller
         // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
         $item = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         $settings = $this->Settings_model->get();
 
@@ -2311,7 +2311,7 @@ class Site extends CI_Controller
         $edit_personel = $this->Workman_model->get(array("id" => $personel_id));
         $item = $this->Site_model->get(array("id" => $edit_personel->site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
 
         $settings = $this->Settings_model->get();
 
@@ -2468,7 +2468,7 @@ class Site extends CI_Controller
 
         $edit_personel = $this->Workman_model->get(array("id" => $personel_id));
         $item = $this->Site_model->get(array("id" => $edit_personel->site_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
         
@@ -2491,7 +2491,7 @@ class Site extends CI_Controller
     {
         $item = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->project_id));
+        $project = $this->Project_model->get(array("id" => $item->proje_id));
         $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();

@@ -14,7 +14,7 @@
     </tr>
     <tr>
         <td style="width: 150px"><strong>Proje Kodu/Adı</strong></td>
-        <td><?php echo project_code_name($project_id); ?></td>
+        <td><?php echo project_code_name($proje_id); ?></td>
     </tr>
     <?php if (!empty($contract_id)) { ?>
         <tr>
