@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <?php $this->load->view("includes/head"); ?>
-    <?php $this->load->view("includes/include_datatable_css"); ?>
 </head>
 <body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -21,17 +20,5 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
-<script>
-    $('#project_list').DataTable();
-</script>
-<?php if (isset($form_error)) { ?>
-    <script>
-        // Sayfa tamamen yüklendiğinde modalı aç
-        $(document).ready(function () {
-            $('#exampleModalgetbootstrap').modal('show');
-        });
-    </script>
-<?php } ?>
 </body>
 </html>

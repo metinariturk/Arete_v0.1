@@ -14,51 +14,9 @@ $sidebarList = array(
 
 
     array(
-        "title" => "Sözleşme Yönetimi",
-        "url" => "#",
-        "icon" => "edit-3",
-        "submodules" => array(
-            array(
-                "title" => "Ana Sözleşmeler",
-                "url" => base_url("contract")
-            ),
-            array(
-                "title" => "Alt Sözleşmeler",
-                "url" => base_url("contract/contract_sub")
-            ),
-            array(
-                "title" => "Hakedişler",
-                "url" => base_url("payment")
-            ),
-            array(
-                "title" => "Teklifler",
-                "url" => base_url("contract/offer_list")
-            ),
-            array(
-                "title" => "Tahsilat İşlemleri",
-                "url" => base_url("collection")
-            ),
-            array(
-                "title" => "Avans İşlemleri",
-                "url" => base_url("advance")
-            ),
-            array(
-                "title" => "Teminat İşlemleri",
-                "url" => base_url("Bond")
-            ),
-            array(
-                "title" => "Keşif Artışı",
-                "url" => base_url("Costinc")
-            ),
-            array(
-                "title" => "Yeni Birim Fiyat",
-                "url" => base_url("Newprice")
-            ),
-            array(
-                "title" => "Süre Uzatımı",
-                "url" => base_url("Extime")
-            ),
-        )
+        "title" => "Sözleşmeler",
+        "icon" => "box",
+        "url" => base_url("Contract")
     ),
 
     array(
