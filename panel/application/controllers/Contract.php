@@ -2507,7 +2507,7 @@ class Contract extends CI_Controller
 
         $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
         $settings = $this->Settings_model->get();
 
         $this->load->library("form_validation");
@@ -2628,7 +2628,7 @@ class Contract extends CI_Controller
 
             $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
             $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
-            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $project = $this->Project_model->get(array("id" => $item->project_id));
             $settings = $this->Settings_model->get();
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
@@ -2765,7 +2765,7 @@ class Contract extends CI_Controller
 
         $delete_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $delete_collection->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
 
         $delete = $this->Collection_model->delete(array("id" => $collection_id));
 
@@ -2812,7 +2812,7 @@ class Contract extends CI_Controller
 
         $delete_advance = $this->Advance_model->get(array("id" => $advance_id));
         $item = $this->Contract_model->get(array("id" => $delete_advance->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
 
         $delete = $this->Advance_model->delete(array("id" => $advance_id));
 
@@ -2856,7 +2856,7 @@ class Contract extends CI_Controller
         $this->load->model("Contract_model");
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
 
         $this->load->helper('file'); // File helper'ını yükle
 
@@ -2869,7 +2869,7 @@ class Contract extends CI_Controller
         }
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
 
         $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
 
@@ -2907,7 +2907,7 @@ class Contract extends CI_Controller
 
         $delete_bond = $this->Bond_model->get(array("id" => $bond_id));
         $item = $this->Contract_model->get(array("id" => $delete_bond->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
 
         $delete = $this->Advance_model->delete(array("id" => $bond_id));
 
@@ -3085,7 +3085,7 @@ class Contract extends CI_Controller
 
         $edit_bond = $this->Bond_model->get(array("id" => $bond_id));
         $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
         $settings = $this->Settings_model->get();
         $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
 
@@ -3201,7 +3201,7 @@ class Contract extends CI_Controller
 
             $edit_bond = $this->Bond_model->get(array("id" => $bond_id));
             $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
-            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $project = $this->Project_model->get(array("id" => $item->project_id));
             $settings = $this->Settings_model->get();
             $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
 
@@ -3229,7 +3229,7 @@ class Contract extends CI_Controller
 
             $edit_bond = $this->Bond_model->get(array("id" => $bond_id));
             $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
-            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $project = $this->Project_model->get(array("id" => $item->project_id));
             $settings = $this->Settings_model->get();
             $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
 
@@ -3266,7 +3266,7 @@ class Contract extends CI_Controller
 
         $edit_advance = $this->Advance_model->get(array("id" => $advance_id));
         $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
         $settings = $this->Settings_model->get();
         $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
 
@@ -3375,7 +3375,7 @@ class Contract extends CI_Controller
 
             $edit_advance = $this->Advance_model->get(array("id" => $advance_id));
             $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
-            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $project = $this->Project_model->get(array("id" => $item->project_id));
             $settings = $this->Settings_model->get();
             $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
 
@@ -3401,7 +3401,7 @@ class Contract extends CI_Controller
 
             $edit_advance = $this->Advance_model->get(array("id" => $advance_id));
             $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
-            $project = $this->Project_model->get(array("id" => $item->proje_id));
+            $project = $this->Project_model->get(array("id" => $item->project_id));
             $settings = $this->Settings_model->get();
             $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
 
@@ -3510,7 +3510,7 @@ class Contract extends CI_Controller
         $parent_name = $this->input->post('parent_name');
 
         $item = $this->Contract_model->get(array("id" => $contract_id));
-        $project = $this->Project_model->get(array("id" => $item->proje_id));
+        $project = $this->Project_model->get(array("id" => $item->project_id));
 
         $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
 
