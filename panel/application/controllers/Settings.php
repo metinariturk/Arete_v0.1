@@ -1,72 +1,49 @@
 <?php
-
 class Settings extends CI_Controller
 {
     public $viewFolder = "";
-
     public function __construct()
     {
-
         parent::__construct();
-
                if (!get_active_user()) {
             redirect(base_url("login"));
         }
  $this->Theme_mode = get_active_user()->mode;        if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
-
         $this->Module_Title = "Sistem Ayarları";
-
         $this->viewFolder = "settings_v";
         $this->Module_Name = "settings";
-
-
         $this->load->model("Settings_model");
         $this->load->model("Order_model");
-
-
     }
-
     public function index()
     {
         $viewData = new stdClass();
-
-        /** Tablodan Verilerin Getirilmesi.. */
+        
         $item = $this->Settings_model->get();
-
         $viewData->subViewFolder = "display";
-
         
         $viewData->viewFolder = $this->viewFolder;
         $viewData->item = $item;
         $viewData->default_groups = json_decode($item->default_groups, true);
-
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
-
     public function new_form()
     {
         $viewData = new stdClass();
-
         
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "add";
-
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
     }
-
     public function save()
     {
-
         $this->load->library("form_validation");
-
         $this->form_validation->set_rules("sirket_adi", "Şirket Adı", "required|trim");
         $this->form_validation->set_rules("vergi_no", "Vergi No", "required|trim|min_length[10]|max_length[10]|numeric");
         $this->form_validation->set_rules("vergi_daire", "Vergi Dairesi", "required|trim");
         $this->form_validation->set_rules("email", "E-Posta Adresi", "required|trim|valid_email");
-
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
@@ -74,14 +51,10 @@ class Settings extends CI_Controller
                 "min_length" => "<b>{field}</b> en az <b>{param}</b> Karakter Olmalıdır",
                 "max_length" => "<b>{field}</b> en fazla <b>{param}</b> Karakter Olmalıdır",
                 "numeric" => "<b>{field}</b> sadece rakamlardan oluşmalı"
-
             )
         );
-
         $validate = $this->form_validation->run();
-
         if ($validate) {
-
             $insert = $this->Settings_model->add(
                 array(
                     "sirket_adi" => $this->input->post("sirket_adi"), //1
@@ -116,7 +89,6 @@ class Settings extends CI_Controller
                     "createdAt" => date("Y-m-d H:i:s") //29
                 )
             );
-
             $insert_unique = $this->Settings_model->add_scheme(
                 array(
                     "file_order" => $this->input->post("on_ek") . "-" . $this->input->post("son_ek"), //1
@@ -124,57 +96,38 @@ class Settings extends CI_Controller
                     "createdAt" => date("Y-m-d H:i:s") //3
                 )
             );
-
-            // TODO Alert sistemi eklenecek...
+            
             if ($insert) {
-
                 $alert = array(
                     "title" => "İşlem Başarılı",
                     "text" => "Kayıt başarılı bir şekilde eklendi",
                     "type" => "success"
                 );
-
             } else {
-
                 $alert = array(
                     "title" => "İşlem Başarılı",
                     "text" => "Kayıt Ekleme sırasında bir problem oluştu",
                     "type" => "danger"
                 );
             }
-
-            // İşlemin Sonucunu Session'a yazma işlemi...
-            $this->session->set_flashdata("alert", $alert);
-
             redirect(base_url("settings"));
-
         } else {
-
     
         $viewData = new stdClass();
-
-
             
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "add";
             $viewData->form_error = true;
-
             $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
-
         // Başarılı ise
         // Kayit işlemi baslar
         // Başarısız ise
         // Hata ekranda gösterilir...
-
     }
-
-
     public function update($id)
     {
-
         $this->load->library("form_validation");
-
         $this->form_validation->set_rules("sirket_adi", "Şirket Adı", "required|trim");
         $this->form_validation->set_rules("vergi_no", "Vergi No", "required|trim|min_length[10]|max_length[10]|numeric");
         $this->form_validation->set_rules("vergi_daire", "Vergi Dairesi", "required|trim");
@@ -186,15 +139,11 @@ class Settings extends CI_Controller
                 "min_length" => "<b>{field}</b> en az <b>{param}</b> Karakter Olmalıdır",
                 "max_length" => "<b>{field}</b> en fazla <b>{param}</b> Karakter Olmalıdır",
                 "numeric" => "<b>{field}</b> sadece rakamlardan oluşmalı"
-
             )
         );
-
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
-
         if ($validate) {
-
             $data = array(
                 "sirket_adi" => $this->input->post("sirket_adi"), //1
                 "faaliyet" => $this->input->post("faaliyet"), //2
@@ -238,79 +187,57 @@ class Settings extends CI_Controller
                 "theme_colour" => $this->input->post("theme_colour"), //28
                 "theme_panelfold" => $this->input->post("theme_panelfold"), //28
             );
-
             $update = $this->Settings_model->update(array("id" => $id), $data);
-            // TODO Alert sistemi eklenecek...
+            
             if ($update) {
-
                 $alert = array(
                     "title" => "İşlem Başarılı",
                     "text" => "Kayıt başarılı bir şekilde güncellendi",
                     "type" => "success"
                 );
-
             } else {
-
                 $alert = array(
                     "title" => "İşlem Başarısız",
                     "text" => "Kayıt Güncelleme sırasında bir problem oluştu",
                     "type" => "danger"
                 );
             }
-
-            // İşlemin Sonucunu Session'a yazma işlemi...
-            $this->session->set_flashdata("alert", $alert);
-
             redirect(base_url("settings"));
-
         } else {
-
     
         $viewData = new stdClass();
-
             
             $viewData->viewFolder = $this->viewFolder;
             $viewData->subViewFolder = "display";
             $viewData->form_error = true;
-
-            /** Tablodan Verilerin Getirilmesi.. */
+            
             $viewData->item = $this->Settings_model->get(
                 array(
                     "id" => $id,
                 )
             );
-
             $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
-
     }
-
     public function update_form($id)
     {
         $viewData = new stdClass();
-
-        /** Tablodan Verilerin Getirilmesi.. */
+        
         $item = $this->Settings_model->get(
             array(
                 "id" => $id,
             )
         );
-
         $main_groups = $item->main_groups;
-
         
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "display";
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
-
         $this->load->view("{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
-
     public function update_default_group()
     {
       echo "burda";
     }
-
-
 }

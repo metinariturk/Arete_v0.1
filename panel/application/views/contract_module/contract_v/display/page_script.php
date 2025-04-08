@@ -233,7 +233,7 @@
         // Kullanıcıdan onay al
         Swal.fire({
             title: 'Silme İşlemi',
-            text: "Bu stok hareketini silmek istediğinize emin misiniz?",
+            text: "Bunu silmek istediğinize emin misiniz?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Evet, sil',

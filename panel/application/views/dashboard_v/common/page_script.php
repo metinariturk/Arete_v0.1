@@ -97,11 +97,11 @@
 
 <!--Stok verisi sil başı-->
 <script>
-    function confirmDelete(deleteUrl, refreshDiv) {
+    function confirmDelete(deleteUrl, text ,refreshDiv) {
         // Kullanıcıdan onay al
         Swal.fire({
             title: 'Silme İşlemi',
-            text: "Bu stok hareketini silmek istediğinize emin misiniz?",
+            text: text + ' silmek istediğine emin misin?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Evet, sil',

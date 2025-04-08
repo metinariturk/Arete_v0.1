@@ -84,32 +84,43 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-sm-12 col-lg-4 order-sm-0 order-xl-1">
+                                <div class="user-designation">
+                                    <div class="bank"><?php echo $item->bank; ?></div>
+                                    <div class="IBAN"><?php echo $item->IBAN; ?></div>
+
+                                </div>
+                            </div>
+                        </div>
                             <hr>
                             YETKİLER
-                            <?php $permissions = json_decode($item->permissions, true); ?>
-                            <?php $modules = json_decode($item->permissions, true); ?>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Modül</th>
-                                    <th>Görüntüleme</th>
-                                    <th>Oluşturma</th>
-                                    <th>Düzenleme</th>
-                                    <th>Silme</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php foreach ($permissions as $module => $permission) { ?>
+                            <?php if (isset($permissions)) { ?>
+                                <?php $permissions = json_decode($item->permissions, true); ?>
+                                <?php $modules = json_decode($item->permissions, true); ?>
+                                <table class="table">
+                                    <thead>
                                     <tr>
-                                        <td><?php echo module_name($module); ?></td>
-                                        <td class="w20c"><?php echo isset($permission['read']) ? '✔' : 'X'; ?></td>
-                                        <td class="w20c"><?php echo isset($permission['write']) ? '✔' : 'X'; ?></td>
-                                        <td class="w20c"><?php echo isset($permission['update']) ? '✔' : 'X'; ?></td>
-                                        <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : 'X'; ?></td>
+                                        <th>Modül</th>
+                                        <th>Görüntüleme</th>
+                                        <th>Oluşturma</th>
+                                        <th>Düzenleme</th>
+                                        <th>Silme</th>
                                     </tr>
-                                <?php } ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    <?php foreach ($permissions as $module => $permission) { ?>
+                                        <tr>
+                                            <td><?php echo module_name($module); ?></td>
+                                            <td class="w20c"><?php echo isset($permission['read']) ? '✔' : 'X'; ?></td>
+                                            <td class="w20c"><?php echo isset($permission['write']) ? '✔' : 'X'; ?></td>
+                                            <td class="w20c"><?php echo isset($permission['update']) ? '✔' : 'X'; ?></td>
+                                            <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : 'X'; ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                    </tbody>
+                                </table>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>

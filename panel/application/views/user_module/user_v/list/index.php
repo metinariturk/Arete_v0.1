@@ -30,28 +30,6 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
 
-<script>
-    $(document).ready(function () {
-        $("#phone").inputmask("(599) 999 99 99", {
-            placeholder: "_",
-            showMaskOnHover: false
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        // Kullanıcı adı için input maskesi
-        $("#username").inputmask({
-            regex: "^[a-zA-Z0-9_]{3,15}$", // En az 3, en fazla 15 karakter, harf, rakam ve alt çizgi
-            placeholder: "_"
-        });
-    });
-</script>
-<script>
-    $(document).ready(function(){
-        $("#IBAN").inputmask("TR 99 9999 9999 9999 9999 9999 99");  // IBAN formatı
-    });
-</script>
 </body>
 </html>
 

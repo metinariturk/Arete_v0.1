@@ -1,15 +1,11 @@
 <?php
-
 class company extends CI_Controller
 {
     public $viewFolder = "";
-
     public $moduleFolder = "";
-
     public function __construct()
     {
         parent::__construct();
-
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
@@ -17,8 +13,6 @@ class company extends CI_Controller
         if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
-
-
         $this->moduleFolder = "user_module";
         $this->viewFolder = "company_v";
         $this->load->model("company_model");
@@ -29,11 +23,8 @@ class company extends CI_Controller
         $this->load->model("City_model");
         $this->load->model("User_model");
         $this->load->model("Order_model");
-
-
         $this->Module_Name = "company";
         $this->Module_Title = "Firma";
-
         // Folder Structure
         $this->Upload_Folder = "uploads";
         $this->Module_Main_Dir = "companys_v";
@@ -42,7 +33,6 @@ class company extends CI_Controller
         $this->Module_Table = "system_companys";
         $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir/$this->Module_File_Dir";
         // Folder Structure
-
         $this->Display_route = "file_form";
         $this->Update_route = "update_form";
         $this->Dependet_id_key = "company_id";
@@ -51,23 +41,16 @@ class company extends CI_Controller
         $this->Display_Folder = "display";
         $this->List_Folder = "list";
         $this->Update_Folder = "update";
-
         
         $this->Common_Files = "common";
     }
-
     public function index()
     {
         $viewData = new stdClass();
-
-        /** Tablodan Verilerin Getirilmesi.. */
+        
         $companys = $this->company_model->get_all(array());
         $contracts = $this->Contract_model->get_all(array());
         $settings = $this->Settings_model->get();
-
-
-        
-
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
@@ -76,15 +59,12 @@ class company extends CI_Controller
         $viewData->companys = $companys;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
-
     public function new_form()
     {
-
         $viewData = new stdClass();
         $settings = $this->Settings_model->get();
         $cities = $this->City_model->get_all(array());
         $items = $this->company_model->get_all();
-
         
         $viewData->settings = $settings;
         $viewData->viewModule = $this->moduleFolder;
@@ -92,26 +72,17 @@ class company extends CI_Controller
         $viewData->subViewFolder = "add";
         $viewData->items = $items;
         $viewData->cities = $cities;
-
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
     }
-
     public function file_form($id)
     {
-
         $viewData = new stdClass();
         $this->load->library('encryption');
-
         $contracts = $this->Contract_model->get_all(array());
-
-        
-
         
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->contracts = $contracts;
-
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->item = $this->company_model->get(
             array(
@@ -119,17 +90,13 @@ class company extends CI_Controller
             )
         );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
     }
-
     public function update_form($id)
     {
-
         $viewData = new stdClass();
         $settings = $this->Settings_model->get();
         $cities = $this->City_model->get_all(array());
         $executive_users = $this->User_model->get_all(array());
-
         
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -137,30 +104,22 @@ class company extends CI_Controller
         $viewData->settings = $settings;
         $viewData->cities = $cities;
         $viewData->executive_users = $executive_users;
-
         $viewData->item = $this->company_model->get(
             array(
                 "id" => $id
             )
         );
-
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-
     }
-
     public function save()
     {
         $this->load->library("form_validation");
-
         $name = mb_convert_case($this->input->post("company_name"), MB_CASE_TITLE, "UTF-8");
-
         if ($this->input->post("company_role") == "Kullanıcı Firma"){
             $employer = 1;
         } else {
             $employer = null;
         }
-
-
         $insert = $this->company_model->add(
             array(
                 "company_role" => $this->input->post("company_role"),
@@ -181,51 +140,30 @@ class company extends CI_Controller
                 "createdAt" => date("Y-m-d H:i:s")
             )
         );
-
-
         $record_id = $this->db->insert_id();
         $path = "$this->File_Dir_Prefix/$record_id";
-
         if (!is_dir($path)) {
             mkdir("$path", 0777, TRUE);
             echo "Dosya Yolu Oluşturuldu: " . $path;
         } else {
             echo "<p>Aynı İsimde Dosya Mevcut: " . $path . "</p>";
         }
-
-        if ($insert) {
-
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "$name - Sistem Kullanıcısı başarılı bir şekilde eklendi",
-                "type" => "success"
-            );
-
-        }
-
         redirect(base_url("$this->Module_Name/index"));
-
     }
-
     public
     function update($id)
     {
         $this->load->library('encryption');
         $this->load->library("form_validation");
-
         if (empty($this->input->post("password"))) {
             $current_password = $this->encryption->decrypt(get_from_any("companys", "password", "id", $id));
         } else {
             $current_password = $this->input->post("password");
         }
-
         $current_company_name = get_from_any("companys", "company_name", "id", $id);
         $income_company_name = $this->input->post("company_name");
-
         $current_tax_no = get_from_any("companys", "tax_no", "id", $id);
         $income_tax_no = $this->input->post("tax_no");
-
-
         if ($current_company_name != $income_company_name) {
             $this->form_validation->set_rules("company_name", "Firma Adı", "is_unique[companys.company_name]|min_length[3]|required|trim");
         }
@@ -249,7 +187,6 @@ class company extends CI_Controller
         if (!empty($this->input->post("password"))) {
             $this->form_validation->set_rules("password_check", "Şifre Kontrol", "matches[password]|required|trim");
         }
-
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
@@ -263,12 +200,9 @@ class company extends CI_Controller
                 "valid_email" => "<b>{field}</b> Geçerli bir E-Posta adresi giriniz",
             )
         );
-
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
-
         if ($validate) {
-
             $update = $this->company_model->update(
                 array(
                     "id" => $id
@@ -294,51 +228,23 @@ class company extends CI_Controller
                     "createdAt" => date("Y-m-d H:i:s")
                 )
             );
-
-            // TODO Alert sistemi eklenecek...
-            if ($update) {
-
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Firma Kaydı başarılı bir şekilde güncellendi",
-                    "type" => "success"
-                );
-
-            } else {
-
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "Firma Kaydı güncelleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-
-
-            }
-
-            $this->session->set_flashdata("alert", $alert);
+            
             redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
-
         } else {
-
             $viewData = new stdClass();
-
             $item = $this->company_model->get(
                 array(
                     "id" => $id,
                 )
             );
-
             $settings = $this->Settings_model->get();
             $cities = $this->City_model->get_all(array());
-
             $viewData->item = $this->company_model->get(
                 array(
                     "id" => $id
                 )
             );
-
             $executive_users = $this->User_model->get_all(array());
-
             
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -347,59 +253,33 @@ class company extends CI_Controller
             $viewData->cities = $cities;
             $viewData->executive_users = $executive_users;
             $viewData->form_error = true;
-
             $viewData->item = $item;
-
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
     }
-
     public
     function delete($id)
     {
-
         $path = "$this->File_Dir_Prefix/$id";
-
         $sil = deleteDirectory($path);
-
         $delete = $this->company_model->delete(
             array(
                 "id" => $id
             )
         );
-
-        // TODO Alert Sistemi Eklenecek...
-        if ($delete) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Sistem Kullanıcısı başarılı bir şekilde silindi",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Sistemi Kullanıcısı silme sırasında bir problem oluştu",
-                "type" => "danger"
-            );
-        }
-        $this->session->set_flashdata("alert", $alert);
+        
+        
         redirect(base_url("$this->Module_Name/index"));
     }
-
     public
     function file_upload($id)
     {
-
         $file_name = "avatar";
-
         $config["allowed_types"] = "*";
         $config["upload_path"] = "$this->File_Dir_Prefix/$id/";
         $config["file_name"] = $file_name;
-
         $this->load->library("upload", $config);
-
         $upload = $this->upload->do_upload("file");
-
         if ($upload) {
             $uploaded_file = $this->upload->data("file_name");
         } else {
@@ -407,51 +287,34 @@ class company extends CI_Controller
             echo $config["upload_path"];
         }
     }
-
-
-
     public
     function fileDelete($id, $from)
     {
-
         $dir_files = directory_map("$this->File_Dir_Prefix/$id");
-
         foreach ($dir_files as $dir_file) {
             unlink("$this->File_Dir_Prefix/$id/$dir_file");
         }
-
         redirect(base_url("$this->Module_Name/$from/$id"));
-
     }
-
     public
     function delete_avatar($id)
     {
-
         $dir_files = directory_map("$this->File_Dir_Prefix/$id");
-
         foreach ($dir_files as $dir_file) {
             unlink("$this->File_Dir_Prefix/$id/$dir_file");
         }
-
         $viewData = new stdClass();
-
         
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
-
         $viewData->item = $this->company_model->get(
             array(
                 "id" => $id
             )
         );
-
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/$this->Common_Files/avatar", $viewData, true);
-
         echo $render_html;
-
     }
-
     public
     function duplicate_name_check($file_name)
     {
@@ -462,7 +325,6 @@ class company extends CI_Controller
             return TRUE;
         }
     }
-
     public
     function charset_control($company_name)
     {
@@ -472,16 +334,11 @@ class company extends CI_Controller
             return TRUE;
         }
     }
-
-
     public
     function isActiveSetter($id)
     {
-
         if ($id) {
-
             $isActive = ($this->input->post("data") === "true") ? 1 : 0;
-
             $this->company_model->update(
                 array(
                     "id" => $id
@@ -492,19 +349,16 @@ class company extends CI_Controller
             );
         }
     }
-
     public
     function get_district($id)
     {
         $result = $this->db->where("city_id", $id)->get("district")->result();
         echo json_encode($result);
     }
-
     public
     function get_tax_office($id)
     {
         $result = $this->db->where("city_id", $id)->get("tax_office")->result();
         echo json_encode($result);
     }
-
 }

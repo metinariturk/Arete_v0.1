@@ -7,7 +7,9 @@
                         <div class="card mb-0">
                             <div class="card-header d-flex">
                                 <h5 class="mb-0">Notlar</h5>
-                                <i data-feather="trash" style="cursor: pointer;" class="ms-auto">Tümünü Sil</i>
+                                <i data-feather="trash" style="cursor: pointer;" class="ms-auto"
+                                   onclick="confirmDelete('<?php echo base_url("Dashboard/delete_all_notes/"); ?>', 'Tüm Notları' ,'#notes_table')"
+                                >Tümünü Sil</i>
                                 <i data-feather="plus" style="cursor: pointer;" data-bs-toggle="modal"
                                    id="openNotesModal"
                                    data-bs-target="#AddNotesModal"></i>

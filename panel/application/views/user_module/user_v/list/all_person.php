@@ -41,13 +41,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-8">
-                <div class="card">
-                    <div class="card-body user_details">
-                        Detaylar
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

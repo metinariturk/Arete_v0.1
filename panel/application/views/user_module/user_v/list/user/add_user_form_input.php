@@ -8,7 +8,6 @@
         <div class="invalid-feedback"><?php echo form_error("name"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Soyad</div>
     <input class="form-control <?php cms_isset(form_error("surname"), "is-invalid", ""); ?>"
@@ -19,7 +18,6 @@
         <div class="invalid-feedback"><?php echo form_error("surname"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Meslek</div>
     <input class="form-control <?php cms_isset(form_error("profession"), "is-invalid", ""); ?>"
@@ -30,7 +28,6 @@
         <div class="invalid-feedback"><?php echo form_error("profession"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Ünvan</div>
     <input class="form-control <?php cms_isset(form_error("unvan"), "is-invalid", ""); ?>"
@@ -41,7 +38,6 @@
         <div class="invalid-feedback"><?php echo form_error("unvan"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Giriş Tarihi</div>
     <input class="flatpickr form-control digits <?php cms_isset(form_error("createdAt"), "is-invalid", ""); ?>"
@@ -54,24 +50,27 @@
         <div class="invalid-feedback"><?php echo form_error("createdAt"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Telefon</div>
-    <input id="phone" name="phone" class="form-control <?php cms_isset(form_error("phone"), "is-invalid", ""); ?>" type="text" placeholder="Telefon">
+    <input id="phone" name="phone" class="form-control <?php cms_isset(form_error("phone"), "is-invalid", ""); ?>"
+           type="text" placeholder="Telefon"
+           value="<?php echo isset($form_error) ? set_value("phone") : ""; ?>"
+    >
 
     <?php if (isset($form_error)) { ?>
         <div class="invalid-feedback"><?php echo form_error("phone"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Kullanıcı Adı</div>
-    <input id="username" class="form-control <?php cms_isset(form_error("phone"), "is-invalid", ""); ?>" type="text" placeholder="Kullanıcı Adı" name="username">
+    <input class="form-control <?php cms_isset(form_error("user_name"), "is-invalid", ""); ?>" type="text"
+           placeholder="Kullanıcı Adı" name="user_name" id="user_name"
+           value="<?php echo isset($form_error) ? set_value("user_name") : ""; ?>"
+    >
     <?php if (isset($form_error)) { ?>
-        <div class="invalid-feedback"><?php echo form_error("username"); ?></div>
+        <div class="invalid-feedback"><?php echo form_error("user_name"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">E-Posta</div>
     <input class="form-control <?php cms_isset(form_error("email"), "is-invalid", ""); ?>"
@@ -84,8 +83,9 @@
 </div>
 <div class="mb-2">
     <div class="col-form-label">Banka</div>
-    <input class="form-control  <?php cms_isset(form_error("banka"), "is-invalid", ""); ?>" name="banka"
-           list="datalistOptions" placeholder="Banka Adı Yazınız" value="<?php echo isset($form_error) ? set_value("banka") : ""; ?>">
+    <input class="form-control  <?php cms_isset(form_error("bank"), "is-invalid", ""); ?>" name="bank"
+           list="datalistOptions" placeholder="Banka Adı Yazınız"
+           value="<?php echo isset($form_error) ? set_value("bank") : ""; ?>">
     <datalist id="datalistOptions">
         <?php $bankalar = get_as_array($settings->bankalar);
         foreach ($bankalar as $banka) {
@@ -93,7 +93,7 @@
         } ?>
     </datalist>
     <?php if (isset($form_error)) { ?>
-        <div class="invalid-feedback"><?php echo form_error("banka"); ?></div>
+        <div class="invalid-feedback"><?php echo form_error("bank"); ?></div>
     <?php } ?>
 </div>
 <div class="mb-3">
@@ -101,7 +101,7 @@
     <input id="IBAN" type="text" name="IBAN"
            class="form-control <?php cms_isset(form_error("IBAN"), "is-invalid", ""); ?>"
            value="<?php echo isset($form_error) ? set_value("IBAN") : ""; ?>"
-           placeholder="TR __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __">
+           placeholder="TR__ ____ ____ ____ ____ ____ __">
 
     <?php if (isset($form_error)) { ?>
         <div class="invalid-feedback"><?php echo form_error('IBAN'); ?></div>
@@ -121,7 +121,6 @@
         <div class="invalid-feedback d-block"><?php echo form_error("user_role"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Şifre</div>
     <input class="form-control <?php cms_isset(form_error("password"), "is-invalid", ""); ?>"
@@ -131,7 +130,6 @@
         <div class="invalid-feedback"><?php echo form_error("password"); ?></div>
     <?php } ?>
 </div>
-
 <div class="mb-2">
     <div class="col-form-label">Şifre Tekrar</div>
     <input class="form-control <?php cms_isset(form_error("password_check"), "is-invalid", ""); ?>"
