@@ -5,7 +5,6 @@
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
     <link rel="stylesheet" type="text/css"
           href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
-
 </head>
 <body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -23,7 +22,6 @@
         <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
-
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 <script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>

@@ -36,95 +36,59 @@
                                 <?php echo !$enabled ? ' disabled' : ''; ?>>
                         </div>
                         <div class="info">
-                            <div class="row">
-                                <div class="col-sm-3 col-lg-4 order-sm-1 order-xl-0">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="ttl-info text-start">
-                                                <h6><i class="fa fa-envelope"></i>&nbsp;&nbsp;&nbsp;Email</h6>
-                                                <a href="mailto:<?php echo $item->email; ?>"><?php echo $item->email; ?></a>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="ttl-info text-start">
-                                                <h6><i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;Katılma Tarihi</h6>
-                                                <span><?php echo dateFormat_dmy($item->createdAt); ?></span>
-                                            </div>
-                                        </div>
+                            <div class="row align-items-center text-center">
+                                <!-- Sol - Telefon -->
+                                <div class="col-12 col-md-4 text-md-start mb-3 mb-md-0">
+                                    <div class="ttl-info">
+                                        <a href="https://wa.me/+90<?php echo $item->phone; ?>" target="_blank">
+                                            <h6><i class="fa fa-whatsapp fa-lg"></i>&nbsp;Whatsapp</h6>
+                                        </a>
+                                        <a href="tel:+90<?php echo $item->phone; ?>">
+                                            <i class="fa fa-phone fa-lg"></i> +90 <?php echo formatPhoneNumber($item->phone); ?>
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-lg-4 order-sm-0 order-xl-1">
+
+                                <!-- Orta - Kişi bilgileri -->
+                                <div class="col-12 col-md-4">
                                     <div class="user-designation">
                                         <div class="title"><?php echo full_name($item->id); ?></div>
                                         <div class="desc"><?php echo $item->profession; ?></div>
+                                        <a href="<?php echo base_url("company/file_form/$item->company"); ?>"><?php echo company_name($item->company); ?></a>
                                         <p><?php echo $item->unvan; ?></p>
-
                                     </div>
                                 </div>
-                                <div class="col-sm-3 col-lg-4 order-sm-2 order-xl-2">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="ttl-info text-start">
-                                                <a href="https://wa.me/+90<?php echo $item->phone; ?>" target="_blank">
-                                                    <h6>
-                                                        <i class="fa fa-whatsapp fa-2xl"></i>&nbsp;Whatsapp
-                                                    </h6>
-                                                </a>
-                                                <a href="tel:+90<?php echo $item->phone; ?>"><i
-                                                            class="fa fa-phone fa-lg"></i>
-                                                    +90 <?php echo formatPhoneNumber($item->phone); ?></a>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="ttl-info text-start">
-                                                <h6><i class="fa fa-location-arrow"></i>&nbsp;&nbsp;&nbsp;Firma</h6>
-                                                <a href="<?php echo base_url("company/file_form/$item->company"); ?>"><?php echo company_name($item->company); ?></a>
-                                            </div>
-                                        </div>
+
+                                <!-- Sağ - E-posta -->
+                                <div class="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+                                    <div class="ttl-info">
+                                        <h6><i class="fa fa-envelope"></i>&nbsp;Email</h6>
+                                        <a href="mailto:<?php echo $item->email; ?>"><?php echo $item->email; ?></a>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-sm-12 col-lg-4 order-sm-0 order-xl-1">
-                                <div class="user-designation">
-                                    <div class="bank"><?php echo $item->bank; ?></div>
-                                    <div class="IBAN"><?php echo $item->IBAN; ?></div>
-
-                                </div>
-                            </div>
-                        </div>
-                            <hr>
-                            YETKİLER
-                            <?php if (isset($permissions)) { ?>
-                                <?php $permissions = json_decode($item->permissions, true); ?>
-                                <?php $modules = json_decode($item->permissions, true); ?>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Modül</th>
-                                        <th>Görüntüleme</th>
-                                        <th>Oluşturma</th>
-                                        <th>Düzenleme</th>
-                                        <th>Silme</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php foreach ($permissions as $module => $permission) { ?>
-                                        <tr>
-                                            <td><?php echo module_name($module); ?></td>
-                                            <td class="w20c"><?php echo isset($permission['read']) ? '✔' : 'X'; ?></td>
-                                            <td class="w20c"><?php echo isset($permission['write']) ? '✔' : 'X'; ?></td>
-                                            <td class="w20c"><?php echo isset($permission['update']) ? '✔' : 'X'; ?></td>
-                                            <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : 'X'; ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                    </tbody>
-                                </table>
-                            <?php } ?>
-                        </div>
-                    </div>
+                        </div>                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-xl-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div id="update-form">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/info"); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="card mb-3">
+                <div id="permission-form">
+                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/permission"); ?>
+                </div>
         </div>
     </div>
 </div>

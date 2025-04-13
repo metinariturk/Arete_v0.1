@@ -32,6 +32,7 @@ class login extends CI_Controller
         if (get_active_user()) {
             redirect(base_url("dashboard"));
         }
+
         $this->load->library('encryption');
         $this->load->library("form_validation");
         $user_name = $this->input->post("user_name");
@@ -62,6 +63,7 @@ class login extends CI_Controller
                 "matches" => "Hatalı Şifre",
             )
         );
+
         $validate = $this->form_validation->run();
         if ($validate) {
             if ($user) {
@@ -77,7 +79,7 @@ class login extends CI_Controller
             }
         }
         $viewData = new stdClass();
-        
+
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->form_error = true;

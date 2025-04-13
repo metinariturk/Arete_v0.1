@@ -38,7 +38,6 @@ class user extends CI_Controller
         $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir/$this->Module_File_Dir";
         // Folder Structure
         $this->Display_route = "file_form";
-        $this->Update_route = "update_form";
         $this->Dependet_id_key = "user_id";
         //Folder Structure
         $this->Add_Folder = "add";
@@ -74,6 +73,10 @@ class user extends CI_Controller
 
     public function file_form($id)
     {
+        if (!isAdmin() && !permission_control("user", "read")) {
+            redirect(base_url("error"));
+        }
+
         $viewData = new stdClass();
         $path = "$this->File_Dir_Prefix/$id/";
         // Dizin kontrolü
@@ -84,6 +87,8 @@ class user extends CI_Controller
                 exit;
             }
         }
+
+        $modules = getModuleList();
         $projects = $this->Project_model->get_all(array());
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
@@ -91,6 +96,7 @@ class user extends CI_Controller
         $viewData->viewFolder = $this->viewFolder;
         $viewData->projects = $projects;
         $viewData->contracts = $contracts;
+        $viewData->modules = $modules;
         $viewData->sites = $sites;
         $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->item = $this->User_model->get(
@@ -106,28 +112,12 @@ class user extends CI_Controller
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
 
-    public function update_form($id)
-    {
-        $viewData = new stdClass();
-        $modules = getModuleList();
-        $settings = $this->Settings_model->get();
-        $companys = $this->Company_model->get_all();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Update_Folder";
-        $viewData->settings = $settings;
-        $viewData->modules = $modules;
-        $viewData->companys = $companys;
-        $viewData->item = $this->User_model->get(
-            array(
-                "id" => $id
-            )
-        );
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
-    }
-
     public function create_user()
     {
+        if (!isAdmin() && !permission_control("project", "write")) {
+            redirect(base_url("error"));
+        }
+
         $this->load->library("form_validation");
         $this->load->library('encryption');
         $user_name = $this->input->post("user_name");
@@ -143,9 +133,14 @@ class user extends CI_Controller
 // Yeni eklemeler:
         $this->form_validation->set_rules("unvan", "Ünvan", "trim|max_length[100]"); // Ünvan
         $this->form_validation->set_rules("createdAt", "Giriş Tarihi", "trim"); // Giriş Tarihi
-        $this->form_validation->set_rules("bank", "Banka", "trim|max_length[100]"); // Banka
-        $this->form_validation->set_rules("IBAN", "IBAN", "trim|max_length[34]|callback_validate_iban");
 
+        $this->form_validation->set_rules("bank", "Banka", "trim|max_length[100]"); // Banka
+
+        if (!empty($this->input->post("bank"))) {
+            $this->form_validation->set_rules("IBAN", "IBAN", "required|trim|max_length[34]|callback_validate_iban");
+        } else {
+            $this->form_validation->set_rules("IBAN", "IBAN", "trim|max_length[34]|callback_validate_iban");
+        }
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
@@ -202,14 +197,17 @@ class user extends CI_Controller
             $viewData = new stdClass();
 
             $settings = $this->Settings_model->get();
+
             $items = $this->User_model->get_all(array(
                 "isActive" => 1
             ));
+            $active_user = $this->User_model->get(array("id" => $record_id));
+
             $companys = $this->Company_model->get_all();
             $viewData->settings = $settings;
             $viewData->companys = $companys;
             $viewData->items = $items;
-            $viewData->form_error = true;
+            $viewData->active_user = $active_user;
 
             $response = array(
                 'status' => 'success',
@@ -240,35 +238,58 @@ class user extends CI_Controller
         }
     }
 
-    public function update($id)
+    public function update($user_id)
     {
-        $permissions = json_encode($this->input->post("permissions"));
-        $this->load->library('encryption');
-        $this->load->library("form_validation");
-        $user = $this->User_model->get(array("id" => $id));
-        if (empty($this->input->post("password"))) {
-            $current_password = $this->encryption->decrypt($user->password);
-        } else {
-            $current_password = $this->input->post("password");
+        if (!isAdmin() && !permission_control("user", "update")) {
+            redirect(base_url("error"));
         }
+
+        $this->load->library("form_validation");
+
+        $this->load->library('encryption');
+
+        $user = $this->User_model->get(array("id" => $user_id));
         $user_name = $this->input->post("user_name");
+
         if ($user->user_name != $user_name) {
             $this->form_validation->set_rules("user_name", "Kullanıcı Adı", "required|trim|min_length[6]|is_unique[users.user_name]|callback_charset_control");
         }
+
+
         $this->form_validation->set_rules('phone', 'Telefon Numarası', 'callback_validate_phone_number');
-        $this->form_validation->set_rules("profession", "Meslek", "required|trim");
-        $this->form_validation->set_rules("company", "Firma", "required|trim");
         $this->form_validation->set_rules("name", "Ad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("surname", "Soyad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("email", "E-Posta", "valid_email|required|trim");
-        if (!empty($this->input->post("password")) && $this->input->post("password") !== $this->encryption->decrypt($user->password)) {
-            $this->form_validation->set_rules("password", "Şifre", "trim|min_length[8]");
-            $this->form_validation->set_rules("password_check", "Şifre Kontrol", "matches[password]|required|trim");
+
+        if (!empty($this->input->post("user_role"))) {
+            // Mevcut şifreyi al
+            if (empty($this->input->post("password"))) {
+                $current_password = $this->encryption->decrypt($user->password);  // Mevcut şifreyi kullan
+            } else {
+                $current_password = $this->input->post("password");  // Yeni şifre
+            }
+
+            // Eğer yeni şifre mevcut şifreyle farklıysa, şifre doğrulaması yapılacak
+            if (!empty($this->input->post("password")) && $this->input->post("password") !== $this->encryption->decrypt($user->password)) {
+                $this->form_validation->set_rules("password", "Şifre", "trim|min_length[8]|required");
+                $this->form_validation->set_rules("password_check", "Şifre Tekrar", "required|matches[password]|trim");
+            }
+        }
+
+        $this->form_validation->set_rules("unvan", "Ünvan", "trim|max_length[100]"); // Ünvan
+        $this->form_validation->set_rules("createdAt", "Giriş Tarihi", "trim"); // Giriş Tarihi
+
+        $this->form_validation->set_rules("bank", "Banka", "trim|max_length[100]"); // Banka
+
+        if (!empty($this->input->post("bank"))) {
+            $this->form_validation->set_rules("IBAN", "IBAN", "required|trim|max_length[34]|callback_validate_iban");
+        } else {
+            $this->form_validation->set_rules("IBAN", "IBAN", "trim|max_length[34]|callback_validate_iban");
         }
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                "regex_match" => "<b>{field}</b> 10 haneli olarak, sayılardan oluşmalıdır",
+                "regex_match" => "<b>{field}</b> uygun formatta yazılmamış veya uyumsuz karakterler var",
                 "is_unique" => "<b>{field}</b> daha önce kullanılmış",
                 "min_length" => "<b>{field}</b> en az {param} karakter uzunluğunda olmalıdır",
                 "duplicate_name_check" => "<b>{field}</b> $user_name daha önce kullanılmış",
@@ -281,67 +302,128 @@ class user extends CI_Controller
         );
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
+
         if ($validate) {
             $name = mb_convert_case($this->input->post("name"), MB_CASE_TITLE, "UTF-8");
             $surname = mb_strtoupper($this->input->post("surname"), "UTF-8");
+            $user_role = $this->input->post("user_role") ? 1 : 0; // Eğer checkbox işaretliyse 1, değilse 0 alır
+
             $update = $this->User_model->update(
                 array(
-                    "id" => $id
+                    "id" => $user_id
                 ),
                 array(
                     "user_name" => $this->input->post("user_name"),
-                    "user_role_id" => $this->input->post("user_role"),
+                    "user_role" => $user_role, // Checkbox'tan gelen değer burada kullanılıyor
                     "profession" => $this->input->post("profession"),
+                    "company" => $this->input->post("company"),
                     "unvan" => $this->input->post("unvan"),
-                    "permissions" => $permissions,
                     "name" => $name,
+                    "phone" => $this->input->post("phone"),
                     "surname" => $surname,
                     "email" => $this->input->post("email"),
-                    "company" => $this->input->post("company"),
-                    "phone" => $this->input->post("phone"),
-                    "password" => $this->encryption->encrypt($current_password),
+                    "password" => $this->encryption->encrypt($this->input->post("password")),
+                    "isActive" => "1",
+                    "createdAt" => date("Y-m-d H:i:s"),
+                    "bank" => $this->input->post("bank"),  // Banka adı
+                    "IBAN" => $this->input->post("IBAN"),  // IBAN numarası
                 )
             );
 
-            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
-        } else {
-            $modules = getModuleList();
+            $item = $this->User_model->get(array("id" => $user_id));
+
             $viewData = new stdClass();
 
-            $settings = $this->Settings_model->get();
-            $companys = $this->Company_model->get_all();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "$this->Update_Folder";
-            $viewData->settings = $settings;
-            $viewData->modules = $modules;
-            $viewData->companys = $companys;
-            $viewData->form_error = true;
-            $viewData->item = $this->User_model->get(
-                array(
-                    "id" => $id
-                )
+            $viewData->item = $item;
+
+            $response = array(
+                'status' => 'success',
+                'html' => $this->load->view("user_module/user_v/display/info", $viewData, true)
             );
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+            echo json_encode($response);
+
+        } else {
+
+            $viewData = new stdClass();
+
+            $item = $this->User_model->get(array("id" => $user_id));
+
+            $viewData->item = $item;
+
+            $viewData->form_error = true;
+
+            $response = array(
+                'status' => 'error',
+                'html' => $this->load->view("user_module/user_v/display/update_form_input", $viewData, true)
+            );
+
+            echo json_encode($response);
         }
     }
 
-    public function delete($id)
+    public function update_permissions($user_id)
     {
-        if (!isAdmin()) {
+        if (!isAdmin() && !permission_control("user_roles", "update")) {
             redirect(base_url("error"));
         }
-        $path = "$this->File_Dir_Prefix/$id";
-        echo $path;
-        $sil = deleteDirectory($path);
-        $delete = $this->User_model->delete(
+
+        $raw_permissions = $_POST['permissions'];
+
+        $final_permissions = [];
+
+        foreach ($raw_permissions as $module => $letters) {
+            // Yalnızca r, w, u, d olanları al
+            $letters = array_filter($letters, function($l) {
+                return in_array($l, ['r', 'w', 'u', 'd']);
+            });
+
+            $final_permissions[$module] = implode('', array_unique($letters));
+        }
+
+        $json_permissions = json_encode($final_permissions); // veritabanına kaydet
+
+        echo $json_permissions;
+
+        $update = $this->User_model->update(
             array(
-                "id" => $id
+                "id" => $user_id
+            ),
+            array(
+                "permissions" => $json_permissions,
             )
         );
 
+    }
 
-        redirect(base_url("$this->Module_Name/index"));
+    public function delete_user($id)
+    {
+        if (!isAdmin() && !permission_control("user", "delete")) {
+            redirect(base_url("error"));
+        }
+
+        $delete_user = $this->User_model->delete(array("id" => $id));
+
+        $this->load->helper('file'); // File helper'ını yükle
+        $path = "$this->File_Dir_Prefix/$id";
+        delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
+
+        if (is_dir($path)) {
+            rmdir($path);
+        }
+        $active_user = $this->User_model->get(array("id" => active_user_id()));
+        $items = $this->User_model->get_all(array());
+
+        $viewData = new stdClass();
+        $viewData->items = $items;
+        $viewData->active_user = $active_user;
+
+        $renderHtml = $this->load->view("user_module/user_v/list/user/user_table", $viewData, true);
+
+        echo json_encode([
+            'html' => $renderHtml, // Form hatalarını içeren HTML
+        ]);
+
     }
 
     public function file_upload($id)
@@ -430,6 +512,11 @@ class user extends CI_Controller
 
     function validate_iban($iban)
     {
+        // Eğer alan boşsa kontrol etme, geçerli kabul et (çünkü "required" değil)
+        if (empty(trim($iban))) {
+            return TRUE;
+        }
+
         // IBAN'daki boşlukları kaldır
         $iban = str_replace(' ', '', $iban);
 
@@ -438,7 +525,7 @@ class user extends CI_Controller
             return TRUE;
         } else {
             // Hata mesajı ekle
-            $this->form_validation->set_message('validate_iban', "Geçersiz IBAN numarası. $iban");
+            $this->form_validation->set_message('validate_iban', "Geçersiz IBAN numarası: $iban");
             return FALSE;
         }
     }
@@ -472,6 +559,46 @@ class user extends CI_Controller
             )
         );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/show_details", $viewData);
+    }
+
+    public function show_update_form($id)
+    {
+        $viewData = new stdClass();
+        $settings = $this->Settings_model->get();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+        $viewData->settings = $settings;
+        $viewData->item = $this->User_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/update_form_input", $viewData);
+    }
+
+    public function show_update_permission($id)
+    {
+        $modules = getModuleList();
+        $settings = $this->Settings_model->get();
+
+
+        $viewData = new stdClass();
+        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = $this->viewFolder;
+        $viewData->subViewFolder = "display";
+
+        $viewData->settings = $settings;
+
+        $viewData->modules = $modules;
+        $viewData->item = $this->User_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/update_permission", $viewData);
     }
 
     public function ajax_upload_file($id)
@@ -534,4 +661,18 @@ class user extends CI_Controller
         echo json_encode($data);
         exit;
     }
+
+    public function open_edit_user_modal($user_id)
+    {
+        // Verilerin getirilmesi
+        $edit_user = $this->User_model->get(array("id" => $user_id));
+        $viewData = new stdClass();
+
+        $viewData->edit_user = $edit_user;
+
+        $this->load->view("user_module/user_v/list/user/edit_user_modal_form", $viewData, true);
+    }
+
 }
+
+

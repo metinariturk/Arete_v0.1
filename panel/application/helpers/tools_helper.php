@@ -390,7 +390,7 @@ function module_name($module_name)
         "Şantiye Kasa" => "sitewallet",
         "İş Grupları" => "workgroup",
         "İş Makineleri" => "workmachine",
-        "Puantaj" => "score",
+        "Puantaj" => "attendance",
         "Çalışan" => "workman",
         "Firma" => "company",
         "E-Posta Ayarları" => "emailsettings",
@@ -720,11 +720,22 @@ function isAdmin()
 
     $session_user = $t->session->userdata("user");
 
-    if ($session_user->is_Admin == 1)
-        return true;
-    else
+    if (!$session_user || !isset($session_user->id)) {
         return false;
+    }
+
+    $user = $t->db
+        ->where("id", $session_user->id)
+        ->get("users")
+        ->row();
+
+    if ($user && $user->is_Admin == 1) {
+        return true;
+    }
+
+    return false;
 }
+
 function getModuleList()
 {
     $modules = array(
@@ -734,10 +745,16 @@ function getModuleList()
         "contract" => array(
             "contract",
             "offer",
+            "boq",
             "payment"
         ),
         "site" => array(
             "site",
+            "report",
+            "collection",
+            "sitestock",
+            "sitewallet",
+            "attendance"
         ),
         "settings" => array(
             "company",
@@ -924,32 +941,34 @@ function getFolderSize($dir) {
 
 function permission_control($module, $permission)
 {
-    // CodeIgniter instansı al
+    // CodeIgniter instance
     $ci =& get_instance();
 
-    // Oturumdaki kullanıcı verilerini al
+    // Oturumdaki kullanıcıyı al
     $session_user = $ci->session->userdata('user');
 
-    $user_data = $ci->User_model->get(
-        array(
-            "id" => $session_user->id
-        )
-    );
+    if (!$session_user) {
+        return false;
+    }
 
+    // Kullanıcıyı veritabanından çek
+    $user_data = $ci->User_model->get([
+        "id" => $session_user->id
+    ]);
 
     if (!$user_data) {
-        return false; // Kullanıcı oturumu yoksa yetkisiz
+        return false;
     }
 
-    // Kullanıcının izinlerini kontrol et
+    // Kullanıcının izinlerini al
     $permissions = isset($user_data->permissions) ? json_decode($user_data->permissions, true) : [];
 
-    // İlgili modül ve izin kontrolü
-    if (isset($permissions[$module][$permission]) && $permissions[$module][$permission] === 'on') {
-        return true; // Yetki var
+    // Modül için yetki varsa ve belirtilen harf içeriyorsa true döndür
+    if (isset($permissions[$module]) && strpos($permissions[$module], $permission) !== false) {
+        return true;
     }
 
-    return false; // Yetki yok
+    return false;
 }
 
 function getExcelColumn($index) {

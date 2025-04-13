@@ -3,7 +3,6 @@
     <div class="card mb-0">
         <div class="card-header d-flex">
             <h5>Tüm Kişiler</h5>
-            <span class="f-14 pull-right mt-0"><?php echo count($items); ?> Kişi</span>
             <span class="f-14 pull-right mt-0">
                 <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
                    id="openUserModal"

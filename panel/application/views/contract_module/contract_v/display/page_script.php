@@ -227,7 +227,7 @@
 </script>
 
 
-<!--Stok verisi sil başı-->
+<!--verisi sil başı-->
 <script>
     function confirmDelete(deleteUrl, refreshDiv, DataTable = null) {
         // Kullanıcıdan onay al
@@ -281,7 +281,7 @@
     }
 
 </script>
-<!--Stok verisi sil sonu-->
+<!--verisi sil sonu-->
 
 
 <script>

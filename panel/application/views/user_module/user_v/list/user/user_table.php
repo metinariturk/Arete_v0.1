@@ -39,12 +39,31 @@
                         <!-- Burger Menü Butonu -->
                         <div class="d-flex justify-content-end">
                             <button class="btn btn-link p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-link p-0" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-bars"></i> <!-- Burger Menü İkonu -->
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Düzenle</a></li>
-                                <li><a class="dropdown-item" href="#">Sil</a></li>
-                                <li><a class="dropdown-item" href="#">Görüntüle</a></li>
+                                <li>
+                                    <a class="dropdown-item text-primary"
+                                       href="<?php echo base_url("user/update_form/$active_user->id"); ?>">
+                                        <i class="fa fa-edit fa-lg me-2"></i> Düzenle
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger"
+                                       href="javascript:void(0);"
+                                       onclick="confirmDelete('<?php echo base_url("User/delete_user/$active_user->id"); ?>', '#user_table','userTable')"
+                                       title="Sil">
+                                        <i class="fa fa-trash-o fa-lg me-2"></i> Sil
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="#"
+                                       title="Görüntüle">
+                                        <i class="fa fa-eye fa-lg me-2"></i> Görüntüle
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 

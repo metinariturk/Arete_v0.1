@@ -75,7 +75,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/user_module/user_v/common",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/user_module/user_v/display",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -88,18 +88,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\update" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list\user" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\notes" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\list" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\notes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0012\SOZ-0050\Collection" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\price" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -254,6 +254,8 @@
       <workItem from="1742123504867" duration="8639000" />
       <workItem from="1742764238802" duration="2774000" />
       <workItem from="1742851144439" duration="4490000" />
+      <workItem from="1744304454259" duration="13233000" />
+      <workItem from="1744549940264" duration="11361000" />
     </task>
     <servers />
   </component>
@@ -343,6 +345,15 @@
             <option name="methodName" value="puantaj_date" />
           </properties>
           <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/User.php</url>
+          <line>114</line>
+          <properties>
+            <option name="className" value="\user" />
+            <option name="methodName" value="create_user" />
+          </properties>
+          <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

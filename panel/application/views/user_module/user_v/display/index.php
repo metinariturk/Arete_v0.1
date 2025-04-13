@@ -4,10 +4,14 @@
     <?php $this->load->view("includes/head"); ?>
 
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <link href="<?php echo base_url("assets"); ?>/file_uploader_dist/font/font-fileuploader.css" rel="stylesheet">
-    <link href="<?php echo base_url("assets"); ?>/file_uploader_dist/jquery.fileuploader.min.css" media="all" rel="stylesheet">
+
     <link href="<?php echo base_url("assets"); ?>/css/fileuploader-theme-avatar.css" media="all" rel="stylesheet">
+
+    <?php $this->load->view("includes/head"); ?>
+    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
+    <link rel="stylesheet" type="text/css"
+          href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
 
     <?php $this->load->view("{$viewModule}/{$viewFolder}/common/avatar_custom"); ?>
@@ -30,7 +34,11 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
+<?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 
+<script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
 </body>
 </html>
 

@@ -1,7 +1,5 @@
 <div class="tab-pane contact-tab-2 tab-content-child fade active show" id="v-pills-messages" role="tabpanel"
      aria-labelledby="v-pills-messages-tab">
-
-
     <div class="card-body">
         <!-- Burger Menü Butonu -->
         <div class="d-flex justify-content-end">
@@ -9,9 +7,27 @@
                 <i class="fa fa-bars"></i> <!-- Burger Menü İkonu -->
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#">Düzenle</a></li>
-                <li><a class="dropdown-item" href="#">Sil</a></li>
-                <li><a class="dropdown-item" href="#">Görüntüle</a></li>
+                <li>
+                    <a class="dropdown-item text-primary"
+                       href="<?php echo base_url("user/update_form/$item->id"); ?>">
+                        <i class="fa fa-edit fa-lg me-2"></i> Düzenle
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item text-danger"
+                       href="javascript:void(0);"
+                       onclick="confirmDelete('<?php echo base_url("User/delete_user/$item->id"); ?>', '#user_table','userTable')"
+                       title="Sil">
+                        <i class="fa fa-trash-o fa-lg me-2"></i> Sil
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       href="#"
+                       title="Görüntüle">
+                        <i class="fa fa-eye fa-lg me-2"></i> Görüntüle
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -29,7 +45,7 @@
                 <p class="email_add_2"><?php echo $item->email; ?></p>
             </div>
         </div>
-<hr>
+        <hr>
         <h6 class="mb-3">Genel Bilgiler</h6>
 
         <div class="d-flex justify-content-between mb-2">
@@ -59,21 +75,21 @@
     </div>
 
     <?php $permissions = json_decode($item->permissions, true); ?>
-    <?php if (isset($permissions)) {  ?>
-    <div class="card-body">
-        <h3>Yetkiler</h3>
-        <div class="table-responsive">
-            <table class="table table-responsive">
-                <thead>
-                <tr>
-                    <th>Modül</th>
-                    <th>Görüntüleme</th>
-                    <th>Oluşturma</th>
-                    <th>Düzenleme</th>
-                    <th>Silme</th>
-                </tr>
-                </thead>
-                <tbody>
+    <?php if (isset($permissions)) { ?>
+        <div class="card-body">
+            <h3>Yetkiler</h3>
+            <div class="table-responsive">
+                <table class="table table-responsive">
+                    <thead>
+                    <tr>
+                        <th>Modül</th>
+                        <th>Görüntüleme</th>
+                        <th>Oluşturma</th>
+                        <th>Düzenleme</th>
+                        <th>Silme</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     <?php foreach ($permissions as $module => $permission) { ?>
                         <tr>
                             <td><?php echo module_name($module); ?></td>
@@ -83,10 +99,10 @@
                             <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : ''; ?></td>
                         </tr>
                     <?php } ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
     <?php } ?>
 
 </div>

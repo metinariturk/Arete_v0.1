@@ -64,7 +64,7 @@
     }
 
     // ✅ Modal içindeki formu AJAX ile gönder
-    function submit_modal_form(formId, modalId, successDivId, errorDivId, DataTable = null) {
+    function submit_modal_form(formId, modalId = null, successDivId, errorDivId, DataTable = null) {
         var form = $('#' + formId)[0];
         var url = $(form).data('form-url');
         var formData = new FormData(form);
@@ -79,24 +79,131 @@
             success: function (response) {
                 if (response.status === 'success') {
                     $('#' + successDivId).html(response.html);
-                    $('#' + modalId).modal('hide');
-                    $('body').removeClass('modal-open');
-                    $('.modal-backdrop').remove();
+
+                    // Eğer modalId tanımlıysa modalı kapat
+                    if (modalId) {
+                        $('#' + modalId).modal('hide');
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                    }
+
+                    // Formu sıfırla
                     $('#' + formId)[0].reset();
 
-                    initializeUIComponents(); // ✅ Yeni içerikte input maskeleri ve flatpickr uygula
-                    if (DataTable) DataTable.ajax.reload(null, false); // Tabloyu yenile (gerekirse)
+                    // UI bileşenlerini yeniden başlat
+                    initializeUIComponents();
+
+                    // DataTable varsa yeniden yükle
+                    if (DataTable) {
+                        DataTable.ajax.reload(null, false);
+                    }
+
                 } else if (response.status === 'error') {
                     $('#' + errorDivId).html(response.html);
-                    $('#' + modalId).modal('show');
-                    initializeUIComponents(); // ✅ Hatalı içerikte de input maskeleri yeniden uygula
+
+                    // Eğer modalId tanımlıysa modalı tekrar göster
+                    if (modalId) {
+                        $('#' + modalId).modal('show');
+                    }
+
+                    // Hatalı içerikte bileşenleri tekrar başlat
+                    initializeUIComponents();
                 }
             },
             error: function (xhr, status, error) {
-                console.error('Form gönderiminde hata oluştu: ', error);
-                console.error('Hata Detayı: ', xhr.responseText);
+                console.error('Form gönderiminde hata oluştu:', error);
+                console.error('Hata Detayı:', xhr.responseText);
                 alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
-                initializeUIComponents(); // ✅ AJAX hatasında da bileşenleri tekrar yükle
+
+                // AJAX hatasında da bileşenleri tekrar başlat
+                initializeUIComponents();
+            }
+        });
+    }
+
+</script>
+
+
+<!--verisi sil başı-->
+<script>
+    function confirmDelete(deleteUrl, refreshDiv) {
+        // Kullanıcıdan onay al
+        Swal.fire({
+            title: 'Silme İşlemi',
+            text: "Bunu silmek istediğinize emin misiniz?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Evet, sil',
+            cancelButtonText: 'Hayır, iptal et'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Onay verildiğinde AJAX ile silme işlemi
+                $.ajax({
+                    url: deleteUrl, // Kontrolör URL'sini kullan
+                    type: 'POST',
+                    dataType: 'json', // JSON veri tipi
+                    success: function (response) {
+                        if (response.html) {
+                            // HTML içeriğini response'dan al ve div'e ekle
+                            $(refreshDiv).html(response.html);
+                        }
+                    },
+
+                    error: function () {
+                        Swal.fire({
+                            title: 'Hata',
+                            text: 'Silme işlemi sırasında bir hata oluştu.',
+                            icon: 'error'
+                        });
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+    function edit_modal_form(FormURL, ModalForm, ModalId) {
+        // AJAX ile modal içeriğini yenile
+        $.ajax({
+            url: FormURL,
+            type: 'GET',
+            success: function (response) {
+                // Modalın içeriğini güncelle
+                $('#' + ModalForm).html(response); // Gelen yanıtı modal içeriğine ekle
+
+                // Modalı aç
+                $('#' + ModalId).modal('show');
+
+                initializeUIComponents(); // ✅ Hatalı içerikte de input maskeleri yeniden uygula
+
+                // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
+                $('body').css('padding-right', '');
+                $('body').css('overflow', '');
+            },
+            error: function () {
+                alert('Modal içeriği yüklenirken bir hata oluştu.');
+            }
+        });
+    }
+</script>
+
+<script>
+    function loadDynamicContent(button) {
+        const url = button.getAttribute("data-url");
+        const target = button.getAttribute("data-target") || "#update-form";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            success: function (response) {
+                $(target).html(response);
+                initializeUIComponents(); // ✅ Hatalı içerikte de input maskeleri yeniden uygula
+            },
+
+            error: function (xhr, status, error) {
+                console.error("Hata oluştu:", error);
+                $(target).html("<div class='alert alert-danger'>İçerik yüklenemedi.</div>");
             }
         });
     }
