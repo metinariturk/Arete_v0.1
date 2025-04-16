@@ -736,6 +736,18 @@ function isAdmin()
     return false;
 }
 
+function isUser($user_id)
+{
+    $t = &get_instance();
+
+    $user = $t->db
+        ->where("id", $user_id)
+        ->get("users")
+        ->row();
+
+    return isset($user->user_role) && in_array($user->user_role, [SYTEM_ADMIN, SYTEM_USER]);
+}
+
 function getModuleList()
 {
     $modules = array(
@@ -981,4 +993,8 @@ function getExcelColumn($index) {
     return $columnName;
 }
 
+function permissionIcon($has)
+{
+    return $has ? '<span class="text-success fw-bold">&#10004;</span>' : '<span class="text-danger fw-bold">&#10006;</span>';
+}
 

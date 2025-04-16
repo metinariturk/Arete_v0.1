@@ -32,27 +32,29 @@ function renderSwitch($type, $sub_module, $permissions)
 }
 
 ?>
-
-<div class="mb-2">
-    <div class="row">
-        <div class="col-12">
-            <div class="col-form-label">&nbsp;</div>
-            <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-danger" type="button" onclick="cancelConfirmationModule(this)"
-                        url="<?php echo base_url("User/file_form/$item->id"); ?>">
-                    <i class="menu-icon fa fa-close fa-lg" aria-hidden="true"></i> İptal
-                </button>
-                <button type="button" class="btn btn-success"
-                        onclick="submit_modal_form('update_permission', null, 'update-permission', 'update-permission')">
-                    <i class="fa fa-floppy-o fa-lg"></i> Kaydet
-                </button>
+<div class="card-body">
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="col-form-label">&nbsp;</div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="btn btn-danger" type="button" onclick="cancelConfirmationModule(this)"
+                            url="<?php echo base_url("User/file_form/$item->id"); ?>">
+                        <i class="menu-icon fa fa-close fa-lg" aria-hidden="true"></i> İptal
+                    </button>
+                    <button type="button" class="btn btn-success"
+                            onclick="submit_modal_form('update_permission', null, 'permission-form', 'permission-form')">
+                        <i class="fa fa-floppy-o fa-lg"></i> Kaydet
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<form id="update_permission" method="post" data-form-url="<?php echo base_url("User/update_permissions/$item->id"); ?>"
-      enctype="multipart/form-data" autocomplete="off">
 
+<form id="update_permission" method="post" style="margin-top: -5em"
+      data-form-url="<?php echo base_url("User/update_permissions/$item->id"); ?>"
+      enctype="multipart/form-data" autocomplete="off">
     <div class="card-body col-xs-12">
         <?php foreach ($modules as $module => $sub_modules): ?>
             <div class="row">

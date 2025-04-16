@@ -36,37 +36,6 @@
                      role="tabpanel"
                      aria-labelledby="v-pills-messages-tab">
                     <div class="card-body">
-                        <!-- Burger Menü Butonu -->
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-link p-0" data-bs-toggle="dropdown" aria-expanded="false">
-                            <button class="btn btn-link p-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-bars"></i> <!-- Burger Menü İkonu -->
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item text-primary"
-                                       href="<?php echo base_url("user/update_form/$active_user->id"); ?>">
-                                        <i class="fa fa-edit fa-lg me-2"></i> Düzenle
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item text-danger"
-                                       href="javascript:void(0);"
-                                       onclick="confirmDelete('<?php echo base_url("User/delete_user/$active_user->id"); ?>', '#user_table','userTable')"
-                                       title="Sil">
-                                        <i class="fa fa-trash-o fa-lg me-2"></i> Sil
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item"
-                                       href="#"
-                                       title="Görüntüle">
-                                        <i class="fa fa-eye fa-lg me-2"></i> Görüntüle
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
                         <!-- Resim ve Bilgiler -->
                         <div class="d-flex align-items-center">
                             <img class="img-100 img-fluid rounded-circle me-3" <?php echo get_avatar($active_user->id); ?>
@@ -112,34 +81,50 @@
                             <span class="font-primary email_add_2"><?php echo formatPhoneNumber($active_user->phone); ?></span>
                         </div>
                     </div>
-                    <?php $permissions = json_decode($active_user->permissions, true); ?>
-                    <?php if (isset($permissions)) { ?>
-                        <div class="card-body">
-                            <h3>Yetkiler</h3>
-                            <div class="table-responsive">
-                                <table class="table table-responsive">
-                                    <thead>
-                                    <tr>
-                                        <th>Modül</th>
-                                        <th>Görüntüleme</th>
-                                        <th>Oluşturma</th>
-                                        <th>Düzenleme</th>
-                                        <th>Silme</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php foreach ($permissions as $module => $permission) { ?>
+
+                    <?php if (isUser($item->id)) { ?>
+                        <?php
+                        $permission_groups = json_decode($active_user->permissions, true);
+                        ?>
+
+                        <!-- MODÜLLERİN TABLO GÖRÜNÜMÜ -->
+                        <div class="card-body col-xs-12">
+                            <?php foreach ($modules as $modul => $sub_modules) { ?>
+                                <div class="card mb-4 shadow-sm border rounded-3">
+                                    <div class="card-header text-center p-2">
+                                        <h6 class="mb-0"><?= module_name($modul); ?></h6>
+                                    </div>
+                                    <table class="table table-bordered text-center align-middle mb-0">
+                                        <thead class="table-light">
                                         <tr>
-                                            <td><?php echo module_name($module); ?></td>
-                                            <td class="w20c"><?php echo isset($permission['read']) ? '✔' : ''; ?></td>
-                                            <td class="w20c"><?php echo isset($permission['write']) ? '✔' : ''; ?></td>
-                                            <td class="w20c"><?php echo isset($permission['update']) ? '✔' : ''; ?></td>
-                                            <td class="w20c"><?php echo isset($permission['delete']) ? '✔' : ''; ?></td>
+                                            <th class="text-start w-20">Alt Modül</th>
+                                            <th class="w20">Görüntüle</th>
+                                            <th class="w20">Ekle</th>
+                                            <th class="w20">Düzenle</th>
+                                            <th class="w20">Sil</th>
                                         </tr>
-                                    <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </thead>
+                                        <tbody>
+                                        <?php foreach ($sub_modules as $sub_module) {
+                                            $perm_string = $permission_groups[$sub_module] ?? '';
+
+                                            $has_read = strpos($perm_string, 'r') !== false;
+                                            $has_write = strpos($perm_string, 'w') !== false;
+                                            $has_update = strpos($perm_string, 'u') !== false;
+                                            $has_delete = strpos($perm_string, 'd') !== false;
+                                            ?>
+                                            <tr>
+                                                <td class="text-start"><?= module_name($sub_module); ?></td>
+                                                <td><?= permissionIcon($has_read); ?></td>
+                                                <td><?= permissionIcon($has_write); ?></td>
+                                                <td><?= permissionIcon($has_update); ?></td>
+                                                <td><?= permissionIcon($has_delete); ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php } ?>
                         </div>
                     <?php } ?>
                 </div>

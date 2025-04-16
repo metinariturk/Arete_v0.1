@@ -43,7 +43,7 @@ class user extends CI_Controller
         $this->Add_Folder = "add";
         $this->Display_Folder = "display";
         $this->List_Folder = "list";
-        $this->Update_Folder = "update";
+        $this->Update_Folder = "u";
         $this->Common_Files = "common";
     }
 
@@ -56,12 +56,15 @@ class user extends CI_Controller
         $projects = $this->Project_model->get_all(array());
         $contracts = $this->Contract_model->get_all(array());
         $sites = $this->Site_model->get_all(array());
+        $modules = getModuleList();
+
 
         $settings = $this->Settings_model->get();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->List_Folder";
         $viewData->active_user = $active_user;
+        $viewData->modules = $modules;
 
         $viewData->items = $items;
         $viewData->projects = $projects;
@@ -73,7 +76,7 @@ class user extends CI_Controller
 
     public function file_form($id)
     {
-        if (!isAdmin() && !permission_control("user", "read")) {
+        if (!isAdmin() && !permission_control("user", "r")) {
             redirect(base_url("error"));
         }
 
@@ -114,7 +117,7 @@ class user extends CI_Controller
 
     public function create_user()
     {
-        if (!isAdmin() && !permission_control("project", "write")) {
+        if (!isAdmin() && !permission_control("project", "w")) {
             redirect(base_url("error"));
         }
 
@@ -240,7 +243,7 @@ class user extends CI_Controller
 
     public function update($user_id)
     {
-        if (!isAdmin() && !permission_control("user", "update")) {
+        if (!isAdmin() && !permission_control("user", "u")) {
             redirect(base_url("error"));
         }
 
@@ -250,31 +253,50 @@ class user extends CI_Controller
 
         $user = $this->User_model->get(array("id" => $user_id));
         $user_name = $this->input->post("user_name");
+        $password_posted = $this->input->post("password");
+        $password_check_posted = $this->input->post("password_check");
+        $current_password_db = $this->encryption->decrypt($user->password);
 
         if ($user->user_name != $user_name) {
             $this->form_validation->set_rules("user_name", "Kullanıcı Adı", "required|trim|min_length[6]|is_unique[users.user_name]|callback_charset_control");
         }
-
 
         $this->form_validation->set_rules('phone', 'Telefon Numarası', 'callback_validate_phone_number');
         $this->form_validation->set_rules("name", "Ad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("surname", "Soyad", "callback_name_control|min_length[3]|required|trim");
         $this->form_validation->set_rules("email", "E-Posta", "valid_email|required|trim");
 
-        if (!empty($this->input->post("user_role"))) {
-            // Mevcut şifreyi al
-            if (empty($this->input->post("password"))) {
-                $current_password = $this->encryption->decrypt($user->password);  // Mevcut şifreyi kullan
+        if ($this->input->post("user_role")) {
+            // Şifre alanında değişiklik olup olmadığını kontrol et
+            $password_posted = $this->input->post("password");
+            $password_check_posted = $this->input->post("password_check");
+            $current_password_db = $this->encryption->decrypt($user->password);
+            // Şifre alanı boşsa mevcut şifreyi kullan
+            if (empty($password_posted)) {
+                $this->form_validation->set_rules("password", "Şifre", "trim|min_length[8]|required");
+                $new_password = null;
             } else {
-                $current_password = $this->input->post("password");  // Yeni şifre
+                $new_password = $password_posted;
             }
 
-            // Eğer yeni şifre mevcut şifreyle farklıysa, şifre doğrulaması yapılacak
-            if (!empty($this->input->post("password")) && $this->input->post("password") !== $this->encryption->decrypt($user->password)) {
+            // Eğer yeni şifre girilmişse ve mevcut şifreden farklıysa, şifre doğrulamasını yap
+            if (!empty($password_posted) && $password_posted !== $current_password_db) {
                 $this->form_validation->set_rules("password", "Şifre", "trim|min_length[8]|required");
-                $this->form_validation->set_rules("password_check", "Şifre Tekrar", "required|matches[password]|trim");
+                // Şifre tekrar alanı da doluysa ve yeni şifre girilmişse eşleşme kontrolü yap
+                if (!empty($password_check_posted)) {
+                    $this->form_validation->set_rules("password_check", "Şifre Tekrar", "required|matches[password]|trim");
+                } else {
+                    // Yeni şifre girilmiş ancak tekrarı boşsa hata ver
+                    $this->form_validation->set_rules("password_check", "Şifre Tekrar", "required|trim");
+                }
             }
+
+            $updated_password = $this->encryption->encrypt($new_password);
+
+        } else {
+            $updated_password = null;
         }
+
 
         $this->form_validation->set_rules("unvan", "Ünvan", "trim|max_length[100]"); // Ünvan
         $this->form_validation->set_rules("createdAt", "Giriş Tarihi", "trim"); // Giriş Tarihi
@@ -322,7 +344,7 @@ class user extends CI_Controller
                     "phone" => $this->input->post("phone"),
                     "surname" => $surname,
                     "email" => $this->input->post("email"),
-                    "password" => $this->encryption->encrypt($this->input->post("password")),
+                    "password" => $updated_password,
                     "isActive" => "1",
                     "createdAt" => date("Y-m-d H:i:s"),
                     "bank" => $this->input->post("bank"),  // Banka adı
@@ -364,41 +386,53 @@ class user extends CI_Controller
 
     public function update_permissions($user_id)
     {
-        if (!isAdmin() && !permission_control("user_roles", "update")) {
+        if (!isAdmin() && !permission_control("user_roles", "u")) {
             redirect(base_url("error"));
         }
 
-        $raw_permissions = $_POST['permissions'];
+        $raw_permissions = $this->input->post("permissions");
 
         $final_permissions = [];
 
-        foreach ($raw_permissions as $module => $letters) {
-            // Yalnızca r, w, u, d olanları al
-            $letters = array_filter($letters, function($l) {
-                return in_array($l, ['r', 'w', 'u', 'd']);
-            });
+        if (!empty($raw_permissions)) {
+            foreach ($raw_permissions as $module => $letters) {
+                // Yalnızca r, w, u, d olanları al
+                $letters = array_filter($letters, function ($l) {
+                    return in_array($l, ['r', 'w', 'u', 'd']);
+                });
 
-            $final_permissions[$module] = implode('', array_unique($letters));
+                $final_permissions[$module] = implode('', array_unique($letters));
+            }
+
+            $json_permissions = json_encode($final_permissions); // veritabanına kaydet
+        } else {
+            $json_permissions = null;
         }
 
-        $json_permissions = json_encode($final_permissions); // veritabanına kaydet
-
-        echo $json_permissions;
-
         $update = $this->User_model->update(
-            array(
-                "id" => $user_id
-            ),
-            array(
-                "permissions" => $json_permissions,
-            )
+            array("id" => $user_id),
+            array("permissions" => $json_permissions)
         );
 
+        $item = $this->User_model->get(array("id" => $user_id));
+        $modules = getModuleList();
+
+        $viewData = new stdClass();
+        $viewData->item = $item;
+        $viewData->modules = $modules;
+
+        $response = array(
+            'status' => 'success',
+            'html' => $this->load->view("user_module/user_v/display/permission", $viewData, true)
+        );
+
+        echo json_encode($response);
     }
+
 
     public function delete_user($id)
     {
-        if (!isAdmin() && !permission_control("user", "delete")) {
+        if (!isAdmin() && !permission_control("user", "d")) {
             redirect(base_url("error"));
         }
 
@@ -549,10 +583,15 @@ class user extends CI_Controller
 
     public function user_detail($id)
     {
+        $modules = getModuleList();
+
+
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";
+        $viewData->modules = $modules;
+
         $viewData->item = $this->User_model->get(
             array(
                 "id" => $id
@@ -563,6 +602,7 @@ class user extends CI_Controller
 
     public function show_update_form($id)
     {
+
         $viewData = new stdClass();
         $settings = $this->Settings_model->get();
         $viewData->viewModule = $this->moduleFolder;

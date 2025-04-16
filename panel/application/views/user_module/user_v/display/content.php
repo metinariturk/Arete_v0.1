@@ -44,7 +44,8 @@
                                             <h6><i class="fa fa-whatsapp fa-lg"></i>&nbsp;Whatsapp</h6>
                                         </a>
                                         <a href="tel:+90<?php echo $item->phone; ?>">
-                                            <i class="fa fa-phone fa-lg"></i> +90 <?php echo formatPhoneNumber($item->phone); ?>
+                                            <i class="fa fa-phone fa-lg"></i>
+                                            +90 <?php echo formatPhoneNumber($item->phone); ?>
                                         </a>
                                     </div>
                                 </div>
@@ -67,7 +68,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>                    </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,18 +79,18 @@
 <div class="row">
     <div class="col-12 col-xl-6">
         <div class="card mb-3">
-            <div class="card-body">
-                <div id="update-form">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/info"); ?>
-                </div>
+            <div id="update-form">
+                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/info"); ?>
             </div>
         </div>
     </div>
     <div class="col-12 col-xl-6">
         <div class="card mb-3">
-                <div id="permission-form">
+            <div id="permission-form">
+                <?php if (isUser($item->id)) { ?>
                     <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/permission"); ?>
-                </div>
+                <?php } ?>
+            </div>
         </div>
     </div>
 </div>
