@@ -12,6 +12,7 @@
                             onclick="submit_modal_form('update_user', null, 'update-form', 'update-form')">
                         <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                     </button>
+
                 </div>
             </div>
         </div>
@@ -173,4 +174,10 @@
         </div>
 
     </form>
+    <?php if (isAdmin()){ ?>
+        <button type="button" class="btn btn-warning"
+                onclick="confirmDelete('<?php echo base_url("User/delete_user/$item->id"); ?>', null)">
+            <i class="fa fa-trash-o fa-lg"></i> Personeli Sil
+        </button>
+    <?php } ?>
 </div>

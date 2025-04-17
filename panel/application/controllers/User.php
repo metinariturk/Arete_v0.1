@@ -436,45 +436,35 @@ class user extends CI_Controller
             redirect(base_url("error"));
         }
 
-        $delete_user = $this->User_model->delete(array("id" => $id));
+        $user = $this->User_model->get(['id' => $id]);
 
-        $this->load->helper('file'); // File helper'ını yükle
+        if ($user && $user->is_Admin == 1) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Admin yetkisine sahip kullanıcı silinemez.'
+            ]);
+            return;
+        }
+
+        $delete_user = $this->User_model->delete(['id' => $id]);
+
+        // Dosyaları da sil
+        $this->load->helper('file');
         $path = "$this->File_Dir_Prefix/$id";
-        delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
-
+        delete_files($path, true);
         if (is_dir($path)) {
             rmdir($path);
         }
-        $active_user = $this->User_model->get(array("id" => active_user_id()));
-        $items = $this->User_model->get_all(array());
-
-        $viewData = new stdClass();
-        $viewData->items = $items;
-        $viewData->active_user = $active_user;
-
-        $renderHtml = $this->load->view("user_module/user_v/list/user/user_table", $viewData, true);
 
         echo json_encode([
-            'html' => $renderHtml, // Form hatalarını içeren HTML
+            'success' => $delete_user,
+            'message' => $delete_user
+                ? 'Kullanıcı başarıyla silindi.'
+                : 'Kullanıcı silinemedi.',
+            'redirect' => base_url("user")
         ]);
-
     }
 
-    public function file_upload($id)
-    {
-        $file_name = "avatar";
-        $config["allowed_types"] = "*";
-        $config["upload_path"] = "$this->File_Dir_Prefix/$id/";
-        $config["file_name"] = $file_name;
-        $this->load->library("upload", $config);
-        $upload = $this->upload->do_upload("file");
-        if ($upload) {
-            $uploaded_file = $this->upload->data("file_name");
-        } else {
-            echo "islem basarisiz";
-            echo $config["upload_path"];
-        }
-    }
 
     public function fileDelete($id, $from)
     {
@@ -584,19 +574,36 @@ class user extends CI_Controller
     public function user_detail($id)
     {
         $modules = getModuleList();
+        $item = $this->User_model->get(
+            array(
+                "id" => $id
+            )
+        );
 
+        $permissions = $item->permissions;
+
+        if (!is_string($permissions)) {
+            // Geçersiz yetki formatı varsa null'a çekiyoruz
+            $this->User_model->update(
+                array("id" => $id),
+                array("permissions" => null)
+            );
+
+            // İstersen log yazabilirsin
+            log_message('error', "Kullanıcı ($id) yetkileri bozulmuştu, sıfırlandı.");
+
+            // Devam etmeden önce $permissions değişkenini sıfırla
+            $permissions = null;
+        }
 
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "list";
+        $viewData->item = $item;
         $viewData->modules = $modules;
 
-        $viewData->item = $this->User_model->get(
-            array(
-                "id" => $id
-            )
-        );
+
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/show_details", $viewData);
     }
 
@@ -700,6 +707,27 @@ class user extends CI_Controller
         header('Content-Type: application/json');
         echo json_encode($data);
         exit;
+    }
+
+    function delete_avatar_file($id)
+    {
+        // Klasör yolu
+        $path = "$this->File_Dir_Prefix/$id/";
+
+        // Klasör var mı kontrol et
+        if (!is_dir($path)) {
+            return false;
+        }
+
+        // avatar içeren dosyaları tara
+        foreach (glob($path . '*avatar*') as $file) {
+            if (is_file($file)) {
+                unlink($file);
+                return true; // İlk eşleşeni sildikten sonra çık
+            }
+        }
+
+        return false; // Hiçbir şey silinmediyse
     }
 
     public function open_edit_user_modal($user_id)

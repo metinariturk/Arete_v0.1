@@ -72,27 +72,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/user_module/user_v/display&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/assets/file_uploader_dist",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\file_uploader_dist" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\update" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\common" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list\user" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
@@ -256,7 +257,8 @@
       <workItem from="1742851144439" duration="4490000" />
       <workItem from="1744304454259" duration="13233000" />
       <workItem from="1744549940264" duration="11606000" />
-      <workItem from="1744831799043" duration="7736000" />
+      <workItem from="1744831799043" duration="7882000" />
+      <workItem from="1744913253135" duration="8381000" />
     </task>
     <servers />
   </component>

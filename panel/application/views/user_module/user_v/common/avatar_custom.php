@@ -20,7 +20,6 @@
                     '<button type="button" class="fileuploader-menu-open"><i class="fileuploader-icon-menu"></i></button>' +
                     '<ul>' +
                     '<li><a data-action="fileuploader-input"><i class="fileuploader-icon-upload"></i> ${captions.upload}</a></li>' +
-                    '<li><a data-action="fileuploader-edit"><i class="fileuploader-icon-edit"></i> ${captions.edit}</a></li>' +
                     '<li><a data-action="fileuploader-remove"><i class="fileuploader-icon-trash"></i> ${captions.remove}</a></li>' +
                     '</ul>' +
                     '</div>',
@@ -313,15 +312,20 @@
                         data: {isDefault: true, popup: false, listProps: {is_default: true}}
                     });
 
-                parentEl.find('.fileuploader-menu ul a').hide().filter('[data-action="fileuploader-input"]').show();
+                parentEl.find('.fileuploader-menu ul a').show().filter('[data-action="fileuploader-input"]').show();
             },
             onRemove: function (item) {
-                if (item.name && (item.appended || item.uploaded))
-                    $.post('php/ajax_remove_file.php', {
-                        file: item.name
-                    });
+                $.post('<?php echo base_url("User/delete_avatar_file/$user_id"); ?>', {
+                    file: item.name
+                });
             },
-            captions: $.extend(true, {}, $.fn.fileuploader.languages['tr'], {})
+            captions: $.extend(true, {}, $.fn.fileuploader.languages['en'], {
+                upload: 'Yükle',
+                remove: 'Sil',
+                errors: {
+                    filesLimit: 'Only 1 file is allowed to be uploaded.',
+                }
+            })
         });
     });
 </script>

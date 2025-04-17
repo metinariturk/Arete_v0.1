@@ -121,46 +121,42 @@
         });
     }
 
-</script>
-
-
-<!--verisi sil başı-->
-<script>
-    function confirmDelete(deleteUrl, refreshDiv) {
-        // Kullanıcıdan onay al
+    function confirmDelete(deleteUrl) {
         Swal.fire({
             title: 'Silme İşlemi',
-            text: "Bunu silmek istediğinize emin misiniz?",
+            text: "Bu kullanıcıyı silmek istediğinize emin misiniz?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Evet, sil',
             cancelButtonText: 'Hayır, iptal et'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Onay verildiğinde AJAX ile silme işlemi
-                $.ajax({
-                    url: deleteUrl, // Kontrolör URL'sini kullan
-                    type: 'POST',
-                    dataType: 'json', // JSON veri tipi
-                    success: function (response) {
-                        if (response.html) {
-                            // HTML içeriğini response'dan al ve div'e ekle
-                            $(refreshDiv).html(response.html);
+                $.post(deleteUrl, function (response) {
+                    let res = JSON.parse(response);
+                    Swal.fire({
+                        title: res.success ? 'Başarılı' : 'Uyarı',
+                        text: res.message,
+                        icon: res.success ? 'success' : 'warning'
+                    }).then(() => {
+                        if (res.success && res.redirect) {
+                            window.location.href = res.redirect;
                         }
-                    },
-
-                    error: function () {
-                        Swal.fire({
-                            title: 'Hata',
-                            text: 'Silme işlemi sırasında bir hata oluştu.',
-                            icon: 'error'
-                        });
-                    }
+                    });
+                }).fail(() => {
+                    Swal.fire('Hata', 'İşlem sırasında bir hata oluştu.', 'error');
                 });
             }
         });
     }
+
+
+
+
 </script>
+
+
+<!--verisi sil başı-->
+
 
 <script>
     function edit_modal_form(FormURL, ModalForm, ModalId) {
