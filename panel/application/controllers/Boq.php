@@ -51,7 +51,7 @@ class Boq extends CI_Controller
     }
     public function new_form($contract_id = null, $payment_no = null, $boq_id = null)
     {
-        if (!isAdmin() && !permission_control("payment", "read")) {
+        if (!isAdmin() && !permission_control("payment", "r")) {
             redirect(base_url("error"));
             return;
         }
@@ -97,7 +97,7 @@ class Boq extends CI_Controller
     }
     public function calculate_render($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "write")) {
+        if (!isAdmin() && !permission_control("payment", "w")) {
             redirect(base_url("error"));
             return;
         }
@@ -140,7 +140,7 @@ class Boq extends CI_Controller
     }
     public function rebar_render($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "write")) {
+        if (!isAdmin() && !permission_control("payment", "w")) {
             redirect(base_url("error"));
             return;
         }
@@ -183,7 +183,7 @@ class Boq extends CI_Controller
     }
     public function save($contract_id, $payment_id, $stay = null)
     {
-        if (!isAdmin() && !permission_control("payment", "write")) {
+        if (!isAdmin() && !permission_control("payment", "w")) {
             redirect(base_url("error"));
             return;
         }
@@ -334,7 +334,7 @@ class Boq extends CI_Controller
     }
     public function delete($contract_id, $payment_no, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "delete")) {
+        if (!isAdmin() && !permission_control("payment", "d")) {
             redirect(base_url("error"));
             return;
         }
@@ -363,7 +363,7 @@ class Boq extends CI_Controller
     }
     public function open_sub($contract_id, $sub_id, $payment_id)
     {
-        if (!isAdmin() && !permission_control("payment", "read")) {
+        if (!isAdmin() && !permission_control("payment", "r")) {
             redirect(base_url("error"));
             return;
         }
@@ -390,7 +390,7 @@ class Boq extends CI_Controller
     }
     public function back_main($contract_id, $payment_id)
     {
-        if (!isAdmin() && !permission_control("payment", "read")) {
+        if (!isAdmin() && !permission_control("payment", "r")) {
             redirect(base_url("error"));
             return;
         }
@@ -412,7 +412,7 @@ class Boq extends CI_Controller
     }
     public function template_download($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "read")) {
+        if (!isAdmin() && !permission_control("payment", "r")) {
             redirect(base_url("error"));
             return;
         }
@@ -465,7 +465,7 @@ class Boq extends CI_Controller
     }
     public function template_download_rebar($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "read")) {
+        if (!isAdmin() && !permission_control("payment", "r")) {
             redirect(base_url("error"));
             return;
         }

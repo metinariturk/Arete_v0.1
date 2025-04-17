@@ -68,7 +68,7 @@ class Report extends CI_Controller
     }
     public function new_form($site_id = null)
     {
-        if (!isAdmin() && !permission_control("site", "write")) {
+        if (!isAdmin() && !permission_control("site", "w")) {
             redirect(base_url("error"));
         }
         if ($site_id == null) {
@@ -185,7 +185,7 @@ class Report extends CI_Controller
     }
     public function save($site_id)
     {
-        if (!isAdmin() && !permission_control("site", "write")) {
+        if (!isAdmin() && !permission_control("site", "w")) {
             redirect(base_url("error"));
         }
         if ($this->input->post("report_date")) {

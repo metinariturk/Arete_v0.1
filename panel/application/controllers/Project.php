@@ -47,7 +47,7 @@ class Project extends CI_Controller
     }
     public function index()
     {
-        if (!isAdmin() && !permission_control("project", "read")) {
+        if (!isAdmin() && !permission_control("project", "r")) {
             redirect(base_url("error"));
         }
         $viewData = new stdClass();
@@ -66,7 +66,7 @@ class Project extends CI_Controller
     }
     public function file_form($id)
     {
-        if (!isAdmin() && !permission_control("project", "read")) {
+        if (!isAdmin() && !permission_control("project", "r")) {
             redirect(base_url("error"));
         }
         $item = $this->Project_model->get(array("id" => $id));
@@ -108,7 +108,7 @@ class Project extends CI_Controller
     }
     public function delete_form($id)
     {
-        if (!isAdmin() && !permission_control("project", "read")) {
+        if (!isAdmin() && !permission_control("project", "r")) {
             redirect(base_url("error"));
         }
         $item = $this->Project_model->get(array("id" => $id));
@@ -126,7 +126,7 @@ class Project extends CI_Controller
     }
     public function save()
     {
-        if (!isAdmin() && !permission_control("project", "write")) {
+        if (!isAdmin() && !permission_control("project", "w")) {
             redirect(base_url("error"));
         }
         $next_project_name = get_next_file_code("Project");
@@ -187,7 +187,7 @@ class Project extends CI_Controller
     }
     public function update($id)
     {
-        if (!isAdmin() && !permission_control("project", "update")) {
+        if (!isAdmin() && !permission_control("project", "u")) {
             redirect(base_url("error"));
         }
         $project = $this->Project_model->get(array("id" => $id));
@@ -290,7 +290,7 @@ class Project extends CI_Controller
     }
     public function hard_delete($id)
     {
-        if (!isAdmin() && !permission_control("contract", "delete")) {
+        if (!isAdmin() && !permission_control("contract", "d")) {
             redirect(base_url("error"));
         }
         $project = $this->Project_model->get(array("id" => $id));
@@ -322,7 +322,7 @@ class Project extends CI_Controller
     }
     public function file_upload($id)
     {
-        if (isAdmin() || permission_control("project", "update")) {
+        if (isAdmin() || permission_control("project", "u")) {
             $project = $this->Project_model->get(array("id" => $id));
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/main/";
             if (!is_dir($path)) {
@@ -360,7 +360,7 @@ class Project extends CI_Controller
     }
     public function fileDelete_java($id)
     {
-        if (isAdmin() && permission_control("project", "delete")) {
+        if (isAdmin() && permission_control("project", "d")) {
             $fileName = $this->input->post('fileName');
             $project = $this->Project_model->get(array("id" => $id));
             $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/main/";
@@ -372,7 +372,7 @@ class Project extends CI_Controller
     public
     function download_all($project_id)
     {
-        if (isAdmin() && permission_control("project", "update")) {
+        if (isAdmin() && permission_control("project", "u")) {
             $this->load->library('zip');
             $this->zip->compression_level = 0;
             $project_code = project_code($project_id);
@@ -439,7 +439,7 @@ class Project extends CI_Controller
     public function create_contract($project_id = null, $parent_contract = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin() && !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "w")) {
             redirect(base_url("error"));
         }
         $project_code = project_code($project_id);
@@ -533,7 +533,7 @@ class Project extends CI_Controller
     public function create_site($project_id = null)
     {
         // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin() && !permission_control("contract", "write")) {
+        if (!isAdmin() && !permission_control("contract", "w")) {
             redirect(base_url("error"));
         }
         $next_site_name = get_next_file_code("Site");
