@@ -76,7 +76,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/assets/file_uploader_dist",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/helpers",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -89,11 +89,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\file_uploader_dist" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\update" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\common" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\list\user" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
@@ -259,6 +259,7 @@
       <workItem from="1744549940264" duration="11606000" />
       <workItem from="1744831799043" duration="7882000" />
       <workItem from="1744913253135" duration="10552000" />
+      <workItem from="1745089534206" duration="8303000" />
     </task>
     <servers />
   </component>
@@ -297,7 +298,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>61</line>
+          <line>92</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="index" />
@@ -306,7 +307,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1229</line>
+          <line>1387</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="delete_sitewallet" />
@@ -315,7 +316,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1845</line>
+          <line>2012</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="edit_personel" />
@@ -324,7 +325,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>629</line>
+          <line>721</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="add_group" />
@@ -342,7 +343,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>2020</line>
+          <line>2191</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="puantaj_date" />
@@ -351,12 +352,48 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/User.php</url>
-          <line>117</line>
+          <line>119</line>
           <properties>
             <option name="className" value="\user" />
             <option name="methodName" value="create_user" />
           </properties>
           <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>317</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="file_form" />
+          </properties>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>429</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="update_form" />
+          </properties>
+          <option name="timeStamp" value="61" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>466</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="delete" />
+          </properties>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
+          <line>763</line>
+          <properties>
+            <option name="className" value="\Site" />
+            <option name="methodName" value="delete_machine_group" />
+          </properties>
+          <option name="timeStamp" value="63" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

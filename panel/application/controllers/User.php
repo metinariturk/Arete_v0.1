@@ -76,8 +76,9 @@ class user extends CI_Controller
 
     public function file_form($id)
     {
-        if (!isAdmin() && !permission_control("user", "r")) {
-            redirect(base_url("error"));
+
+        if (!user_has_permission('user', ['r'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
 
         $viewData = new stdClass();

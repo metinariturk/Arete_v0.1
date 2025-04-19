@@ -89,7 +89,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array("url", "tools", "cmspdo", "number", "directory", "file", "form", "download", "date");
+$autoload['helper'] = array("url", "tools", "permission" ,"cmspdo", "number", "directory", "file", "form", "download", "date");
 
 /*
 | -------------------------------------------------------------------

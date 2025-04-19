@@ -1,11 +1,26 @@
 <?php
+
 class Site extends CI_Controller
 {
+
+    private $permission_map = [
+        'file_form'      => ['site' => ['r', 'u']],
+        'index'          => ['site' => ['r']],
+        'save_file'      => ['site' => ['w']],
+        'delete_file'    => ['site' => ['d']],
+        'ajax_list'      => ['site' => ['r']],
+        // ... diğer fonksiyonlar
+    ];
+
     public $viewFolder = "";
     public $moduleFolder = "";
+
     public function __construct()
     {
         parent::__construct();
+
+
+
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
@@ -57,12 +72,40 @@ class Site extends CI_Controller
         $this->List_Folder = "list"; // Listeleme klasörü
         $this->Update_Folder = "update"; // Güncelleme klasörü
         $this->Common_Files = "common"; // Ortak dosyalar
-        $this->settings = $this->Settings_model->get();;
+        $this->settings = $this->Settings_model->get();
+
+        $this->_check_permissions();
+
     }
+
+    private function _check_permissions() {
+        $current_method = $this->router->fetch_method();
+
+        if (isset($this->permission_map[$current_method])) {
+            foreach ($this->permission_map[$current_method] as $module => $actions) {
+                if (!user_has_permission($module, $actions)) {
+                    show_error("Erişim izniniz yok: $module - " . implode(',', $actions), 403);
+                }
+            }
+        }
+    }
+
     public function index()
     {
+        if (!user_has_permission('site', ['rwud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+        $current_function = $this->router->fetch_method();
+
+        // Bu fonksiyon için gerekli izin
+        if (isset($this->permissions[$current_function])) {
+            $this->check_permission($this->permissions[$current_function]);
+        }
+
+
         $viewData = new stdClass();
-        
+
         $items = $this->Site_model->get_all(array());
         $projects = $this->Project_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
@@ -77,8 +120,13 @@ class Site extends CI_Controller
         $viewData->active_contracts = $active_contracts;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function favorite($id)
     {
+        if (!user_has_permission('site', ['r'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
         $fav_id = get_from_any_and_and("favorite", "module", "site", "user_id", active_user_id(), "module_id", "$id");
         if (!empty($fav_id)) {
             $this->Favorite_model->delete(
@@ -100,10 +148,15 @@ class Site extends CI_Controller
             echo "favoriye eklendi";
         }
     }
+
     public function select()
     {
+        if (!user_has_permission('site', ['rwud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
         $viewData = new stdClass();
-        
+
         $items = $this->Site_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array(
                 "isActive" => 1
@@ -116,11 +169,13 @@ class Site extends CI_Controller
         $viewData->active_contracts = $active_contracts;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function new_form($project_id = null)
     {
-        if (!isAdmin() && !permission_control("site", "w")) {
-            redirect(base_url("error"));
+        if (!user_has_permission('site', ['w'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
         if (empty($project_id)) {
             $project_id = $this->input->post('project_id');
         }
@@ -151,8 +206,14 @@ class Site extends CI_Controller
         $viewData->users = $users;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function save($project_id)
     {
+
+        if (!user_has_permission('site', ['w'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
         $file_name_len = file_name_digits();
         $file_name = "SNT-" . $this->input->post('dosya_no');
         $this->load->library("form_validation");
@@ -222,11 +283,11 @@ class Site extends CI_Controller
                     "createdBy" => active_user_id(),
                 )
             );
-            
+
             redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
         } else {
             $viewData = new stdClass();
-            
+
             $items = $this->Site_model->get_all(array());
             $contracts = $this->Contract_model->get_all(array(
                 "isActive" => 1,
@@ -253,19 +314,20 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
         }
     }
+
     public function file_form($id, $active_tab = null)
     {
-        $session_user = $this->session->userdata("user");
-        if ($session_user->user_role != 2) {
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
+
+        if (!user_has_permission('site', ['ru'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
         $item = $this->Site_model->get(
             array(
                 "id" => $id
             )
         );
+
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
         $sites = $this->Site_model->get_all(array("is_Active" => 1));
@@ -364,11 +426,14 @@ class Site extends CI_Controller
         $viewData->year = $year;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function update_form($id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        if (!user_has_permission('site', ['u'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
+
         $viewData = new stdClass();
         $project_id = get_from_id("site", "project_id", "$id");
         $contract_id = get_from_id("site", "contract_id", "$id");
@@ -398,11 +463,14 @@ class Site extends CI_Controller
         );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function delete($id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        if (!user_has_permission('site', ['d'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
+
         $site_code = get_from_id("site", "dosya_no", $id);
         $project_id = get_from_id("site", "project_id", $id);
         $project_code = project_code($project_id);
@@ -431,13 +499,13 @@ class Site extends CI_Controller
         );
         redirect(base_url("project/file_form/$project_id"));
     }
+
     public function file_upload($id)
     {
-        if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+        if (!user_has_permission('site', ['u'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
         $project_id = project_id_site($id);
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $project_id));
@@ -472,13 +540,14 @@ class Site extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
+
     public function fileDelete_java($id)
     {
-        if (!isAdmin()) {
-            if (!in_array(active_user_id(), $yetkili)) {
-                redirect(base_url("error"));
-            }
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
+
         $project_id = project_id_site($id);
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $project_id));
@@ -486,8 +555,14 @@ class Site extends CI_Controller
         $fileName = $this->input->post('fileName');
         unlink("$path/$fileName");
     }
+
     public function download_all($site_id)
     {
+        if (!user_has_permission('site', ['ru'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $this->load->library('zip');
         $this->zip->compression_level = 0;
         $site_code = site_code($site_id);
@@ -499,9 +574,15 @@ class Site extends CI_Controller
         $this->zip->read_dir($path, FALSE);
         $this->zip->download("$zip_name.zip");
     }
+
     public
     function personel_print($site_id, $is_active)
     {
+        if (!user_has_permission('site', ['r'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $viewData = new stdClass();
         $this->load->model("Attendance_model");
         $site = $this->Site_model->get(array("id" => $site_id));
@@ -564,6 +645,11 @@ class Site extends CI_Controller
     /*WorkGroup and WorkMachine Start*/
     public function add_group($site_id, $group_id)
     {
+        if (!user_has_permission('site', ['w'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $active_groups = json_decode(get_from_id("site", "active_group", $site_id), true);
         $get_main_group = get_from_any("workgroup", "parent", "id", $group_id);
         if (empty($active_groups) || !isset($active_groups[$get_main_group]) || !in_array($group_id, $active_groups[$get_main_group])) {
@@ -593,8 +679,14 @@ class Site extends CI_Controller
         $viewData->main_categories = $main_categories;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_1_workgroup", $viewData);
     }
+
     public function delete_group($site_id, $group_id)
     {
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $active_groups = json_decode(get_from_id("site", "active_group", $site_id), true);
         $get_main_group = get_from_any("workgroup", "parent", "id", $group_id);
         foreach ($active_groups as &$subArray) {
@@ -629,8 +721,14 @@ class Site extends CI_Controller
         $viewData->main_categories = $main_categories;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_1_workgroup", $viewData);
     }
+
     public function add_machine_group($site_id, $machine_id)
     {
+        if (!user_has_permission('site', ['wud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $active_groups = json_decode(get_from_id("site", "active_machine", $site_id), true);
         $get_main_group = get_from_any("workmachine", "parent", "id", $machine_id);
         if (empty($active_groups) || !isset($active_groups[$get_main_group]) || !in_array($machine_id, $active_groups[$get_main_group])) {
@@ -662,8 +760,14 @@ class Site extends CI_Controller
         $viewData->workmachines = json_decode($item->active_machine, true);
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_2_workmachine", $viewData);
     }
+
     public function delete_machine_group($site_id, $machine_id)
     {
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $active_groups = json_decode(get_from_id("site", "active_machine", $site_id), true);
         $get_main_group = get_from_any("workmachine", "parent", "id", $machine_id);
         foreach ($active_groups as &$subArray) {
@@ -705,9 +809,11 @@ class Site extends CI_Controller
     /*    Rapor İmza Ayarları Start*/
     public function sign_options($site_id, $module)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
+
         $this->load->model("Report_sign_model");
         $position = $this->input->post("position");
         $name = $this->input->post("name");
@@ -757,7 +863,7 @@ class Site extends CI_Controller
                     )
                 );
             }
-            
+
             if (isset($insert)) {
                 $alert = array(
                     "title" => "İşlem Başarılı",
@@ -814,11 +920,14 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
         }
     }
+
     public function delete_sign($id, $module, $site_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
+
+
         $delete = $this->Report_sign_model->delete(
             array(
                 "id" => $id
@@ -842,8 +951,14 @@ class Site extends CI_Controller
         );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
     }
+
     public function sign_rankSetter()
     {
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $data = $this->input->post("data");
         parse_str($data, $order);
         $items = $order['sub'];
@@ -863,6 +978,11 @@ class Site extends CI_Controller
     /*Sitewalllet Start*/
     public function expense_file_download($data_id, $file_name)
     {
+        if (!user_has_permission('site', ['r'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
@@ -874,8 +994,14 @@ class Site extends CI_Controller
             }
         }
     }
+
     public function download_all_expense($data_id)
     {
+        if (!user_has_permission('site', ['r'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $this->load->library('zip');
         $this->zip->compression_level = 0;
         $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
@@ -887,8 +1013,14 @@ class Site extends CI_Controller
         $this->zip->read_dir($file_path, FALSE);
         $this->zip->download("$zip_name.zip");
     }
+
     public function expense_file_delete($data_id, $file_name)
     {
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         // İlgili verileri almak
         $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
@@ -908,9 +1040,11 @@ class Site extends CI_Controller
             }
         }
     }
+
     public
     function check_end_date($end_date)
     {
+
         $start_date = $this->input->post('start_date'); // Başlangıç tarihini post verisinden alın
         // Eğer end date boş değilse ve start date doluysa kontrol yap
         if (!empty($end_date) && !empty($start_date)) {
@@ -924,8 +1058,14 @@ class Site extends CI_Controller
         }
         return TRUE; // Kontrol yapılmadı veya geçerli
     }
+
     public function add_expense($site_id)
     {
+        if (!user_has_permission('site', ['u'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
         $item = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
@@ -1037,8 +1177,14 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
         }
     }
+
     public function add_deposit($site_id)
     {
+        if (!user_has_permission('site', ['u'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
         $item = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
@@ -1149,8 +1295,14 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
         }
     }
+
     public function delete_sitewallet($sitewallet_id)
     {
+        if (!user_has_permission('site', ['ud'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
+
         $sitewallet = $this->Sitewallet_model->get(array("id" => $sitewallet_id));
         $item = $this->Site_model->get(array("id" => $sitewallet->site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
@@ -1195,13 +1347,18 @@ class Site extends CI_Controller
         } elseif (($sitewallet->type == 0))
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
     }
+
     public function open_edit_expenses_modal($expense_id)
     {
+        if (!user_has_permission('site', ['u'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+        }
+
         // Verilerin getirilmesi
         $edit_expense = $this->Sitewallet_model->get(array("id" => $expense_id));
         $item = $this->Site_model->get(array("id" => $edit_expense->site_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        
+
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -1211,6 +1368,7 @@ class Site extends CI_Controller
         $viewData->edit_expense = $edit_expense;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_expense_modal_form", $viewData);
     }
+
     public function edit_expense($expense_id)
     {
         // Veritabanından site, sözleşme ve proje bilgilerini alıyoruz
@@ -1319,6 +1477,7 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
         }
     }
+
     public function sitewallet_file_delete($sitestock_id)
     {
         $site_stock = $this->Sitewallet_model->get(array("id" => $sitestock_id));
@@ -1371,6 +1530,7 @@ class Site extends CI_Controller
             return FALSE;
         }
     }
+
     public function IBAN_control($IBAN)
     {
         // Tüm boşlukları kaldır
@@ -1386,6 +1546,7 @@ class Site extends CI_Controller
             return FALSE; // IBAN geçersiz
         }
     }
+
     public function TC_control($social_id)
     {
         // T.C. kimlik numarasının 11 haneli olması gerekiyor
@@ -1413,6 +1574,7 @@ class Site extends CI_Controller
         }
         return TRUE; // T.C. kimlik numarası geçerli
     }
+
     public
     function duplicate_code_check($file_name)
     {
@@ -1424,6 +1586,7 @@ class Site extends CI_Controller
             return TRUE;
         }
     }
+
     public
     function site_contractday($sitedal_day, $contract_day)
     {
@@ -1481,7 +1644,7 @@ class Site extends CI_Controller
                 )
             );
             $viewData = new stdClass();
-            
+
             $item = $this->Site_model->get(array("id" => $site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
             $viewData->viewModule = $this->moduleFolder;
@@ -1494,7 +1657,7 @@ class Site extends CI_Controller
         } else {
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
             $viewData = new stdClass();
-            
+
             $item = $this->Site_model->get(array("id" => $site_id));
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -1507,6 +1670,7 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
         }
     }
+
     public
     function exit_stock($site_id)
     {
@@ -1560,7 +1724,7 @@ class Site extends CI_Controller
                 }
             }
             $sites = $this->Site_model->get_all(array("is_Active" => 1));
-            
+
             $viewData = new stdClass();
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -1588,6 +1752,7 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
         }
     }
+
     public
     function open_exit_stock_modal($site_stok_id)
     {
@@ -1596,7 +1761,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $site_stock->site_id));
         $sites = $this->Site_model->get_all(array("is_Active" => 1));
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
-        
+
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -1607,6 +1772,7 @@ class Site extends CI_Controller
         $viewData->sites = $sites;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/exit_modal_form", $viewData);
     }
+
     public
     function delete_stock($stock_id)
     {
@@ -1619,7 +1785,7 @@ class Site extends CI_Controller
             $item = $this->Site_model->get(array("id" => $site_stock->site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
             $sites = $this->Site_model->get_all(array("is_Active" => 1));
-            
+
             $viewData = new stdClass();
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = $this->viewFolder;
@@ -1767,6 +1933,7 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
         }
     }
+
     public
     function edit_personel($personel_id)
     {
@@ -1894,6 +2061,7 @@ class Site extends CI_Controller
             $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
         }
     }
+
     public function open_edit_personel_modal($personel_id)
     {
         // Verilerin getirilmesi
@@ -1901,7 +2069,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $edit_personel->site_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $settings = $this->Settings_model->get();
-        
+
         $viewData = new stdClass();
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -1913,6 +2081,7 @@ class Site extends CI_Controller
         $viewData->settings = $settings;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_personel_modal_form", $viewData);
     }
+
     public
     function chance_list($site_id, $group_code = null, $situation = null)
     {
@@ -1947,6 +2116,7 @@ class Site extends CI_Controller
         $viewData->settings = $settings;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
     }
+
     public
     function update_puantaj($site_id)
     {
@@ -2004,7 +2174,7 @@ class Site extends CI_Controller
         $puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "year_month" => $year_month));
         $year = explode("-", $year_month)[0];
         $month = explode("-", $year_month)[1];
-        
+
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
         $viewData->viewModule = $this->moduleFolder;
@@ -2018,6 +2188,7 @@ class Site extends CI_Controller
         $viewData->form_error = true;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_2_puantaj", $viewData);
     }
+
     public
     function puantaj_date($site_id)
     {
@@ -2030,7 +2201,7 @@ class Site extends CI_Controller
         $viewData = new stdClass();
         $this->load->model("Attendance_model");
         $puantaj = $this->Attendance_model->get(array("site_id" => $site_id, "year_month" => "$year-$month"));
-        
+
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
         $viewData->viewModule = $this->moduleFolder;

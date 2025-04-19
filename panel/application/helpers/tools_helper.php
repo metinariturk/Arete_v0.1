@@ -127,7 +127,7 @@ function dateFormat($format = 'd-m-Y', $givenDate = null)
 
 function dateFormat_dmy($givenDate = null)
 {
-    if (!empty($givenDate)){
+    if (!empty($givenDate)) {
         return date('d-m-Y', strtotime($givenDate));
     } else {
         return "";
@@ -135,7 +135,8 @@ function dateFormat_dmy($givenDate = null)
     //gelen tarih verisini YY-mm-dd -> dd-mm-YYYY şekline çeviriyor
 }
 
-function YM_to_M($tarih) {
+function YM_to_M($tarih)
+{
     // Türkçe ay isimlerini ve sayıları içeren dizi
     $aylar = array(
         '01' => 'Ocak',
@@ -162,7 +163,8 @@ function YM_to_M($tarih) {
     return $ayIsmi . " " . $yil;
 }
 
-function gun_sayisi() {
+function gun_sayisi()
+{
     $ilk_gun = date('Y-m-01');
     $son_gun = date('Y-m-t');
     $gun_sayisi = (int)date('d', strtotime($son_gun));
@@ -191,31 +193,32 @@ function ay_isimleri($ay)
     return $key;
 }
 
-function tarihFormatla($tarih) {
+function tarihFormatla($tarih)
+{
     // Türkçe ay ve gün adlarını içeren bir dizi
     $turkce_aylar = array(
-        "January"   => "Ocak",
-        "February"  => "Şubat",
-        "March"     => "Mart",
-        "April"     => "Nisan",
-        "May"       => "Mayıs",
-        "June"      => "Haziran",
-        "July"      => "Temmuz",
-        "August"    => "Ağustos",
+        "January" => "Ocak",
+        "February" => "Şubat",
+        "March" => "Mart",
+        "April" => "Nisan",
+        "May" => "Mayıs",
+        "June" => "Haziran",
+        "July" => "Temmuz",
+        "August" => "Ağustos",
         "September" => "Eylül",
-        "October"   => "Ekim",
-        "November"  => "Kasım",
-        "December"  => "Aralık"
+        "October" => "Ekim",
+        "November" => "Kasım",
+        "December" => "Aralık"
     );
 
     $turkce_gunler = array(
-        "Sunday"    => "Pazar",
-        "Monday"    => "Pazartesi",
-        "Tuesday"   => "Salı",
+        "Sunday" => "Pazar",
+        "Monday" => "Pazartesi",
+        "Tuesday" => "Salı",
         "Wednesday" => "Çarşamba",
-        "Thursday"  => "Perşembe",
-        "Friday"    => "Cuma",
-        "Saturday"  => "Cumartesi"
+        "Thursday" => "Perşembe",
+        "Friday" => "Cuma",
+        "Saturday" => "Cumartesi"
     );
 
     // Verilen tarihin ay ve gün adlarını İngilizce'den Türkçe'ye çevirme
@@ -658,6 +661,7 @@ function temp_pass_control()
     else
         return false;
 }
+
 function cms_email($to_email = "", $subject = "", $message = "")
 {
 
@@ -713,29 +717,6 @@ function cms_email($to_email = "", $subject = "", $message = "")
     return $t->email->send();
 
 }
-
-function isAdmin()
-{
-    $t = &get_instance();
-
-    $session_user = $t->session->userdata("user");
-
-    if (!$session_user || !isset($session_user->id)) {
-        return false;
-    }
-
-    $user = $t->db
-        ->where("id", $session_user->id)
-        ->get("users")
-        ->row();
-
-    if ($user && $user->is_Admin == 1) {
-        return true;
-    }
-
-    return false;
-}
-
 function isUser($user_id)
 {
     $t = &get_instance();
@@ -780,7 +761,8 @@ function getModuleList()
 
 }
 
-function get_dir_contents($path, $type = 'both') {
+function get_dir_contents($path, $type = 'both')
+{
     if (!is_dir($path)) return [];
 
     $items = scandir($path);
@@ -796,7 +778,8 @@ function get_dir_contents($path, $type = 'both') {
     });
 }
 
-function createDirectories($basePath, $subdirectories) {
+function createDirectories($basePath, $subdirectories)
+{
     foreach ($subdirectories as $dir) {
         $path = $basePath . '/' . $dir;
         if (!is_dir($path) && !mkdir($path, 0777, true)) {
@@ -916,11 +899,15 @@ function formatPhoneNumber($phoneNumber)
 
     return $formattedNumber;
 }
-function get_days_in_month($year, $month) {
+
+function get_days_in_month($year, $month)
+{
     // Belirtilen yıl ve ayda kaç gün olduğunu döndürür
     return cal_days_in_month(CAL_GREGORIAN, $month, $year);
 }
-function roundToNearest($number, $nearestValues) {
+
+function roundToNearest($number, $nearestValues)
+{
     $nearest = $nearestValues[0];
     foreach ($nearestValues as $value) {
         if ($value >= $number) {
@@ -933,14 +920,16 @@ function roundToNearest($number, $nearestValues) {
 }
 
 // Boyutları okunabilir formata dönüştürmek için fonksiyon
-function formatSize($bytes) {
+function formatSize($bytes)
+{
     $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
     $power = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
     return number_format($bytes / pow(1024, $power), 2) . ' ' . $units[$power];
 }
 
 // Klasörün toplam boyutunu hesaplamak için fonksiyon
-function getFolderSize($dir) {
+function getFolderSize($dir)
+{
     $size = 0;
 
     // Klasördeki tüm dosya ve alt klasörleri gez
@@ -951,39 +940,9 @@ function getFolderSize($dir) {
     return $size;
 }
 
-function permission_control($module, $permission)
+
+function getExcelColumn($index)
 {
-    // CodeIgniter instance
-    $ci =& get_instance();
-
-    // Oturumdaki kullanıcıyı al
-    $session_user = $ci->session->userdata('user');
-
-    if (!$session_user) {
-        return false;
-    }
-
-    // Kullanıcıyı veritabanından çek
-    $user_data = $ci->User_model->get([
-        "id" => $session_user->id
-    ]);
-
-    if (!$user_data) {
-        return false;
-    }
-
-    // Kullanıcının izinlerini al
-    $permissions = isset($user_data->permissions) ? json_decode($user_data->permissions, true) : [];
-
-    // Modül için yetki varsa ve belirtilen harf içeriyorsa true döndür
-    if (isset($permissions[$module]) && strpos($permissions[$module], $permission) !== false) {
-        return true;
-    }
-
-    return false;
-}
-
-function getExcelColumn($index) {
     $columnName = '';
     while ($index > 0) {
         $index--;
