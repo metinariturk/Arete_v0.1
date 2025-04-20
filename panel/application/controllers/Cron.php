@@ -7,6 +7,9 @@ class Cron extends CI_Controller {
     {
         parent::__construct();
         // Giriş doğrulaması yapılmaz, sadece cron job'ları için kullanılacak.
+        $this->load->model("Report_weather_model");
+
+
     }
 
     public function test_cron()
@@ -19,12 +22,12 @@ class Cron extends CI_Controller {
 
         $viewData = new stdClass();
 
-        $control = dateFormat('Y-m-d', $date);
+        $control = date('Y-m-d');  // Bugünün tarihi, 'Y-m-d' formatında
 
 
-        $insert = $this->Weather_model->add(
+        $insert = $this->Report_weather_model->add(
             array(
-                "date" => $date,
+                "date" => $control,
                 "min" => "15",
                 "max" => "115",
                 "event" => "yağmur",
