@@ -8,10 +8,10 @@
             </div>
             <div class="modal-body">
                 <form id="addCollectionForm"
-                      data-form-url="<?php echo base_url("$this->Module_Name/create_collection/$item->id"); ?>"
+                      data-form-url="<?php echo base_url("Contract/create_collection/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <div id="add_Collection_input">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/add_collection_form_input"); ?>
+                        <?php $this->load->view("contract_module/contract_v/display/collection/add_collection_form_input"); ?>
                     </div>
                 </form>
             </div>

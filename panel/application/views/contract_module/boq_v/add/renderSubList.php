@@ -3,7 +3,7 @@
     <tr>
         <th colspan="4" style="text-align:center; width: 50px;">
             <a id="category" href="#"
-               url="<?php echo base_url("$this->Module_Name/back_main/$item->id/$payment->id"); ?>"
+               url="<?php echo base_url("Boq/back_main/$item->id/$payment->id"); ?>"
                onclick="back_main(this)"
                method="post"
                enctype="multipart">
@@ -31,9 +31,9 @@
                    data-bs-original-title=""
                    title=""
                     <?php if ($sub_cont_item->type == "rebar"){ ?>
-                        url="<?php echo base_url("$this->Module_Name/rebar_render/$contract->id/$payment->id/$sub_cont_item->id"); ?>">
+                        url="<?php echo base_url("Boq/rebar_render/$contract->id/$payment->id/$sub_cont_item->id"); ?>">
                     <?php } else { ?>
-                        url="<?php echo base_url("$this->Module_Name/calculate_render/$contract->id/$payment->id/$sub_cont_item->id"); ?>">
+                        url="<?php echo base_url("Boq/calculate_render/$contract->id/$payment->id/$sub_cont_item->id"); ?>">
                     <?php } ?>
                     <?php echo $sub_cont_item->name; ?>
                     <span class="text-danger"> <?php if ($sub_cont_item->type == "rebar") {

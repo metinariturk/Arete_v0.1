@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <?php $this->load->view("includes/head"); ?>
-    <?php $this->load->view("{$viewFolder}/common/page_style.php"); ?>
+    <?php $this->load->view("project_v/common/page_style.php"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/custom.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
@@ -31,7 +31,7 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("{$viewFolder}/{$subViewFolder}/content"); ?>
+            <?php $this->load->view("project_v/display/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
     </div>
@@ -39,7 +39,7 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
-<?php $this->load->view("{$viewFolder}/{$subViewFolder}/page_script"); ?>
+<?php $this->load->view("project_v/common/page_script"); ?>
 <script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
 

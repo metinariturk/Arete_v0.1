@@ -11,7 +11,7 @@
                       data-form-url="<?php echo base_url("Project/create_site/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <div id="add_Site_input">
-                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/site/add_site_form_input"); ?>
+                        <?php $this->load->view("project_v/display/site/add_site_form_input"); ?>
                     </div>
                 </form>
             </div>

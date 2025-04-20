@@ -1,28 +1,32 @@
 <?php
 require 'vendor/autoload.php';
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
+
 class Contract extends CI_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
+
     public function __construct()
     {
         parent::__construct();
         // Kullanıcı girişi kontrolü
+
         if (!get_active_user()) {
             redirect(base_url("login"));
         }
+
         $this->Theme_mode = get_active_user()->mode;
         $uploader = APPPATH . 'libraries/FileUploader.php';
         include($uploader);
-        // Geçici şifre kontrolü
+
         if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
-        // Modül ve görünüm klasörleri tanımlamaları
-        $this->moduleFolder = "contract_module";
-        $this->viewFolder = "contract_v";
-        // Modelleri yükleme
+
+        $this->Settings = get_settings();
+
         $models = [
             'Advance_model',
             'Attendance_model',
@@ -52,59 +56,133 @@ class Contract extends CI_Controller
             'Site_model',
             'User_model',
         ];
-        // Tüm modelleri yükle
         foreach ($models as $model) {
             $this->load->model($model);
         }
-        // Modül bilgileri
-        $this->Module_Name = "Contract";
-        $this->Module_Title = "Sözleşme";
-        $this->Module_Main_Dir = "project_v";
-        $this->Module_Depended_Dir = "main";
-        $this->Module_File_Dir = "contract";
-        $this->Display_route = "file_form";
-        $this->Upload_Folder = "uploads";
-        $this->Dependet_id_key = "contract_id";
-        $this->Module_Parent_Name = "project";
-        // Klasör yapıları
-        $this->Add_Folder = "add";
-        $this->Display_Folder = "display";
-        $this->Display_offer_Folder = "display_offer";
-        $this->Common_Files = "common";
-        $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
-        // Ayarları al
-        $this->Settings = get_settings();
+
+        $this->rules = array(
+            "add_leader" => array('payment' => ['u']),
+            "add_main_group" => array('payment' => ['u', 'w', 'd']),
+            "add_sub_contract" => array('contract' => ['w']),
+            "back_main" => array('payment' => ['r']),
+            "changestatus" => array('contract' => ['u']),
+            "create_advance" => array('payment' => ['w', 'u']),
+            "create_bond" => array('payment' => ['w', 'u']),
+            "create_collection" => array('payment' => ['w', 'u']),
+            "create_contract" => array('contract' => ['w']),
+            "create_folder" => array('contract' => ['w', 'u']),
+            "create_payment" => array('payment' => ['w']),
+            "delete_advance" => array('payment' => ['d']),
+            "delete_bond" => array('payment' => ['d']),
+            "delete_collection" => array('payment' => ['d']),
+            "delete_contract_price" => array('payment' => ['d']),
+            "delete_file" => array('contract' => ['u', 'd']),
+            "delete_folder" => array('contract' => ['u', 'd']),
+            "delete_form" => array('contract' => ['d']),
+            "delete_group" => array('payment' => ['u', 'd']),
+            "delete_item" => array('payment' => ['u', 'd']),
+            "delete_main" => array('payment' => ['u', 'd']),
+            "delete_sub" => array('payment' => ['u', 'd']),
+            "download_all" => array('contract' => ['r', 'u', 'w']),
+            "download_backup" => array('contract' => ['r', 'u', 'w', 'd']),
+            "download_file" => array('contract' => ['r', 'u', 'w', 'd']),
+            "edit_advance" => array('payment' => ['u', 'd']),
+            "edit_bond" => array('payment' => ['u', 'd']),
+            "edit_collection" => array('payment' => ['u', 'd']),
+            "edit_contract" => array('contract' => ['u', 'd']),
+            "edit_payment" => array('payment' => ['u', 'd']),
+            "favorite" => array('contract' => ['r', 'u']),
+            "file_form" => array('contract' => ['r']),
+            "file_upload" => array('contract' => ['w', 'r', 'u']),
+            "filedelete_java" => array('contract' => ['u', 'd']),
+            "folder_open" => array('contract' => ['r', 'w', 'u', 'd']),
+            "hard_delete" => array('contract' => ['d']),
+            "index" => array('contract' => ['w', 'r', 'u']),
+            "open_add_sub_contract_modal" => array('contract' => ['w', 'r', 'u']),
+            "open_edit_advance_modal" => array('contract' => ['w', 'r', 'u']),
+            "open_edit_bond_modal" => array('contract' => ['w', 'r', 'u']),
+            "open_edit_collection_modal" => array('payment' => ['w', 'u']),
+            "open_edit_contract_modal" => array('contract' => ['w', 'r', 'u']),
+            "open_edit_payment_modal" => array('payment' => ['w', 'u']),
+            "open_edit_pricegroup_modal" => array('payment' => ['w', 'u']),
+            "open_sub" => array('payment' => ['w', 'u']),
+            "refresh_contract_price" => array('payment' => ['w', 'u']),
+            "refresh_leader_group" => array('payment' => ['w', 'u']),
+            "update_boqs" => array('payment' => ['w', 'r', 'u', 'd']),
+            "update_leader" => array('payment' => ['u', 'd']),
+            "update_leader_selection" => array('payment' => ['u', 'd']),
+            "update_sub_group" => array('payment' => ['u', 'd']),
+            "upload_book_excel" => array('payment' => ['u', 'd']),
+
+            "date_greater_than" => array(),
+            "date_greater_than_equal" => array(),
+            "date_less_than" => array(),
+            "date_less_than_equal" => array(),
+            "sitedel_contractday" => array(),
+            "sitedel_date" => array(),
+            "unique_folder_name" => array(),
+        );
+
+        $this->check_permissions();
     }
+
+    protected function check_permissions()
+    {
+        $current_method = strtolower($this->router->method);
+
+        if (!isset($this->rules[$current_method])) {
+            show_error($current_method . "Yetki tanımı yapılmamış!", 403);
+        }
+
+        foreach ($this->rules[$current_method] as $module => $permissions) {
+            if (!user_has_permission($module, $permissions)) {
+                show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+            }
+        }
+    }
+
     public function index()
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
+
+        // Devam Eden Sözleşmeler (isActive = 1), tarihe göre yeni başta
+        $active_items = $this->Contract_model->get_all([
+            "isActive" => 1
+        ], "sozlesme_tarih DESC");
+
+        // Biten Sözleşmeler (isActive = 0)
+        $inactive_items = $this->Contract_model->get_all([
+            "isActive" => 2
+        ], "sozlesme_tarih DESC");
+
+        // Tüm Sözleşmeler
+        $all_items = $this->Contract_model->get_all([], "sozlesme_tarih DESC");
+
+
         $viewData = new stdClass();
-        
-        $items = $this->Contract_model->get_all(array(), "sozlesme_tarih DESC");
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "list";
-        $viewData->items = $items;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $viewData->active_items = $active_items;
+        $viewData->inactive_items = $inactive_items;
+        $viewData->all_items = $all_items;
+
+        $this->load->view("contract_module/contract_v/list/index", $viewData);
     }
-    public function file_form($id = null, $active_module = null)
+
+    public function file_form($id = null)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
+        null_parameter_error($id);
+
+
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
             "module" => "contract",
             "view" => "file_form",
             "module_id" => $id,
         ));
+
         // Değişken tanımları
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
         $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
         $collections = $this->Collection_model->get_all(array('contract_id' => $id), "tahsilat_tarih ASC");
-        $companys = $this->Company_model->get_all(array());
+        $companys = $this->Company_model->get_all(array(), "company_name ASC");
         $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
         $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
         $item = $this->Contract_model->get(array("id" => $id));
@@ -115,17 +193,15 @@ class Contract extends CI_Controller
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "code ASC");
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
         $site = $this->Site_model->get(array("project_id" => $item->project_id));
         $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
-        $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-        $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no";
+        $upload_function = base_url("Contract/file_upload/$item->id");
+        $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no";
         $subdirs = ['Contract', 'Collection', 'Advance', 'Offer', 'Payment'];
         createDirectories($main_path, $subdirs);
         $main_folders = get_dir_contents($main_path, 'dir');
         $viewData = new stdClass();
         // View'e gönderilecek Değişkenlerin Set Edilmesi
-        $viewData->active_module = $active_module;
         $viewData->advances = $advances;
         $viewData->bonds = $bonds;
         $viewData->collections = $collections;
@@ -145,20 +221,24 @@ class Contract extends CI_Controller
         $viewData->payments = $payments;
         $viewData->prices_main_groups = $prices_main_groups;
         $viewData->project = $project;
-        $viewData->settings = $settings;
         $viewData->site = $site;
-        $viewData->subViewFolder = "$this->Display_Folder";
+
         $viewData->upload_function = $upload_function;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/index", $viewData);
+
+
+        try {
+            $this->load->view("contract_module/contract_v/display/index", $viewData);
+        } catch (Exception $e) {
+            log_message('error', 'Görünüm yüklenirken hata oluştu: ' . $e->getMessage());
+            echo "Görünüm yüklenirken bir hata oluştu."; // Kullanıcıya genel bir hata mesajı
+        }
+
     }
+
     public function create_contract($project_id = null, $parent_contract = null)
     {
-        // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin() && !permission_control("contract", "w")) {
-            redirect(base_url("error"));
-        }
+
+
         $project_code = project_code($project_id);
         $file_name = "SOZ-" . $this->input->post('dosya_no');
         $this->load->library("form_validation");
@@ -187,7 +267,7 @@ class Contract extends CI_Controller
         $validate = $this->form_validation->run();
         if ($validate) {
             // Dizin oluşturma işlemi
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$file_name";
+            $path = "uploads/$this->Module_Main_Dir/$project_code/$file_name";
             !is_dir($path) || mkdir($path, 0777, TRUE);
             // Tarih ve adı biçimlendirme işlemleri
             $sozlesme_tarih = $this->input->post("sozlesme_tarih") ? dateFormat('Y-m-d', $this->input->post("sozlesme_tarih")) : null;
@@ -211,30 +291,26 @@ class Contract extends CI_Controller
                     "isActive" => "1",
                 )
             );
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
+            redirect(base_url("Contract/file_form/$record_id"));
         } else {
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
             $viewData = new stdClass();
             $project = $this->Project_model->get(array("id" => $project_id));
-            $settings = $this->Settings_model->get();
-            $companys = $this->Company_model->get_all(array());
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "add_main";
+            $companys = $this->Company_model->get_all(array(), "company_name ASC");
+
+
             $viewData->project = $project;
             $viewData->companys = $companys;
-            $viewData->settings = $settings;
             $viewData->project_id = $project_id;
             $viewData->form_error = true;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+            $this->load->view("contract_module/contract_v/add_main/index", $viewData);
         }
     }
+
     public function add_sub_contract($parent_contract)
     {
-        // Kullanıcının admin olup olmadığını ve yetkilendirme işlemini kontrol edin
-        if (!isAdmin() && !permission_control("contract", "w")) {
-            redirect(base_url("error"));
-        }
+
+
         $item = $this->Contract_model->get(array("id" => $parent_contract));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $next_contract_name = get_next_file_code("Contract");
@@ -265,7 +341,7 @@ class Contract extends CI_Controller
         $validate = $this->form_validation->run();
         if ($validate) {
             // Dizin oluşturma işlemi
-            $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$file_name";
+            $path = "uploads/$this->Module_Main_Dir/$project->dosya_no/$file_name";
             if (!is_dir($path)) {
                 try {
                     mkdir($path, 0777, TRUE);
@@ -299,11 +375,11 @@ class Contract extends CI_Controller
             $viewData = new stdClass();
             $item = $this->Contract_model->get(array("id" => $parent_contract));
             $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
-            $settings = $this->Settings_model->get();
+
             // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->item = $item;
             $viewData->sub_contracts = $sub_contracts;
-            $viewData->settings = $settings;
+
             $response = array(
                 'status' => 'success',
                 'html' => $this->load->view("contract_module/contract_v/display/sub_contract/sub_contract_table", $viewData, true)
@@ -313,19 +389,18 @@ class Contract extends CI_Controller
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
             $viewData = new stdClass();
             $item = $this->Contract_model->get(array("id" => $parent_contract));
-            $settings = $this->Settings_model->get();
-            $companys = $this->Company_model->get_all(array());
+
+            $companys = $this->Company_model->get_all(array(), "company_name ASC");
             $next_contract_name = get_next_file_code("Contract");
             $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
             $viewData->companys = $companys;
             $viewData->next_contract_name = $next_contract_name;
             $viewData->item = $item;
             $viewData->sub_contracts = $sub_contracts;
-            $viewData->settings = $settings;
+
             $viewData->form_error = true;
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $response = array(
                 'status' => 'error',
                 'html' => $this->load->view("contract_module/contract_v/display/sub_contract/add_sub_contract_form_input", $viewData, true)
@@ -333,11 +408,10 @@ class Contract extends CI_Controller
             echo json_encode($response);
         }
     }
+
     public function sitedel_date($id)
     {
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
+
         $sozlesme_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sozlesme_tarih", "id", "$id"));
         $isin_suresi = get_from_any("contract", "isin_suresi", "id", "$id");
         $this->load->library("form_validation");
@@ -360,16 +434,15 @@ class Contract extends CI_Controller
                     "sozlesme_bitis" => $sozlesme_bitis,
                 )
             );
-            redirect(base_url("$this->Module_Name/file_form/$id/sitedel"));
+            redirect(base_url("Contract/file_form/$id/sitedel"));
         } else {
-            redirect(base_url("$this->Module_Name/file_form/$id/sitedel/error"));
+            redirect(base_url("Contract/file_form/$id/sitedel/error"));
         }
     }
+
     public function delete_form($id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
+
         $item = $this->Contract_model->get(array("id" => $id));
         $sub_contracts = $this->Contract_model->get_all(array("parent" => $id));
         $sites = $this->Site_model->get_all(array("contract_id" => $id));
@@ -381,9 +454,8 @@ class Contract extends CI_Controller
         $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
         $payments = $this->Payment_model->get_all(array('contract_id' => $id));
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "delete_form";
+
+
         $viewData->item = $item;
         $viewData->sub_contracts = $sub_contracts;
         $viewData->sites = $sites;
@@ -394,14 +466,13 @@ class Contract extends CI_Controller
         $viewData->extimes = $extimes;
         $viewData->newprices = $newprices;
         $viewData->payments = $payments;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("contract_module/contract_v/delete_form/index", $viewData);
     }
+
     public function hard_delete($id)
     {
-        // İzin kontrolü
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
+
+
         // Sözleşme verisini al
         $contract = $this->Contract_model->get(array("id" => $id));
         // Sözleşme bulunamazsa hata sayfasına yönlendir
@@ -415,10 +486,10 @@ class Contract extends CI_Controller
         }
         $project = $this->Project_model->get(array("id" => $contract->project_id));
         $site = $this->Site_model->get(array("contract_id" => $id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no";
+        $path = "uploads/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no";
         $site_path = '';
         if (isset($site)) {
-            $site_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no";
+            $site_path = "uploads/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no";
         }
         // Klasör silme işlemi - Sözleşme yolu
         if (!deleteDirectory($path)) {
@@ -471,14 +542,13 @@ class Contract extends CI_Controller
         $this->Contract_model->delete(array("id" => $id));
         redirect(base_url("project/file_form/$project->id"));
     }
+
     public function file_upload($type, $contract_id, $sub_folder = null)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $path = $this->Upload_Folder . DIRECTORY_SEPARATOR . $this->Module_Main_Dir . DIRECTORY_SEPARATOR . $project->dosya_no . DIRECTORY_SEPARATOR . $item->dosya_no . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR;
+        $path = "uploads" . DIRECTORY_SEPARATOR . "project_v" . DIRECTORY_SEPARATOR . $project->dosya_no . DIRECTORY_SEPARATOR . $item->dosya_no . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR;
         if ($sub_folder !== null) {
             $path .= $sub_folder . DIRECTORY_SEPARATOR;
         }
@@ -517,16 +587,14 @@ class Contract extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
-    public function fileDelete_java($contract_id, $folder_name, $folder_id = null)
+
+    public function filedelete_java($contract_id, $folder_name, $folder_id = null)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
         $fileName = $this->input->post('fileName');
         $contract = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $contract->project_id));
-        $path = $this->Upload_Folder . DIRECTORY_SEPARATOR .
-            $this->Module_Main_Dir . DIRECTORY_SEPARATOR .
+        $path = "uploads" . DIRECTORY_SEPARATOR .
+            "project_v" . DIRECTORY_SEPARATOR .
             $project->dosya_no . DIRECTORY_SEPARATOR .
             $contract->dosya_no . DIRECTORY_SEPARATOR .
             $folder_name . DIRECTORY_SEPARATOR .
@@ -535,11 +603,9 @@ class Contract extends CI_Controller
         echo $path;
         unlink($path);
     }
+
     public function download_all($cont_id, $where = null)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
         $this->load->library('zip');
         $this->zip->compression_level = 0;
         $project_id = get_from_id("contract", "project_id", $cont_id);
@@ -563,11 +629,9 @@ class Contract extends CI_Controller
         $zip_name = $cont_name . "_" . $ext;
         $this->zip->download("$zip_name");
     }
+
     public function download_backup($cont_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
         $this->load->library('zip');
         $this->zip->compression_level = 1;
         $contract = $this->Contract_model->get(array("id" => $cont_id));
@@ -577,15 +641,18 @@ class Contract extends CI_Controller
         $zip_name = $contract->contract_name . "_Backup.zip";
         $this->zip->download($zip_name);
     }
+
     public function sitedel_contractday($sitedal_day, $contract_day)
     {
         $date_diff = date_minus($sitedal_day, $contract_day);
+
         if (($date_diff < 0)) {
             return FALSE;
         } else {
             return TRUE;
         }
     }
+
     public function favorite($id)
     {
         $fav_id = get_from_any_and_and("favorite", "module", "contract", "user_id", active_user_id(), "module_id", "$id");
@@ -609,14 +676,15 @@ class Contract extends CI_Controller
             echo "favoriye eklendi";
         }
     }
-    public function changeStatus($id)
+
+    public function changestatus($id)
     {
-        // Kayıt kontrolü
         $item = $this->Contract_model->get(array("id" => $id));
         if (!$item) {
             echo "Kayıt bulunamadı.";
             return false;
         }
+
         // Güncelleme işlemi
         if ($item->isActive == 0 || $item->isActive == 1) {
             $update = $this->Contract_model->update(
@@ -632,6 +700,7 @@ class Contract extends CI_Controller
             echo "Geçerli bir durum güncellemesi yapılamadı.";
             return false;
         }
+
         // Güncelleme sonucu kontrolü
         if ($update) {
             echo "Durum başarıyla güncellendi.";
@@ -639,11 +708,12 @@ class Contract extends CI_Controller
             echo "Güncelleme sırasında bir hata oluştu.";
         }
     }
+
+
     public function add_main_group($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
+
+
         $group_name = $this->input->post('main_group');
         $group_code = $this->input->post('main_code');
         $this->load->library("form_validation");
@@ -673,10 +743,10 @@ class Contract extends CI_Controller
             $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+
+
             $viewData->item = $item;
-            $viewData->subViewFolder = "display";
+
             $viewData->main_groups = $main_groups;
             $viewData->sub_groups = $sub_groups;
             $viewData->leaders = $leaders;
@@ -686,38 +756,40 @@ class Contract extends CI_Controller
             $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
             $viewData = new stdClass();
-            $viewData->subViewFolder = "display";
+
             $viewData->leaders = $leaders;
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+
+
             $viewData->item = $item;
             $viewData->main_groups = $main_groups;
             $viewData->sub_groups = $sub_groups;
             $viewData->form_error = true;
         }
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true);
+        $render_boq = $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group", $viewData, true);
         echo $render_boq;
     }
+
     public function back_main($contract_id)
     {
+
         $item = $this->Contract_model->get(array('id' => $contract_id));
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+
+
         $viewData->item = $item;
-        $viewData->subViewFolder = "display";
+
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/modules/contract_group", $viewData, true);
+        $render_boq = $this->load->view("contract_module/contract_v/display/modules/contract_group", $viewData, true);
         echo $render_boq;
     }
+
     public function update_sub_group($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
+
+
         $groups = $this->input->post("groups[]");
         $filtered_boqs = array_filter($groups, function ($value) {
             return !empty($value['code']) || !empty($value['name']);
@@ -764,51 +836,57 @@ class Contract extends CI_Controller
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
         $viewData = new stdClass();
         $viewData->leaders = $leaders;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+
+
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
         $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->subViewFolder = "display";
+
         $response = [
-            'subgroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true),
-            'pricegroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/pricegroup/pricegroup_table", $viewData, true),
-            'contractprice' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_a_contract_price_table", $viewData, true),
+            'subgroup' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group", $viewData, true),
+            'pricegroup' => $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table", $viewData, true),
+            'contractprice' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true),
         ];
         echo json_encode($response);
     }
+
     public function refresh_leader_group($contract_id)
     {
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "code ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+
+
         $viewData->item = $item;
         $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->subViewFolder = "display";
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_b_contract_price_group", $viewData, true);
+
+        $render_boq = $this->load->view("contract_module/contract_v/display/tabs/tab_5_b_contract_price_group", $viewData, true);
         echo $render_boq;
     }
+
     public function refresh_contract_price($contract_id)
     {
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "code ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+
+
         $viewData->item = $item;
         $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->subViewFolder = "display";
-        $render_boq = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_a_contract_price_table", $viewData, true);
+
+        $render_boq = $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true);
         echo $render_boq;
     }
+
     public function delete_group($group_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
+
+
         $group = $this->Contract_price_model->get(array("id" => $group_id));
         $delete = $this->Contract_price_model->delete(
             array(
@@ -821,26 +899,25 @@ class Contract extends CI_Controller
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $group->contract_id, 'leader' => 1));
         $viewData = new stdClass();
         $viewData->leaders = $leaders;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+
+
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
         $viewData->prices_main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
-        $viewData->subViewFolder = "display";
+
         $response = [
-            'subgroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_d_work_group", $viewData, true),
-            'pricegroup' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/pricegroup/pricegroup_table", $viewData, true),
-            'contractprice' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_a_contract_price_table", $viewData, true),
+            'subgroup' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group", $viewData, true),
+            'pricegroup' => $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table", $viewData, true),
+            'contractprice' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true),
         ];
         echo json_encode($response);
     }
+
     public function add_leader($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
-        $settings = $this->Settings_model->get();
+
+
         $this->load->library("form_validation");
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         // Form Validation Kuralları
@@ -876,37 +953,34 @@ class Contract extends CI_Controller
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
             $viewData = new stdClass();
             $viewData->leaders = $leaders;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->item = $item;
             $viewData->main_groups = $main_groups;
-            $viewData->settings = $settings;
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
+
+            $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
             echo $render_html;
         } else {
             $item = $this->Contract_model->get(array("id" => $contract_id));
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
             $viewData = new stdClass();
             $viewData->leaders = $leaders;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->item = $item;
             $viewData->main_groups = $main_groups;
             $viewData->form_error = true;
-            $viewData->settings = $settings;
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
+
+            $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
             echo $render_html;
         }
     }
+
     public function update_leader()
     {
+
         $leader_id = $this->input->post('leader_id');
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
-        $settings = $this->Settings_model->get();
+
         $this->load->library("form_validation");
         $leader = $this->Contract_price_model->get(array("id" => $leader_id));
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $leader->contract_id, "main_group" => 1));
@@ -932,21 +1006,20 @@ class Contract extends CI_Controller
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $leader->contract_id, 'leader' => 1));
         $viewData = new stdClass();
         $viewData->leaders = $leaders;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
-        $viewData->settings = $settings;
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
+
+        $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
         echo $render_html;
     }
+
     public
     function update_leader_selection($sub_group_id)
     {
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
+
+
         $this->load->model("Boq_model");
         $sub_group = $this->Contract_price_model->get(array("id" => $sub_group_id));
         $main_group = $this->Contract_price_model->get(array("id" => $sub_group->parent));
@@ -991,22 +1064,22 @@ class Contract extends CI_Controller
         $item = $this->Contract_model->get(array("id" => $sub_group->contract_id));
         $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $sub_group->contract_id, "main_group" => 1), "code ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+
+
         $viewData->item = $item;
         $viewData->prices_main_groups = $prices_main_groups;
-        $viewData->subViewFolder = "display";
+
         $response = [
-            'firstDivHtml' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/pricegroup/pricegroup_table", $viewData, true),
-            'secondDivHtml' => $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_a_contract_price_table", $viewData, true),
+            'firstDivHtml' => $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table", $viewData, true),
+            'secondDivHtml' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true),
         ];
         echo json_encode($response);
     }
+
     public function delete_contract_price($boq_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
+
+
         $this->load->model("Boq_model");
         $contract_price = $this->Contract_price_model->get(array("id" => $boq_id));
         $contract_id = $contract_price->contract_id;
@@ -1018,38 +1091,39 @@ class Contract extends CI_Controller
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, 'leader' => 1));
         $viewData = new stdClass();
         $viewData->leaders = $leaders;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/tabs/tab_5_c_price_book", $viewData, true);
+        $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
         echo $render_html;
     }
+
     public
     function open_sub($contract_id, $sub_id)
     {
+
+
         $sub_cont_items = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_id" => $sub_id));
         $main_group = $this->Contract_price_model->get(array("contract_id" => $contract_id));
         $sub_group = $this->Contract_price_model->get(array("id" => $sub_id));
         $item = $this->Contract_model->get(array('id' => $contract_id));
         $viewData = new stdClass();
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->sub_cont_items = $sub_cont_items;
         $viewData->main_group = $main_group;
         $viewData->sub_id = $sub_id;
         $viewData->sub_group = $sub_group;
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
+        $render_html = $this->load->view("contract_module/contract_v/display/modules/contract_group", $viewData, true);
         echo $render_html;
     }
+
     public
     function delete_item($contract_id, $item_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
+
+
         $item = $this->Contract_model->get(array('id' => $contract_id));
         $book_item = $this->Contract_price_model->get(array('id' => $item_id));
         $sub_group = $this->Contract_price_model->get(array('id' => $book_item->sub_id));
@@ -1061,23 +1135,22 @@ class Contract extends CI_Controller
         );
         $sub_cont_items = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_id" => $sub_group->id));
         $viewData = new stdClass();
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->main_group = $main_group;
         $viewData->sub_group = $sub_group;
         $viewData->sub_cont_items = $sub_cont_items;
         $viewData->sub_id = $sub_group->id;
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
+        $render_html = $this->load->view("contract_module/contract_v/display/modules/contract_group", $viewData, true);
         echo $render_html;
     }
+
     public
     function delete_sub($contract_id, $sub_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $delete_sub = $this->Contract_price_model->delete(
             array(
@@ -1093,21 +1166,20 @@ class Contract extends CI_Controller
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
         $viewData = new stdClass();
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
+        $render_html = $this->load->view("contract_module/contract_v/display/modules/contract_group", $viewData, true);
         echo $render_html;
     }
+
     public
     function delete_main($contract_id, $main_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-        }
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $delete_item = $this->Contract_price_model->delete(
             array(
@@ -1129,20 +1201,18 @@ class Contract extends CI_Controller
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
         $viewData = new stdClass();
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
         $viewData->sub_groups = $sub_groups;
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modules/contract_group", $viewData, true);
+        $render_html = $this->load->view("contract_module/contract_v/display/modules/contract_group", $viewData, true);
         echo $render_html;
     }
+
     public function upload_book_excel($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "w")) {
-            redirect(base_url("error"));
-        }
+
         $tempFolderPath = 'uploads/temp/';
         // Temp klasör yoksa oluştur
         if (!is_dir($tempFolderPath)) {
@@ -1229,11 +1299,9 @@ class Contract extends CI_Controller
             die('Dosya bulunamadı...');
         }
     }
+
     public function update_boqs()
     {
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
         // JSON verilerini al
         $data = file_get_contents('php://input');
         // JSON verilerini diziye dönüştür
@@ -1260,12 +1328,11 @@ class Contract extends CI_Controller
             echo json_encode(array('success' => false, 'message' => 'Gelen veri boş veya geçersiz formatta.'));
         }
     }
+
     public
     function create_payment($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "w")) {
-            redirect(base_url("error"));
-        }
+
         $contract = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $contract->project_id));
         $last_payment = $this->Payment_model->last_payment(array("contract_id" => $contract_id));
@@ -1292,7 +1359,7 @@ class Contract extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
         if ($validate) {
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$contract->dosya_no/Payment/$hak_no";
+            $path = "uploads/project_v/$project->dosya_no/$contract->dosya_no/Payment/$hak_no";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
             }
@@ -1313,42 +1380,39 @@ class Contract extends CI_Controller
             $payments = $this->Payment_model->get_all(array('contract_id' => $contract_id));
             $item = $this->Contract_model->get(array('id' => $contract_id));
             // View'e gönderilecek Değişkenlerin Set Edilmesi
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
+
+
             $viewData->payments = $payments;
             $viewData->item = $item;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/payment/payment_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/payment/payment_table", $viewData, true)
             );
             echo json_encode($response);
         } else {
             $payments = $this->Payment_model->get_all(array('contract_id' => $contract_id));
             $item = $this->Contract_model->get(array('id' => $contract_id));
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
+
+
             $viewData->payments = $payments;
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/payment/add_payment_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/payment/add_payment_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     public
     function create_collection($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $this->load->library("form_validation");
         $contract_price = $item->sozlesme_bedel;
         $sozlesme_tarih = dateFormat_dmy($item->sozlesme_tarih);
@@ -1379,7 +1443,7 @@ class Contract extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
         if ($validate) {
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Collection";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
             }
@@ -1407,7 +1471,7 @@ class Contract extends CI_Controller
             // Yükleme yapılacak dosya yolu oluşturuluyor
             if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
                 // Yükleme yapılacak dosya yolu oluşturuluyor
-                $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$record_id";
+                $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Bond/$record_id";
                 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
                 if (!is_dir($path)) {
                     mkdir("$path", 0777, TRUE);
@@ -1434,45 +1498,42 @@ class Contract extends CI_Controller
             }
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->collections = $collections;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/collection_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/collection/collection_table", $viewData, true)
             );
             echo json_encode($response);
         } else {
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
+
             $viewData->project = $project;
             $viewData->collections = $collections;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/add_collection_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/collection/add_collection_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     public
     function create_advance($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $this->load->library("form_validation");
         $contract_price = $item->sozlesme_bedel;
         $sozlesme_tarih = dateFormat_dmy($item->sozlesme_tarih);
@@ -1503,7 +1564,7 @@ class Contract extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
         if ($validate) {
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Advance";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
             }
@@ -1530,7 +1591,7 @@ class Contract extends CI_Controller
             $record_id = $this->db->insert_id();
             if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
                 // Yükleme yapılacak dosya yolu oluşturuluyor
-                $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$record_id";
+                $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Bond/$record_id";
                 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
                 if (!is_dir($path)) {
                     mkdir("$path", 0777, TRUE);
@@ -1557,16 +1618,15 @@ class Contract extends CI_Controller
             }
             $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->advances = $advances;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/advance_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/advance/advance_table", $viewData, true)
             );
             echo json_encode($response);
             //kaydedilen elemanın id nosunu döküman ekleme
@@ -1574,32 +1634,29 @@ class Contract extends CI_Controller
         } else {
             $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->advances = $advances;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/add_advance_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/advance/add_advance_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     public
     function create_bond($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $this->load->library("form_validation");
         $contract_price = $item->sozlesme_bedel;
         $sozlesme_tarih = dateFormat_dmy($item->sozlesme_tarih);
@@ -1654,7 +1711,7 @@ class Contract extends CI_Controller
             $record_id = $this->db->insert_id();
             if ($_FILES["file"]["error"] === UPLOAD_ERR_OK) {
                 // Yükleme yapılacak dosya yolu oluşturuluyor
-                $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$record_id";
+                $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Bond/$record_id";
                 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
                 if (!is_dir($path)) {
                     mkdir("$path", 0777, TRUE);
@@ -1681,16 +1738,15 @@ class Contract extends CI_Controller
             }
             $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->bonds = $bonds;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/bond/bond_table", $viewData, true)
             );
             echo json_encode($response);
 //kaydedilen elemanın id nosunu döküman ekleme
@@ -1698,26 +1754,25 @@ class Contract extends CI_Controller
         } else {
             $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->bonds = $bonds;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/add_bond_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/bond/add_bond_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     public function create_folder($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "u")) {
-            redirect(base_url("error"));
-        }
+
+
         // Gelen ID'ye göre veriyi al
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
@@ -1728,7 +1783,7 @@ class Contract extends CI_Controller
         }
         // Formdan gelen klasör adı
         $folderName = convertToSEO($this->input->post('new_folder_name'));
-        $new_folder = "{$this->File_Dir_Prefix}/{$project->dosya_no}/{$item->dosya_no}/$folderName";
+        $new_folder = "{uploads/project_v}/{$project->dosya_no}/{$item->dosya_no}/$folderName";
         $this->load->library("form_validation");
         $this->form_validation->set_rules('new_folder_name', 'Klasör Adı', "required|callback_unique_folder_name[$new_folder]");
         $this->form_validation->set_message(
@@ -1741,129 +1796,125 @@ class Contract extends CI_Controller
             if (!is_dir($new_folder)) {
                 mkdir($new_folder, 0777, TRUE);
             }
-            $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
+            $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/";
             $filter_main = scandir($main_path);
             $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
                 // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
                 return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
             });
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
+
             $viewData->item = $item;
             $viewData->main_folders = $main_folders;
             $viewData->main_path = $main_path;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/folder/sub_folder", $viewData, true)
             );
             echo json_encode($response);
         } else {
-            $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
+            $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/";
             $filter_main = scandir($main_path);
             $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
                 // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
                 return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
             });
             $viewData = new stdClass();
+
             $viewData->main_folders = $main_folders;
             $viewData->main_path = $main_path;
-            $viewData->viewModule = $this->moduleFolder;
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/folder/add_folder_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/folder/add_folder_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     public function open_edit_contract_modal($contract_id)
     {
-        // Verilerin getirilmesi
+
         $edit_item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $edit_item->project_id));
-        $companys = $this->Company_model->get_all(array());
-        $settings = $this->Settings_model->get();
+        $companys = $this->Company_model->get_all(array(), "company_name ASC");
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
-        $viewData->settings = $settings;
+
+
         $viewData->edit_item = $edit_item;
         $viewData->companys = $companys;
         $viewData->project = $project;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/contract/edit_contract_modal_form", $viewData);
+        $this->load->view("contract_module/contract_v/display/contract/edit_contract_modal_form", $viewData);
     }
+
     public function open_add_sub_contract_modal($contract_id)
     {
         // Verilerin getirilmesi
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $companys = $this->Company_model->get_all(array());
+        $companys = $this->Company_model->get_all(array(), "company_name ASC");
         $next_contract_name = get_next_file_code("Contract");
-        $settings = $this->Settings_model->get();
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
-        $viewData->settings = $settings;
+
+
         $viewData->next_contract_name = $next_contract_name;
         $viewData->item = $item;
         $viewData->companys = $companys;
         $viewData->project = $project;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/sub_contract/add_sub_contract_modal_form", $viewData);
+        $this->load->view("contract_module/contract_v/display/sub_contract/add_sub_contract_modal_form", $viewData);
     }
+
     public function open_edit_collection_modal($collection_id)
     {
         // Verilerin getirilmesi
         $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
-        $viewData->settings = $settings;
+
+
         $viewData->item = $item;
         $viewData->project = $project;
         $viewData->edit_collection = $edit_collection;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/collection/edit_collection_modal_form", $viewData);
+        $this->load->view("contract_module/contract_v/display/collection/edit_collection_modal_form", $viewData);
     }
+
     public function open_edit_advance_modal($advance)
     {
         // Verilerin getirilmesi
         $edit_advance = $this->Advance_model->get(array("id" => $advance));
         $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
-        $viewData->settings = $settings;
+
         $viewData->item = $item;
         $viewData->project = $project;
         $viewData->edit_advance = $edit_advance;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/advance/edit_advance_modal_form", $viewData);
+        $this->load->view("contract_module/contract_v/display/advance/edit_advance_modal_form", $viewData);
     }
+
     public function open_edit_bond_modal($bond)
     {
         // Verilerin getirilmesi
         $edit_bond = $this->Bond_model->get(array("id" => $bond));
         $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
-        $viewData->settings = $settings;
+
+
         $viewData->item = $item;
         $viewData->project = $project;
         $viewData->edit_bond = $edit_bond;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/bond/edit_bond_modal_form", $viewData);
+        $this->load->view("contract_module/contract_v/display/bond/edit_bond_modal_form", $viewData);
     }
+
     public function open_edit_pricegroup_modal($pricegroup)
     {
         // Verilerin getirilmesi
@@ -1872,43 +1923,40 @@ class Contract extends CI_Controller
         $leaders = $this->Contract_price_model->get_all(array('contract_id' => $edit_pricegroup->contract_id, 'leader' => 1));
         $item = $this->Contract_model->get(array("id" => $edit_pricegroup->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->main_group = $main_group;
         $viewData->leaders = $leaders;
-        $viewData->settings = $settings;
+
         $viewData->item = $item;
         $viewData->project = $project;
         $viewData->edit_pricegroup = $edit_pricegroup;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/pricegroup/edit_pricegroup_modal_form", $viewData);
+        $this->load->view("contract_module/contract_v/display/pricegroup/edit_pricegroup_modal_form", $viewData);
     }
+
     public function open_edit_payment_modal($payment)
     {
         // Verilerin getirilmesi
         $edit_payment = $this->Payment_model->get(array("id" => $payment));
         $item = $this->Contract_model->get(array("id" => $edit_payment->contract_id));
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->edit_payment = $edit_payment;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/payment/edit_payment_modal_form", $viewData);
+        $this->load->view("contract_module/contract_v/display/payment/edit_payment_modal_form", $viewData);
     }
+
     function edit_collection($collection_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $this->load->library("form_validation");
         $contract_price = $item->sozlesme_bedel;
         $sozlesme_tarih = dateFormat_dmy($item->sozlesme_tarih);
@@ -1939,7 +1987,7 @@ class Contract extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
         if ($validate) {
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Collection";
             if ($this->input->post("tahsilat_tarih")) {
                 $tahsilat_tarihi = dateFormat('Y-m-d', $this->input->post("tahsilat_tarih"));
             } else {
@@ -1963,7 +2011,7 @@ class Contract extends CI_Controller
                 )
             );
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection/$collection_id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Collection/$collection_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1986,46 +2034,42 @@ class Contract extends CI_Controller
             }
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->item = $item;
             $viewData->collections = $collections;
-            $viewData->settings = $settings;
+
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/collection_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/collection/collection_table", $viewData, true)
             );
             echo json_encode($response);
         } else {
             $edit_collection = $this->Collection_model->get(array("id" => $collection_id));
             $item = $this->Contract_model->get(array("id" => $edit_collection->contract_id));
             $project = $this->Project_model->get(array("id" => $item->project_id));
-            $settings = $this->Settings_model->get();
+
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->edit_collection = $edit_collection;
             $viewData->project = $project;
             $viewData->collections = $collections;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/collection/edit_collection_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/collection/edit_collection_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     function edit_payment($payment_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
         $edit_payment = $this->Payment_model->get(array("id" => $payment_id));
         $item = $this->Contract_model->get(array("id" => $edit_payment->contract_id));
         $before_payment = $this->Payment_model->get(array("contract_id" => $edit_payment->contract_id, "hakedis_no" => ($edit_payment->hakedis_no - 1)));
@@ -2064,172 +2108,153 @@ class Contract extends CI_Controller
             );
             $payments = $this->Payment_model->get_all(array('contract_id' => $item->id), "imalat_tarihi ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->item = $item;
             $viewData->payments = $payments;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/payment/payment_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/payment/payment_table", $viewData, true)
             );
             echo json_encode($response);
         } else {
             $edit_payment = $this->Payment_model->get(array("id" => $payment_id));
             $item = $this->Contract_model->get(array("id" => $edit_payment->contract_id));
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->edit_payment = $edit_payment;
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/payment/edit_payment_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/payment/edit_payment_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     public function delete_collection($collection_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-            return;
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $delete_collection = $this->Collection_model->get(array("id" => $collection_id));
         $item = $this->Contract_model->get(array("id" => $delete_collection->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $delete = $this->Collection_model->delete(array("id" => $collection_id));
         $this->load->helper('file'); // File helper'ını yükle
-        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection/$collection_id";
+        $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Collection/$collection_id";
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
         if (is_dir($path)) {
             rmdir($path);
         }
-        $settings = $this->Settings_model->get();
+
         $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = "contract_v";
-        $viewData->subViewFolder = "display";
+
+
         $viewData->project = $project;
         $viewData->collections = $collections;
-        $viewData->settings = $settings;
+
         $viewData->item = $item;
-        $formErrorHtml = $this->load->view("{$viewData->viewModule}/contract_v/display/collection/collection_table", $viewData, true);
+        $formErrorHtml = $this->load->view("contract_module/contract_v/display/collection/collection_table", $viewData, true);
         echo json_encode([
             'html' => $formErrorHtml, // Form hatalarını içeren HTML
         ]);
     }
+
     public function delete_advance($advance_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-            return;
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $this->load->model("Advance_model");
         $delete_advance = $this->Advance_model->get(array("id" => $advance_id));
         $item = $this->Contract_model->get(array("id" => $delete_advance->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $delete = $this->Advance_model->delete(array("id" => $advance_id));
         $this->load->helper('file'); // File helper'ını yükle
-        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance/$advance_id";
+        $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Advance/$advance_id";
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
         if (is_dir($path)) {
             rmdir($path);
         }
-        $settings = $this->Settings_model->get();
+
         $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = "contract_v";
-        $viewData->subViewFolder = "display";
+
+
         $viewData->project = $project;
         $viewData->advances = $advances;
-        $viewData->settings = $settings;
+
         $viewData->item = $item;
-        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/advance/advance_table", $viewData, true);
+        $html = $this->load->view("contract_module/contract_v/display/advance/advance_table", $viewData, true);
         echo json_encode([
             'html' => $html, // Form hatalarını içeren HTML
         ]);
     }
+
     public function delete_folder($contract_id, $module, $folder_name = null)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-            return;
-        }
-        $this->load->model("Contract_model");
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $this->load->helper('file'); // File helper'ını yükle
-        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$module/$folder_name";
+        $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/$module/$folder_name";
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
         if (is_dir($path)) {
             rmdir($path);
         }
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
+        $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/";
         $filter_main = scandir($main_path);
         $main_folders = array_filter($filter_main, function ($item) use ($main_path) {
             // . ve ..'i hariç tutuyoruz ve sadece dizinleri alıyoruz
             return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
         });
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
+
         $viewData->item = $item;
         $viewData->main_folders = $main_folders;
         $viewData->main_path = $main_path;
-        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData, true);
+        $html = $this->load->view("contract_module/contract_v/display/folder/sub_folder", $viewData, true);
         echo json_encode([
             'html' => "$html", // Form hatalarını içeren HTML
         ]);
     }
+
     public function delete_bond($bond_id)
     {
-        if (!isAdmin() && !permission_control("contract", "d")) {
-            redirect(base_url("error"));
-            return;
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $this->load->model("Advance_model");
         $delete_bond = $this->Bond_model->get(array("id" => $bond_id));
         $item = $this->Contract_model->get(array("id" => $delete_bond->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $delete = $this->Advance_model->delete(array("id" => $bond_id));
         $this->load->helper('file'); // File helper'ını yükle
-        $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$bond_id";
+        $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Bond/$bond_id";
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
         if (is_dir($path)) {
             rmdir($path);
         }
-        $settings = $this->Settings_model->get();
+
         $bonds = $this->Advance_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = "contract_v";
-        $viewData->subViewFolder = "display";
+
+
         $viewData->project = $project;
         $viewData->bonds = $bonds;
-        $viewData->settings = $settings;
+
         $viewData->item = $item;
-        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true);
+        $html = $this->load->view("contract_module/contract_v/display/bond/bond_table", $viewData, true);
         echo json_encode([
             'html' => $html, // Form hatalarını içeren HTML
         ]);
     }
+
     function edit_contract($contract_id)
     {
-        if (!isAdmin() && !permission_control("contract", "w")) {
-            redirect(base_url("error"));
-        }
         $this->load->library("form_validation");
         $this->form_validation->set_rules("contract_name", "Sözleşme Ad", "required|trim");
         $this->form_validation->set_rules("isveren", "İşveren", "required|trim");
@@ -2274,7 +2299,7 @@ class Contract extends CI_Controller
                 )
             );
             $item = $this->Contract_model->get(array("id" => $contract_id));
-            $companys = $this->Company_model->get_all(array());
+            $companys = $this->Company_model->get_all(array(), "company_name ASC");
             if ($item->parent > 0) {
                 $main_contract = $this->Contract_model->get(array("id" => $item->parent));
             } else {
@@ -2283,10 +2308,8 @@ class Contract extends CI_Controller
             $settings = get_settings();
             $viewData = new stdClass();
             $viewData->edit_item = $item;
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
-            $viewData->settings = $settings;
+
+
             $viewData->companys = $companys;
             $viewData->item = $item;
             if ($item->parent > 0) {
@@ -2296,24 +2319,23 @@ class Contract extends CI_Controller
             }
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/contract/contract_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/contract/contract_table", $viewData, true)
             );
             echo json_encode($response);
         } else {
             $viewData = new stdClass();
             $item = $this->Contract_model->get(array("id" => $contract_id));
-            $companys = $this->Company_model->get_all(array());
+            $companys = $this->Company_model->get_all(array(), "company_name ASC");
             if ($item->parent > 0) {
                 $main_contract = $this->Contract_model->get(array("id" => $item->parent));
             } else {
                 $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
             }
             $settings = get_settings();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->companys = $companys;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->edit_item = $item;
             $viewData->item = $item;
@@ -2326,30 +2348,27 @@ class Contract extends CI_Controller
             // Form hatalarını içeren HTML oluştur
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/contract/edit_contract_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/contract/edit_contract_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     function edit_bond($bond_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $edit_bond = $this->Bond_model->get(array("id" => $bond_id));
         $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = "contract_v";
-        $viewData->subViewFolder = "display";
+
+
         $viewData->project = $project;
         $viewData->bonds = $bonds;
-        $viewData->settings = $settings;
+
         $viewData->item = $item;
         $this->load->library("form_validation");
         $contract_price = $item->sozlesme_bedel;
@@ -2380,7 +2399,7 @@ class Contract extends CI_Controller
 // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
         if ($validate) {
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Bond";
             if ($this->input->post("teslim_tarih")) {
                 $teslim_tarihi = dateFormat('Y-m-d', $this->input->post("teslim_tarih"));
             } else {
@@ -2406,7 +2425,7 @@ class Contract extends CI_Controller
                 )
             );
 // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$bond_id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Bond/$bond_id";
 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -2430,19 +2449,18 @@ class Contract extends CI_Controller
             $edit_bond = $this->Bond_model->get(array("id" => $bond_id));
             $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
             $project = $this->Project_model->get(array("id" => $item->project_id));
-            $settings = $this->Settings_model->get();
+
             $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->bonds = $bonds;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/bond_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/bond/bond_table", $viewData, true)
             );
             echo json_encode($response);
 //kaydedilen elemanın id nosunu döküman ekleme
@@ -2451,44 +2469,40 @@ class Contract extends CI_Controller
             $edit_bond = $this->Bond_model->get(array("id" => $bond_id));
             $item = $this->Contract_model->get(array("id" => $edit_bond->contract_id));
             $project = $this->Project_model->get(array("id" => $item->project_id));
-            $settings = $this->Settings_model->get();
+
             $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id), "teslim_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->edit_bond = $edit_bond;
             $viewData->project = $project;
             $viewData->bonds = $bonds;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/bond/edit_bond_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/bond/edit_bond_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     function edit_advance($advance_id)
     {
-        if (!isAdmin() && !permission_control("contract", "r")) {
-            redirect(base_url("error"));
-        }
-        $this->load->model("Contract_model");
-        $this->load->model("Settings_model");
+
+
         $edit_advance = $this->Advance_model->get(array("id" => $advance_id));
         $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $settings = $this->Settings_model->get();
+
         $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = "contract_v";
-        $viewData->subViewFolder = "display";
+
+
         $viewData->project = $project;
         $viewData->advances = $advances;
-        $viewData->settings = $settings;
+
         $viewData->item = $item;
         $this->load->library("form_validation");
         $contract_price = $item->sozlesme_bedel;
@@ -2543,7 +2557,7 @@ class Contract extends CI_Controller
                 )
             );
 // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance/$advance_id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Advance/$advance_id";
 // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -2567,44 +2581,43 @@ class Contract extends CI_Controller
             $edit_advance = $this->Advance_model->get(array("id" => $advance_id));
             $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
             $project = $this->Project_model->get(array("id" => $item->project_id));
-            $settings = $this->Settings_model->get();
+
             $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->project = $project;
             $viewData->advances = $advances;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $response = array(
                 'status' => 'success',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/advance_table", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/advance/advance_table", $viewData, true)
             );
             echo json_encode($response);
         } else {
             $edit_advance = $this->Advance_model->get(array("id" => $advance_id));
             $item = $this->Contract_model->get(array("id" => $edit_advance->contract_id));
             $project = $this->Project_model->get(array("id" => $item->project_id));
-            $settings = $this->Settings_model->get();
+
             $advances = $this->Advance_model->get_all(array('contract_id' => $item->id), "avans_tarih ASC");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-            $viewData->subViewFolder = "display";
+
+
             $viewData->edit_advance = $edit_advance;
             $viewData->project = $project;
             $viewData->advances = $advances;
-            $viewData->settings = $settings;
+
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
-                'html' => $this->load->view("{$viewData->viewModule}/contract_v/display/advance/edit_advance_form_input", $viewData, true)
+                'html' => $this->load->view("contract_module/contract_v/display/advance/edit_advance_form_input", $viewData, true)
             );
             echo json_encode($response);
         }
     }
+
     public function contract_collection($collection_day, $contract_day)
     {
         $date_diff = date_minus($collection_day, $contract_day);
@@ -2614,6 +2627,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function contract_advance($advance_day, $contract_day)
     {
         $date_diff = date_minus($advance_day, $contract_day);
@@ -2623,6 +2637,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function contract_bond($bond_day, $contract_day)
     {
         $date_diff = date_minus($bond_day, $contract_day);
@@ -2632,6 +2647,7 @@ class Contract extends CI_Controller
             return TRUE;
         }
     }
+
     public function date_greater_than($date1, $date2_field)
     {
         $format_date1 = dateFormat('Y-m-d', "$date1");
@@ -2641,6 +2657,7 @@ class Contract extends CI_Controller
         }
         return FALSE; // Karşılaştırma yanlışsa FALSE döner
     }
+
     public function date_greater_than_equal($date1, $date2_field)
     {
         $format_date1 = dateFormat('Y-m-d', "$date1");
@@ -2650,6 +2667,7 @@ class Contract extends CI_Controller
         }
         return FALSE;
     }
+
     public function date_less_than($date1, $date2_field)
     {
         $format_date1 = dateFormat('Y-m-d', "$date1");
@@ -2659,6 +2677,7 @@ class Contract extends CI_Controller
         }
         return FALSE;
     }
+
     public function date_less_than_equal($date1, $date2_field)
     {
         $format_date1 = dateFormat('Y-m-d', "$date1");
@@ -2668,6 +2687,7 @@ class Contract extends CI_Controller
         }
         return FALSE;
     }
+
     public function folder_open()
     {
         $folder_name = $this->input->post('folder_name');
@@ -2675,13 +2695,13 @@ class Contract extends CI_Controller
         $parent_name = $this->input->post('parent_name');
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $main_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/";
+        $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/";
         if ($parent_name != null) {
-            $sub_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name/$parent_name";
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name/$parent_name/";
+            $sub_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/$folder_name/$parent_name";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/$folder_name/$parent_name/";
         } else {
-            $sub_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name";
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/$folder_name/";
+            $sub_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/$folder_name";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/$folder_name/";
         }
         $filter = scandir($sub_path);
         $filter_main = scandir($main_path);
@@ -2699,7 +2719,7 @@ class Contract extends CI_Controller
             return $item !== '.' && $item !== '..' && is_dir($main_path . DIRECTORY_SEPARATOR . $item);
         });
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
+
         $viewData->item = $item;
         $viewData->path = $path;
         $viewData->main_folders = $main_folders;
@@ -2710,11 +2730,12 @@ class Contract extends CI_Controller
         $viewData->folders = $folders;
         $viewData->folder_count = count($folders);
         $viewData->files = $files;
-        $html = $this->load->view("{$viewData->viewModule}/contract_v/display/folder/sub_folder", $viewData);
+        $html = $this->load->view("contract_module/contract_v/display/folder/sub_folder", $viewData);
         echo json_encode([
             'html' => $html, // Form hatalarını içeren HTML
         ]);
     }
+
     public function download_file($encoded_path)
     {
         // Dosya yolunu decode et
@@ -2730,6 +2751,7 @@ class Contract extends CI_Controller
             echo "Dosya bulunamadı!";
         }
     }
+
     public function delete_file($encoded_path)
     {
         // Dosya yolunu decode et
@@ -2748,6 +2770,7 @@ class Contract extends CI_Controller
             echo "Dosya bulunamadı!";
         }
     }
+
     public function unique_folder_name($folder_name, $new_folder)
     {
         // $new_folder'dan bir üst dizini al

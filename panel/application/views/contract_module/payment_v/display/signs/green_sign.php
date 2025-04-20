@@ -1,5 +1,5 @@
 <form id="add_green"
-      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/green_sign"); ?>"
+      action="<?php echo base_url("Payment/sign_options/$item->id/green_sign"); ?>"
       method="post"
       div="refresh_green_sign"
       enctype="multipart/form-data" autocomplete="off">
@@ -18,7 +18,7 @@
                 <td class="total-group-header-center">Sil</td>
             </tr>
             </thead>
-            <tbody class="sortable" data-url="<?php echo base_url("$this->Module_Name/sign_rankSetter"); ?>">
+            <tbody class="sortable" data-url="<?php echo base_url("Payment/sign_rankSetter"); ?>">
             <?php if (is_array($green_signs)) { ?>
                 <?php foreach ($green_signs as $green_sign) { ?>
                     <tr id="sub-<?php echo $green_sign->id; ?>">
@@ -28,7 +28,7 @@
                         <td style="text-align: center">
                             <a onclick="delete_sign(this)"
                                div="refresh_green_sign"
-                               url="<?php echo base_url("$this->Module_Name/delete_sign/$green_sign->id/green_sign/$item->id"); ?>">
+                               url="<?php echo base_url("Payment/delete_sign/$green_sign->id/green_sign/$item->id"); ?>">
                                 <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
                                 </i>
                             </a>

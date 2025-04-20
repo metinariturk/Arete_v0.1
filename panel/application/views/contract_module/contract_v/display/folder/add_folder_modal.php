@@ -8,10 +8,10 @@
             </div>
             <div class="modal-body">
                 <form id="addFolderForm"
-                      data-form-url="<?php echo base_url("$this->Module_Name/create_folder/$item->id"); ?>"
+                      data-form-url="<?php echo base_url("Contract/create_folder/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <div id="add_Folder_input">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/folder/add_folder_form_input"); ?>
+                        <?php $this->load->view("contract_module/contract_v/display/folder/add_folder_form_input"); ?>
                     </div>
                 </form>
             </div>

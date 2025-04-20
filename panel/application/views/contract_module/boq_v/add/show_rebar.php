@@ -12,7 +12,7 @@
                     <a href="<?php echo base_url("payment/file_form/$payment->id/report"); ?>"> tıklayınız</a></h6>
                 <hr>
                 <a class="btn btn-outline-primary"
-                   href="<?php echo base_url("$this->Module_Name/template_download_rebar/$contract_id/$payment->id/$income"); ?>">
+                   href="<?php echo base_url("Boq/template_download_rebar/$contract_id/$payment->id/$income"); ?>">
                     <i class="fa fa-file-excel-o"></i> Metrajı Excel Olarak İndir
                 </a>
             </fieldset>

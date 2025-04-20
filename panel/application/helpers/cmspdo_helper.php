@@ -199,17 +199,6 @@ function project_id_cont($contract_id)
     return $contract->proje_id;
 }
 
-function project_id_site($site_id)
-{
-    $t = get_instance();
-    $t->load->model("Site_model");
-    $site = $t->Site_model->get(array(
-        "id" => $site_id
-    ));
-
-    return $site->proje_id;
-}
-
 function contract_id_module($module, $id)
 {
     $model_name = ucfirst($module) . "_model";

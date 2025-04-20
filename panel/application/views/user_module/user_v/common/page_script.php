@@ -113,7 +113,7 @@
             error: function (xhr, status, error) {
                 console.error('Form gönderiminde hata oluştu:', error);
                 console.error('Hata Detayı:', xhr.responseText);
-                alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
+                alert('Form gönderiminde bir hata oluştu veya yetkiniz yok. Lütfen tekrar deneyin.');
 
                 // AJAX hatasında da bileşenleri tekrar başlat
                 initializeUIComponents();

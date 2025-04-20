@@ -63,7 +63,7 @@
                     <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
                         <li>
                             <a class="dropdown-item" onclick="changeIcon(this)" style="cursor: pointer;"
-                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>">
+                               url="<?php echo base_url("Project/favorite/$item->id"); ?>">
                                 <i class="fa <?php echo $fav ? 'fa-times' : 'fa-star'; ?>"
                                    style="<?php echo $fav ? 'color: tomato;' : 'color: gold;'; ?>"></i>
                                 <span><?php echo $fav ? 'Favori Çıkart' : 'Favori Ekle'; ?></span>
@@ -81,13 +81,13 @@
                         </li>
                         <li>
                             <a class="dropdown-item"
-                               href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                               href="<?php echo base_url("Project/delete_form/$item->id"); ?>">
                                 <i class="fa fa-trash"></i> Sil
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" onclick="change_Status(this)"
-                               url="<?php echo base_url("$this->Module_Name/changeStatus/$item->id"); ?>"
+                               url="<?php echo base_url("Project/changestatus/$item->id"); ?>"
                                style="cursor: pointer;">
                                 <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
                                    style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>
@@ -101,12 +101,12 @@
             </div>
             <div class="card-body">
                 <div id="tab_Contract">
-                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
+                    <?php $this->load->view("project_v/display/tabs/tab_1_info"); ?>
                     <div id="add_contract_modal">
-                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/contract/add_contract_modal_form"); ?>
+                        <?php $this->load->view("project_v/display/contract/add_contract_modal_form"); ?>
                     </div>
                     <div id="add_site_modal">
-                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/site/add_site_modal_form"); ?>
+                        <?php $this->load->view("project_v/display/site/add_site_modal_form"); ?>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
          aria-labelledby="tab2-link">
         <div class="card">
             <div class="card-body">
-                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_2_contracts_info"); ?>
+                <?php $this->load->view("project_v/display/tabs/tab_2_contracts_info"); ?>
             </div>
         </div>
     </div>
@@ -126,7 +126,7 @@
          aria-labelledby="tab3-link">
         <div class="card">
             <div class="card-body">
-                <?php $this->load->view("{$viewFolder}/{$subViewFolder}/tabs/tab_3_sites_info"); ?>
+                <?php $this->load->view("project_v/display/tabs/tab_3_sites_info"); ?>
             </div>
         </div>
     </div>

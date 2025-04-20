@@ -27,7 +27,7 @@
     <?php if (empty($item->A)) { ?>
         <div class="col-sm-12" style=" overflow-x: auto; white-space: nowrap;">
         <form id="save_payment"
-              action="<?php echo base_url("$this->Module_Name/save/$item->id"); ?>" method="post"
+              action="<?php echo base_url("Payment/save/$item->id"); ?>" method="post"
               enctype="multipart/form-data" autocomplete="off">
             <table style="width: %100" class="table-sm">
                 <thead>
@@ -389,7 +389,7 @@
     <?php } else { ?>
         <div class="col-sm-12" style="overflow-x: auto; white-space: nowrap;">
             <form id="save_payment"
-                  action="<?php echo base_url("$this->Module_Name/empty_report/$item->id"); ?>" method="post"
+                  action="<?php echo base_url("Payment/empty_report/$item->id"); ?>" method="post"
                   enctype="multipart/form-data" autocomplete="off">
                 <table style="width: %100" class="table-sm">
                     <thead>

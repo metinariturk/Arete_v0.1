@@ -79,7 +79,6 @@ class Export extends CI_Controller
         // Klasör yapıları
         $this->Add_Folder = "add";
         $this->Display_Folder = "display";
-        $this->Display_offer_Folder = "display_offer";
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
         $this->Common_Files = "common";

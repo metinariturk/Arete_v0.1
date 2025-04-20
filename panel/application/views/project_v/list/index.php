@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <?php $this->load->view("includes/head"); ?>
-    <?php $this->load->view("includes/include_datatable_css"); ?>
 </head>
 <body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -15,7 +14,7 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("{$viewFolder}/{$subViewFolder}/content"); ?>
+            <?php $this->load->view("project_v/list/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
     </div>
@@ -23,7 +22,12 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
 <script>
-    $('#project_list').DataTable();
+    $(document).ready(function () {
+        $('.project-table').DataTable({
+            responsive: true,
+            pageLength: 10
+        });
+    });
 </script>
 <?php if (isset($form_error)) { ?>
     <script>

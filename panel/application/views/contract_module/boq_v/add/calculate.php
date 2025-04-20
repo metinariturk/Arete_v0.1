@@ -13,7 +13,7 @@
                href="#"
                data-bs-original-title=""
                title=""
-               url="<?php echo base_url("$this->Module_Name/rebar_render/$contract_id/$payment->id/$income"); ?>">
+               url="<?php echo base_url("Boq/rebar_render/$contract_id/$payment->id/$income"); ?>">
                 Donatı Metrajı
             </a>
             <hr>
@@ -51,7 +51,7 @@
         <div style="text-align: right;">
 
             <a onclick="delete_boq(this)"
-               url="<?php echo base_url("$this->Module_Name/delete/$contract_id/$payment->hakedis_no/$income"); ?>">
+               url="<?php echo base_url("Boq/delete/$contract_id/$payment->hakedis_no/$income"); ?>">
                 <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"></i>
             </a>
         </div>
@@ -76,7 +76,7 @@
                             data-bs-original-title=""
                             onclick="saveCalc(this)"
                             form="save_boq"
-                            data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id"); ?>"
+                            data-url="<?php echo base_url("Boq/save/$contract_id/$payment->id"); ?>"
                             title="">
                         <i class="fa fa-file-excel-o"></i> Excel Yükle
                     </button>
@@ -85,7 +85,7 @@
                     <label for="formFileLg" class="form-label">Metrajı İndirin</label>
                     <br>
                     <a class="btn btn-outline-primary"
-                       href="<?php echo base_url("$this->Module_Name/template_download/$contract_id/$payment->id/$income"); ?>">
+                       href="<?php echo base_url("Boq/template_download/$contract_id/$payment->id/$income"); ?>">
                         <i class="fa fa-file-excel-o"></i> Şablon İndir
                     </a>
                 </div>
@@ -101,7 +101,7 @@
                     data-bs-original-title=""
                     onclick="saveCalc(this)"
                     form="save_boq"
-                    data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id"); ?>"
+                    data-url="<?php echo base_url("Boq/save/$contract_id/$payment->id"); ?>"
                     title="">
                 Kaydet/Satır Ekle
             </button>
@@ -265,7 +265,7 @@
                     data-bs-original-title=""
                     onclick="saveCalc(this)"
                     form="save_boq"
-                    data-url="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id"); ?>"
+                    data-url="<?php echo base_url("Boq/save/$contract_id/$payment->id"); ?>"
                     title="">
                 Kaydet/Satır Ekle
             </button>

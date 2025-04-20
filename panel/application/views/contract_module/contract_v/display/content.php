@@ -72,7 +72,7 @@
                     <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
                         <li>
                             <a class="dropdown-item" onclick="changeIcon(this)" style="cursor: pointer;"
-                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>">
+                               url="<?php echo base_url("Contract/favorite/$item->id"); ?>">
                                 <i class="fa <?php echo $fav ? 'fa-times' : 'fa-star'; ?>"
                                    style="<?php echo $fav ? 'color: tomato;' : 'color: gold;'; ?>"></i>
                                 <span><?php echo $fav ? 'Favori Çıkart' : 'Favori Ekle'; ?></span>
@@ -93,13 +93,13 @@
                         </li>
                         <li>
                             <a class="dropdown-item"
-                               href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                               href="<?php echo base_url("Contract/delete_form/$item->id"); ?>">
                                 <i class="fa fa-trash"></i> Sil
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" onclick="change_Status(this)"
-                               url="<?php echo base_url("$this->Module_Name/changeStatus/$item->id"); ?>"
+                               url="<?php echo base_url("Contract/changestatus/$item->id"); ?>"
                                style="cursor: pointer;">
                                 <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
                                    style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>
@@ -113,12 +113,12 @@
             </div>
             <div class="card-body">
                 <div id="tab_Contract">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/tabs/tab_1_info"); ?>
                     <div id="edit_contract_modal">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/contract/edit_contract_modal_form"); ?>
+                        <?php $this->load->view("contract_module/contract_v/display/contract/edit_contract_modal_form"); ?>
                     </div>
                     <div id="add_sub_contract_modal">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/sub_contract/add_sub_contract_modal_form"); ?>
+                        <?php $this->load->view("contract_module/contract_v/display/sub_contract/add_sub_contract_modal_form"); ?>
                     </div>
                 </div>
             </div>
@@ -138,7 +138,7 @@
                         <i class="fa fa-file-pdf-o fa-2x"></i>
                     </a>
                 </div>
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_2_report"); ?>
+                <?php $this->load->view("contract_module/contract_v/display/tabs/tab_2_report"); ?>
 
             </div>
         </div>
@@ -165,13 +165,13 @@
                 </div>
 
                 <div id="payment_table">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/payment/payment_table"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/payment/payment_table"); ?>
                 </div>
                 <div id="add_payment_modal">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/payment/add_payment_modal"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/payment/add_payment_modal"); ?>
                 </div>
                 <div id="edit_payment_modal">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/payment/edit_payment_modal_form"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/payment/edit_payment_modal_form"); ?>
                 </div>
             </div>
         </div>
@@ -215,13 +215,13 @@
                             </a>
                         </div>
                         <div id="collection_table">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/collection_table"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/collection/collection_table"); ?>
                         </div>
                         <div id="add_collection_modal">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/add_collection_modal"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/collection/add_collection_modal"); ?>
                         </div>
                         <div id="edit_collection_modal">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/collection/edit_collection_modal_form"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/collection/edit_collection_modal_form"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
@@ -237,13 +237,13 @@
                             </a>
                         </div>
                         <div id="advance_table">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/advance/advance_table"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/advance/advance_table"); ?>
                         </div>
                         <div id="add_advance_modal">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/advance/add_advance_modal"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/advance/add_advance_modal"); ?>
                         </div>
                         <div id="edit_advance_modal">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/advance/edit_advance_modal_form"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/advance/edit_advance_modal_form"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab4-3" role="tabpanel" aria-labelledby="tab4-3-link">
@@ -259,13 +259,13 @@
                             </a>
                         </div>
                         <div id="bond_table">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/bond/bond_table"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/bond/bond_table"); ?>
                         </div>
                         <div id="add_bond_modal">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/bond/add_bond_modal"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/bond/add_bond_modal"); ?>
                         </div>
                         <div id="edit_bond_modal">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/bond/edit_bond_modal_form"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/bond/edit_bond_modal_form"); ?>
                         </div>
                     </div>
                 </div>
@@ -315,7 +315,7 @@
                             </a>
                         </div>
                         <div id="tab_contract_price_table">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_a_contract_price_table"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab5-2" role="tabpanel" aria-labelledby="tab5-2-link">
@@ -328,11 +328,11 @@
                             </a>
                         </div>
                         <div id="pricegroup_table">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/pricegroup/pricegroup_table"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table"); ?>
                         </div>
 
                         <div id="edit_pricegroup_modal">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/pricegroup/edit_pricegroup_modal_form"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/pricegroup/edit_pricegroup_modal_form"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab5-3" role="tabpanel" aria-labelledby="tab5-3-link">
@@ -345,7 +345,7 @@
                             </a>
                         </div>
                         <div id="tab_price_book">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_c_price_book"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab5-4" role="tabpanel" aria-labelledby="tab5-4-link">
@@ -358,7 +358,7 @@
                             </a>
                         </div>
                         <div class="refresh_tab_5" name="refresh_tab_5" id="refresh_tab_5">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_d_work_group"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group"); ?>
                         </div>
                     </div>
                 </div>
@@ -377,13 +377,13 @@
                        onclick="open_modal('AddFolderModal')"></i>
                 </div>
                 <div id="folder_table">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/folder/folder_table"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/folder/folder_table"); ?>
                 </div>
                 <div id="add_folder_modal">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/folder/add_folder_modal"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/folder/add_folder_modal"); ?>
                 </div>
                 <div id="edit_folder_modal">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/folder/edit_folder_modal_form"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/folder/edit_folder_modal_form"); ?>
                 </div>
             </div>
         </div>

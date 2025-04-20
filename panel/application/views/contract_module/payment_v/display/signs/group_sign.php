@@ -1,5 +1,5 @@
 <form id="add_group_total"
-      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/group_sign"); ?>"
+      action="<?php echo base_url("Payment/sign_options/$item->id/group_sign"); ?>"
       method="post"
       div="refresh_group_sign"
       enctype="multipart/form-data" autocomplete="off">
@@ -18,7 +18,7 @@
                 <td class="total-group-header-center">Sil</td>
             </tr>
             </thead>
-            <tbody class="sortable" data-url="<?php echo base_url("$this->Module_Name/sign_rankSetter"); ?>">
+            <tbody class="sortable" data-url="<?php echo base_url("Payment/sign_rankSetter"); ?>">
             <?php if (is_array($group_total_sings)) { ?>
                 <?php foreach ($group_total_sings as $group_total_sing) { ?>
                     <tr id="sub-<?php echo $group_total_sing->id; ?>">
@@ -28,7 +28,7 @@
                         <td style="text-align: center">
                             <a onclick="delete_sign(this)"
                                div="refresh_group_sign"
-                               url="<?php echo base_url("$this->Module_Name/delete_sign/$group_total_sing->id/group_sign/$item->id"); ?>">
+                               url="<?php echo base_url("Payment/delete_sign/$group_total_sing->id/group_sign/$item->id"); ?>">
                                 <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true">
                                 </i>
                             </a>

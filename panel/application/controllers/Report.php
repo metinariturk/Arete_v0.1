@@ -545,7 +545,7 @@ class Report extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
-    public function fileDelete_java($id)
+    public function filedelete_java($id)
     {
         $session_user = $this->session->userdata("user");
         if ($session_user->user_role != 2) {

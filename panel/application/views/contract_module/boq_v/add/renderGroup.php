@@ -7,14 +7,14 @@
                    class="btn btn-success me-3" href="#" style="width: 250px;"
                    data-bs-original-title=""
                    title=""
-                   url="<?php echo base_url("$this->Module_Name/select_group/$contract->id/$payment_no"); ?>">
+                   url="<?php echo base_url("Boq/select_group/$contract->id/$payment_no"); ?>">
                     <span style="text-align: center">İş Grupları</span>
                 </a>
                 <a onclick="renderGroup(this)"
                    class="btn btn-success me-3 auto-refresh-button" href="#" style="width: 250px;"
                    data-bs-original-title=""
                    title="" hidden
-                   url="<?php echo base_url("$this->Module_Name/select_group/$contract->id/$payment_no/$group_id"); ?>">
+                   url="<?php echo base_url("Boq/select_group/$contract->id/$payment_no/$group_id"); ?>">
                     <span style="text-align: center">Yenile</span>
                 </a>
             </th>
@@ -37,7 +37,7 @@
                                    href="#"
                                    data-bs-original-title=""
                                    title=""
-                                   url="<?php echo base_url("$this->Module_Name/calculate_render/$contract->id/$payment_no/$boq_id"); ?>">
+                                   url="<?php echo base_url("Boq/calculate_render/$contract->id/$payment_no/$boq_id"); ?>">
                         <?php echo boq_name($boq_id); ?>
                     </a>
                 </th>

@@ -1,5 +1,5 @@
 <form id="update_payment"
-      action="<?php echo base_url("$this->Module_Name/update_payment/$item->id"); ?>" method="post"
+      action="<?php echo base_url("Payment/update_payment/$item->id"); ?>" method="post"
       enctype="multipart/form-data" autocomplete="off">
     <div class="card-body">
         <div class="container-fluid">

@@ -30,7 +30,7 @@ if ($subViewFolder == "list") { ?>
                                         </div>
                                         <div class="modal-body">
                                             <form id="contract_id"
-                                                  action="<?php echo base_url("$this->Module_Name/new_form"); ?>"
+                                                  action="<?php echo base_url("Boq/new_form"); ?>"
                                                   method="post"
                                                   enctype="multipart">
                                                 <div class="mb-3">
@@ -75,7 +75,7 @@ if ($subViewFolder == "list") { ?>
                     <ol class="breadcrumb">
                         <li>
                             <?php if (!empty($contract_id)){ ?>
-                            <button type="submit" form="save_<?php echo $this->Module_Name; ?>" class="btn btn-success">
+                            <button type="submit" form="save_<?php echo Boq; ?>" class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>
                             <?php } elseif (empty($contract_id)) {?>
@@ -102,10 +102,10 @@ if ($subViewFolder == "list") { ?>
                     <ol class="breadcrumb">
                         <li>
                             <button class="btn btn-danger" type="button" onclick="cancelConfirmationModule(this)"
-                                    url="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
+                                    url="<?php echo base_url("Boq/file_form/$item->id"); ?>">
                                 <i class="menu-icon fa fa-close fa-lg" aria-hidden="true"></i> İptal
                             </button>
-                            <button type="submit" form="update_<?php echo $this->Module_Name; ?>"
+                            <button type="submit" form="update_<?php echo Boq; ?>"
                                     class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>
@@ -128,13 +128,13 @@ if ($subViewFolder == "list") { ?>
                     <ol class="breadcrumb">
                         <li>
                             <a class="btn btn-success" type="button"
-                               href="<?php echo base_url("$this->Module_Name/update_form/$item->id"); ?>">
+                               href="<?php echo base_url("Boq/update_form/$item->id"); ?>">
                                 <i class="menu-icon fa fa-edit fa-lg"></i> Düzenle
                             </a>
                             <button class="btn btn-danger" type="button" onclick="deleteConfirmationModule(this)"
                                     data-text="<?php echo $this->Module_Title; ?>"
-                                    data-url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>"
-                                    url="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
+                                    data-url="<?php echo base_url("Boq/delete/$item->id"); ?>"
+                                    url="<?php echo base_url("Boq/delete/$item->id"); ?>">
                                 <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Sil
                             </button>
                         </li>

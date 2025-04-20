@@ -37,15 +37,15 @@ if (empty($project_id)) { ?>
         </div>
         <div class="col-sm-12 col-md-8">
             <form id="save_main"
-                  action="<?php echo base_url("$this->Module_Name/save_main/$project_id"); ?>"
+                  action="<?php echo base_url("Contract/save_main/$project_id"); ?>"
                   method="post"
                   enctype="multipart/form-data" autocomplete="off">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+                        <?php $this->load->view("contract_module/contract_v/add_main/input_form"); ?>
                     </div>
                     <div class="col-sm-12 col-md-6">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form_2"); ?>
+                        <?php $this->load->view("contract_module/contract_v/add_main/input_form_2"); ?>
                     </div>
                 </div>
             </form>

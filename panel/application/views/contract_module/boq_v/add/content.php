@@ -9,7 +9,7 @@ if (empty($contract_id)) { ?>
             </div>
             <div class="card">
                 <form id="contract_id"
-                      action="<?php echo base_url("$this->Module_Name/new_form/"); ?>"
+                      action="<?php echo base_url("Boq/new_form/"); ?>"
                       method="post"
                       enctype="multipart">
                     <div class="card-body">
@@ -30,10 +30,10 @@ if (empty($contract_id)) { ?>
     </div>
 <?php } else { ?>
     <div class="col-sm-12 col-md-12">
-        <form id="save_<?php echo $this->Module_Name; ?>"
-              action="<?php echo base_url("$this->Module_Name/save/$contract_id/$payment->id/exit"); ?>" method="post"
+        <form id="save_<?php echo Boq; ?>"
+              action="<?php echo base_url("Boq/save/$contract_id/$payment->id/exit"); ?>" method="post"
               enctype="multipart/form-data" autocomplete="off">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+            <?php $this->load->view("contract_module/boq_v/add/input_form"); ?>
         </form>
     </div>
 <?php } ?>

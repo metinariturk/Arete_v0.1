@@ -14,7 +14,7 @@
                     <?php echo $i++; ?>
                 <td>
                     <a id="category" href="#"
-                       url="<?php echo base_url("$this->Module_Name/open_sub/$contract->id/$sub_group->id/$payment->id"); ?>"
+                       url="<?php echo base_url("Boq/open_sub/$contract->id/$sub_group->id/$payment->id"); ?>"
                        onclick="open_contract_group(this)" method="post" enctype="multipart">
                         <?php if (empty($sub_group->name)){ echo "Alt Grup ".$i; } else { echo $sub_group->name; } ?>
                     </a>

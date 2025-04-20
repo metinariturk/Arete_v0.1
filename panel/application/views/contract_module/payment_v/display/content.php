@@ -74,14 +74,14 @@
                             </li>
                             <li>
                                 <a class="dropdown-item"
-                                   href="<?php echo base_url("$this->Module_Name/delete/$item->id"); ?>">
+                                   href="<?php echo base_url("Payment/delete/$item->id"); ?>">
                                     <i class="fa fa-trash"></i> Sil
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/06_tab_report"); ?>
+                <?php $this->load->view("contract_module/payment_v/display/tabs/06_tab_report"); ?>
             </div>
         </div>
     </div>
@@ -140,7 +140,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/03A_leaders"); ?>
+                            <?php $this->load->view("contract_module/payment_v/display/tabs/03A_leaders"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab2-2" role="tabpanel" aria-labelledby="tab2-2-link">
@@ -166,7 +166,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/03_tab_works_done"); ?>
+                            <?php $this->load->view("contract_module/payment_v/display/tabs/03_tab_works_done"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab2-3" role="tabpanel" aria-labelledby="tab2-3-link">
@@ -186,7 +186,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/04_tab_group_total"); ?>
+                            <?php $this->load->view("contract_module/payment_v/display/tabs/04_tab_group_total"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab2-4" role="tabpanel" aria-labelledby="tab2-4-link">
@@ -206,7 +206,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/05_tab_main_total"); ?>
+                            <?php $this->load->view("contract_module/payment_v/display/tabs/05_tab_main_total"); ?>
                         </div>
                     </div>
                 </div>
@@ -264,7 +264,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/02_tab_green"); ?>
+                        <?php $this->load->view("contract_module/payment_v/display/tabs/02_tab_green"); ?>
                     </div>
                     <div class="tab-pane fade" id="tab3-2" role="tabpanel" aria-labelledby="tab3-2-link">
                         <div class="download_links mt-3">
@@ -288,7 +288,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/01_tab_calculate"); ?>
+                        <?php $this->load->view("contract_module/payment_v/display/tabs/01_tab_calculate"); ?>
                     </div>
                 </div>
             </div>
@@ -297,7 +297,7 @@
     <div class="tab-pane fade" id="tab4" role="tabpanel"
          aria-labelledby="tab4-link">
         <div class="card">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/settings_content"); ?>
+            <?php $this->load->view("contract_module/payment_v/display/tabs/settings_content"); ?>
         </div>
     </div>
 
@@ -305,7 +305,7 @@
          aria-labelledby="tab5-link">
         <div class="card">
             <div class="card-body">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_sign"); ?>
+                <?php $this->load->view("contract_module/payment_v/display/tabs/tab_sign"); ?>
             </div>
         </div>
     </div>
@@ -314,7 +314,7 @@
          aria-labelledby="tab5-link">
         <div class="card">
             <div class="card-body">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_contract_price"); ?>
+                <?php $this->load->view("contract_module/payment_v/display/tabs/tab_contract_price"); ?>
             </div>
         </div>
     </div>
@@ -324,7 +324,7 @@
         <div class="card">
             <div class="card-body">
                 <h5>Dosya Yöneticisi</h5>
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_uploads"); ?>
+                <?php $this->load->view("contract_module/payment_v/display/tabs/tab_uploads"); ?>
             </div>
         </div>
     </div>

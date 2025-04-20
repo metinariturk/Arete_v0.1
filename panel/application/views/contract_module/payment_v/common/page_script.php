@@ -130,7 +130,7 @@
                 '</div>',
             theme: 'dragdrop',
             upload: {
-                url: "<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>",
+                url: "<?php echo base_url("Payment/file_upload/$item->id"); ?>",
                 data: null,
                 type: 'POST',
                 enctype: 'multipart/form-data',

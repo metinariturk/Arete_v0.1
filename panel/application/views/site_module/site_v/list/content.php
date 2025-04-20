@@ -1,60 +1,44 @@
-<div class="col-sm-12">
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="display" id="basic-1">
-                    <thead>
-                    <tr>
-                        <th>Sözleşme Adı</th>
-                        <th>Şantiye Adı</th>
-                        <th>Şantiye Sorumlusu</th>
-                        <th>Günlük Rapor Sayısı</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($items as $item) { ?>
-                        <tr>
-                            <td>
-                                <a href="<?php echo base_url("site/file_form/$item->id"); ?>">
-                                    <?php echo contract_name($item->contract_id); ?>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="<?php echo base_url("site/file_form/$item->id"); ?>">
-                                    <?php echo $item->santiye_ad; ?>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="<?php echo base_url("site/file_form/$item->id"); ?>">
-                                    <?php echo full_name($item->santiye_sefi); ?>
-                                </a>
-                            </td>
-                            <?php $reports = $this->Report_model->get_all(array("site_id" => $item->id)); ?>
-                            <td>
-                                <a href="<?php echo base_url("site/file_form/$item->id"); ?>">
-                                    <?php echo count($reports); ?>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <h3>Şantiyeler</h3>
+    </div>
+    <div class="card-body">
+        <!-- Sekmeler -->
+        <ul class="nav nav-tabs" id="siteTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="active-tab" data-bs-toggle="tab" href="#site_active" role="tab">Devam
+                    Eden</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="inactive-tab" data-bs-toggle="tab" href="#site_inactive" role="tab">Biten</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="all-tab" data-bs-toggle="tab" href="#site_all" role="tab">Tümü</a>
+            </li>
+        </ul>
+
+        <!-- Sekme İçerikleri -->
+        <div class="tab-content mt-3" id="siteTabsContent">
+
+            <!-- Devam Eden Sözleşmeler -->
+            <div class="tab-pane fade show active" id="site_active" role="tabpanel">
+                <div class="table-responsive">
+                    <?php $this->load->view("site_module/site_v/list/tabs/active"); ?>
+                </div>
+            </div>
+            <!-- Biten Sözleşmeler -->
+            <div class="tab-pane fade" id="site_inactive" role="tabpanel">
+                <div class="table-responsive">
+                    <?php $this->load->view("site_module/site_v/list/tabs/inactive"); ?>
+                </div>
+            </div>
+            <!-- Tüm Sözleşmeler -->
+            <div class="tab-pane fade" id="site_all" role="tabpanel">
+                <div class="table-responsive">
+                    <?php $this->load->view("site_module/site_v/list/tabs/all"); ?>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

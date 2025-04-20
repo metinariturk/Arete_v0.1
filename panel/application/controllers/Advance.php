@@ -235,17 +235,13 @@ class Advance extends CI_Controller
             $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Contract/";
             $collection_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
             $advance_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance";
-            $offer_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Offer";
             $payment_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Payment";
-            $companys = $this->Company_model->get_all(array());
+            $companys = $this->Company_model->get_all(array(), "company_name ASC");
             !is_dir($path) && mkdir($path, 0777, TRUE);
             !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
             !is_dir($advance_path) && mkdir($advance_path, 0777, TRUE);
-            !is_dir($offer_path) && mkdir($offer_path, 0777, TRUE);
             !is_dir($payment_path) && mkdir($payment_path, 0777, TRUE);
-            if ($item->offer == 1) {
-                redirect(base_url("contract/file_form_offer/$contract->id"));
-            }
+
             if (count_payments($contract->id) == 0) {
                 $payment_no = 1;
             } else {
@@ -275,11 +271,8 @@ class Advance extends CI_Controller
             // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->viewModule = $this->moduleFolder;
             $viewData->viewFolder = "contract_v";
-            if ($item->offer == 1) {
-                $viewData->subViewFolder = "display_offer";
-            } else {
+
                 $viewData->subViewFolder = "display";
-            }
             $viewData->companys = $companys;
             $viewData->project = $project;
             $viewData->upload_function = $upload_function;

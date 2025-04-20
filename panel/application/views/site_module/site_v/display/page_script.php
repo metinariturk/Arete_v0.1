@@ -64,7 +64,7 @@
             error: function (xhr, status, error) {
                 console.error('Form gönderiminde hata oluştu: ', error);
                 console.error('Hata Detayı: ', xhr.responseText); // Sunucudan dönen hata mesajı
-                alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
+                alert('Form gönderiminde bir hata oluştu veya yetkiniz yok. Lütfen tekrar deneyin.');
             }
         });
     }
@@ -745,6 +745,56 @@
     }
 </script>
 
+<!-- Favori İşareti-->
+<script>
+    function changeIcon(anchor) {
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+            // Gerekirse response verisini işleyebilirsiniz
+        });
+
+        var icon = anchor.querySelector("i");
+        var text = anchor.querySelector("span");
+
+        // İkon sınıfını değiştir
+        icon.classList.toggle('fa-star');
+        icon.classList.toggle('fa-times');
+
+        // Metni ve rengi değiştir
+        if (text.innerText === "Favori Ekle") {
+            text.innerText = "Favori Çıkart";
+            icon.style.color = "tomato"; // Favori çıkartıldığında kırmızı çarpı
+        } else {
+            text.innerText = "Favori Ekle";
+            icon.style.color = "gold"; // Favori eklendiğinde sarı yıldız
+        }
+    }
+
+    function change_Status(anchor) {
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+            // Gerekirse response verisini işleyebilirsiniz
+        });
+
+        var icon = anchor.querySelector("i");
+        var text = anchor.querySelector("span");
+
+        // Duruma göre ikon ve metin değişimi
+        if (text.innerText === "Tamamlandı Olarak İşaretle") {
+            text.innerText = "Devam Ediyor Olarak İşaretle";
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-circle-o-notch');
+            icon.style.color = "blue";  // Devam ediyor rengi mavi
+        } else {
+            text.innerText = "Tamamlandı Olarak İşaretle";
+            icon.classList.remove('fa-circle-o-notch');
+            icon.classList.add('fa-check');
+            icon.style.color = "green";  // Tamamlandı rengi yeşil
+        }
+    }
+
+</script>
+<!-- Favori İşareti Son-->
 
 
 <!--Rapor İmza Ayarı-->

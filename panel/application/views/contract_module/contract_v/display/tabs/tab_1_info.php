@@ -42,13 +42,13 @@
             </div>
             <!-- İçerikler -->
             <div id="contract_table">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/contract/contract_table"); ?>
+                <?php $this->load->view("contract_module/contract_v/display/contract/contract_table"); ?>
             </div>
         </div>
         <!-- Sağ Alt Sözleşmeler -->
         <div class="col-md-6">
             <div id="sub_contract_table">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/sub_contract/sub_contract_table"); ?>
+                <?php $this->load->view("contract_module/contract_v/display/sub_contract/sub_contract_table"); ?>
             </div>
         </div>
     </div>

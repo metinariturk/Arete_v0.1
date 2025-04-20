@@ -160,7 +160,7 @@
                 // AJAX isteği başarısız olursa:
                 console.error('Form gönderiminde hata oluştu: ', error);
                 console.error('Hata Detayı: ', xhr.responseText);
-                alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
+                alert('Form gönderiminde bir hata oluştu veya yetkiniz yok. Lütfen tekrar deneyin.');
                 initializeFlatpickr(); // Flatpickr tekrar çalıştır
                 initialize_multiselect();
             }
@@ -623,5 +623,17 @@
         var modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
         initializeFlatpickr(); // Modal açılınca Flatpickr'ı çalıştır
+    }
+</script>
+
+<script>
+    function changeIcon(anchor) {
+        var $url = anchor.getAttribute('url');
+        $.post($url, {}, function (response) {
+        })
+
+        var icon = anchor.querySelector("i");
+        icon.classList.toggle('fa-star');
+        icon.classList.toggle('fa-star-o');
     }
 </script>

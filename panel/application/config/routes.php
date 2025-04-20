@@ -61,4 +61,7 @@ $route['sifremi-unuttum'] = "login/forget_password";
 $route['reset-password'] = "login/reset_password";
 $route['sifre-yenile'] = "login/temp_password";
 
+$route['cron/test_cron'] = 'cron/test_cron';  // Cron controller'ı için route
+
+
 

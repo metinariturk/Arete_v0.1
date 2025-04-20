@@ -48,7 +48,7 @@ if (empty($site->id)) { ?>
                                     <a href="<?php echo base_url("site/file_form/$site->id"); ?>">
                                     <span style="padding-left: 20px">
                                     <i class="icofont icofont-law-document"></i>
-                                    <?php echo site_code_name($site->id); ?>
+                                    <?php echo $site->dosya_no." ".$site->santiye_ad; ?>
                                     </span>
                                     </a>
                                 </div>

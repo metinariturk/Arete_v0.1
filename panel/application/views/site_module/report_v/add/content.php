@@ -48,7 +48,7 @@ if (empty($site_id)) { ?>
                                     <a href="<?php echo base_url("site/file_form/$site_id"); ?>">
                                     <span style="padding-left: 20px">
                                     <i class="icofont icofont-law-document"></i>
-                                    <?php echo site_code_name($site_id); ?>
+                                    <?php echo $site_id; ?>
                                     </span>
                                     </a>
                                 </div>

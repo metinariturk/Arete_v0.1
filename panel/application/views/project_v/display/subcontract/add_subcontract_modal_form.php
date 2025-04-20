@@ -11,7 +11,7 @@
                       data-form-url="<?php echo base_url("Project/create_contract/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <div id="add_Contract_input">
-                        <?php $this->load->view("{$viewFolder}/{$subViewFolder}/contract/add_contract_form_input"); ?>
+                        <?php $this->load->view("project_v/display/contract/add_contract_form_input"); ?>
                     </div>
                 </form>
             </div>

@@ -36,26 +36,59 @@
             </a>
         </li>
     </ul>
+    <br>
+    <h5><?php echo $item->santiye_ad; ?> Şantiyesi </h5>
+
 </div>
 
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-link">
         <div class="card">
-            <div class="card-body">
-                <h5><?php echo $item->santiye_ad; ?> Şantiyesi </h5>
-                <a onclick="changeIcon(this)" style="cursor: pointer;"
-                   url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>"
-                   id="myBtn">
-                    <i class="fa <?php echo $fav ? 'fa-star' : 'fa-star-o'; ?> fa-2x"></i> Ana Sayfaya Ekle
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <!-- Başlık -->
+
+                <a data-bs-toggle="modal" class="text-primary"
+                   id="open_edit_contract_modal "
+                   onclick="edit_modal_form('<?php echo base_url("Contract/open_edit_site_modal/$item->id"); ?>','edit_site_modal','EditSiteModal')">
+                    <i class="fa fa-edit fa-lg"></i>
                 </a>
-                <div class="download_links mt-3">
-                    <a href="<?php echo base_url('export/'); ?>">
-                        <i class="fa fa-file-excel-o fa-2x"></i>
-                    </a>
-                    <a href="<?php echo base_url('export/'); ?>">
-                        <i class="fa fa-file-pdf-o fa-2x"></i>
-                    </a>
+
+                <!-- Dropdown Menüsü -->
+                <div class="dropdown">
+                    <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h fa-2x"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" onclick="changeIcon(this)" style="cursor: pointer;"
+                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>">
+                                <i class="fa <?php echo $fav ? 'fa-times' : 'fa-star'; ?>"
+                                   style="<?php echo $fav ? 'color: tomato;' : 'color: gold;'; ?>"></i>
+                                <span><?php echo $fav ? 'Favori Çıkart' : 'Favori Ekle'; ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                                <i class="fa fa-trash"></i> Sil
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" onclick="change_Status(this)"
+                               url="<?php echo base_url("$this->Module_Name/changestatus/$item->id"); ?>"
+                               style="cursor: pointer;">
+                                <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
+                                   style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>
+                                <span>
+                                   <?php echo ($item->isActive == 1) ? 'Tamamlandı Olarak İşaretle' : 'Devam Ediyor Olarak İşaretle'; ?>
+                               </span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+
+            <div class="card-body">
                 <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
 
             </div>

@@ -76,7 +76,7 @@ if ($subViewFolder == "list") { ?>
                     <ol class="breadcrumb">
                         <li>
                             <?php if (!empty($contract_id)) { ?>
-                                <button type="submit" form="save_<?php echo $this->Module_Name; ?>"
+                                <button type="submit" form="save_<?php echo Payment; ?>"
                                         class="btn btn-success">
                                     <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                                 </button>
@@ -85,7 +85,7 @@ if ($subViewFolder == "list") { ?>
                                     <i class="fa fa-floppy-o fa-lg"></i> Sözleşme Seç
                                 </button>
                             <?php } ?>
-                            <a class="btn btn-primary" href="<?php echo base_url("$this->Module_Name/"); ?>">
+                            <a class="btn btn-primary" href="<?php echo base_url("Payment/"); ?>">
                                 <i class="fa fa-times"></i> İptal
                             </a>
                         </li>
@@ -107,10 +107,10 @@ if ($subViewFolder == "list") { ?>
                     <ol class="breadcrumb">
                         <li>
                             <button class="btn btn-danger" type="button" onclick="cancelConfirmationModule(this)"
-                                    url="<?php echo base_url("$this->Module_Name/file_form/$item->id"); ?>">
+                                    url="<?php echo base_url("Payment/file_form/$item->id"); ?>">
                                 <i class="menu-icon fa fa-close fa-lg" aria-hidden="true"></i> İptal
                             </button>
-                            <button type="submit" form="update_<?php echo $this->Module_Name; ?>"
+                            <button type="submit" form="update_<?php echo Payment; ?>"
                                     class="btn btn-success">
                                 <i class="fa fa-floppy-o fa-lg"></i> Kaydet
                             </button>

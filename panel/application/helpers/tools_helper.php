@@ -398,7 +398,6 @@ function module_name($module_name)
         "Firma" => "company",
         "E-Posta Ayarları" => "emailsettings",
         "Sistem Ayarları" => "settings",
-        "Teklifler" => "offer",
         "Kullanıcılar" => "user",
         "Finansal" => "finance",
         "Ödemeler" => "collection",
@@ -737,7 +736,6 @@ function getModuleList()
         ),
         "contract" => array(
             "contract",
-            "offer",
             "boq",
             "payment"
         ),
@@ -957,3 +955,10 @@ function permissionIcon($has)
     return $has ? '<span class="text-success fw-bold">&#10004;</span>' : '<span class="text-danger fw-bold">&#10006;</span>';
 }
 
+function null_parameter_error($param)
+{
+    if (empty($param)){
+        $ci =& get_instance();  // CodeIgniter instance'ını alıyoruz
+        redirect('errors/index');
+    }
+}

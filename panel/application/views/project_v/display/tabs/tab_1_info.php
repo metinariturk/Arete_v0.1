@@ -26,7 +26,7 @@
             </div>
             <div class="custom-card-body">
                 <div id="contract_table">
-                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/contract/contract_table"); ?>
+                    <?php $this->load->view("project_v/display/contract/contract_table"); ?>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
             </div>
             <div class="custom-card-body">
                 <div id="site_table">
-                    <?php $this->load->view("{$viewFolder}/{$subViewFolder}/site/site_table"); ?>
+                    <?php $this->load->view("project_v/display/site/site_table"); ?>
                 </div>
             </div>
         </div>

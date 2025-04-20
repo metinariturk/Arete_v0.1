@@ -11,7 +11,7 @@ class Errors extends CI_Controller
     public function index()
     {
         $viewData = new stdClass();
-        
+
         $this->load->view("errors/index", $viewData);
     }
 }

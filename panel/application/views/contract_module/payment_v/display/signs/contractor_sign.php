@@ -1,5 +1,5 @@
 <form id="add_contract"
-      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/contractor_sign"); ?>"
+      action="<?php echo base_url("Payment/sign_options/$item->id/contractor_sign"); ?>"
       method="post"
       div="refresh_contractor_sign"
       enctype="multipart/form-data" autocomplete="off">
@@ -28,7 +28,7 @@
                         <td style="text-align: center">
                             <a onclick="delete_sign(this)"
                                div="refresh_contractor_sign"
-                               url="<?php echo base_url("$this->Module_Name/delete_sign/$contractor_sing->id/contractor_sign/$item->id"); ?>">
+                               url="<?php echo base_url("Payment/delete_sign/$contractor_sing->id/contractor_sign/$item->id"); ?>">
                                 <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
                                    aria-hidden="true"></i>
                             </a>

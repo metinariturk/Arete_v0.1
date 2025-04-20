@@ -8,10 +8,10 @@
             </div>
             <div class="modal-body">
                 <form id="addBondForm"
-                      data-form-url="<?php echo base_url("$this->Module_Name/create_bond/$item->id"); ?>"
+                      data-form-url="<?php echo base_url("Contract/create_bond/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <div id="add_Bond_input">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/bond/add_bond_form_input"); ?>
+                        <?php $this->load->view("contract_module/contract_v/display/bond/add_bond_form_input"); ?>
                     </div>
                 </form>
             </div>

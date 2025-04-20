@@ -9,10 +9,10 @@
                 </div>
                 <div class="modal-body">
                     <form id="editBondForm"
-                          data-form-url="<?php echo base_url("$this->Module_Name/edit_bond/$edit_bond->id"); ?>"
+                          data-form-url="<?php echo base_url("Contract/edit_bond/$edit_bond->id"); ?>"
                           method="post" enctype="multipart/form-data" autocomplete="off">
                         <div id="edit_Bond_input">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/bond/edit_bond_form_input"); ?>
+                            <?php $this->load->view("contract_module/contract_v/display/bond/edit_bond_form_input"); ?>
                         </div>
                     </form>
                 </div>

@@ -1,7 +1,7 @@
 <div class="refresh_group" id="refresh_group" name="refresh_group">
     <div class="container">
         <!-- Ana Grup Ekleme Alanı ve Ana Gruplar Aynı Satırda -->
-        <form id="update_sub" action="<?php echo base_url("$this->Module_Name/update_sub_group/$item->id"); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
+        <form id="update_sub" action="<?php echo base_url("Contract/update_sub_group/$item->id"); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
             <div class="row mb-3">
                 <!-- Ana Grup Ekleme -->
                 <div class="col-12 col-sm-6 col-md-4 mb-4">

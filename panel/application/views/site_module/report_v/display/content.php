@@ -18,7 +18,7 @@
                                 <a href="<?php echo base_url("site/file_form/$site->id"); ?>">
                                     <span style="padding-left: 20px">
                                     <i data-feather="home"></i>
-                                    <?php echo site_code_name($site->id); ?>
+                                    <?php echo $site->dosya_no." ".$site->santiye_ad; ?>
                                 </a>
                             </div>
                         </li>

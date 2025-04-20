@@ -118,8 +118,9 @@ class user extends CI_Controller
 
     public function create_user()
     {
-        if (!isAdmin() && !permission_control("project", "w")) {
-            redirect(base_url("error"));
+
+        if (!user_has_permission('user', ['w'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
 
         $this->load->library("form_validation");
@@ -244,8 +245,8 @@ class user extends CI_Controller
 
     public function update($user_id)
     {
-        if (!isAdmin() && !permission_control("user", "u")) {
-            redirect(base_url("error"));
+        if (!user_has_permission('user', ['u'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
 
         $this->load->library("form_validation");
@@ -387,8 +388,8 @@ class user extends CI_Controller
 
     public function update_permissions($user_id)
     {
-        if (!isAdmin() && !permission_control("user_roles", "u")) {
-            redirect(base_url("error"));
+        if (!user_has_permission('user', ['w'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
 
         $raw_permissions = $this->input->post("permissions");
@@ -433,8 +434,8 @@ class user extends CI_Controller
 
     public function delete_user($id)
     {
-        if (!isAdmin() && !permission_control("user", "d")) {
-            redirect(base_url("error"));
+        if (!user_has_permission('user', ['w'])) {
+            show_error('Bu sayfaya erişim yetkiniz yok!', 403);
         }
 
         $user = $this->User_model->get(['id' => $id]);

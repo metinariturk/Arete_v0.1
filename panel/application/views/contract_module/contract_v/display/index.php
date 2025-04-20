@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_style"); ?>
+    <?php $this->load->view("contract_module/contract_v/common/page_style"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
     <?php $this->load->view("includes/head"); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/custom.css">
@@ -26,7 +26,7 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/display/content"); ?>
+            <?php $this->load->view("contract_module/contract_v/display/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
     </div>
@@ -34,8 +34,8 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
-<?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/page_script"); ?>
-<?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/price_script"); ?>
+<?php $this->load->view("contract_module/contract_v/display/page_script"); ?>
+<?php $this->load->view("contract_module/contract_v/display/price_script"); ?>
 <script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
 </body>

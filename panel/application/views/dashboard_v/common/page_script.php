@@ -46,7 +46,7 @@
                 // AJAX isteği başarısız olursa:
                 console.error('Form gönderiminde hata oluştu: ', error);
                 console.error('Hata Detayı: ', xhr.responseText);
-                alert('Form gönderiminde bir hata oluştu. Lütfen tekrar deneyin.');
+                alert('Form gönderiminde bir hata oluştu veya yetkiniz yok. Lütfen tekrar deneyin.');
 
                 // Feather ikonlarını tekrar yükle
                 if (typeof feather !== 'undefined') {
