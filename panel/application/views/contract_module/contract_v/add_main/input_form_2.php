@@ -24,7 +24,7 @@
                             <?php echo isset($form_error) ? set_value("para_birimi") : ""; ?>
                         </option>
                         <?php
-                        $para_birimleri = get_as_array($settings->para_birimi);
+                        $para_birimleri = get_as_array($this->settings->para_birimi);
                         foreach ($para_birimleri as $para_birimi) {
                             echo "<option value='$para_birimi'>$para_birimi</option>";
                         }
@@ -50,7 +50,7 @@
                             <?php echo isset($form_error) ? cms_if_echo(set_value("sozlesme_turu"), null, "Seçiniz", set_value("sozlesme_turu")) : ""; ?>
                         </option>
                         <?php
-                        $teklif_turleri = get_as_array($settings->sozlesme_turu);
+                        $teklif_turleri = get_as_array($this->settings->sozlesme_turu);
                         foreach ($teklif_turleri as $teklif_tur) { ?>
                             <option value="<?php echo $teklif_tur; ?>"><?php echo $teklif_tur; ?></option>";
                         <?php } ?>
@@ -70,7 +70,7 @@
                             <?php echo isset($form_error) ? cms_if_echo(set_value("isin_turu"), null, "Seçiniz", set_value("isin_turu")) : ""; ?>
                         </option>
                         <?php
-                        $is_turleri = get_as_array($settings->isin_turu);
+                        $is_turleri = get_as_array($this->settings->isin_turu);
                         foreach ($is_turleri as $is_turu) { ?>
                             <option value="<?php echo $is_turu; ?>"><?php echo $is_turu; ?></option>";
                         <?php } ?>

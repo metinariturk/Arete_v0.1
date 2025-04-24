@@ -18,7 +18,7 @@
         <option selected="selected"
                 value="<?php echo isset($form_error) ? set_value("tahsilat_turu") : $edit_collection->tahsilat_turu; ?>"><?php echo isset($form_error) ? set_value("tahsilat_turu") : $edit_collection->tahsilat_turu; ?>
         </option>
-        <?php $odeme_turleri = get_as_array($settings->odeme_turu);
+        <?php $odeme_turleri = get_as_array($this->settings->odeme_turu);
         foreach ($odeme_turleri as $odeme_turu) {
             echo "<option value='$odeme_turu'>$odeme_turu</option>";
         } ?>

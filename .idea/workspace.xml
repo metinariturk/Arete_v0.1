@@ -72,21 +72,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/project_v/list",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/project_v/list&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\list" />
@@ -96,11 +96,11 @@
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\file_uploader_dist" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\libraries" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\notes" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\uploads\project_v\PRJ-0012\SOZ-0050\Collection" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -260,7 +260,9 @@
       <workItem from="1744831799043" duration="7882000" />
       <workItem from="1744913253135" duration="10552000" />
       <workItem from="1745089534206" duration="8303000" />
-      <workItem from="1745149248564" duration="26537000" />
+      <workItem from="1745149248564" duration="30937000" />
+      <workItem from="1745262012637" duration="10004000" />
+      <workItem from="1745514878732" duration="2334000" />
     </task>
     <servers />
   </component>
@@ -290,7 +292,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Report.php</url>
-          <line>598</line>
+          <line>634</line>
           <properties>
             <option name="className" value="\Report" />
             <option name="methodName" value="fileDelete_java" />
@@ -353,7 +355,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>632</line>
+          <line>624</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="download_backup" />
@@ -362,7 +364,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1652</line>
+          <line>1615</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="create_bond" />

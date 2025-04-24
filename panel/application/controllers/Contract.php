@@ -3,7 +3,7 @@ require 'vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-class Contract extends CI_Controller
+class Contract extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
@@ -13,19 +13,7 @@ class Contract extends CI_Controller
         parent::__construct();
         // Kullanıcı girişi kontrolü
 
-        if (!get_active_user()) {
-            redirect(base_url("login"));
-        }
 
-        $this->Theme_mode = get_active_user()->mode;
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
-
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
-
-        $this->Settings = get_settings();
 
         $models = [
             'Advance_model',
@@ -156,12 +144,14 @@ class Contract extends CI_Controller
 
         // Tüm Sözleşmeler
         $all_items = $this->Contract_model->get_all([], "sozlesme_tarih DESC");
+        
 
 
         $viewData = new stdClass();
         $viewData->active_items = $active_items;
         $viewData->inactive_items = $inactive_items;
         $viewData->all_items = $all_items;
+        
 
         $this->load->view("contract_module/contract_v/list/index", $viewData);
     }
@@ -224,7 +214,6 @@ class Contract extends CI_Controller
         $viewData->site = $site;
 
         $viewData->upload_function = $upload_function;
-
 
         try {
             $this->load->view("contract_module/contract_v/display/index", $viewData);
@@ -294,11 +283,13 @@ class Contract extends CI_Controller
             redirect(base_url("Contract/file_form/$record_id"));
         } else {
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
+
             $viewData = new stdClass();
             $project = $this->Project_model->get(array("id" => $project_id));
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
+            
 
-
+            
             $viewData->project = $project;
             $viewData->companys = $companys;
             $viewData->project_id = $project_id;
@@ -373,9 +364,10 @@ class Contract extends CI_Controller
                 )
             );
             $viewData = new stdClass();
+            
+            
             $item = $this->Contract_model->get(array("id" => $parent_contract));
             $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
-
             // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->item = $item;
             $viewData->sub_contracts = $sub_contracts;
@@ -674,38 +666,6 @@ class Contract extends CI_Controller
                 )
             );
             echo "favoriye eklendi";
-        }
-    }
-
-    public function changestatus($id)
-    {
-        $item = $this->Contract_model->get(array("id" => $id));
-        if (!$item) {
-            echo "Kayıt bulunamadı.";
-            return false;
-        }
-
-        // Güncelleme işlemi
-        if ($item->isActive == 0 || $item->isActive == 1) {
-            $update = $this->Contract_model->update(
-                array("id" => $id),
-                array("isActive" => 2)
-            );
-        } elseif ($item->isActive == 2) {
-            $update = $this->Contract_model->update(
-                array("id" => $id),
-                array("isActive" => 1)
-            );
-        } else {
-            echo "Geçerli bir durum güncellemesi yapılamadı.";
-            return false;
-        }
-
-        // Güncelleme sonucu kontrolü
-        if ($update) {
-            echo "Durum başarıyla güncellendi.";
-        } else {
-            echo "Güncelleme sırasında bir hata oluştu.";
         }
     }
 
@@ -1497,12 +1457,14 @@ class Contract extends CI_Controller
                 $error = "Dosya gönderilmedi!";
             }
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
+
+            
+
             $viewData = new stdClass();
 
-
+            
             $viewData->project = $project;
             $viewData->collections = $collections;
-
             $viewData->item = $item;
             $response = array(
                 'status' => 'success',
@@ -1510,12 +1472,13 @@ class Contract extends CI_Controller
             );
             echo json_encode($response);
         } else {
+            
+
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
             $viewData = new stdClass();
-
+            
             $viewData->project = $project;
             $viewData->collections = $collections;
-
             $viewData->item = $item;
             $viewData->form_error = true;
             $response = array(
@@ -2305,9 +2268,11 @@ class Contract extends CI_Controller
             } else {
                 $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
             }
-            $settings = get_settings();
+            
+
             $viewData = new stdClass();
             $viewData->edit_item = $item;
+            
 
 
             $viewData->companys = $companys;
@@ -2323,7 +2288,7 @@ class Contract extends CI_Controller
             );
             echo json_encode($response);
         } else {
-            $viewData = new stdClass();
+            
             $item = $this->Contract_model->get(array("id" => $contract_id));
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
             if ($item->parent > 0) {
@@ -2331,11 +2296,11 @@ class Contract extends CI_Controller
             } else {
                 $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
             }
-            $settings = get_settings();
 
 
+            $viewData = new stdClass();
+            
             $viewData->companys = $companys;
-
             $viewData->item = $item;
             $viewData->edit_item = $item;
             $viewData->item = $item;

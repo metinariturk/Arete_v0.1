@@ -1,8 +1,10 @@
 <?php
+
 class Report extends CI_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
+
     public function __construct()
     {
         parent::__construct();
@@ -41,11 +43,46 @@ class Report extends CI_Controller
         $this->Select_Folder = "select";
         $this->Update_Folder = "update";
         $this->Common_Files = "common";
+
+        $this->rules = array(
+            "index" => array('report' => ['r']),
+            "select" => array('report' => ['r']),
+            "new_form" => array('report' => ['w']),
+            "update_form" => array('report' => ['u']),
+            "file_form" => array('report' => ['r']),
+            "save" => array('report' => ['w', 'u']),
+            "update" => array('report' => ['w', 'u']),
+            "delete" => array('report' => ['d']),
+            "file_upload" => array('report' => ['r', 'w', 'u']),
+            "filedelete_java" => array('report' => ['d', 'u']),
+            "download_all" => array('report' => ['r']),
+            "print_report" => array('report' => ['r'])
+
+        );
+
+        $this->check_permissions();
+
     }
+
+    protected function check_permissions()
+    {
+        $current_method = strtolower($this->router->method);
+
+        if (!isset($this->rules[$current_method])) {
+            show_error($current_method . "Yetki tanımı yapılmamış!", 403);
+        }
+
+        foreach ($this->rules[$current_method] as $module => $permissions) {
+            if (!user_has_permission($module, $permissions)) {
+                show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+            }
+        }
+    }
+
     public function index()
     {
         $viewData = new stdClass();
-        
+
         $items = $this->Report_model->get_all(array());
         $active_sites = $this->Site_model->get_all();
         $viewData->viewModule = $this->moduleFolder;
@@ -55,10 +92,11 @@ class Report extends CI_Controller
         $viewData->active_sites = $active_sites;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function select()
     {
         $viewData = new stdClass();
-        
+
         $items = $this->Report_model->get_all(array());
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
@@ -66,17 +104,20 @@ class Report extends CI_Controller
         $viewData->items = $items;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function new_form($site_id = null)
     {
-        if (!isAdmin() && !permission_control("site", "w")) {
-            redirect(base_url("error"));
-        }
         if ($site_id == null) {
             $site_id = $this->input->post("site_id");
         }
-        $project_id = project_id_site($site_id);
+
+
+        $site = $this->Site_model->get(array("id" => $site_id));
+
+        $project = $this->Project_model->get(array("id" => $site->project_id));
+
         $viewData = new stdClass();
-        
+
         $active_sites = $this->Site_model->get_all(array());
         $site = $this->Site_model->get(array("id" => $site_id));
         $active_machines = json_decode($site->active_machine, true);
@@ -84,14 +125,17 @@ class Report extends CI_Controller
         $viewData->viewModule = $this->moduleFolder;
         $viewData->viewFolder = $this->viewFolder;
         $viewData->subViewFolder = "$this->Add_Folder";
-        $viewData->project_id = $project_id;
+        $viewData->project_id = $project->id;
         $viewData->active_sites = $active_sites;
         $viewData->active_machines = $active_machines;
         $viewData->active_workgroups = $active_workgroups;
         $viewData->site = $site;
         $viewData->site_id = $site_id;
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+
     }
+
     public function update_form($id)
     {
         $this->load->model("Report_workgroup_model");
@@ -100,8 +144,10 @@ class Report extends CI_Controller
         $viewData = new stdClass();
         $workgroups = $this->Report_workgroup_model->get_all(array("report_id" => $id));
         $workmachines = $this->Report_workmachine_model->get_all(array("report_id" => $id));
-        $site_id = get_from_any("report", "site_id", "id", "$id");
-        $project_id = project_id_site($site_id);
+        $report = $this->Report_model->get(array("id" => $id));
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+        $project = $this->Project_model->get(array("id" => $site->project_id));
+
         $users = $this->User_model->get_all(array(
             "user_role" => 1
         ));
@@ -117,7 +163,7 @@ class Report extends CI_Controller
         $viewData->site = $site;
         $viewData->active_machines = $active_machines;
         $viewData->active_workgroups = $active_workgroups;
-        $viewData->project_id = $project_id;
+        $viewData->project_id = $project->id;
         $viewData->active_sites = $active_sites;
         $viewData->workgroups = $workgroups;
         $viewData->workmachines = $workmachines;
@@ -129,6 +175,7 @@ class Report extends CI_Controller
         );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function file_form($id)
     {
         $this->load->model("Report_workgroup_model");
@@ -183,11 +230,9 @@ class Report extends CI_Controller
         );
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
+
     public function save($site_id)
     {
-        if (!isAdmin() && !permission_control("site", "w")) {
-            redirect(base_url("error"));
-        }
         if ($this->input->post("report_date")) {
             $report_date = dateFormat('Y-m-d', $this->input->post("report_date"));
         } else {
@@ -233,7 +278,7 @@ class Report extends CI_Controller
                 array(
                     "required" => "<b>{field}</b> alanı doldurulmalıdır",
                     "greater_than" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
-                    )
+                )
             );
             $validate = $this->form_validation->run();
             if ($validate) {
@@ -328,6 +373,7 @@ class Report extends CI_Controller
             }
         }
     }
+
     public function update($id)
     {
         $report = $this->Report_model->get(array("id" => $id));
@@ -453,6 +499,7 @@ class Report extends CI_Controller
             }
         }
     }
+
     public function delete($report_id)
     {
         $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
@@ -474,14 +521,10 @@ class Report extends CI_Controller
         );
         redirect(base_url("site/$this->Display_route/$site_id"));
     }
+
     public function file_upload($id)
     {
-        $session_user = $this->session->userdata("user");
-        if ($session_user->user_role != 2) {
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
-        }
+
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
@@ -545,14 +588,10 @@ class Report extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
+
     public function filedelete_java($id)
     {
-        $session_user = $this->session->userdata("user");
-        if ($session_user->user_role != 2) {
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
-        }
+
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
@@ -563,14 +602,10 @@ class Report extends CI_Controller
         unlink("$path/$fileName");
         unlink("$thumb_path/$fileName");
     }
+
     public function download_all($report_id)
     {
-        $session_user = $this->session->userdata("user");
-        if ($session_user->user_role != 2) {
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
-        }
+
         $this->load->library('zip');
         $this->zip->compression_level = 0;
         $report = $this->Report_model->get(array("id" => $report_id));
@@ -585,6 +620,7 @@ class Report extends CI_Controller
         $zip_name = "Foto-" . $date;
         $this->zip->download("$zip_name");
     }
+
     public
     function print_report($report_id, $print_pic = null, $P_or_D = null)
     {

@@ -68,6 +68,10 @@ if (empty($site_id)) { ?>
         </div>
         <div class="col-md-12 col-xl-12 col-xxl-8">
             <div class="card">
+                <?php
+                getDailyForecastByCityName("Konya");
+
+                ?>
                 <form id="save_<?php echo $this->Module_Name; ?>"
                       action="<?php echo base_url("$this->Module_Name/save/$site_id"); ?>" method="post"
                       enctype="multipart/form-data" autocomplete="off">

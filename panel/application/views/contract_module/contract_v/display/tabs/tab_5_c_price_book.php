@@ -24,7 +24,7 @@
                     class="form-control <?php cms_isset(form_error("leader_unit"), "is-invalid", ""); ?>"
                     data-plugin="select2" name="leader_unit">
                 <option value="">Birimi Seçin</option>
-                <?php foreach ((get_as_array($settings->units)) as $unit) { ?>
+                <?php foreach ((get_as_array($this->settings->units)) as $unit) { ?>
                     <option value="<?php echo $unit; ?>">
                         <?php echo $unit; ?>
                     </option>
@@ -129,7 +129,7 @@
                                 class="form-control <?php cms_isset(form_error("leader_unit"), "is-invalid", ""); ?>"
                                 data-plugin="select2">
                             <option value="">Birimi Seçin</option>
-                            <?php foreach ((get_as_array($settings->units)) as $unit) { ?>
+                            <?php foreach ((get_as_array($this->settings->units)) as $unit) { ?>
                                 <option value="<?php echo $unit; ?>">
                                     <?php echo $unit; ?>
                                 </option>

@@ -19,7 +19,7 @@
         <option selected="selected"
                 value="<?php echo isset($form_error) ? set_value("teminat_turu") : ""; ?>"><?php echo isset($form_error) ? set_value("teminat_turu") : "Seçiniz"; ?>
         </option>
-        <?php $teminat_turleri = get_as_array($settings->teminat_turu);
+        <?php $teminat_turleri = get_as_array($this->settings->teminat_turu);
         foreach ($teminat_turleri as $teminat_turu) {
             echo "<option value='$teminat_turu'>$teminat_turu</option>";
         } ?>
@@ -51,7 +51,7 @@
     <input class="form-control  <?php cms_isset(form_error("teminat_banka"), "is-invalid", ""); ?>" name="teminat_banka"
            list="datalistOptions" placeholder="Banka Adı Yazınız" value="<?php echo isset($form_error) ? set_value("teminat_banka") : ""; ?>">
     <datalist id="datalistOptions">
-        <?php $bankalar = get_as_array($settings->bankalar);
+        <?php $bankalar = get_as_array($this->settings->bankalar);
         foreach ($bankalar as $banka) {
             echo "<option value='$banka'>$banka</option>";
         } ?>
