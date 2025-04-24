@@ -1,34 +1,18 @@
 <?php
 
-class Site extends CI_Controller
+class Site extends MY_Controller
 {
 
-    public $viewFolder = "";
-    public $moduleFolder = "";
 
     public function __construct()
     {
         parent::__construct();
 
-        if (!get_active_user()) {
-            redirect(base_url("login"));
-        }
-
-        $this->Theme_mode = get_active_user()->mode;
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
-
-        $this->moduleFolder = "site_module";
-        $this->viewFolder = "site_v";
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
         $models = [
             "Site_model" => 1,
             "Contract_model" => 1,
             "Project_model" => 1,
             "Settings_model" => 1,
-            "Order_model" => 1,
             "User_model" => 1,
             "Report_model" => 1,
             "Report_sign_model" => 1,
@@ -46,24 +30,6 @@ class Site extends CI_Controller
                 $this->load->model($model);
             }
         }
-        $this->Upload_Folder = "uploads"; // Ana yükleme klasörü
-        $this->Module_Name = "Site"; // Modül adı
-        $this->Module_Title = "Şantiye Yönetimi"; // Modül başlığı
-        $this->Module_Main_Dir = "project_v"; // Ana modül dizini
-        $this->File_Dir_Prefix = "{$this->Upload_Folder}/{$this->Module_Main_Dir}"; // Dosya dizin ön eki
-        $this->Display_route = "file_form"; // Görüntüleme rotası
-        $this->Update_route = "update_form"; // Güncelleme rotası
-        $this->Dependet_id_key = "site_id"; // Bağımlı ID anahtarı
-        $this->Module_Parent_Name = "contract"; // Modülün ana adı
-        // Klasör yapısı
-        $this->moduleFolder = "site_module"; // Modül klasörü
-        $this->viewFolder = "site_v"; // Görünüm klasörü
-        $this->Display_Folder = "display"; // Görüntüleme klasörü
-        $this->Add_Folder = "add"; // Ekleme klasörü
-        $this->List_Folder = "list"; // Listeleme klasörü
-        $this->Update_Folder = "update"; // Güncelleme klasörü
-        $this->Common_Files = "common"; // Ortak dosyalar
-        $this->settings = $this->Settings_model->get();
 
         $this->rules = array(
             "add_deposit" => array('sitewallet' => ['w', 'u']),
@@ -73,7 +39,7 @@ class Site extends CI_Controller
             "add_personel" => array('attendance' => ['w', 'u']),
             "add_stock" => array('sitestock' => ['w']),
             "ajax_list" => array('site' => ['r']),
-            "changestatus" => array('site' => ['r','u']),
+            "changestatus" => array('site' => ['r', 'u']),
             "check_end_date" => array(), // Callback fonksiyonu
             "delete" => array('site' => ['d']),
             "delete_group" => array('report' => ['u', 'd']),
@@ -122,7 +88,7 @@ class Site extends CI_Controller
         $current_method = strtolower($this->router->method);
 
         if (!isset($this->rules[$current_method])) {
-            show_error($current_method."Yetki tanımı yapılmamış!", 403);
+            show_error($current_method . "Yetki tanımı yapılmamış!", 403);
         }
 
         foreach ($this->rules[$current_method] as $module => $permissions) {
@@ -143,15 +109,13 @@ class Site extends CI_Controller
         $inactive_items = $this->Site_model->get_all(["isActive" => 0]);
         $all_items = $this->Site_model->get_all();
 
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->List_Folder";
+
         $viewData->items = $items;
         $viewData->projects = $projects;
         $viewData->active_items = $active_items;
         $viewData->inactive_items = $inactive_items;
         $viewData->all_items = $all_items;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/site_v/list/index", $viewData);
     }
 
     public function favorite($id)
@@ -187,12 +151,11 @@ class Site extends CI_Controller
                 "isActive" => 1
             )
         );
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "select";
+
+
         $viewData->items = $items;
         $viewData->active_contracts = $active_contracts;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/site_v/select/index", $viewData);
     }
 
     public function new_form($project_id = null)
@@ -216,9 +179,8 @@ class Site extends CI_Controller
             'id' => $project_id
         ));
         $users = $this->User_model->get_all(array());
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "add";
+
+
         $viewData->items = $items;
         $viewData->next_file_name = $next_file_name;
         $viewData->contracts = $contracts;
@@ -226,12 +188,12 @@ class Site extends CI_Controller
         $viewData->project_id = $project_id;
         $viewData->projects = $projects;
         $viewData->users = $users;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/site_v/add/index", $viewData);
     }
 
     public function save($project_id)
     {
-        $project = $this->Project_model->get(array("id"=>$project_id));
+        $project = $this->Project_model->get(array("id" => $project_id));
 
         $file_name_len = file_name_digits();
         $file_name = "SNT-" . $this->input->post('dosya_no');
@@ -254,7 +216,7 @@ class Site extends CI_Controller
         $validate = $this->form_validation->run();
         if ($validate) {
 
-            $path = "$this->Upload_Folder/project_v/$project->dosya_no/$file_name/Main/";
+            $path = "upload/project_v/$project->dosya_no/$file_name/Main/";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
                 echo "oluştu";
@@ -292,18 +254,9 @@ class Site extends CI_Controller
                 )
             );
             $record_id = $this->db->insert_id();
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $record_id,
-                    "connected_contract_id" => $id,
-                    "file_order" => $file_name,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                )
-            );
 
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
+
+            redirect(base_url("Site/file_form/$record_id"));
         } else {
             $viewData = new stdClass();
 
@@ -320,9 +273,8 @@ class Site extends CI_Controller
                 'id' => $project_id
             ));
             $users = $this->User_model->get_all(array());
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "add";
+
+
             $viewData->items = $items;
             $viewData->contracts = $contracts;
             $viewData->subcontracts = $subcontracts;
@@ -330,7 +282,7 @@ class Site extends CI_Controller
             $viewData->projects = $projects;
             $viewData->users = $users;
             $viewData->form_error = true;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+            $this->load->view("site_module/site_v/add/index", $viewData);
         }
     }
 
@@ -347,10 +299,10 @@ class Site extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
         $sites = $this->Site_model->get_all(array("isActive" => 1));
-        $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$item->dosya_no/main/";
-        $path_sitewallet = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$item->dosya_no/Sitewallet/";
-        $path_personel = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$item->dosya_no/Personel/";
+        $upload_function = base_url("Site/file_upload/$item->id");
+        $path = "upload/project_v/$project->dosya_no/$item->dosya_no/main/";
+        $path_sitewallet = "upload/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/";
+        $path_personel = "upload/project_v/$project->dosya_no/$item->dosya_no/Personel/";
         !is_dir($path) && mkdir($path, 0777, TRUE);
         !is_dir($path_sitewallet) && mkdir($path_sitewallet, 0777, TRUE);
         !is_dir($path_personel) && mkdir($path_personel, 0777, TRUE);
@@ -402,9 +354,8 @@ class Site extends CI_Controller
         $last_day_of_month = date('t', strtotime("$year-$month-01"));
 // $last_day_of_month, o ayın son gününü (kaç gün olduğunu) verecektir
         $count_of_days = (int)$last_day_of_month;
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+
+
         $viewData->path = $path;
         $viewData->upload_function = $upload_function;
         $viewData->count_of_days = $count_of_days;
@@ -439,7 +390,7 @@ class Site extends CI_Controller
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->workmachines = json_decode($item->active_machine, true);
         $viewData->year = $year;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/site_v/display/index", $viewData);
     }
 
     public function update_form($id)
@@ -457,13 +408,8 @@ class Site extends CI_Controller
             'project_id' => $project_id
         ));
         $users = $this->User_model->get_all(array());
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        if (!empty($contract_id)) {
-            $viewData->subViewFolder = "update_contract";
-        } else {
-            $viewData->subViewFolder = "update_project";
-        }
+
+
         $viewData->active_conn_contracts = $active_conn_contracts;
         $viewData->active_subcontracts = $active_subcontracts;
         $viewData->users = $users;
@@ -472,15 +418,21 @@ class Site extends CI_Controller
                 "id" => $id
             )
         );
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+        if (!empty($contract_id)) {
+            $this->load->view("site_module/site_v/update_contract/index", $viewData);
+        } else {
+            $this->load->view("site_module/site_v/update_project/index", $viewData);
+        }
+
     }
 
     public function delete($id)
     {
-        $site = $this->Site_model->get(array("id"=>$id));
-        $project = $this->Project_model->get(array("id"=>$site->project_id));
+        $site = $this->Site_model->get(array("id" => $id));
+        $project = $this->Project_model->get(array("id" => $site->project_id));
 
-        $path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no";
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no";
 
         $delete = $this->Site_model->delete(
             array(
@@ -503,7 +455,7 @@ class Site extends CI_Controller
 
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/main/";
+        $path = "upload/project_v/$project->dosya_no/$site->dosya_no/main/";
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }
@@ -540,7 +492,7 @@ class Site extends CI_Controller
 
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/main/";
+        $path = "upload/project_v/$project->dosya_no/$site->dosya_no/main/";
         $fileName = $this->input->post('fileName');
         unlink("$path/$fileName");
     }
@@ -553,7 +505,7 @@ class Site extends CI_Controller
         $this->load->library('zip');
         $this->zip->compression_level = 0;
         $path = "uploads/project_v/$project->dosya_no/$site->dosya_no";
-        $zip_name = $project->project_name."-".$site->santiye_ad;
+        $zip_name = $project->project_name . "-" . $site->santiye_ad;
         $this->zip->read_dir($path, FALSE);
         $this->zip->download("$zip_name.zip");
     }
@@ -640,9 +592,8 @@ class Site extends CI_Controller
             )
         );
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+
+
         $main_categories = $this->Workgroup_model->get_all(array('main_category' => 1));
         $item = $this->Site_model->get(
             array(
@@ -652,7 +603,7 @@ class Site extends CI_Controller
         $viewData->item = $item;
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->main_categories = $main_categories;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_1_workgroup", $viewData);
+        $this->load->view("site_module/site_v/display/tabs/tab_6_1_workgroup", $viewData);
     }
 
     public function delete_group($site_id, $group_id)
@@ -678,9 +629,8 @@ class Site extends CI_Controller
             )
         );
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+
+
         $main_categories = $this->Workgroup_model->get_all(array('main_category' => 1));
         $item = $this->Site_model->get(
             array(
@@ -690,7 +640,7 @@ class Site extends CI_Controller
         $viewData->item = $item;
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->main_categories = $main_categories;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_1_workgroup", $viewData);
+        $this->load->view("site_module/site_v/display/tabs/tab_6_1_workgroup", $viewData);
     }
 
     public function add_machine_group($site_id, $machine_id)
@@ -711,9 +661,8 @@ class Site extends CI_Controller
             )
         );
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+
+
         $main_categories_workmachine = $this->Workmachine_model->get_all(array(
             'main_category' => 1
         ));
@@ -725,7 +674,7 @@ class Site extends CI_Controller
         );
         $viewData->item = $item;
         $viewData->workmachines = json_decode($item->active_machine, true);
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_2_workmachine", $viewData);
+        $this->load->view("site_module/site_v/display/tabs/tab_6_2_workmachine", $viewData);
     }
 
     public function delete_machine_group($site_id, $machine_id)
@@ -751,9 +700,8 @@ class Site extends CI_Controller
             )
         );
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+
+
         $main_categories_workmachine = $this->Workmachine_model->get_all(array(
             'main_category' => 1
         ));
@@ -765,7 +713,7 @@ class Site extends CI_Controller
         );
         $viewData->item = $item;
         $viewData->workmachines = json_decode($item->active_machine, true);
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_6_2_workmachine", $viewData);
+        $this->load->view("site_module/site_v/display/tabs/tab_6_2_workmachine", $viewData);
     }
     /*WorkGroup and WorkMachine End*/
     /*----*/
@@ -841,8 +789,8 @@ class Site extends CI_Controller
             $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
             $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+
+
             $viewData->item = $this->Site_model->get(
                 array(
                     "id" => $site_id
@@ -852,7 +800,7 @@ class Site extends CI_Controller
             $viewData->contractor_staff = $contractor_staff;
             $viewData->owner_sign = $owner_sign;
             $viewData->owner_staff = $owner_staff;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
+            $this->load->view("site_module/site_v/display/signs/$module", $viewData);
         } else {
             $alert = array(
                 "title" => "İsim veya Ünvan Bilgilerinde Eksik Var",
@@ -864,8 +812,8 @@ class Site extends CI_Controller
             $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
             $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+
+
             $viewData->form_error = true;
             $viewData->item = $this->Site_model->get(
                 array(
@@ -876,7 +824,7 @@ class Site extends CI_Controller
             $viewData->contractor_staff = $contractor_staff;
             $viewData->owner_sign = $owner_sign;
             $viewData->owner_staff = $owner_staff;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
+            $this->load->view("site_module/site_v/display/signs/$module", $viewData);
         }
     }
 
@@ -893,8 +841,8 @@ class Site extends CI_Controller
         $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "contractor_staff"));
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $site_id, "module" => "owner_sign"));
         $owner_staff = $this->Report_sign_model->get_all(array("site_id" => $site_id, "module" => "owner_staff"));
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+
+
         $viewData->contractor_sign = $contractor_sign;
         $viewData->contractor_staff = $contractor_staff;
         $viewData->owner_sign = $owner_sign;
@@ -904,7 +852,7 @@ class Site extends CI_Controller
                 "id" => $site_id
             )
         );
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData);
+        $this->load->view("site_module/site_v/display/signs/$module", $viewData);
     }
 
     public function sign_rankSetter()
@@ -933,7 +881,7 @@ class Site extends CI_Controller
         $site_wallet = $this->Sitewallet_model->get(array("id" => $data_id));
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
+        $file_path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
         if ($file_path) {
             if (file_exists($file_path)) {
                 $data = file_get_contents($file_path);
@@ -951,7 +899,7 @@ class Site extends CI_Controller
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
         // Dosya yolunu oluşturmak
-        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
+        $file_path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
         $zip_name = "Harcama - $data_id";
         $this->zip->read_dir($file_path, FALSE);
         $this->zip->download("$zip_name.zip");
@@ -965,7 +913,7 @@ class Site extends CI_Controller
         $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
         // Dosya yolunu oluşturmak
-        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
+        $file_path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
         // Dosya yolu var mı diye kontrol
         if ($file_path) {
             // Dosya sistemde mevcut mu?
@@ -1051,7 +999,7 @@ class Site extends CI_Controller
             // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
             $record_id = $this->db->insert_id();
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$record_id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1080,9 +1028,8 @@ class Site extends CI_Controller
             $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
             $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->all_deposits = $all_deposits;
@@ -1090,16 +1037,15 @@ class Site extends CI_Controller
             $viewData->total_expense = $total_expense;
             $viewData->total_deposit = $total_deposit;
             $viewData->item = $item;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_1_expenses", $viewData);
         } else {
             $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 1));
             $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 0));
             $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
             $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->all_expenses = $all_expenses;
@@ -1109,7 +1055,7 @@ class Site extends CI_Controller
             $viewData->item = $item;
             $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
             $viewData->error_modal = "AddExpenseModal"; // Hata modali için set edilen değişken
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_1_expenses", $viewData);
         }
     }
 
@@ -1165,7 +1111,7 @@ class Site extends CI_Controller
             // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
             $record_id = $this->db->insert_id();
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$record_id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1194,9 +1140,8 @@ class Site extends CI_Controller
             $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
             $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->all_deposits = $all_deposits;
@@ -1204,16 +1149,15 @@ class Site extends CI_Controller
             $viewData->total_expense = $total_expense;
             $viewData->total_deposit = $total_deposit;
             $viewData->item = $item;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_2_deposits", $viewData);
         } else {
             $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 1));
             $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $site_id, "type" => 0));
             $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
             $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->all_expenses = $all_expenses;
@@ -1223,7 +1167,7 @@ class Site extends CI_Controller
             $viewData->item = $item;
             $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
             $viewData->error_modal = "AddDepositModal"; // Hata modali için set edilen değişken
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_2_deposits", $viewData);
         }
     }
 
@@ -1234,7 +1178,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $sitewallet->site_id));
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$sitewallet->id";
+        $file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/$sitewallet->id";
         $delete = $this->Sitewallet_model->delete(
             array(
                 "id" => $sitewallet->id
@@ -1260,9 +1204,8 @@ class Site extends CI_Controller
         $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
         $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 0));
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->contract = $contract;
         $viewData->project = $project;
         $viewData->all_expenses = $all_expenses;
@@ -1270,9 +1213,9 @@ class Site extends CI_Controller
         $viewData->total_expense = $total_expense;
         $viewData->item = $item;
         if ($sitewallet->type == 1) {
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_1_expenses", $viewData);
         } elseif (($sitewallet->type == 0))
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_2_deposits", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_2_deposits", $viewData);
     }
 
     public function open_edit_expenses_modal($expense_id)
@@ -1283,13 +1226,12 @@ class Site extends CI_Controller
         $project = $this->Project_model->get(array("id" => $item->project_id));
 
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->project = $project;
         $viewData->edit_expense = $edit_expense;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_expense_modal_form", $viewData);
+        $this->load->view("site_module/site_v/display/modals/edit_expense_modal_form", $viewData);
     }
 
     public function edit_expense($expense_id)
@@ -1342,7 +1284,7 @@ class Site extends CI_Controller
                 )
             );
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$expense_id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/$expense_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1368,9 +1310,8 @@ class Site extends CI_Controller
             $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
             $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->all_deposits = $all_deposits;
@@ -1378,16 +1319,15 @@ class Site extends CI_Controller
             $viewData->total_expense = $total_expense;
             $viewData->total_deposit = $total_deposit;
             $viewData->item = $item;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_1_expenses", $viewData);
         } else {
             $all_expenses = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 1));
             $all_deposits = $this->Sitewallet_model->get_all(array("site_id" => $item->id, "type" => 0));
             $total_expense = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "1");
             $total_deposit = sum_anything_and("sitewallet", "price", "site_id", "$item->id", "type", "0");
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->all_expenses = $all_expenses;
@@ -1398,7 +1338,7 @@ class Site extends CI_Controller
             $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
             $viewData->error_modal = "EditExpenseModal"; // Hata modali için set edilen değişken
             $viewData->edit_expense = $edit_expense; // Hata modali için set edilen değişken
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_4_1_expenses", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_4_1_expenses", $viewData);
         }
     }
 
@@ -1409,7 +1349,7 @@ class Site extends CI_Controller
         $item = $this->Site_model->get(array("id" => $site_stock->site_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         // Dosya yolu
-        $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet";
+        $file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet";
         // Klasördeki tüm dosyaları alıyoruz
         $files = scandir($file_path);
         // '.' ve '..' gibi klasörleri filtreleyip sadece dosya isimlerini almak için array_filter kullanıyoruz
@@ -1572,27 +1512,25 @@ class Site extends CI_Controller
 
             $item = $this->Site_model->get(array("id" => $site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->item = $item;
             $viewData->settings = $settings;
             $viewData->site_stocks = $site_stocks;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_3_sitestock", $viewData);
         } else {
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $site->id, "parent_id" => null));
             $viewData = new stdClass();
 
             $item = $this->Site_model->get(array("id" => $site_id));
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->item = $item;
             $viewData->settings = $settings;
             $viewData->site_stocks = $site_stocks;
             $viewData->form_error = true;
             $viewData->error_modal = "AddStockModal";
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_3_sitestock", $viewData);
         }
     }
 
@@ -1651,22 +1589,20 @@ class Site extends CI_Controller
             $sites = $this->Site_model->get_all(array("isActive" => 1));
 
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
             $viewData->settings = $settings;
             $viewData->sites = $sites;
             $viewData->site_stock = $site_stock;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_3_sitestock", $viewData);
         } else {
             $sites = $this->Site_model->get_all(array("isActive" => 1));
             // Hata varsa formu tekrar doldurmak için görünüm
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
             $viewData->settings = $settings;
@@ -1674,7 +1610,7 @@ class Site extends CI_Controller
             $viewData->site_stock = $site_stock;
             $viewData->form_error = true;
             $viewData->error_modal = "ExitModal";
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_3_sitestock", $viewData);
         }
     }
 
@@ -1688,14 +1624,13 @@ class Site extends CI_Controller
         $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
 
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->site_stocks = $site_stocks;
         $viewData->item = $item;
         $viewData->site_stock = $site_stock;
         $viewData->sites = $sites;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/exit_modal_form", $viewData);
+        $this->load->view("site_module/site_v/display/modals/exit_modal_form", $viewData);
     }
 
     public
@@ -1712,28 +1647,26 @@ class Site extends CI_Controller
             $sites = $this->Site_model->get_all(array("isActive" => 1));
 
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->site_stock = $site_stock;
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
             $viewData->sites = $sites;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_3_sitestock", $viewData);
         } else {
             $viewData = new stdClass();
             $item = $this->Site_model->get(array("id" => $site_stock->site_id));
             $site_stocks = $this->Sitestock_model->get_all(array("site_id" => $item->id, "parent_id" => null));
             $sites = $this->Site_model->get_all(array("isActive" => 1));
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->site_stock = $site_stock;
             $viewData->site_stocks = $site_stocks;
             $viewData->item = $item;
             $viewData->sites = $sites;
             $viewData->warning = "Veri Silinemedi";
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_3_sitestock", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_3_sitestock", $viewData);
         }
     }
     /*Site Stock End*/
@@ -1801,7 +1734,7 @@ class Site extends CI_Controller
             // Eklenen kaydın ID'si alınarak dosya yüklemesi için kullanılıyor
             $record_id = $this->db->insert_id();
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel/$record_id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Personel/$record_id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1828,9 +1761,8 @@ class Site extends CI_Controller
             $viewData = new stdClass();
             $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
             $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 0));
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->active_personel_datas = $active_personel_datas;
@@ -1838,14 +1770,13 @@ class Site extends CI_Controller
             $viewData->workgroups = json_decode($item->active_group, true);
             $viewData->item = $item;
             $viewData->settings = $settings;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_5_1_personel", $viewData);
         } else {
             $viewData = new stdClass();
             $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1));
             $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 0));
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->active_personel_datas = $active_personel_datas;
@@ -1855,7 +1786,7 @@ class Site extends CI_Controller
             $viewData->settings = $settings;
             $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
             $viewData->error_modal = "AddPersonelModal"; // Hata modali için set edilen değişken
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_5_1_personel", $viewData);
         }
     }
 
@@ -1929,7 +1860,7 @@ class Site extends CI_Controller
                 )
             );
             // Yükleme yapılacak dosya yolu oluşturuluyor
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel/$edit_personel->id";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Personel/$edit_personel->id";
             // Dosya yolu mevcut değilse, yeni bir klasör oluşturuluyor
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
@@ -1956,9 +1887,8 @@ class Site extends CI_Controller
             $viewData = new stdClass();
             $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 1));
             $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 0));
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->active_personel_datas = $active_personel_datas;
@@ -1966,14 +1896,13 @@ class Site extends CI_Controller
             $viewData->workgroups = json_decode($item->active_group, true);
             $viewData->item = $item;
             $viewData->settings = $settings;
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_5_1_personel", $viewData);
         } else {
             $viewData = new stdClass();
             $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 1));
             $passive_personel_datas = $this->Workman_model->get_all(array("site_id" => $item->id, "isActive" => 0));
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
-            $viewData->subViewFolder = "display";
+
+
             $viewData->contract = $contract;
             $viewData->project = $project;
             $viewData->active_personel_datas = $active_personel_datas;
@@ -1984,7 +1913,7 @@ class Site extends CI_Controller
             $viewData->edit_personel = $edit_personel;
             $viewData->form_error = true; // Formda hata olduğunu belirtiyoruz
             $viewData->error_modal = "EditPersonelModal"; // Hata modali için set edilen değişken
-            $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+            $this->load->view("site_module/site_v/display/tabs/tab_5_1_personel", $viewData);
         }
     }
 
@@ -1998,15 +1927,14 @@ class Site extends CI_Controller
         $settings = $this->Settings_model->get();
 
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->project = $project;
         $viewData->edit_personel = $edit_personel;
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->settings = $settings;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/modals/edit_personel_modal_form", $viewData);
+        $this->load->view("site_module/site_v/display/modals/edit_personel_modal_form", $viewData);
     }
 
     public
@@ -2031,9 +1959,8 @@ class Site extends CI_Controller
             // Eğer her iki değer de tanımlı değilse
             $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id));
         }
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->contract = $contract;
         $viewData->project = $project;
         $viewData->active_personel_datas = $active_personel_datas;
@@ -2042,7 +1969,7 @@ class Site extends CI_Controller
         $viewData->workgroups = json_decode($item->active_group, true);
         $viewData->item = $item;
         $viewData->settings = $settings;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_1_personel", $viewData);
+        $this->load->view("site_module/site_v/display/tabs/tab_5_1_personel", $viewData);
     }
 
     public
@@ -2107,16 +2034,15 @@ class Site extends CI_Controller
 
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->year = $year;
         $viewData->month = $month;
         $viewData->puantaj_data = json_decode($puantaj->puantaj, true);
         $viewData->active_personel_datas = $active_personel_datas;
         $viewData->form_error = true;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_2_puantaj", $viewData);
+        $this->load->view("site_module/site_v/display/tabs/tab_5_2_puantaj", $viewData);
     }
 
     public
@@ -2135,9 +2061,8 @@ class Site extends CI_Controller
 
         $item = $this->Site_model->get(array("id" => $site_id));
         $active_personel_datas = $this->Workman_model->get_all(array("site_id" => $site_id, "isActive" => 1), "group DESC");
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "display";
+
+
         $viewData->item = $item;
         $viewData->year = $year;
         $viewData->month = $month;
@@ -2151,8 +2076,9 @@ class Site extends CI_Controller
         }
         $viewData->active_personel_datas = $active_personel_datas;
         $viewData->form_error = true;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/tabs/tab_5_2_puantaj", $viewData);
+        $this->load->view("site_module/site_v/display/tabs/tab_5_2_puantaj", $viewData);
     }
+
     /*Personel End*/
 
     public function changestatus($id)

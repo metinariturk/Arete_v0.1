@@ -19,7 +19,6 @@ class Dashboard extends CI_Controller
         $this->Display_Folder = "Anasayfa";
         $this->Module_Title = "Ana Sayfa";
         $this->load->model("Notes_model");
-        $this->load->model("Order_model");
         $this->load->model("User_model");
         $this->load->model("Favorite_model");
     }
@@ -31,15 +30,10 @@ class Dashboard extends CI_Controller
             )
         );
         $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
-        $last_created_elements = $this->Order_model->get_all_or(array(
-            "createdBy" => active_user_id(),
-            "deletedBy" => active_user_id(),
-            "updatedBy" => active_user_id(),
-        ));
+
         $viewData->viewFolder = $this->viewFolder;
         $viewData->notes = $notes;
         $viewData->favorites = $favorites;
-        $viewData->last_created_elements = $last_created_elements;
         $this->load->view("dashboard_v/index", $viewData);
     }
     public function add_notes()

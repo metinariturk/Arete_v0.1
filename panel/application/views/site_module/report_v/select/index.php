@@ -20,7 +20,7 @@
     <!-- APP MAIN ==========-->
     <main id="app-main" class="app-main">
         <div class="wrap">
-            <section class="app-content"><?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/content"); ?>
+            <section class="app-content"><?php $this->load->view("site_module/report_v/select/content"); ?>
             </section><!-- #dash-content -->
         </div><!-- .wrap -->
 

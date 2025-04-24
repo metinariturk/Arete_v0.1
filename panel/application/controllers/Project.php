@@ -1,6 +1,6 @@
 <?php
 
-class Project extends CI_Controller
+class Project extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
@@ -8,15 +8,6 @@ class Project extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        if (!get_active_user()) {
-            redirect(base_url("login"));
-        }
-        $this->Theme_mode = get_active_user()->mode;
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
 
         $models = [
             'Settings_model',
@@ -30,15 +21,13 @@ class Project extends CI_Controller
             'Company_model',
             'Workman_model',
             'User_model',
-            'Order_model',
             'Site_model',
             'Favorite_model'
         ];
+
         foreach ($models as $model) {
             $this->load->model($model);
         }
-
-        $this->Settings = get_settings();
 
         $this->rules = array(
             "index" => array('project' => ['r', 'u', 'w', 'd']),
@@ -55,7 +44,6 @@ class Project extends CI_Controller
             "favorite" => array(),
             "create_contract" => array('contract' => ['w']),
             "create_site" => array('site' => ['w']),
-
         );
 
         $this->check_permissions();
@@ -83,7 +71,7 @@ class Project extends CI_Controller
 
         $active_items = $this->Project_model->get_all(array("isActive" => 1));
 
-        $inactive_items = $this->Project_model->get_all(array( "isActive" => 2));
+        $inactive_items = $this->Project_model->get_all(array("isActive" => 2));
 
         $all_items = $this->Project_model->get_all(array());
 
@@ -92,7 +80,7 @@ class Project extends CI_Controller
 
 
         $items = $this->Project_model->get_all(array());
-        $settings = $this->Settings_model->get();
+
         $users = $this->User_model->get_all();
         $next_project_name = get_next_file_code("Project");
 
@@ -103,7 +91,7 @@ class Project extends CI_Controller
         $viewData->next_project_name = $next_project_name;
         $viewData->items = $items;
         $viewData->users = $users;
-        $viewData->settings = $settings;
+
         $this->load->view("project_v/list/index", $viewData);
     }
 
@@ -126,10 +114,8 @@ class Project extends CI_Controller
             "module_id" => $id,
         ));
         $viewData = new stdClass();
-        $settings = $this->Settings_model->get();
 
 
-        $viewData->settings = $settings;
         $viewData->next_contract_name = $next_contract_name;
         $viewData->next_site_name = $next_site_name;
         $viewData->users = $users;
@@ -200,7 +186,7 @@ class Project extends CI_Controller
         } else {
             $viewData = new stdClass();
             $items = $this->Project_model->get_all();
-            $settings = $this->Settings_model->get();
+
             $users = $this->User_model->get_all(array(
                 "user_role" => 1
             ));
@@ -208,7 +194,7 @@ class Project extends CI_Controller
 
             $viewData->form_error = true;
             $viewData->items = $items;
-            $viewData->settings = $settings;
+
             $viewData->users = $users;
             $this->load->view("project_v/list/index", $viewData);
             $alert = array(
@@ -271,10 +257,8 @@ class Project extends CI_Controller
             $sites = $this->Site_model->get_all(array('project_id' => $id));
             $contracts = $this->Contract_model->get_all(array("project_id" => $id,));
             $viewData = new stdClass();
-            $settings = $this->Settings_model->get();
 
 
-            $viewData->settings = $settings;
             $viewData->form_error = true;
             $viewData->upload_function = $upload_function;
             $viewData->path = $path;
@@ -500,11 +484,11 @@ class Project extends CI_Controller
             $viewData = new stdClass();
             $item = $this->Project_model->get(array("id" => $project_id));
             $main_contracts = $this->Contract_model->get_all(array("project_id" => $project_id, "parent" => 0));
-            $settings = $this->Settings_model->get();
+
             // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->item = $item;
             $viewData->main_contracts = $main_contracts;
-            $viewData->settings = $settings;
+
             $response = array(
                 'status' => 'success',
                 'html' => $this->load->view("project_v/display/contract/contract_table", $viewData, true)
@@ -514,7 +498,7 @@ class Project extends CI_Controller
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
             $viewData = new stdClass();
             $item = $this->Project_model->get(array("id" => $project_id));
-            $settings = $this->Settings_model->get();
+
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
             $main_contracts = $this->Contract_model->get_all(array("project_id" => $project_id, "parent" => 0));
             $next_contract_name = get_next_file_code("Contract");
@@ -524,7 +508,7 @@ class Project extends CI_Controller
             $viewData->next_contract_name = $next_contract_name;
             $viewData->main_contracts = $main_contracts;
             $viewData->item = $item;
-            $viewData->settings = $settings;
+
             $viewData->form_error = true;
             $response = array(
                 'status' => 'error',
@@ -584,12 +568,12 @@ class Project extends CI_Controller
             $viewData = new stdClass();
             $item = $this->Project_model->get(array("id" => $project_id));
             $main_contracts = $this->Contract_model->get_all(array("project_id" => $project_id, "parent" => 0));
-            $settings = $this->Settings_model->get();
+
             $sites = $this->Site_model->get_all(array("project_id" => $project_id));
             // View'e gönderilecek Değişkenlerin Set Edilmesi
             $viewData->item = $item;
             $viewData->main_contracts = $main_contracts;
-            $viewData->settings = $settings;
+
             $viewData->sites = $sites;
             $response = array(
                 'status' => 'success',
@@ -600,7 +584,7 @@ class Project extends CI_Controller
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle
             $viewData = new stdClass();
             $item = $this->Project_model->get(array("id" => $project_id));
-            $settings = $this->Settings_model->get();
+
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
             $sites = $this->Site_model->get_all(array("project_id" => $project_id));
             $main_contracts = $this->Contract_model->get_all(array("project_id" => $project_id, "parent" => 0));
@@ -613,7 +597,7 @@ class Project extends CI_Controller
             $viewData->next_site_name = $next_site_name;
             $viewData->main_contracts = $main_contracts;
             $viewData->item = $item;
-            $viewData->settings = $settings;
+
             $viewData->users = $users;
             $viewData->form_error = true;
             $response = array(

@@ -9,7 +9,7 @@ if (empty($project_id)) { ?>
             </div>
             <div class="card">
                 <form id="contract_id"
-                      action="<?php echo base_url("$this->Module_Name/new_form/"); ?>"
+                      action="<?php echo base_url("Site/new_form/"); ?>"
                       method="post"
                       enctype="multipart">
                     <div class="card-body">
@@ -28,7 +28,7 @@ if (empty($project_id)) { ?>
             </div>
             <div class="card">
                 <form id="subcontract_id"
-                      action="<?php echo base_url("$this->Module_Name/new_form/"); ?>"
+                      action="<?php echo base_url("Site/new_form/"); ?>"
                       method="post"
                       enctype="multipart">
                     <div class="card-body">
@@ -47,7 +47,7 @@ if (empty($project_id)) { ?>
             </div>
             <div class="card">
                 <form id="project_id"
-                      action="<?php echo base_url("$this->Module_Name/new_form/"); ?>"
+                      action="<?php echo base_url("Site/new_form/"); ?>"
                       method="post"
                       enctype="multipart">
                     <div class="card-body">
@@ -85,7 +85,7 @@ if (empty($project_id)) { ?>
                                 <div class="btn btn-light">
                                     <span style="padding-left: 40px">
                                         <i class="icon-gallery"></i>
-                                        Yeni / <?php echo module_name($this->Module_Name); ?>
+                                        Yeni / <?php echo module_name(Site); ?>
                                     </span>
                                 </div>
                             </li>
@@ -97,11 +97,11 @@ if (empty($project_id)) { ?>
         <div class="col-sm-12 col-md-8">
             <div class="card">
                 <form id="save"
-                      action="<?php echo base_url("$this->Module_Name/save/$project_id"); ?>" method="post"
+                      action="<?php echo base_url("Site/save/$project_id"); ?>" method="post"
                       enctype="multipart/form-data" autocomplete="off">
                     <div class="card">
                         <div class="card-body">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+                            <?php $this->load->view("site_module/site_v/add/input_form"); ?>
                         </div>
                     </div>
                 </form>

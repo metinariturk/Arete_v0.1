@@ -9,7 +9,7 @@ if (empty($site_id)) { ?>
             </div>
             <div class="card">
                 <form id="site_id"
-                      action="<?php echo base_url("$this->Module_Name/new_form/"); ?>"
+                      action="<?php echo base_url("site_module/new_form/"); ?>"
                       method="post"
                       enctype="multipart">
                     <div class="card-body">
@@ -57,7 +57,7 @@ if (empty($site_id)) { ?>
                                 <div class="btn btn-light">
                                     <span style="padding-left: 40px">
                                         <i class="icon-gallery"></i>
-                                        Yeni / <?php echo module_name($this->Module_Name); ?>
+                                        Yeni / <?php echo module_name(site_module); ?>
                                     </span>
                                 </div>
                             </li>
@@ -72,10 +72,10 @@ if (empty($site_id)) { ?>
                 getDailyForecastByCityName("Konya");
 
                 ?>
-                <form id="save_<?php echo $this->Module_Name; ?>"
-                      action="<?php echo base_url("$this->Module_Name/save/$site_id"); ?>" method="post"
+                <form id="save_<?php echo site_module; ?>"
+                      action="<?php echo base_url("site_module/save/$site_id"); ?>" method="post"
                       enctype="multipart/form-data" autocomplete="off">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+                    <?php $this->load->view("site_module/report_v/add/input_form"); ?>
                 </form>
             </div>
         </div>

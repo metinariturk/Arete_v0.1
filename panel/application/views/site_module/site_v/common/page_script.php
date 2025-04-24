@@ -113,7 +113,7 @@
         // AJAX isteği gönder
         $.ajax({
             type: 'POST',
-            url: "<?php echo base_url("$this->Module_Name/update_personel_form/"); ?>", // Sunucunuzun POST isteğini alacağı adres
+            url: "<?php echo base_url("Site/update_personel_form/"); ?>", // Sunucunuzun POST isteğini alacağı adres
             data: {
                 workerId: workerId,
             },

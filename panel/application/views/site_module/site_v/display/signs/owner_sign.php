@@ -1,5 +1,5 @@
 <form id="owner_sign"
-      action="<?php echo base_url("$this->Module_Name/sign_options/$item->id/owner_sign"); ?>"
+      action="<?php echo base_url("Site/sign_options/$item->id/owner_sign"); ?>"
       method="post"
       div="refresh_owner_sign"
       enctype="multipart/form-data" autocomplete="off">
@@ -16,7 +16,7 @@
                 <td class="total-group-header-center">Sil</td>
             </tr>
             </thead>
-            <tbody class="sortable" data-url="<?php echo base_url("$this->Module_Name/sign_rankSetter"); ?>">
+            <tbody class="sortable" data-url="<?php echo base_url("Site/sign_rankSetter"); ?>">
             <?php if (isset($owner_sign)) { ?>
                 <tr id="sub-<?php echo $owner_sign->id; ?>">
                     <td style="text-align: center"><i class="fa fa-reorder"></i></td>
@@ -25,7 +25,7 @@
                     <td style="text-align: center">
                         <a onclick="delete_sign(this)"
                            div="refresh_owner_sign"
-                           url="<?php echo base_url("$this->Module_Name/delete_sign/$owner_sign->id/owner_sign/$item->id"); ?>">
+                           url="<?php echo base_url("Site/delete_sign/$owner_sign->id/owner_sign/$item->id"); ?>">
                             <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
                                aria-hidden="true">
                             </i>

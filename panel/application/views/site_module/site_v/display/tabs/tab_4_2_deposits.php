@@ -68,7 +68,7 @@
 
                                 // Eğer dosya varsa
                                 if ($file_isset) { ?>
-                                    <a href="<?php echo base_url("$this->Module_Name/expense_download/$expense->id"); ?>">
+                                    <a href="<?php echo base_url("Site/expense_download/$expense->id"); ?>">
                                         <i class="fa fa-download f-14 ellips"></i>
                                     </a>
                                 <?php } else { ?>
@@ -104,7 +104,7 @@
             </div>
             <div class="modal-body">
                 <form id="addDepositForm"
-                      data-form-url="<?php echo base_url("$this->Module_Name/add_deposit/$item->id"); ?>"
+                      data-form-url="<?php echo base_url("Site/add_deposit/$item->id"); ?>"
                       method="post" enctype="multipart/form-data" autocomplete="off">
                     <!-- Tarih -->
                     <div class="mb-3">

@@ -5,15 +5,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class Contract extends MY_Controller
 {
-    public $viewFolder = "";
-    public $moduleFolder = "";
 
     public function __construct()
     {
+
         parent::__construct();
         // Kullanıcı girişi kontrolü
-
-
 
         $models = [
             'Advance_model',
@@ -28,12 +25,10 @@ class Contract extends MY_Controller
             'Contract_price_model',
             'Costinc_model',
             'Collection_model',
-            'Delete_model',
             'District_model',
             'Extime_model',
             'Favorite_model',
             'Newprice_model',
-            'Order_model',
             'Payment_model',
             'Project_model',
             'Report_model',
@@ -144,8 +139,6 @@ class Contract extends MY_Controller
 
         // Tüm Sözleşmeler
         $all_items = $this->Contract_model->get_all([], "sozlesme_tarih DESC");
-        
-
 
         $viewData = new stdClass();
         $viewData->active_items = $active_items;

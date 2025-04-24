@@ -22,7 +22,7 @@
     </script>
 <?php endif; ?>
 
-<?php $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet";
+<?php $file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet";
 
 // Klasördeki tüm dosya ve klasörleri alıyoruz
 $files = scandir($file_path);
@@ -49,7 +49,7 @@ $file_names_without_extension = array_map(function ($file) {
                 </div>
                 <div class="modal-body">
                     <form id="addExpenseForm"
-                          data-form-url="<?php echo base_url("$this->Module_Name/add_expense/$item->id"); ?>"
+                          data-form-url="<?php echo base_url("Site/add_expense/$item->id"); ?>"
                           method="post" enctype="multipart/form-data" autocomplete="off">
                         <!-- Tarih -->
                         <div class="mb-3">
@@ -185,7 +185,7 @@ $file_names_without_extension = array_map(function ($file) {
                             </td>
                             <td style="text-align: center">
                                 <?php
-                                $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$expense->id";
+                                $file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/$expense->id";
 
                                 if (!is_dir($file_path)) {
                                     mkdir($file_path, 0777, true);
@@ -193,7 +193,7 @@ $file_names_without_extension = array_map(function ($file) {
 
                                 $files = glob("$file_path/*"); // glob ile tüm dosyaları al
                                 ?>
-                                <a href="<?php echo base_url("$this->Module_Name/download_all_expense/$expense->id"); ?>">
+                                <a href="<?php echo base_url("Site/download_all_expense/$expense->id"); ?>">
                                     <i class="fa fa-download fa-lg"></i>(<?php echo count($files); ?>)
                                 </a>
                             </td>
@@ -281,7 +281,7 @@ $file_names_without_extension = array_map(function ($file) {
 </div>
 
 <div id="edit_expense_modal">
-    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_expense_modal_form"); ?>
+    <?php $this->load->view("site_module/site_v/display/modals/edit_expense_modal_form"); ?>
 </div>
 
 

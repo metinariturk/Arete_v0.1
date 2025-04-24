@@ -26,7 +26,7 @@
                             <div class="btn btn-light">
                                     <span style="padding-left: 40px">
                                         <i class="icon-gallery"></i>
-                                        <?php echo $item->dosya_no; ?> / <?php echo module_name($this->Module_Name); ?>
+                                        <?php echo $item->dosya_no; ?> / <?php echo module_name(site_module); ?>
                                     </span>
                             </div>
                         </li>
@@ -35,7 +35,7 @@
             </div>
             <div class="card-body">
                 <div class="file-content">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/$this->Common_Files/add_document"); ?>
+                    <?php $this->load->view("site_module/report_v/common/add_document"); ?>
                 </div>
             </div>
         </div>
@@ -106,10 +106,10 @@
                     <div class="row">
                         <hr>
 
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/workgroup"); ?>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/workmachine"); ?>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/supplies"); ?>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/display/modules/foot"); ?>
+                        <?php $this->load->view("site_module/report_v/display/modules/workgroup"); ?>
+                        <?php $this->load->view("site_module/report_v/display/modules/workmachine"); ?>
+                        <?php $this->load->view("site_module/report_v/display/modules/supplies"); ?>
+                        <?php $this->load->view("site_module/report_v/display/modules/foot"); ?>
 
                         <div class="col-xl-4 col-md-6 offset-xl-4 offset-md-3" style="height: 200px;">
                             <div class="h-100 checkbox-checked">

@@ -262,7 +262,7 @@
       <workItem from="1745089534206" duration="8303000" />
       <workItem from="1745149248564" duration="30937000" />
       <workItem from="1745262012637" duration="10004000" />
-      <workItem from="1745514878732" duration="2334000" />
+      <workItem from="1745514878732" duration="5863000" />
     </task>
     <servers />
   </component>
@@ -274,7 +274,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>356</line>
+          <line>355</line>
           <properties>
             <option name="className" value="\Boq" />
             <option name="methodName" value="template_download" />
@@ -283,7 +283,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
-          <line>355</line>
+          <line>339</line>
           <properties>
             <option name="className" value="\Project" />
             <option name="methodName" value="file_upload" />
@@ -301,16 +301,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1311</line>
-          <properties>
-            <option name="className" value="\Site" />
-            <option name="methodName" value="delete_sitewallet" />
-          </properties>
-          <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1938</line>
+          <line>1869</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="edit_personel" />
@@ -318,17 +309,8 @@
           <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>692</line>
-          <properties>
-            <option name="className" value="\Site" />
-            <option name="methodName" value="add_group" />
-          </properties>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Export.php</url>
-          <line>1894</line>
+          <line>1893</line>
           <properties>
             <option name="className" value="\Export" />
             <option name="methodName" value="report_download_excel" />
@@ -337,7 +319,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/User.php</url>
-          <line>119</line>
+          <line>118</line>
           <properties>
             <option name="className" value="\user" />
             <option name="methodName" value="create_user" />
@@ -346,7 +328,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/User.php</url>
-          <line>76</line>
+          <line>75</line>
           <properties>
             <option name="className" value="\user" />
             <option name="methodName" value="file_form" />
@@ -355,7 +337,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>624</line>
+          <line>617</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="download_backup" />
@@ -364,21 +346,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1615</line>
+          <line>1608</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="create_bond" />
           </properties>
           <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php-line-method">
-          <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>500</line>
-          <properties>
-            <option name="className" value="\Site" />
-            <option name="methodName" value="file_upload" />
-          </properties>
-          <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>

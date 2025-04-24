@@ -61,7 +61,7 @@
                     <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
                         <li>
                             <a class="dropdown-item" onclick="changeIcon(this)" style="cursor: pointer;"
-                               url="<?php echo base_url("$this->Module_Name/favorite/$item->id"); ?>">
+                               url="<?php echo base_url("Site/favorite/$item->id"); ?>">
                                 <i class="fa <?php echo $fav ? 'fa-times' : 'fa-star'; ?>"
                                    style="<?php echo $fav ? 'color: tomato;' : 'color: gold;'; ?>"></i>
                                 <span><?php echo $fav ? 'Favori Çıkart' : 'Favori Ekle'; ?></span>
@@ -69,13 +69,13 @@
                         </li>
                         <li>
                             <a class="dropdown-item"
-                               href="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                               href="<?php echo base_url("Site/delete_form/$item->id"); ?>">
                                 <i class="fa fa-trash"></i> Sil
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" onclick="change_Status(this)"
-                               url="<?php echo base_url("$this->Module_Name/changestatus/$item->id"); ?>"
+                               url="<?php echo base_url("Site/changestatus/$item->id"); ?>"
                                style="cursor: pointer;">
                                 <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
                                    style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>
@@ -89,7 +89,7 @@
             </div>
 
             <div class="card-body">
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_1_info"); ?>
+                <?php $this->load->view("site_module/site_v/display/tabs/tab_1_info"); ?>
 
             </div>
         </div>
@@ -111,7 +111,7 @@
                         <i class="fa fa-file-pdf-o fa-2x"></i>
                     </a>
                 </div>
-                <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_2_report"); ?>
+                <?php $this->load->view("site_module/site_v/display/tabs/tab_2_report"); ?>
 
             </div>
         </div>
@@ -134,7 +134,7 @@
                     </a>
                 </div>
                 <div id="tab_sitestock">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_3_sitestock"); ?>
+                    <?php $this->load->view("site_module/site_v/display/tabs/tab_3_sitestock"); ?>
                 </div>
             </div>
         </div>
@@ -170,7 +170,7 @@
                             </a>
                         </div>
                         <div id="tab_expenses">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_1_expenses"); ?>
+                            <?php $this->load->view("site_module/site_v/display/tabs/tab_4_1_expenses"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
@@ -185,7 +185,7 @@
                             </a>
                         </div>
                         <div id="tab_deposits">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_4_2_deposits"); ?>
+                            <?php $this->load->view("site_module/site_v/display/tabs/tab_4_2_deposits"); ?>
                         </div>
                     </div>
                 </div>
@@ -223,7 +223,7 @@
                             </a>
                         </div>
                         <div id="tab_personel">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_1_personel"); ?>
+                            <?php $this->load->view("site_module/site_v/display/tabs/tab_5_1_personel"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab5-2" role="tabpanel" aria-labelledby="tab5-2-link">
@@ -236,7 +236,7 @@
                             </a>
                         </div>
                         <div id="tab_puantaj">
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_5_2_puantaj"); ?>
+                            <?php $this->load->view("site_module/site_v/display/tabs/tab_5_2_puantaj"); ?>
                         </div>
                     </div>
                 </div>
@@ -285,21 +285,21 @@
                                 <i class="fa fa-file-pdf-o fa-2x"></i>
                             </a>
                         </div>
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_1_workgroup"); ?>
+                        <?php $this->load->view("site_module/site_v/display/tabs/tab_6_1_workgroup"); ?>
                     </div>
                     <div class="tab-pane fade" id="tab6-2" role="tabpanel" aria-labelledby="tab6-2-link">
-                        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_2_workmachine"); ?>
+                        <?php $this->load->view("site_module/site_v/display/tabs/tab_6_2_workmachine"); ?>
                     </div>
                     <div class="tab-pane fade" id="tab6-3" role="tabpanel" aria-labelledby="tab6-3-link">
                         <div class="mt-3">
                             <!-- 6-3 tab content -->
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_3_follow"); ?>
+                            <?php $this->load->view("site_module/site_v/display/tabs/tab_6_3_follow"); ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab6-4" role="tabpanel" aria-labelledby="tab6-4-link">
                         <div class="mt-3">
                             <!-- 6-4 tab content -->
-                            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/tabs/tab_6_4_sign"); ?>
+                            <?php $this->load->view("site_module/site_v/display/tabs/tab_6_4_sign"); ?>
                         </div>
                     </div>
                 </div>

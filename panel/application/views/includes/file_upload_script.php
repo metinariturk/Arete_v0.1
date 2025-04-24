@@ -80,7 +80,7 @@
             onRemove: function(item, listEl, parentEl, newInputEl, inputEl) {
                 // AJAX isteği ile dosyanın sunucudan silinmesi
                 $.ajax({
-                    url: "<?php echo base_url("$this->Module_Name/filedelete_java/$item->id/"); ?>", // Silme işlemini gerçekleştirecek endpoint
+                    url: "<?php echo base_url($this->router->fetch_class()."/filedelete_java/$item->id/"); ?>", // Silme işlemini gerçekleştirecek endpoint
                     type: 'POST',
                     data: {
                         fileName: item.name // Dosyanın adı

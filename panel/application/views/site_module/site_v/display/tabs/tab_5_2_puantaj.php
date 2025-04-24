@@ -1,6 +1,6 @@
 <div class="puantaj_list" id="puantaj_list">
     <form id="puantaj_form"
-          action="<?php echo base_url("$this->Module_Name/update_puantaj"); ?>" method="post"
+          action="<?php echo base_url("Site/update_puantaj"); ?>" method="post"
           enctype="multipart/form-data" autocomplete="off">
         <div class="row" id="puantajDate" url="<?php echo base_url("Site/puantaj_date/$item->id"); ?>">
             <div class="col-2"><select class="form-control" onchange="puantajDate(this)" id="month"

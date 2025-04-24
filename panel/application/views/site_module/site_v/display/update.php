@@ -8,7 +8,7 @@
                 <h3 class="modal-header justify-content-center border-0">Sözleşme Bilgilerini Düzenle</h3>
                 <div class="modal-body">
                     <form class="row g-3 needs-validation" novalidate=""
-                          action="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>" method="post"
+                          action="<?php echo base_url("Site/update/$item->id"); ?>" method="post"
                           enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-6">
@@ -98,8 +98,8 @@
                                 <button class="btn btn-danger" type="button"
                                         onclick="deleteConfirmationModule(this)"
                                         data-text="<?php echo $this->Module_Title; ?>"
-                                        data-url="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>"
-                                        url="<?php echo base_url("$this->Module_Name/delete_form/$item->id"); ?>">
+                                        data-url="<?php echo base_url("Site/delete_form/$item->id"); ?>"
+                                        url="<?php echo base_url("Site/delete_form/$item->id"); ?>">
                                     <i class="menu-icon fa fa-trash fa-xl" aria-hidden="true"></i> Sil
                                 </button>
                             </div>

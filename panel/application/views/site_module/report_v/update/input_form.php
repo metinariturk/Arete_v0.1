@@ -22,11 +22,11 @@
             </div>
         </div>
         <hr>
-        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/workgroups"); ?>
+        <?php $this->load->view("site_module/report_v/update/modules/workgroups"); ?>
         <hr>
-        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/workmachines"); ?>
+        <?php $this->load->view("site_module/report_v/update/modules/workmachines"); ?>
         <hr>
-        <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modules/supplies"); ?>
+        <?php $this->load->view("site_module/report_v/update/modules/supplies"); ?>
         <hr>
         <div class="row box-col-3">
             <label>Genel Notlar</label>

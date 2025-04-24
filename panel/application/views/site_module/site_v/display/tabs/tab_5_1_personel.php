@@ -22,7 +22,7 @@
     </script>
 <?php endif; ?>
 
-<?php $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel";
+<?php $file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Personel";
 
 // Klasördeki tüm dosya ve klasörleri alıyoruz
 $files = scandir($file_path);
@@ -49,7 +49,7 @@ $file_names_without_extension = array_map(function ($file) {
                 </div>
                 <div class="modal-body">
                     <form id="addPersonelForm"
-                          data-form-url="<?php echo base_url("$this->Module_Name/add_personel/$item->id"); ?>"
+                          data-form-url="<?php echo base_url("Site/add_personel/$item->id"); ?>"
                           method="post" enctype="multipart/form-data" autocomplete="off">
                         <div class="mb-3">
                             <label class="col-form-label" for="name_surname">Adı Soyadı:</label>
@@ -121,7 +121,7 @@ $file_names_without_extension = array_map(function ($file) {
                                     <option value="" disabled selected>Banka Seçini</option>
                                 <?php } ?>
                                 <!-- Dynamic site options -->
-                                <?php $banks = get_as_array($settings->bankalar);
+                                <?php $banks = get_as_array($this->settings->bankalar);
                                 foreach ($banks as $bank) { ?>
                                     <option><?php echo $bank; ?></option>
                                 <?php } ?>
@@ -238,7 +238,7 @@ $file_names_without_extension = array_map(function ($file) {
                                 <i class="fa fa-edit fa-lg"></i>
                             </a>
                             <?php if (in_array($personel_data->id, $file_names_without_extension)) { ?>
-                                <a href="<?php echo base_url("$this->Module_Name/sitewallet_file_download/$personel_data->id"); ?>">
+                                <a href="<?php echo base_url("Site/sitewallet_file_download/$personel_data->id"); ?>">
                                     <i class="fa fa-download f-14 ellips fa-lg"></i>
                                 </a>
                             <?php } ?>
@@ -406,7 +406,7 @@ $file_names_without_extension = array_map(function ($file) {
 </div>
 
 <div id="edit_personel_modal">
-    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/edit_personel_modal_form"); ?>
+    <?php $this->load->view("site_module/site_v/display/modals/edit_personel_modal_form"); ?>
 </div>
 
 <div class="modal fade" id="personModal" tabindex="-1" aria-labelledby="personModalLabel" aria-hidden="true">

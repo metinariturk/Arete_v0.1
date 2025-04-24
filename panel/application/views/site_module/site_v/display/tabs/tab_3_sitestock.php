@@ -66,7 +66,7 @@
                             <?php } else { ?>
                                 <option value="" disabled selected>Birimi Seçiniz</option> <!-- Placeholder ekledik -->
                             <?php } ?>
-                            <?php foreach ((get_as_array($settings->units)) as $unit) { ?>
+                            <?php foreach ((get_as_array($this->settings->units)) as $unit) { ?>
                                 <option value="<?php echo $unit; ?>">
                                     <?php echo $unit; ?>
                                 </option>
@@ -108,7 +108,7 @@
 </div>
 
 <div id="site_stock_modal_form">
-    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/modals/exit_modal_form"); ?>
+    <?php $this->load->view("site_module/site_v/display/modals/exit_modal_form"); ?>
 </div>
 
 <div class="tabs">

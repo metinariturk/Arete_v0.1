@@ -27,7 +27,6 @@ class Payment extends CI_Controller
         $this->load->model("Project_model");
         $this->load->model("Boq_model");
         $this->load->model("Settings_model");
-        $this->load->model("Order_model");
         $this->Module_Name = "payment";
         $this->Module_Title = "Hakediş";
         // Folder Structure
@@ -181,16 +180,7 @@ class Payment extends CI_Controller
                 )
             );
             $record_id = $this->db->insert_id();
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $this->db->insert_id(),
-                    "connected_contract_id" => $contract_id,
-                    "file_order" => $hak_no,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                )
-            );
+
             $this->session->unset_userdata('form_errors');
             redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
         } else {
@@ -207,7 +197,6 @@ class Payment extends CI_Controller
             $this->load->model("Extime_model");
             $this->load->model("Favorite_model");
             $this->load->model("Newprice_model");
-            $this->load->model("Order_model");
             $this->load->model("Payment_model");
             $this->load->model("Project_model");
             $this->load->model("Settings_model");
@@ -386,16 +375,7 @@ class Payment extends CI_Controller
                 )
             );
             $record_id = $this->db->insert_id();
-            $insert2 = $this->Order_model->add(
-                array(
-                    "module" => $this->Module_Name,
-                    "connected_module_id" => $this->db->insert_id(),
-                    "connected_contract_id" => $payment->contract_id,
-                    "file_order" => "",
-                    "createdAt" => date("Y-m-d H:i:s"),
-                    "createdBy" => active_user_id(),
-                )
-            );
+
             
             if ($update) {
                 $alert = array(
@@ -459,16 +439,7 @@ class Payment extends CI_Controller
             $contract_code = $contract->dosya_no;
             $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/";
             $sil = deleteDirectory($path);
-            $file_order_id = get_from_any_and("file_order", "connected_module_id", $payment_id, "module", $this->Module_Name);
-            $update_file_order = $this->Order_model->update(
-                array(
-                    "id" => $file_order_id
-                ),
-                array(
-                    "deletedAt" => date("Y-m-d H:i:s"),
-                    "deletedBy" => active_user_id(),
-                )
-            );
+
             $delete2 = $this->Payment_model->delete(
                 array(
                     "id" => $payment_id
@@ -499,16 +470,7 @@ class Payment extends CI_Controller
             $contract_code = get_from_id("contract", "dosya_no", get_from_id($this->Module_Table, "contract_id", $id));
             $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/";
             $sil = deleteDirectory($path);
-            $file_order_id = get_from_any_and("file_order", "connected_module_id", $id, "module", $this->Module_Name);
-            $update_file_order = $this->Order_model->update(
-                array(
-                    "id" => $file_order_id
-                ),
-                array(
-                    "deletedAt" => date("Y-m-d H:i:s"),
-                    "deletedBy" => active_user_id(),
-                )
-            );
+
             $delete3 = $this->Boq_model->delete(
                 array(
                     "contract_id" => $contract_id,

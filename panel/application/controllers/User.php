@@ -22,7 +22,6 @@ class user extends CI_Controller
         $this->load->model("User_model");
         $this->load->model("Settings_model");
         $this->load->model("Project_model");
-        $this->load->model("Order_model");
         $this->load->model("Company_model");
         $this->load->model("Project_model");
         $this->load->model("Contract_model");

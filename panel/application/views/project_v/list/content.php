@@ -36,7 +36,7 @@
                                     <div class="mb-3">
                                         <select id="select2-demo-1" style="width: 100%;" class="form-control <?php echo cms_isset(form_error('department'), 'is-invalid', ''); ?>" data-plugin="select2" name="department">
                                             <option selected="selected">Seçiniz</option>
-                                            <?php $departments = get_as_array($settings->department);
+                                            <?php $departments = get_as_array($this->settings->department);
                                             foreach ($departments as $department) { ?>
                                                 <option><?php echo $department; ?></option>
                                             <?php } ?>

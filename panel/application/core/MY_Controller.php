@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class MY_Controller extends CI_Controller
 {
@@ -13,13 +13,15 @@ class MY_Controller extends CI_Controller
             redirect(base_url("login"));
         }
 
-        $this->Theme_mode = get_active_user()->mode;
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
-
         if (temp_pass_control()) {
             redirect(base_url("sifre-yenile"));
         }
+
+        $this->Theme_mode = get_active_user()->mode;
+
+        $uploader = APPPATH . 'libraries/FileUploader.php';
+
+        include($uploader);
 
         $this->load->model("Settings_model");
 

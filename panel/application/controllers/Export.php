@@ -55,7 +55,6 @@ class Export extends CI_Controller
         $this->load->model("Extime_model");
         $this->load->model("Favorite_model");
         $this->load->model("Newprice_model");
-        $this->load->model("Order_model");
         $this->load->model("Payment_model");
         $this->load->model("Payment_model");
         $this->load->model("Project_model");

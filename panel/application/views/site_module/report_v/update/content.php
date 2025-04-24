@@ -9,7 +9,7 @@ if (empty($site->id)) { ?>
             </div>
             <div class="card">
                 <form id="site_id"
-                      action="<?php echo base_url("$this->Module_Name/new_form/"); ?>"
+                      action="<?php echo base_url("site_module/new_form/"); ?>"
                       method="post"
                       enctype="multipart">
                     <div class="card-body">
@@ -57,7 +57,7 @@ if (empty($site->id)) { ?>
                                 <div class="btn btn-light">
                                     <span style="padding-left: 40px">
                                         <i class="icon-gallery"></i>
-                                        Yeni / <?php echo module_name($this->Module_Name); ?>
+                                        Yeni / <?php echo module_name(site_module); ?>
                                     </span>
                                 </div>
                             </li>
@@ -68,10 +68,10 @@ if (empty($site->id)) { ?>
         </div>
         <div class="col-md-12 col-xl-12 col-xxl-8">
             <div class="card">
-                <form id="update_<?php echo $this->Module_Name; ?>"
-                      action="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>" method="post"
+                <form id="update_<?php echo site_module; ?>"
+                      action="<?php echo base_url("site_module/update/$item->id"); ?>" method="post"
                       enctype="multipart/form-data" autocomplete="off">
-                    <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/input_form"); ?>
+                    <?php $this->load->view("site_module/report_v/update/input_form"); ?>
                 </form>
             </div>
         </div>

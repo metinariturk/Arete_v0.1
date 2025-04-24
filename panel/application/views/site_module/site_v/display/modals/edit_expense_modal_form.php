@@ -11,7 +11,7 @@
                     </div>
                     <div class="modal-body">
                         <form id="editExpenseForm"
-                              data-form-url="<?php echo base_url("$this->Module_Name/edit_expense/$edit_expense->id"); ?>"
+                              data-form-url="<?php echo base_url("Site/edit_expense/$edit_expense->id"); ?>"
                               method="post" enctype="multipart/form-data" autocomplete="off">
                             <!-- Tarih -->
                             <div class="mb-3">
@@ -88,7 +88,7 @@
 
 
                             <?php
-                            $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Sitewallet/$edit_expense->id";
+                            $file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/$edit_expense->id";
 
                             if (!is_dir($file_path)) {
                                 mkdir($file_path, 0777, true);
@@ -107,13 +107,13 @@
                                             <p class="task_desc_0"><?php echo basename($file); // Dosya adı ?></p>
                                         </div>
                                         <div class="col-1 text-center">
-                                            <a href="<?php echo base_url("$this->Module_Name/expense_file_download/$edit_expense->id/" . basename($file)); ?>">
+                                            <a href="<?php echo base_url("Site/expense_file_download/$edit_expense->id/" . basename($file)); ?>">
                                                 <i class="fa fa-download" aria-hidden="true"></i>
                                             </a>
                                         </div>
                                         <div class="col-1 text-center">
                                             <a onclick="delete_this_item(this)"
-                                               data="<?php echo base_url("$this->Module_Name/expense_file_delete/$edit_expense->id/" . basename($file)); ?>">
+                                               data="<?php echo base_url("Site/expense_file_delete/$edit_expense->id/" . basename($file)); ?>">
                                                 <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
                                             </a>
                                         </div>

@@ -22,7 +22,6 @@ class company extends CI_Controller
         
         $this->load->model("City_model");
         $this->load->model("User_model");
-        $this->load->model("Order_model");
         $this->Module_Name = "company";
         $this->Module_Title = "Firma";
         // Folder Structure

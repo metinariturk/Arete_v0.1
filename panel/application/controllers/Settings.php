@@ -15,7 +15,6 @@ class Settings extends CI_Controller
         $this->viewFolder = "settings_v";
         $this->Module_Name = "settings";
         $this->load->model("Settings_model");
-        $this->load->model("Order_model");
     }
     public function index()
     {

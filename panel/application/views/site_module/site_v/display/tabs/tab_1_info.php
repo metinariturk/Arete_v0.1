@@ -196,5 +196,5 @@
             </div>
         </div>
     </div>
-    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/add_document"); ?>
+    <?php $this->load->view("site_module/site_v/common/add_document"); ?>
 </div>

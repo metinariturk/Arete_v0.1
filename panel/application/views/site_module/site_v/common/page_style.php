@@ -223,3 +223,89 @@
     }
 </style>
 
+<style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button.page-item {
+        padding: 0px 0px 0px 0px;  /* Buton içindeki boşlukları küçültün */
+        font-size: 0.8em;    /* Yazı boyutunu daha da küçültün */
+        margin: 0px;       /* Butonlar arasındaki boşluğu azaltın */
+        border-radius: 4px;  /* Kenarları yuvarlatın */
+        height: auto;        /* Yüksekliği otomatik ayarla */
+        min-width: 15px;     /* Butonun minimum genişliğini ayarlayın */
+        text-align: center;  /* Yazıyı ortalayın */
+        overflow: hidden;    /* Taşmaları gizle */
+        white-space: nowrap; /* Tek satıra zorla */
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.page-item a {
+        line-height: 1; /* Buton içindeki yazının yüksekliğini ayarlayın */
+        display: block;    /* Butonların dikey olarak tamamen doldurmasını sağlar */
+        width: 100%;       /* Butonun tam genişlikte olmasını sağlar */
+        font-size: inherit;/* Ana font boyutunu kullanın */
+    }
+
+    /* Aktif sayfa butonunun görünümünü ayarlamak için */
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background-color: #007bff; /* Seçili sayfa butonunun arka plan rengi */
+        color: white;               /* Seçili sayfa butonunun yazı rengi */
+    }
+
+    #stock-table_length select {
+        width: 150px; /* Genişliği ihtiyacınıza göre ayarlayabilirsiniz */
+    }
+
+    #report_table_length select {
+        width: 150px; /* Genişliği ihtiyacınıza göre ayarlayabilirsiniz */
+    }
+
+    #expensesTable_length select {
+        width: 150px; /* Genişliği ihtiyacınıza göre ayarlayabilirsiniz */
+    }
+
+    #advancesTable_length select {
+        width: 150px; /* Genişliği ihtiyacınıza göre ayarlayabilirsiniz */
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background-color: #0056b3; /* Hover rengini ayarlayın */
+        color: white;               /* Hover durumundaki yazı rengi */
+    }
+
+    .table-responsive {
+        overflow-x: auto; /* Yalnızca yatay kaydırma çubuğu göster */
+    }
+
+    .table-responsive table {
+        width: 100%; /* Tablonun genişliğini %100 yap */
+        border-collapse: collapse; /* Kenar boşluklarını kaldır */
+    }
+
+    .table-responsive th, .table-responsive td {
+        padding: 8px; /* Hücre içi boşluk */
+        text-align: left; /* Metni sola yasla */
+        border: 1px solid #ddd; /* Kenarlara sınır ekle */
+    }
+
+    .table-responsive th {
+        background-color: #f2f2f2; /* Başlık hücreleri için arka plan rengi */
+    }
+
+    .icon-group {
+        display: flex; /* Flexbox kullanarak yan yana hizalar */
+        align-items: center; /* Dikey olarak ortalar */
+    }
+
+    .icon-group a {
+        margin-right: 10px; /* İkonlar arasına boşluk ekler */
+    }
+
+    .icon-group a:last-child {
+        margin-right: 0; /* Son ikonun sağındaki boşluğu kaldır */
+    }
+
+    #ibanText {
+        cursor: zoom-in; /* Fare imlecini büyüteç (zoom-in) şeklinde değiştir */
+    }
+
+</style>
+
+

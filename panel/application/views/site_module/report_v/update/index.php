@@ -14,14 +14,14 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/common/title"); ?>
-            <?php $this->load->view("{$viewModule}/{$viewFolder}/{$subViewFolder}/content"); ?>
+            <?php $this->load->view("site_module/report_v/common/title"); ?>
+            <?php $this->load->view("site_module/report_v/update/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
+<?php $this->load->view("site_module/report_v/common/page_script"); ?>
 <?php $this->load->view("includes/include_form_script"); ?>
 <script>
     $(document).ready(function() {

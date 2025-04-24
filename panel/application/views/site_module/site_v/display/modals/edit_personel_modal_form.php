@@ -11,7 +11,7 @@
                     </div>
                     <div class="modal-body">
                         <form id="editPersonelForm"
-                              data-form-url="<?php echo base_url("$this->Module_Name/edit_personel/$edit_personel->id"); ?>"
+                              data-form-url="<?php echo base_url("Site/edit_personel/$edit_personel->id"); ?>"
                               method="post" enctype="multipart/form-data" autocomplete="off">
                             <div class="mb-3">
                                 <label class="col-form-label" for="name_surname">Adı Soyadı:</label>
@@ -82,7 +82,7 @@
                                         <?php echo isset($form_error) ? cms_if_echo(set_value("bank"), null, "Seçiniz", set_value("bank")) : $edit_personel->bank; ?>
                                     </option>
                                     <!-- Dynamic site options -->
-                                    <?php $banks = get_as_array($settings->bankalar);
+                                    <?php $banks = get_as_array($this->settings->bankalar);
                                     foreach ($banks as $bank) { ?>
                                         <option><?php echo $bank; ?></option>
                                     <?php } ?>
@@ -125,7 +125,7 @@
                             <!-- Dosya Yükle -->
                             <?php
 
-                            $file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Personel/$edit_personel->id";
+                            $file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Personel/$edit_personel->id";
 
                             if (!is_dir($file_path)) {
                                 mkdir($file_path, 0777, true);
@@ -147,11 +147,11 @@
                             // $edit_expense->id ile eşleşen bir dosya olup olmadığını kontrol ediyoruz
                             if (in_array($edit_personel->id, $file_names_without_extension)) { ?>
                                 <div id="file-upload-container">
-                                    <a href="<?php echo base_url("$this->Module_Name/personel_file_download/$edit_personel->id"); ?>">
+                                    <a href="<?php echo base_url("Site/personel_file_download/$edit_personel->id"); ?>">
                                         <i class="fa fa-download f-14 ellips"></i> Dosyayı İndir
                                     </a>
                                     <span onclick="delete_file(this)"
-                                          data-url="<?php echo base_url("$this->Module_Name/personel_file_delete/$edit_personel->id"); ?>">
+                                          data-url="<?php echo base_url("Site/personel_file_delete/$edit_personel->id"); ?>">
                                     <i class="fa fa-times-circle"></i>SİL
                                 </span>
                                 </div>
