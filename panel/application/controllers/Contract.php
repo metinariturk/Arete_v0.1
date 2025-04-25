@@ -273,6 +273,8 @@ class Contract extends MY_Controller
                     "isActive" => "1",
                 )
             );
+
+            $record_id = $this->db->insert_id();
             redirect(base_url("Contract/file_form/$record_id"));
         } else {
             // Form Validation Başarısız, hata mesajları ile birlikte görüntüyü yükle

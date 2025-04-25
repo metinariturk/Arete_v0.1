@@ -352,13 +352,8 @@ class Report extends CI_Controller
                         )
                     );
                 }
-                $this->load->model("Weather_model");
-                $weather = $this->Weather_model->get(array('date' => $report_date));
-                if (isset($weather)) {
-                    redirect(base_url("$this->Module_Name/$this->Display_route/$report_id"));
-                } else {
-                    redirect(base_url("Weather/add_date/$report_id"));
-                }
+                $record_id = $this->db->insert_id();
+                redirect(base_url("Report/file_form/$record_id"));
             } else {
                 $viewData = new stdClass();
                 $settings = $this->Settings_model->get();
