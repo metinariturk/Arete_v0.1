@@ -57,7 +57,7 @@ if (empty($site_id)) { ?>
                                 <div class="btn btn-light">
                                     <span style="padding-left: 40px">
                                         <i class="icon-gallery"></i>
-                                        Yeni / <?php echo module_name(site_module); ?>
+                                        Yeni / Şantiye
                                     </span>
                                 </div>
                             </li>
@@ -72,7 +72,7 @@ if (empty($site_id)) { ?>
                 getDailyForecastByCityName("Konya");
 
                 ?>
-                <form id="save_<?php echo site_module; ?>"
+                <form id="save_site"
                       action="<?php echo base_url("site_module/save/$site_id"); ?>" method="post"
                       enctype="multipart/form-data" autocomplete="off">
                     <?php $this->load->view("site_module/report_v/add/input_form"); ?>

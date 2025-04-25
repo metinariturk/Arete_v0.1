@@ -283,8 +283,8 @@ class Report extends CI_Controller
             $validate = $this->form_validation->run();
             if ($validate) {
                 $rep_date = $this->input->post("report_date");
-                $project_code = project_code($site->project_id);
-                $path = "$this->File_Dir_Prefix/$project_code/$site->dosya_no/Reports/$rep_date";
+                $project = $this->Project_model->get(array("id" => $site->project_id));
+                $path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Reports/$rep_date";
                 if (!is_dir($path)) {
                     mkdir("$path", 0777, TRUE);
                     echo "oluştu";
@@ -296,7 +296,7 @@ class Report extends CI_Controller
                 $insert_report = $this->Report_model->add(
                     array(
                         "site_id" => $site_id,
-                        "project_id" => $site->project_id,
+                        "project_id" => $project->id,
                         "contract_id" => $site->contract_id,
                         "report_date" => $report_date,
                         "createdAt" => date("Y-m-d"),
