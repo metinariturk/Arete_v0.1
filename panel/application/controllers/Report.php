@@ -1,6 +1,6 @@
 <?php
 
-class Report extends CI_Controller
+class Report extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
@@ -8,42 +8,23 @@ class Report extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        if (!get_active_user()) {
-            redirect(base_url("login"));
-        }
-        $this->Theme_mode = get_active_user()->mode;
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
-        $this->moduleFolder = "site_module";
-        $this->viewFolder = "report_v";
-        $this->load->model("Report_model");
-        $this->load->model("Project_model");
-        $this->load->model("Settings_model");
-        $this->load->model("User_model");
-        $this->load->model("Site_model");
-        $this->load->model("Workgroup_model");
-        $this->load->model("Contract_model");
-        $this->Module_Name = "Report";
-        $this->Module_Title = "Şantiye Günlük Raporu";
-        $this->Upload_Folder = "uploads";
-        $this->Module_Main_Dir = "project_v";
-        $this->Module_Depended_Dir = "site";
-        $this->Module_File_Dir = "Report";
-        $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
-        $this->File_Dir_Suffix = "$this->Module_File_Dir";
-        $this->Display_route = "file_form";
-        $this->Update_route = "update_form";
-        $this->Dependet_id_key = "report_id";
-        $this->Add_Folder = "add";
-        $this->Display_Folder = "display";
-        $this->List_Folder = "list";
-        $this->Select_Folder = "select";
-        $this->Update_Folder = "update";
-        $this->Common_Files = "common";
 
+        $models = [
+            'Report_model',
+            'Project_model',
+            'Settings_model',
+            'User_model',
+            'Site_model',
+            'Workgroup_model',
+            'Contract_model',
+            'Report_workgroup_model',
+            'Report_workmachine_model',
+            'Report_supply_model',
+            'Report_weather_model',
+        ];
+        foreach ($models as $model) {
+            $this->load->model($model);
+        }
         $this->rules = array(
             "index" => array('report' => ['r']),
             "select" => array('report' => ['r']),
@@ -57,11 +38,8 @@ class Report extends CI_Controller
             "filedelete_java" => array('report' => ['d', 'u']),
             "download_all" => array('report' => ['r']),
             "print_report" => array('report' => ['r'])
-
         );
-
         $this->check_permissions();
-
     }
 
     protected function check_permissions()
@@ -85,12 +63,9 @@ class Report extends CI_Controller
 
         $items = $this->Report_model->get_all(array());
         $active_sites = $this->Site_model->get_all();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->List_Folder";
         $viewData->items = $items;
         $viewData->active_sites = $active_sites;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/report_v/list/index", $viewData);
     }
 
     public function select()
@@ -98,40 +73,47 @@ class Report extends CI_Controller
         $viewData = new stdClass();
 
         $items = $this->Report_model->get_all(array());
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "select";
         $viewData->items = $items;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/report_v/select/index", $viewData);
     }
 
     public function new_form($site_id = null)
     {
+
+
         if ($site_id == null) {
             $site_id = $this->input->post("site_id");
         }
 
-
         $site = $this->Site_model->get(array("id" => $site_id));
-
         $project = $this->Project_model->get(array("id" => $site->project_id));
-
+        if ($site->contract_id) {
+            $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+        }
         $viewData = new stdClass();
 
-        $active_sites = $this->Site_model->get_all(array());
-        $site = $this->Site_model->get(array("id" => $site_id));
+        $reports = $this->Report_model->get_all(array("site_id" => $site->id));
+
+// Tarihleri PHP'den JavaScript'e uygun hale getirme
+        $dates = [];
+        foreach ($reports as $report) {
+            // 'Y-m-d' formatındaki tarihi JavaScript'e uyumlu hale getiriyoruz
+            $dates[] = $report->report_date;
+        }
+
+
         $active_machines = json_decode($site->active_machine, true);
         $active_workgroups = json_decode($site->active_group, true);
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Add_Folder";
-        $viewData->project_id = $project->id;
-        $viewData->active_sites = $active_sites;
         $viewData->active_machines = $active_machines;
         $viewData->active_workgroups = $active_workgroups;
         $viewData->site = $site;
-        $viewData->site_id = $site_id;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $viewData->dates = $dates;
+        $viewData->project = $project;
+        if ($site->contract_id) {
+            $viewData->contract = $contract;
+        }
+
+        $this->load->view("site_module/report_v/add/index", $viewData);
 
 
     }
@@ -156,9 +138,6 @@ class Report extends CI_Controller
         $active_workgroups = json_decode($site->active_group, true);
         $supplies = $this->Report_supply_model->get_all(array("report_id" => $id));
         $active_sites = $this->Site_model->get_all(array());
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Update_Folder";
         $viewData->users = $users;
         $viewData->site = $site;
         $viewData->active_machines = $active_machines;
@@ -173,21 +152,17 @@ class Report extends CI_Controller
                 "id" => $id
             )
         );
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/report_v/update/index", $viewData);
     }
 
     public function file_form($id)
     {
-        $this->load->model("Report_workgroup_model");
-        $this->load->model("Report_workmachine_model");
-        $this->load->model("Report_supply_model");
-        $this->load->model("Report_weather_model");
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+        $upload_function = base_url("Report/file_upload/$item->id");
         $date = dateFormat_dmy($item->report_date);
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/$date/";
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$date/";
         $reports = $this->Report_model->get_all(array("site_id" => $item->site_id), "report_date ASC");
         $current_report_index = array_search($id, array_column($reports, 'id'));
         $previous_report = null;
@@ -208,9 +183,6 @@ class Report extends CI_Controller
             "id" => $site->id
         ));
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
         $viewData->path = $path;
         $viewData->upload_function = $upload_function;
         $viewData->item = $item;
@@ -228,145 +200,172 @@ class Report extends CI_Controller
                 "id" => $id
             )
         );
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("site_module/report_v/display/index", $viewData);
     }
 
     public function save($site_id)
     {
-        if ($this->input->post("report_date")) {
-            $report_date = dateFormat('Y-m-d', $this->input->post("report_date"));
-        } else {
-            $report_date = null;
-        }
-        $record_control = $this->Report_model->get(array("site_id" => $site_id, "report_date" => $report_date));
-        if ($record_control) {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bu tarihte başka bir günlük rapor var işlem yapılamaz",
-                "type" => "danger"
-            );
-            redirect(base_url("$this->Module_Name/new_form/$site_id"));
-        } else {
-            $site = $this->Site_model->get(array("id" => $site_id));
-            $this->load->model("Report_workgroup_model");
-            $this->load->model("Report_workmachine_model");
-            $this->load->model("Report_supply_model");
-            $workgroups = $this->input->post("workgroups[]");
-            $workmachine = $this->input->post("workmachine[]");
-            $supplies = $this->input->post("supplies[]");
-            $workgroups_filter = array();
-            foreach ($workgroups as $workgroup) {
-                if (!empty($workgroup["workgroup"])) {
-                    $workgroups_filter[] = $workgroup;
-                }
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $project = $this->Project_model->get(array("id" => $site->project_id));
+
+        $this->load->model("Report_workgroup_model");
+        $this->load->model("Report_workmachine_model");
+        $this->load->model("Report_supply_model");
+
+
+        // Form validation kurallarını ayarlıyoruz
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules("report_date", "Rapor Tarihi", "required|callback_unique_report_date[$site->id]");
+        $this->form_validation->set_message(
+            array(
+                "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "unique_report_date" => "<b>{field}</b> aynı tarihte bir rapor mevcut",
+            )
+        );
+
+        $workgroups = $this->input->post("workgroups[]") ?? [];
+        $workmachine = $this->input->post("workmachine[]") ?? [];
+        $supplies = $this->input->post("supplies[]") ?? [];
+
+        $workgroups_filter = filter_array($workgroups, "workgroup");
+        $workmachine_filter = filter_array($workmachine, "workmachine");
+        $supplies_filter = filter_array($supplies, "supply");
+
+        $validate = $this->form_validation->run();
+
+        if ($validate) {
+
+            echo "valide";
+            die();
+
+            $rep_date = $this->input->post("report_date");
+
+            if ($this->input->post("report_date")) {
+                $rep_date = dateFormat('Y-m-d', $this->input->post("report_date"));
+            } else {
+                $rep_date = null;
             }
-            $workmachine_filter = array();
-            foreach ($workmachine as $workmachine) {
-                if (!empty($workmachine["workmachine"])) {
-                    $workmachine_filter[] = $workmachine;
-                }
+
+            $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$rep_date";
+            if (!is_dir($path)) {
+                mkdir("$path", 0777, TRUE);
+                echo "oluştu";
+            } else {
+                echo "Dosya Oluşturulamadı";
+                echo $path;
             }
-            $supplies_filter = array();
-            foreach ($supplies as $supply) {
-                if (!empty($supply["supply"])) {
-                    $supplies_filter[] = $supply;
-                }
-            }
-            $this->load->library("form_validation");
-            $this->form_validation->set_rules("report_date", "Rapor Tarihi", "required|trim");
-            $this->form_validation->set_message(
+            $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
+
+            $insert_report = $this->Report_model->add(
                 array(
-                    "required" => "<b>{field}</b> alanı doldurulmalıdır",
-                    "greater_than" => "<b>{field}</b> alanı <b>{param}</b> dan büyük bir sayı olmalıdır",
+                    "site_id" => $site_id,
+                    "project_id" => $project->id,
+                    "contract_id" => $site->contract_id,
+                    "report_date" => $report_date,
+                    "createdAt" => date("Y-m-d"),
+                    "createdBy" => active_user_id(),
+                    "off_days" => $off_days,
+                    "aciklama" => $this->input->post("note"),
                 )
             );
-            $validate = $this->form_validation->run();
-            if ($validate) {
-                $rep_date = $this->input->post("report_date");
-                $project = $this->Project_model->get(array("id" => $site->project_id));
-                $path = "$this->File_Dir_Prefix/$project->dosya_no/$site->dosya_no/Reports/$rep_date";
-                if (!is_dir($path)) {
-                    mkdir("$path", 0777, TRUE);
-                    echo "oluştu";
-                } else {
-                    echo "Dosya Oluşturulamadı";
-                    echo $path;
-                }
-                $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
-                $insert_report = $this->Report_model->add(
+            $report_id = $this->db->insert_id();
+
+            foreach ($workgroups_filter as $workgroup) {
+                $insert_workgroup = $this->Report_workgroup_model->add(
                     array(
                         "site_id" => $site_id,
-                        "project_id" => $project->id,
+                        "report_id" => $report_id,
+                        "project_id" => $site->project_id,
                         "contract_id" => $site->contract_id,
-                        "report_date" => $report_date,
-                        "createdAt" => date("Y-m-d"),
+                        "workgroup" => $workgroup['workgroup'],
+                        "number" => $workgroup['worker_count'],
+                        "notes" => $workgroup['notes'],
+                        "place" => $workgroup['place'],
+                        "production" => $workgroup['production'],
                         "createdBy" => active_user_id(),
-                        "off_days" => $off_days,
-                        "aciklama" => $this->input->post("note"),
                     )
                 );
-                $report_id = $this->db->insert_id();
-                foreach ($workgroups_filter as $workgroup) {
-                    $insert_workgroup = $this->Report_workgroup_model->add(
-                        array(
-                            "site_id" => $site_id,
-                            "report_id" => $report_id,
-                            "project_id" => $site->project_id,
-                            "contract_id" => $site->contract_id,
-                            "workgroup" => $workgroup['workgroup'],
-                            "number" => $workgroup['worker_count'],
-                            "notes" => $workgroup['notes'],
-                            "place" => $workgroup['place'],
-                            "createdBy" => active_user_id(),
-                        )
-                    );
-                }
-                foreach ($workmachine_filter as $workmachine) {
-                    $insert_workmachine = $this->Report_workmachine_model->add(
-                        array(
-                            "site_id" => $site_id,
-                            "report_id" => $report_id,
-                            "project_id" => $site->project_id,
-                            "contract_id" => $site->contract_id,
-                            "workmachine" => $workmachine['workmachine'],
-                            "number" => $workmachine['machine_count'],
-                            "notes" => $workmachine['machine_notes'],
-                            "place" => $workmachine['machine_place'],
-                            "createdBy" => active_user_id(),
-                        )
-                    );
-                }
-                foreach ($supplies_filter as $supplies) {
-                    $insert_workmachine = $this->Report_supply_model->add(
-                        array(
-                            "site_id" => $site_id,
-                            "report_id" => $report_id,
-                            "project_id" => $site->project_id,
-                            "contract_id" => $site->contract_id,
-                            "supply" => $supplies['supply'],
-                            "qty" => $supplies['qty'],
-                            "unit" => $supplies['unit'],
-                            "place" => null,
-                            "notes" => $supplies['supply_notes'],
-                            "createdBy" => active_user_id(),
-                        )
-                    );
-                }
-                $record_id = $this->db->insert_id();
-                redirect(base_url("Report/file_form/$record_id"));
-            } else {
-                $viewData = new stdClass();
-                $settings = $this->Settings_model->get();
-                $site = $this->Site_model->get(array("id" => $site_id));
-                $viewData->settings = $settings;
-                $viewData->viewModule = $this->moduleFolder;
-                $viewData->viewFolder = $this->viewFolder;
-                $viewData->subViewFolder = "$this->Add_Folder";
-                $viewData->form_error = true;
-                $viewData->site = $site;
-                $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
             }
+            foreach ($workmachine_filter as $workmachine) {
+                $insert_workmachine = $this->Report_workmachine_model->add(
+                    array(
+                        "site_id" => $site_id,
+                        "report_id" => $report_id,
+                        "project_id" => $site->project_id,
+                        "contract_id" => $site->contract_id,
+                        "workmachine" => $workmachine['workmachine'],
+                        "number" => $workmachine['machine_count'],
+                        "notes" => $workmachine['machine_notes'],
+                        "place" => $workmachine['machine_place'],
+                        "createdBy" => active_user_id(),
+                    )
+                );
+            }
+            foreach ($supplies_filter as $supplies) {
+                $insert_workmachine = $this->Report_supply_model->add(
+                    array(
+                        "site_id" => $site_id,
+                        "report_id" => $report_id,
+                        "project_id" => $site->project_id,
+                        "contract_id" => $site->contract_id,
+                        "supply" => $supplies['supply'],
+                        "qty" => $supplies['qty'],
+                        "unit" => $supplies['unit'],
+                        "place" => null,
+                        "notes" => $supplies['supply_notes'],
+                        "createdBy" => active_user_id(),
+                    )
+                );
+            }
+
+            echo json_encode([
+                "success" => true,
+                "redirect" =>  redirect(base_url("Report/file_form/$report_id"))
+            ]);
+
+
+        } else {
+
+
+            $site = $this->Site_model->get(array("id" => $site_id));
+            $project = $this->Project_model->get(array("id" => $site->project_id));
+            if ($site->contract_id) {
+                $contract = $this->Contract_model->get(array("id" => $site->contract_id));
+            }
+            $reports = $this->Report_model->get_all(array("site_id" => $site->id));
+            $dates = [];
+            foreach ($reports as $report) {
+                // 'Y-m-d' formatındaki tarihi JavaScript'e uyumlu hale getiriyoruz
+                $dates[] = $report->report_date;
+            }
+
+            $viewData = new stdClass();
+
+            $active_machines = json_decode($site->active_machine, true);
+            $active_workgroups = json_decode($site->active_group, true);
+            $viewData->active_machines = $active_machines;
+            $viewData->active_workgroups = $active_workgroups;
+            $viewData->site = $site;
+            $viewData->dates = $dates;
+            $viewData->project = $project;
+            $viewData->workgroups_filter = $workgroups_filter;
+            $viewData->workmachine_filter = $workmachine_filter;
+            $viewData->supplies_filter = $supplies_filter;
+            $viewData->form_error = true;
+            if ($site->contract_id) {
+                $viewData->contract = $contract;
+            }
+
+
+            $html = $this->load->view("site_module/report_v/add/input_form", $viewData, true);
+
+            echo json_encode([
+                "success" => false,
+                "form_html" => $html
+            ]);
+
         }
+
     }
 
     public function update($id)
@@ -384,9 +383,9 @@ class Report extends CI_Controller
                 "text" => "Bu tarihte başka bir günlük rapor var işlem yapılamaz",
                 "type" => "danger"
             );
-            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
+            redirect(base_url("Report/file_form/$id"));
         } else {
-            $old_folder_dir = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/";
+            $old_folder_dir = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/";
             if ($this->input->post("report_date")) {
                 if (rename($old_folder_dir . $old_report_date, $old_folder_dir . $new_report_date)) {
                     echo 'Klasör adı başarıyla değiştirildi.';
@@ -488,7 +487,7 @@ class Report extends CI_Controller
             $this->load->model("Weather_model");
             $weather = $this->Weather_model->get(array('date' => $update_date));
             if (isset($weather)) {
-                redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
+                redirect(base_url("Report/file_form/$id"));
             } else {
                 redirect(base_url("Weather/add_date/$id"));
             }
@@ -497,12 +496,11 @@ class Report extends CI_Controller
 
     public function delete($report_id)
     {
-        $report_date = dateFormat_dmy(get_from_any("report", "report_date", "id", $report_id));
-        $site_id = get_from_any("report", "site_id", "id", $report_id);
-        $project_id = get_from_id("site", "project_id", $site_id);
-        $project_code = project_code($project_id);
-        $site_code = get_from_id("site", "dosya_no", $site_id);
-        $path = "$this->File_Dir_Prefix/$project_code/$site_code/Reports/$report_date";
+        $report = $this->Report_model->get(array("id" => $report_id));
+        $report_date = dateFormat_dmy($report->report_date);
+        $site = $this->Site_model->get(array("id" => $report->site_id));
+        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$report_date";
         $sil = deleteDirectory($path);
         if ($sil) {
             echo '<br>deleted successfully';
@@ -514,7 +512,7 @@ class Report extends CI_Controller
                 "id" => $report_id
             )
         );
-        redirect(base_url("site/$this->Display_route/$site_id"));
+        redirect(base_url("site/file_form/$site->id"));
     }
 
     public function file_upload($id)
@@ -524,7 +522,7 @@ class Report extends CI_Controller
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
         $date = dateFormat_dmy($item->report_date);
-        $path = rtrim($this->Upload_Folder, '/') . '/' . $this->Module_Main_Dir . "/$project->dosya_no/$site->dosya_no/Reports/$date/";
+        $path = rtrim(uploads, '/') . '/' . "project_v" . "/$project->dosya_no/$site->dosya_no/Reports/$date/";
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }
@@ -591,8 +589,8 @@ class Report extends CI_Controller
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
         $date = dateFormat_dmy($item->report_date);
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/$date";
-        $thumb_path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no/Reports/$date/thumbnails";
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$date";
+        $thumb_path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$date/thumbnails";
         $fileName = $this->input->post('fileName');
         unlink("$path/$fileName");
         unlink("$thumb_path/$fileName");
@@ -603,16 +601,17 @@ class Report extends CI_Controller
 
         $this->load->library('zip');
         $this->zip->compression_level = 0;
+
         $report = $this->Report_model->get(array("id" => $report_id));
-        $date = dateFormat_dmy($report->report_date);
+        $report_date = dateFormat_dmy($report->report_date);
         $site = $this->Site_model->get(array("id" => $report->site_id));
-        $project_code = project_code("$site->project_id");
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date";
+        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$report_date";
         $files = glob($path . '/*');
         foreach ($files as $file) {
             $this->zip->read_file($file, FALSE);
         }
-        $zip_name = "Foto-" . $date;
+        $zip_name = "Foto-" . $report_date;
         $this->zip->download("$zip_name");
     }
 
@@ -627,6 +626,7 @@ class Report extends CI_Controller
         $this->load->model("Report_sign_model");
         $report = $this->Report_model->get(array("id" => $report_id));
         $site = $this->Site_model->get(array("id" => $report->site_id));
+        $project = $this->Project_model->get(array("id" => $report->project_id));
         $contractor_sign = $this->Report_sign_model->get(array("site_id" => $site->id, "module" => "contractor_sign"));
         $contractor_staff = $this->Report_sign_model->get_all(array("site_id" => $site->id, "module" => "contractor_staff"));
         $owner_sign = $this->Report_sign_model->get(array("site_id" => $site->id, "module" => "owner_sign"));
@@ -637,7 +637,6 @@ class Report extends CI_Controller
         $viewData = new stdClass();
         $weather = $this->Report_weather_model->get(array("date" => $report->report_date));
         $contract = $this->Contract_model->get(array("id" => $report->contract_id));
-        $project = $this->Project_model->get(array("id" => $report->project_id));
         $viewData->contract = $contract;
         $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
         $owner = $this->Company_model->get(array("id" => $contract->isveren));
@@ -898,8 +897,7 @@ class Report extends CI_Controller
         }
         $pdf->Ln(); // Yeni satıra geç
         $date = dateFormat_dmy($report->report_date);
-        $project_code = project_code($site->project_id);
-        $imageDirectory = "$this->Upload_Folder/$this->Module_Main_Dir/$project_code/$site->dosya_no/Reports/$date/thumbnails";
+        $imageDirectory = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$date/thumbnails";
         $originalPath = K_PATH_MAIN;
         if (DIRECTORY_SEPARATOR == "\\") {
             $removePart = 'application' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'tcpdf/';
@@ -992,4 +990,85 @@ class Report extends CI_Controller
             $pdf->Output("$file_name.pdf", "D");
         }
     }
+
+    function getDailyForecastByCityName($city_name)
+    {
+        $api_key = 'hJA0Edlt4yr3aaQTe2V2b0i43R3A5LX5';
+
+        // 1. Şehir adına göre location key al
+        $location_url = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey={$api_key}&q=" . urlencode($city_name) . "&language=tr";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $location_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $location_response = curl_exec($ch);
+
+        if ($location_response === false) {
+            echo 'Konum sorgusunda cURL Hatası: ' . curl_error($ch);
+            curl_close($ch);
+            return;
+        }
+
+        $location_data = json_decode($location_response, true);
+
+        if (empty($location_data) || !isset($location_data[0]['Key'])) {
+            echo "Şehir bulunamadı veya geçersiz: $city_name";
+            curl_close($ch);
+            return;
+        }
+
+        $city_key = $location_data[0]['Key'];
+        $localized_city = $location_data[0]['LocalizedName'];
+        $country = $location_data[0]['Country']['LocalizedName'];
+        $region = $location_data[0]['AdministrativeArea']['LocalizedName'];
+
+        // 2. Location key ile günlük hava durumu al
+        $forecast_url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/{$city_key}?apikey={$api_key}&language=tr&metric=true";
+        curl_setopt($ch, CURLOPT_URL, $forecast_url);
+        $forecast_response = curl_exec($ch);
+
+        if ($forecast_response === false) {
+            echo 'Hava durumu sorgusunda cURL Hatası: ' . curl_error($ch);
+            curl_close($ch);
+            return;
+        }
+
+        $forecast_data = json_decode($forecast_response, true);
+        curl_close($ch);
+
+        if (!empty($forecast_data['DailyForecasts'])) {
+            foreach ($forecast_data['DailyForecasts'] as $forecast) {
+                $date = $forecast['Date'];
+                $temperature_max = $forecast['Temperature']['Maximum']['Value'];
+                $temperature_min = $forecast['Temperature']['Minimum']['Value'];
+                $condition = $forecast['Day']['IconPhrase'];
+
+                echo "Şehir: $localized_city<br>";
+                echo "Ülke: $country<br>";
+                echo "Bölge: $region<br>";
+                echo "Tarih: " . date('d-m-Y', strtotime($date)) . "<br>";
+                echo "Maksimum Sıcaklık: " . $temperature_max . "°C<br>";
+                echo "Minimum Sıcaklık: " . $temperature_min . "°C<br>";
+                echo "Hava Durumu: " . $condition . "<br><br>";
+            }
+        } else {
+            echo "Hava durumu verisi alınamadı.";
+        }
+    }
+
+    public function unique_report_date($report_date, $site_id)
+    {
+        $ymd_report_date = dateFormat('Y-m-d', $report_date);
+        // Veritabanında aynı site_id ve report_date ile bir rapor var mı kontrol ediyoruz
+        $this->load->model('Report_model');  // Modeli yüklüyoruz
+        $record = $this->Report_model->get(array("site_id" => $site_id, "report_date" => $ymd_report_date));
+
+        // Eğer kayıt varsa, false döndürüyoruz
+        if ($record) {
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+
 }

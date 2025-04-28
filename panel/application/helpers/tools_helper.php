@@ -987,88 +987,18 @@ function get_city_coordinates_from_accuweather($city)
     return null;
 }
 
-function get_weather_from_accuweather($lat, $lon)
-{
-    $api_key = 'hJA0Edlt4yr3aaQTe2V2b0i43R3A5LX5';  // Your API key here
-    $url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/{$lat},{$lon}?apikey=$api_key&metric=true";
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    $data = json_decode($response, true);
-
-    if (!empty($data['DailyForecasts'])) {
-        return $data['DailyForecasts'][0];  // Return daily weather data
+function filter_array($array, $key) {
+    $filtered = array();
+    if (!is_array($array)) {
+        return $filtered;
     }
-
-    return null;
-}
-
-function getDailyForecastByCityName($city_name) {
-    $api_key = 'hJA0Edlt4yr3aaQTe2V2b0i43R3A5LX5';
-
-    // 1. Şehir adına göre location key al
-    $location_url = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey={$api_key}&q=" . urlencode($city_name) . "&language=tr";
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $location_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $location_response = curl_exec($ch);
-
-    if ($location_response === false) {
-        echo 'Konum sorgusunda cURL Hatası: ' . curl_error($ch);
-        curl_close($ch);
-        return;
-    }
-
-    $location_data = json_decode($location_response, true);
-
-    if (empty($location_data) || !isset($location_data[0]['Key'])) {
-        echo "Şehir bulunamadı veya geçersiz: $city_name";
-        curl_close($ch);
-        return;
-    }
-
-    $city_key = $location_data[0]['Key'];
-    $localized_city = $location_data[0]['LocalizedName'];
-    $country = $location_data[0]['Country']['LocalizedName'];
-    $region = $location_data[0]['AdministrativeArea']['LocalizedName'];
-
-    // 2. Location key ile günlük hava durumu al
-    $forecast_url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/{$city_key}?apikey={$api_key}&language=tr&metric=true";
-    curl_setopt($ch, CURLOPT_URL, $forecast_url);
-    $forecast_response = curl_exec($ch);
-
-    if ($forecast_response === false) {
-        echo 'Hava durumu sorgusunda cURL Hatası: ' . curl_error($ch);
-        curl_close($ch);
-        return;
-    }
-
-    $forecast_data = json_decode($forecast_response, true);
-    curl_close($ch);
-
-    if (!empty($forecast_data['DailyForecasts'])) {
-        foreach ($forecast_data['DailyForecasts'] as $forecast) {
-            $date = $forecast['Date'];
-            $temperature_max = $forecast['Temperature']['Maximum']['Value'];
-            $temperature_min = $forecast['Temperature']['Minimum']['Value'];
-            $condition = $forecast['Day']['IconPhrase'];
-
-            echo "Şehir: $localized_city<br>";
-            echo "Ülke: $country<br>";
-            echo "Bölge: $region<br>";
-            echo "Tarih: " . date('d-m-Y', strtotime($date)) . "<br>";
-            echo "Maksimum Sıcaklık: " . $temperature_max . "°C<br>";
-            echo "Minimum Sıcaklık: " . $temperature_min . "°C<br>";
-            echo "Hava Durumu: " . $condition . "<br><br>";
+    foreach ($array as $item) {
+        if (isset($item[$key]) && strlen(trim($item[$key])) > 0) {
+            $filtered[] = $item;
         }
-    } else {
-        echo "Hava durumu verisi alınamadı.";
     }
+    return $filtered;
 }
+
+
 

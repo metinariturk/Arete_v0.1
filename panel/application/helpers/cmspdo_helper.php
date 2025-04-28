@@ -861,4 +861,17 @@ function get_next_file_code($module_name)
     return $next_file_code;
 }
 
+function get_next_id($table)
+{
+    $ci = &get_instance();
+    $ci->load->database();
+
+    // Veritabanı sorgusu ile en yüksek id'yi al
+    $ci->db->select_max('id');
+    $q = $ci->db->get(mb_strtolower($table));
+
+    // Sonuçtan id'yi al ve 1 ekleyerek sıradaki id'yi döndür
+    return ($q->num_rows() > 0 && $q->row()->id) ? $q->row()->id + 1 : 1; // Eğer hiç veri yoksa 1 dönecektir
+}
+
 

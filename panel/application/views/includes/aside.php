@@ -1,6 +1,6 @@
 <div class="sidebar-wrapper">
     <div>
-        <div class="logo-wrapper">
+        <div class="logo-wrapper" style="height: 74px;">
             <a href="<?php echo base_url(); ?>"><img class="mg-fluid for-light" width="100px"
                                                      src="<?php echo base_url("assets"); ?>/images/logo/logo.png"
                                                      alt=""><img

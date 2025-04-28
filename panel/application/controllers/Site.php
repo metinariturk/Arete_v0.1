@@ -216,7 +216,7 @@ class Site extends MY_Controller
         $validate = $this->form_validation->run();
         if ($validate) {
 
-            $path = "upload/project_v/$project->dosya_no/$file_name/Main/";
+            $path = "uploads/project_v/$project->dosya_no/$file_name/Main/";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
                 echo "oluştu";
@@ -300,9 +300,9 @@ class Site extends MY_Controller
         $contract = $this->Contract_model->get(array("id" => $item->contract_id));
         $sites = $this->Site_model->get_all(array("isActive" => 1));
         $upload_function = base_url("Site/file_upload/$item->id");
-        $path = "upload/project_v/$project->dosya_no/$item->dosya_no/main/";
-        $path_sitewallet = "upload/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/";
-        $path_personel = "upload/project_v/$project->dosya_no/$item->dosya_no/Personel/";
+        $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/main/";
+        $path_sitewallet = "uploads/project_v/$project->dosya_no/$item->dosya_no/Sitewallet/";
+        $path_personel = "uploads/project_v/$project->dosya_no/$item->dosya_no/Personel/";
         !is_dir($path) && mkdir($path, 0777, TRUE);
         !is_dir($path_sitewallet) && mkdir($path_sitewallet, 0777, TRUE);
         !is_dir($path_personel) && mkdir($path_personel, 0777, TRUE);
@@ -455,7 +455,7 @@ class Site extends MY_Controller
 
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $path = "upload/project_v/$project->dosya_no/$site->dosya_no/main/";
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/main/";
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }
@@ -492,7 +492,7 @@ class Site extends MY_Controller
 
         $site = $this->Site_model->get(array("id" => $id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $path = "upload/project_v/$project->dosya_no/$site->dosya_no/main/";
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/main/";
         $fileName = $this->input->post('fileName');
         unlink("$path/$fileName");
     }

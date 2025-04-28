@@ -1741,12 +1741,13 @@ class Contract extends MY_Controller
         }
         // Formdan gelen klasör adı
         $folderName = convertToSEO($this->input->post('new_folder_name'));
-        $new_folder = "{uploads/project_v}/{$project->dosya_no}/{$item->dosya_no}/$folderName";
+        $new_folder = "uploads/project_v/$project->dosya_no/$item->dosya_no/$folderName";
         $this->load->library("form_validation");
         $this->form_validation->set_rules('new_folder_name', 'Klasör Adı', "required|callback_unique_folder_name[$new_folder]");
         $this->form_validation->set_message(
             array(
                 "required" => "<b>{field}</b> alanı doldurulmalıdır",
+                "unique_folder_name" => "<b>{field}</b>aynı isimde dosya mevcut",
             )
         );
         $validate = $this->form_validation->run();

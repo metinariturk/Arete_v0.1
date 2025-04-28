@@ -26,7 +26,7 @@
                             <div class="btn btn-light">
                                     <span style="padding-left: 40px">
                                         <i class="icon-gallery"></i>
-                                        <?php echo $item->dosya_no; ?> / <?php echo module_name(site_module); ?>
+                                        <?php echo $item->dosya_no; ?>
                                     </span>
                             </div>
                         </li>

@@ -1,134 +1,45 @@
 <style>
-    .enlarge-image {
-        transition: transform 0.5s;
-    }
+     .form-switch .form-check-input {
+         width: 4em;
+         height: 2em;
+     }
 
-    .enlarge-image:hover {
-        transform: scale(2);
-    }
+     .project-info {
+         font-family: Arial, sans-serif;
+         line-height: 1.5;
+         margin-bottom: 20px;
+     }
 
-    body{
-        margin-top:20px;
-        background:#DCDCDC;
-    }
-    .card-box {
-        padding: 20px;
-        border-radius: 3px;
-        margin-bottom: 30px;
-        background-color: #fff;
-    }
+     .info-header {
+         margin-bottom: 10px;
+     }
 
-    .file-man-box {
-        padding: 20px;
-        border: 1px solid #e3eaef;
-        border-radius: 5px;
-        position: relative;
-        margin-bottom: 20px
-    }
+     .info-header h5 {
+         font-size: 1.2rem;
+         font-weight: bold;
+         color: #333;
+     }
 
-    .file-man-box .file-close {
-        color: #f1556c;
-        position: absolute;
-        line-height: 24px;
-        font-size: 24px;
-        right: 10px;
-        top: 10px;
-        visibility: hidden
-    }
+     .info-header small.status {
+         color: #777;
+     }
 
-    .file-man-box .file-img-box {
-        line-height: 120px;
-        text-align: center
-    }
+     .status .badge {
+         padding: 5px 10px;
+         font-size: 0.9rem;
+         border-radius: 5px;
+     }
 
-    .file-man-box .file-img-box img {
-        height: 64px
-    }
+     .company-name {
+         font-size: 1.1rem;
+         margin-bottom: 8px;
+         color: #444;
+     }
 
-    .file-man-box .file-download {
-        font-size: 32px;
-        color: #98a6ad;
-        position: absolute;
-        right: 10px
-    }
+     .site-info span {
+         font-size: 1rem;
+         margin-right: 10px;
+     }
 
-    .file-man-box .file-download:hover {
-        color: #313a46
-    }
-
-    .file-man-box .file-man-title {
-        padding-right: 25px
-    }
-
-    .file-man-box:hover {
-        -webkit-box-shadow: 0 0 24px 0 rgba(0, 0, 0, .06), 0 1px 0 0 rgba(0, 0, 0, .02);
-        box-shadow: 0 0 24px 0 rgba(0, 0, 0, .06), 0 1px 0 0 rgba(0, 0, 0, .02)
-    }
-
-    .file-man-box:hover .file-close {
-        visibility: visible
-    }
-    .text-overflow {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: block;
-        width: 100%;
-        overflow: hidden;
-    }
-    h5 {
-        font-size: 15px;
-    }
-
-    td {
-        height: 15pt;
-    }
-
-    td.calculate-row-right {
-        text-align: right;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.total-group-row-right {
-        text-align: right;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.calculate-row-left {
-        text-align: left;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.total-group-row-left {
-        text-align: left;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.calculate-row-center {
-        text-align: center;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.total-group-row-center {
-        text-align: center;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.total-group-header-center {
-        background-color: #e7e7e7;
-        text-align: center;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.total-group-header-right {
-        background-color: #e7e7e7;
-        text-align: right;
-        border: 1px solid #a8b5cf;
-    }
-
-    td.calculate-header-center {
-        background-color: #e7e7e7;
-        text-align: center;
-        border: 1px solid #a8b5cf;
-    }
 </style>
 
