@@ -4,56 +4,56 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-class Boq extends CI_Controller
+class Boq extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
     public function __construct()
     {
         parent::__construct();
-        if (!get_active_user()) {
-            redirect(base_url("login"));
+
+        $models = [
+            'Boq_model',
+            'Payment_model',
+            'Contract_model',
+            'Contract_price_model',
+            'Project_model',
+        ];
+        foreach ($models as $model) {
+            $this->load->model($model);
         }
-        $this->Theme_mode = get_active_user()->mode;
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
-        $this->moduleFolder = "contract_module";
-        $this->viewFolder = "boq_v";
-        $this->load->model("Boq_model");
-        $this->load->model("Payment_model");
-        $this->load->model("Contract_model");
-        $this->load->model("Contract_price_model");
-        $this->load->model("Project_model");
-        $this->load->model("Settings_model");
-        $this->load->model("User_model");
-        $this->load->model("Bond_model");
-        $this->Module_Name = "boq";
-        $this->Module_Title = "Metraj";
-        $this->Upload_Folder = "uploads";
-        $this->Module_Main_Dir = "project_v";
-        $this->Module_Depended_Dir = "contract";
-        $this->Module_File_Dir = "boq";
-        $this->Module_Table = "boq";
-        $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
-        $this->File_Dir_Suffix = "$this->Module_Depended_Dir/$this->Module_File_Dir";
-        $this->Display_route = "file_form";
-        $this->Update_route = "update_form";
-        $this->Dependet_id_key = "boq_id";
-        $this->Add_Folder = "add";
-        $this->Display_Folder = "display";
-        $this->List_Folder = "list";
-        $this->Select_Folder = "select";
-        $this->Update_Folder = "update";
-        
-        $this->Common_Files = "common";
+        $this->rules = array(
+            "new_form" => array('report' => ['w']),
+            "calculate_render" => array('report' => ['r']),
+            "rebar_render" => array('report' => ['r']),
+            "save" => array('report' => ['w', 'u']),
+            "delete" => array('report' => ['d', 'u']),
+            "open_sub" => array('report' => ['r', 'w', 'u']),
+            "back_main" => array('report' => ['r', 'w', 'u']),
+            "template_download" => array('report' => ['r']),
+            "template_download_rebar" => array('report' => ['r']),
+        );
+
+        $this->check_permissions();
     }
+
+    protected function check_permissions()
+    {
+        $current_method = strtolower($this->router->method);
+
+        if (!isset($this->rules[$current_method])) {
+            show_error($current_method . "Yetki tanımı yapılmamış!", 403);
+        }
+
+        foreach ($this->rules[$current_method] as $module => $permissions) {
+            if (!user_has_permission($module, $permissions)) {
+                show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+            }
+        }
+    }
+
     public function new_form($contract_id = null, $payment_no = null, $boq_id = null)
     {
-        if (!isAdmin() && !permission_control("payment", "r")) {
-            redirect(base_url("error"));
-            return;
-        }
         if (empty($payment_no)) {
             if (empty($contract_id)) {
                 $contract_id = $this->input->post("contract_id");
@@ -78,9 +78,9 @@ class Boq extends CI_Controller
         $viewData = new stdClass();
         $settings = $this->Settings_model->get();
         
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Add_Folder";
+        $viewData->viewModule = "contract_module";
+        $viewData->viewFolder = "boq_v";
+        $viewData->subViewFolder = "add";
         $viewData->payment_no = $payment_no;
         $viewData->main_groups = $main_groups;
         $viewData->payment_id = $payment_id;
@@ -96,10 +96,7 @@ class Boq extends CI_Controller
     }
     public function calculate_render($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "w")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         $update = $this->Contract_price_model->update(
             array(
                 "id" => $boq_id
@@ -116,9 +113,9 @@ class Boq extends CI_Controller
                 "payment_no", "$payment->hakedis_no",
                 "boq_id", $boq_id);
         
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->viewModule = "contract_module";
+        $viewData->viewFolder = "boq_v";
+        $viewData->subViewFolder = "display";
         $viewData->income = $boq_id;
         $viewData->payment = $payment;
         if (isset($isset_boq)) {
@@ -139,10 +136,7 @@ class Boq extends CI_Controller
     }
     public function rebar_render($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "w")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         $update = $this->Contract_price_model->update(
             array(
                 "id" => $boq_id
@@ -159,9 +153,9 @@ class Boq extends CI_Controller
                 "payment_no", "$payment->hakedis_no",
                 "boq_id", $boq_id);
         
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->viewModule = "contract_module";
+        $viewData->viewFolder = "boq_v";
+        $viewData->subViewFolder = "display";
         $viewData->income = $boq_id;
         $viewData->payment = $payment;
         if (isset($isset_boq)) {
@@ -182,10 +176,7 @@ class Boq extends CI_Controller
     }
     public function save($contract_id, $payment_id, $stay = null)
     {
-        if (!isAdmin() && !permission_control("payment", "w")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $boq_id = ($this->input->post('boq_id'));
         $boq_array = ($this->input->post('boq[]'));
@@ -311,9 +302,9 @@ class Boq extends CI_Controller
                 "payment_no", "$payment->hakedis_no",
                 "boq_id", $boq_id);
         
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->viewModule = "contract_module";
+        $viewData->viewFolder = "boq_v";
+        $viewData->subViewFolder = "display";
         $viewData->income = $boq_id;
         if (isset($isset_boq)) {
             $old_boq = $this->Boq_model->get(
@@ -333,15 +324,12 @@ class Boq extends CI_Controller
     }
     public function delete($contract_id, $payment_no, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "d")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         $viewData = new stdClass();
         
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+        $viewData->viewModule = "contract_module";
+        $viewData->viewFolder = "boq_v";
+        $viewData->subViewFolder = "display";
         $boq = $this->Boq_model->get(array("boq_id" => $boq_id,
                 "contract_id" => $contract_id,
                 "payment_no" => $payment_no)
@@ -362,10 +350,7 @@ class Boq extends CI_Controller
     }
     public function open_sub($contract_id, $sub_id, $payment_id)
     {
-        if (!isAdmin() && !permission_control("payment", "r")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         $sub_cont_items = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_id" => $sub_id));
         $main_group = $this->Contract_price_model->get(array("contract_id" => $contract_id));
         $sub_group = $this->Contract_price_model->get(array("id" => $sub_id));
@@ -374,8 +359,8 @@ class Boq extends CI_Controller
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
         
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->viewModule = $this->moduleFolder;
+        $viewData->viewFolder = "boq_v";
+        $viewData->viewModule = "contract_module";
         $viewData->subViewFolder = "add";
         $viewData->item = $item;
         $viewData->contract = $contract;
@@ -389,18 +374,15 @@ class Boq extends CI_Controller
     }
     public function back_main($contract_id, $payment_id)
     {
-        if (!isAdmin() && !permission_control("payment", "r")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         $contract = $this->Contract_model->get(array('id' => $contract_id));
         $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1));
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
         
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+        $viewData->viewModule = "contract_module";
+        $viewData->viewFolder = "boq_v";
         $viewData->subViewFolder = "add";
         $viewData->contract = $contract;
         $viewData->payment = $payment;
@@ -411,10 +393,7 @@ class Boq extends CI_Controller
     }
     public function template_download($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "r")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         // Ödeme bilgilerini al
         $this->load->model("Company_model");
         $payment = $this->Payment_model->get(array('id' => $payment_id));
@@ -464,10 +443,7 @@ class Boq extends CI_Controller
     }
     public function template_download_rebar($contract_id, $payment_id, $boq_id)
     {
-        if (!isAdmin() && !permission_control("payment", "r")) {
-            redirect(base_url("error"));
-            return;
-        }
+
         // Ödeme bilgilerini al
         $this->load->model("Company_model");
         $payment = $this->Payment_model->get(array('id' => $payment_id));
