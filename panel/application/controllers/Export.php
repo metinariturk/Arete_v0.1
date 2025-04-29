@@ -29,15 +29,7 @@ class Export extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        // Kullanıcı girişi kontrolü
-        if (!get_active_user()) {
-            redirect(base_url("login"));
-        }
-        $this->Theme_mode = get_active_user()->mode;
-        // Geçici şifre kontrolü
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
+
         // Modül ve görünüm klasörleri tanımlamaları
         $this->moduleFolder = "contract_module";
         $this->viewFolder = "contract_v";

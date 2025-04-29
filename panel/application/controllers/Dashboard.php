@@ -7,13 +7,7 @@ class Dashboard extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        if (!get_active_user()) {
-            redirect(base_url("login"));
-        }
-        $this->Theme_mode = get_active_user()->mode;
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
+
         $this->viewFolder = "dashboard_v";
         $this->Module_Name = "dashboard";
         $this->Display_Folder = "Anasayfa";

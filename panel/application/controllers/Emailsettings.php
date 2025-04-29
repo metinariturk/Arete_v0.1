@@ -9,9 +9,7 @@ class Emailsettings extends MY_Controller
         $this->Module_Name = "Emailsettings";
         $this->load->model("Emailsettings_model");
         $this->Module_Title = "E Posta Ayarları";
-        if(!get_active_user()){
-            redirect(base_url("login"));
-        }
+
     }
     public function index(){
         $viewData = new stdClass();

@@ -1,5 +1,5 @@
 <?php
-class login extends MY_Controller
+class login extends CI_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
