@@ -16,7 +16,6 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("contract_module/boq_v/common/title"); ?>
             <?php $this->load->view("contract_module/boq_v/add/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>

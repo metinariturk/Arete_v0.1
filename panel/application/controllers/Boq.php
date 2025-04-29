@@ -54,6 +54,7 @@ class Boq extends MY_Controller
 
     public function new_form($contract_id = null, $payment_no = null, $boq_id = null)
     {
+
         if (empty($payment_no)) {
             if (empty($contract_id)) {
                 $contract_id = $this->input->post("contract_id");
@@ -90,7 +91,8 @@ class Boq extends MY_Controller
         $viewData->settings = $settings;
         $viewData->contract_id = $contract_id;
         if ((!empty($this->input->post("contract_id"))) or !empty($contract_id)) {
-            $viewData->project_id = project_id_cont($contract_id);
+            $project = $this->Project_model->get(array("id"=> $contract->project_id));
+            $viewData->project = $project;
         }
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }

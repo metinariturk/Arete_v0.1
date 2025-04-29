@@ -265,7 +265,7 @@
       <workItem from="1745514878732" duration="5863000" />
       <workItem from="1745697058652" duration="20288000" />
       <workItem from="1745831497495" duration="1463000" />
-      <workItem from="1745942113995" duration="728000" />
+      <workItem from="1745942113995" duration="3240000" />
     </task>
     <servers />
   </component>
@@ -277,7 +277,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>343</line>
+          <line>345</line>
           <properties>
             <option name="className" value="\Boq" />
             <option name="methodName" value="template_download" />
