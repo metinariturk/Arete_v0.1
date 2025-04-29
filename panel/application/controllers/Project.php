@@ -308,79 +308,68 @@ class Project extends MY_Controller
 
     public function file_upload($id)
     {
-        if (isAdmin() || permission_control("project", "u")) {
-            $project = $this->Project_model->get(array("id" => $id));
-            $path = "uploads/project_v/$project->dosya_no/main/";
-            if (!is_dir($path)) {
-                mkdir($path, 0777, TRUE);
-            }
-            $FileUploader = new FileUploader('files', array(
-                'limit' => null,
-                'maxSize' => null,
-                'extensions' => null,
-                'uploadDir' => $path,
-                'title' => 'name'
-            ));
-            // call to upload the files
-            $uploadedFiles = $FileUploader->upload();
-            $files = ($uploadedFiles['files']);
-            if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
-                // Yüklenen dosyaları işleyin
-                foreach ($uploadedFiles['files'] as $file) {
-                    // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
-                    if ($file['size'] > 2097152) {
-                        // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
-                        $newWidth = null; // Örnek olarak 500 piksel genişlik
-                        $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
-                        // Yeniden boyutlandırma işlemi
-                        FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
-                    }
+        $project = $this->Project_model->get(array("id" => $id));
+        $path = "uploads/project_v/$project->dosya_no/main/";
+        if (!is_dir($path)) {
+            mkdir($path, 0777, TRUE);
+        }
+        $FileUploader = new FileUploader('files', array(
+            'limit' => null,
+            'maxSize' => null,
+            'extensions' => null,
+            'uploadDir' => $path,
+            'title' => 'name'
+        ));
+        // call to upload the files
+        $uploadedFiles = $FileUploader->upload();
+        $files = ($uploadedFiles['files']);
+        if ($uploadedFiles['isSuccess'] && count($uploadedFiles['files']) > 0) {
+            // Yüklenen dosyaları işleyin
+            foreach ($uploadedFiles['files'] as $file) {
+                // Dosya boyutunu kontrol edin ve yeniden boyutlandırma işlemlerini gerçekleştirin
+                if ($file['size'] > 2097152) {
+                    // Yeniden boyutlandırma işlemi için uygun genişlik ve yükseklik değerlerini belirleyin
+                    $newWidth = null; // Örnek olarak 500 piksel genişlik
+                    $newHeight = 1080; // Yüksekliği belirtmediğiniz takdirde orijinal oran korunur
+                    // Yeniden boyutlandırma işlemi
+                    FileUploader::resize($path . $file['name'], $newWidth, $newHeight, $destination = null, $crop = false, $quality = 75);
                 }
             }
-            header('Content-Type: application/json');
-            echo json_encode($uploadedFiles);
-            exit;
-        } else {
-            echo "Bu İşlemi Yapma Yetkiniz Yok";
         }
+        header('Content-Type: application/json');
+        echo json_encode($uploadedFiles);
+        exit;
+
     }
 
     public function filedelete_java($id)
     {
-        if (isAdmin() && permission_control("project", "d")) {
-            $fileName = $this->input->post('fileName');
-            $project = $this->Project_model->get(array("id" => $id));
-            $path = "uploads/project_v/$project->dosya_no/main/";
-            unlink("$path/$fileName");
-        } else {
-            echo "Bu İşlemi Yapma Yetkiniz Yok";
-        }
+        $fileName = $this->input->post('fileName');
+        $project = $this->Project_model->get(array("id" => $id));
+        $path = "uploads/project_v/$project->dosya_no/main/";
+        unlink("$path/$fileName");
     }
 
     public
     function download_all($project_id)
     {
-        if (isAdmin() && permission_control("project", "u")) {
-            $this->load->library('zip');
-            $this->zip->compression_level = 0;
-            $project_code = project_code($project_id);
-            $project_name = get_from_id("project", "project_name", $project_id);
-            $path = "uploads/project_v/$project_code/main";
-            $files = glob($path . '/*');
-            foreach ($files as $file) {
-                $this->zip->read_file($file, FALSE);
-            }
-            $zip_name = $project_name;
-            $this->zip->download("$zip_name");
-        } else {
-            echo "Bu İşlemi Yapma Yetkiniz Yok";
+        $this->load->library('zip');
+        $this->zip->compression_level = 0;
+        $project_code = project_code($project_id);
+        $project_name = get_from_id("project", "project_name", $project_id);
+        $path = "uploads/project_v/$project_code/main";
+        $files = glob($path . '/*');
+        foreach ($files as $file) {
+            $this->zip->read_file($file, FALSE);
         }
+        $zip_name = $project_name;
+        $this->zip->download("$zip_name");
+
     }
 
     public
     function duplicate_code_check($str)
     {
-
         $file_name = "PRJ-" . $str;
         $var = count_data("project", "dosya_no", $file_name);
         if (($var > 0)) {
@@ -426,7 +415,8 @@ class Project extends MY_Controller
         }
     }
 
-    public function create_contract($project_id = null, $parent_contract = null)
+    public
+    function create_contract($project_id = null, $parent_contract = null)
     {
 
         $project_code = project_code($project_id);
@@ -518,7 +508,8 @@ class Project extends MY_Controller
         }
     }
 
-    public function create_site($project_id = null)
+    public
+    function create_site($project_id = null)
     {
 
         $next_site_name = get_next_file_code("Site");
@@ -608,7 +599,8 @@ class Project extends MY_Controller
         }
     }
 
-    public function changestatus($id)
+    public
+    function changestatus($id)
     {
         $item = $this->Project_model->get(array("id" => $id));
         if (!$item) {

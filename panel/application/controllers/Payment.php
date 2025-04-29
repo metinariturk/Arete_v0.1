@@ -1,80 +1,106 @@
 <?php
-class Payment extends CI_Controller
+
+class Payment extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
+
     public function __construct()
     {
         parent::__construct();
-        if (!get_active_user()) {
-            redirect(base_url("login"));
+
+        $models = [
+            'Payment_model',
+            'Payment_settings_model',
+            'Payment_sign_model',
+            'Contract_model',
+            'Company_model',
+            'Contract_price_model',
+            'Project_model',
+            'Boq_model',
+        ];
+
+        foreach ($models as $model) {
+            $this->load->model($model);
         }
-        $this->Theme_mode = get_active_user()->mode;
-        if (temp_pass_control()) {
-            redirect(base_url("sifre-yenile"));
-        }
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
-        $this->moduleFolder = "contract_module";
-        $this->viewFolder = "payment_v";
-        $this->load->model("Payment_model");
-        $this->load->model("Payment_settings_model");
-        $this->load->model("Payment_sign_model");
-        $this->load->model("Contract_model");
-        $this->load->model("Company_model");
-        $this->load->model("Favorite_model");
-        $this->load->model("Contract_price_model");
-        $this->load->model("Project_model");
-        $this->load->model("Boq_model");
-        $this->load->model("Settings_model");
-        $this->Module_Name = "payment";
-        $this->Module_Title = "Hakediş";
-        // Folder Structure
-        $this->Upload_Folder = "uploads";
-        $this->Module_Main_Dir = "project_v";
-        $this->Module_Depended_Dir = "contract";
-        $this->Module_File_Dir = "payment";
-        $this->Module_Table = "payment";
-        $this->File_Dir_Prefix = "$this->Upload_Folder/$this->Module_Main_Dir";
-        $this->File_Dir_Suffix = "$this->Module_Depended_Dir/$this->Module_File_Dir";
-        // Folder Structure
-        $this->Display_route = "file_form";
-        $this->Dependet_id_key = "payment_id";
-        //Folder Structure
-        $this->Add_Folder = "add";
-        $this->Display_Folder = "display";
-        $this->List_Folder = "list";
-        $this->Select_Folder = "select";
-        $this->Common_Files = "common";
-        $module_unique_name = module_name($this->Module_Name);
+
+        $this->rules = array(
+            "index" => array('payment' => ['r', 'u', 'w', 'd']),
+            "select" => array('payment' => ['r', 'u', 'w', 'd']),
+            "file_form" => array('payment' => ['r']),
+            "create" => array('payment' => ['w']),
+            "save" => array('payment' => ['w', 'r']),
+            "delete" => array('payment' => ['d']),
+            "delete_calc" => array('payment' => ['u', 'd']),
+            "empty_report" => array('payment' => ['u', 'd']),
+            "file_upload" => array('payment' => ['r', 'u', 'w']),
+            "filedelete_java" => array('payment' => ['u', 'w']),
+            "download_all" => array('payment' => ['r', 'u', 'w']),
+            "duplicate_code_check" => array(),
+            "sitedel_paymentday" => array(),
+            "print_calculate" => array('payment' => ['r', 'w', 'u']),
+            "print_calculate_sub" => array('payment' => ['r', 'w', 'u']),
+            "print_green" => array('payment' => ['r', 'w', 'u']),
+            "print_works_done" => array('payment' => ['r', 'w', 'u']),
+            "print_lead_report" => array('payment' => ['r', 'w', 'u']),
+            "print_group_total" => array('payment' => ['r', 'w', 'u']),
+            "print_main_total" => array('payment' => ['r', 'w', 'u']),
+            "print_cover" => array('payment' => ['r', 'w', 'u']),
+            "print_report" => array('payment' => ['r', 'w', 'u']),
+            "update_payment" => array('payment' => ['u', 'w', 'd']),
+            "sign_options" => array('payment' => ['u', 'w', 'd']),
+            "delete_sign" => array('payment' => ['w', 'u']),
+            "sign_rankSetter" => array('payment' => ['w', 'u']),
+            "print_all" => array('payment' => ['r', 'u', 'w']),
+        );
+
+        $this->check_permissions();
+
     }
+
+    protected function check_permissions()
+    {
+        $current_method = strtolower($this->router->method);
+
+        if (!isset($this->rules[$current_method])) {
+            show_error($current_method . "Yetki tanımı yapılmamış!", 403);
+        }
+
+        foreach ($this->rules[$current_method] as $module => $permissions) {
+            if (!user_has_permission($module, $permissions)) {
+                show_error('Bu sayfaya erişim yetkiniz yok!', 403);
+            }
+        }
+    }
+
+
     public function index()
     {
         $viewData = new stdClass();
-        
+
         $items = $this->Payment_model->get_all(array());
         $contracts = $this->Contract_model->get_all(array(), "sozlesme_tarih DESC");
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->List_Folder";
+        
+       
         $viewData->items = $items;
         $viewData->contracts = $contracts;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("contract_module/payment_v/list/index", $viewData);
     }
+
     public function select()
     {
         $viewData = new stdClass();
-        
+
         $items = $this->Payment_model->get_all(array());
         $active_contracts = $this->Contract_model->get_all(array()
         );
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "select";
+        
+       
         $viewData->items = $items;
         $viewData->active_contracts = $active_contracts;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+        $this->load->view("contract_module/payment_v/select/index", $viewData);
     }
+
     public
     function file_form($id, $active_tab = null)
     {
@@ -88,14 +114,14 @@ class Payment extends CI_Controller
         $active_boqs = $this->Contract_price_model->get_all(array("contract_id" => $contract->id, "main_group" => null, "sub_group" => null,), "code ASC");
         $settings = $this->Settings_model->get();
         $payment_settings = $this->Payment_settings_model->get(array("contract_id" => $contract->id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Payment/$payment->hakedis_no/";
+        $path = "uploads/project_v/$project->dosya_no/$contract->dosya_no/Payment/$payment->hakedis_no/";
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
-        $viewData->subViewFolder = "$this->Display_Folder";
+
+        $viewData->item = $payment;
         $viewData->contract = $contract;
         $viewData->path = $path;
         $viewData->main_groups = $main_groups;
@@ -108,35 +134,28 @@ class Payment extends CI_Controller
         $viewData->active_tab = $active_tab;
         $viewData->settings = $settings;
         $viewData->payment_settings = $payment_settings;
-        $item = $this->Payment_model->get(
-            array(
-                "id" => $id
-            )
-        );
-        $viewData->item = $item;
-        $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
+
+        $this->load->view("contract_module/payment_v/display/index", $viewData);
     }
+
     public
     function create($contract_id)
     {
-        $project_id = project_id_cont($contract_id);
-        $project_code = project_code($project_id);
-        $contract_code = contract_code($contract_id);
-        $contract = $this->Contract_model->get(array(
-                "id" => $contract_id
-            )
-        );
+        $contract = $this->Contract_model->get(array("id" => $contract_id));
+        $project = $this->Project_model->get(array("id" => $contract->project_id));
+
         $hak_no = $this->input->post('hakedis_no');
+
         if ($hak_no != 1) {
             $imalat_tarihi = dateFormat('Y-m-d', $this->input->post("imalat_tarihi"));
-            $last_payment_id = get_from_any_and("payment", "contract_id", "$contract_id", "hakedis_no", last_payment($contract_id));
+            $last_payment_id = get_from_any_and("payment", "contract_id", "$contract->id", "hakedis_no", last_payment($contract->id));
             $last_payment_day = dateFormat('d-m-Y', get_from_any("payment", "imalat_tarihi", "id", "$last_payment_id"));
             $last_payment_no = get_from_id("payment", "hakedis_no", "$last_payment_id");
             $warning = "son hakediş <b>" . "$last_payment_no" . " nolu </b> hakedişin tarihi olan";
         }
         if ($hak_no == 1) {
             $imalat_tarihi = dateFormat('Y-m-d', $this->input->post("imalat_tarihi"));
-            $yer_teslimi_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sitedel_date", "id", "$contract_id"));
+            $yer_teslimi_tarihi = dateFormat('d-m-Y', get_from_any("contract", "sitedel_date", "id", "$contract->id"));
             $warning = "yer teslimi tarihi olan";
         }
         $this->load->library("form_validation");
@@ -159,7 +178,7 @@ class Payment extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
         if ($validate) {
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$hak_no";
+            $path = "uploads/project_v/$project->dosya_no/$contract->dosya_no/Payment/$hak_no";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
                 echo "Dosya Yolu Oluşturuldu: " . $path;
@@ -182,7 +201,7 @@ class Payment extends CI_Controller
             $record_id = $this->db->insert_id();
 
             $this->session->unset_userdata('form_errors');
-            redirect(base_url("$this->Module_Name/$this->Display_route/$record_id"));
+            redirect(base_url("payment/file_form/$record_id"));
         } else {
             $this->load->model("Advance_model");
             $this->load->model("Bond_model");
@@ -202,21 +221,15 @@ class Payment extends CI_Controller
             $this->load->model("Settings_model");
             $this->load->model("Site_model");
             $this->load->model("User_model");
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bazı Bilgi Girişlerinde Hata Oluştu",
-                "type" => "danger"
-            );
-            if (!isAdmin()) {
-                redirect(base_url("error"));
-            }
+
+
             $item = $this->Contract_model->get(array("id" => $contract->id));
-            $upload_function = base_url("$this->Module_Name/file_upload/$item->id");
+            $upload_function = base_url("payment/file_upload/$item->id");
             $project = $this->Project_model->get(array("id" => $item->project_id));
-            $path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Contract/";
-            $collection_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Collection";
-            $advance_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Advance";
-            $payment_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Payment";
+            $path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Contract/";
+            $collection_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Collection";
+            $advance_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Advance";
+            $payment_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Payment";
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
             !is_dir($path) && mkdir($path, 0777, TRUE);
             !is_dir($collection_path) && mkdir($collection_path, 0777, TRUE);
@@ -249,10 +262,7 @@ class Payment extends CI_Controller
             $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, "main_group" => 1));
             $leaders = $this->Contract_price_model->get_all(array('contract_id' => $contract->id, 'leader' => 1));
             // View'e gönderilecek Değişkenlerin Set Edilmesi
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = "contract_v";
-
-                $viewData->subViewFolder = "display";
+            
             $viewData->companys = $companys;
             $viewData->project = $project;
             $viewData->upload_function = $upload_function;
@@ -281,9 +291,10 @@ class Payment extends CI_Controller
                 $viewData->form_errors = null;
             }
             $viewData->item = $this->Contract_model->get(array("id" => $contract->id));
-            $this->load->view("{$viewData->viewModule}/contract_v/display/index", $viewData);
+            $this->load->view("contract_module/contract_v/display/index", $viewData);
         }
     }
+
     public
     function save($payment_id)
     {
@@ -330,7 +341,7 @@ class Payment extends CI_Controller
         // Form Validation Calistirilir..
         $validate = $this->form_validation->run();
         if ($validate) {
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/$payment->hakedis_no";
+            $path = "uploads/project_v/$project_code/$contract_code/Payment/$payment->hakedis_no";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
             }
@@ -376,26 +387,12 @@ class Payment extends CI_Controller
             );
             $record_id = $this->db->insert_id();
 
-            
-            if ($update) {
-                $alert = array(
-                    "title" => "Hakediş Bilgileri Eklendi",
-                    "text" => "Çıktı Almak İçin Butonları Kullanabilirsiniz",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarısız",
-                    "text" => "Hakediş Ekleme sırasında bir problem oluştu",
-                    "type" => "danger"
-                );
-            }
             $active_tab = "report";
             $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
             $contract = $this->Contract_model->get(array("id" => $contract_id));
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+            
+           
             $viewData->active_tab = $active_tab;
             $viewData->payment_settings = $payment_settings;
             $viewData->contract = $contract;
@@ -411,8 +408,8 @@ class Payment extends CI_Controller
             $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
             $contract = $this->Contract_model->get(array("id" => $contract_id));
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+            
+           
             $viewData->active_tab = $active_tab;
             $viewData->payment_settings = $payment_settings;
             $viewData->contract = $contract;
@@ -426,6 +423,7 @@ class Payment extends CI_Controller
             redirect(base_url("payment/file_form/$payment_id/report"));
         }
     }
+
     public
     function delete($payment_id)
     {
@@ -437,7 +435,7 @@ class Payment extends CI_Controller
             $project = $this->Project_model->get(array("id" => $contract->proje_id));
             $project_code = $project->dosya_no;
             $contract_code = $contract->dosya_no;
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/";
+            $path = "uploads/project_v/$project_code/$contract_code/Payment/";
             $sil = deleteDirectory($path);
 
             $delete2 = $this->Payment_model->delete(
@@ -445,30 +443,26 @@ class Payment extends CI_Controller
                     "id" => $payment_id
                 )
             );
-            
-            
+
+
             redirect(base_url("Contract/file_form/$contract->id"));
         } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bu hakedişten sonra yapılan hakedişleri silmeden bu işlemi gerçekleştiremezsiniz",
-                "type" => "alert"
-            );
-            
-            redirect(base_url("$this->Module_Name/$this->Display_route/$contract->id"));
+
+            redirect(base_url("payment/file_form/$contract->id"));
         }
     }
+
     public
     function delete_calc($id)
     {
         $hakedis_no = get_from_id("payment", "hakedis_no", "$id");
         $last_payment = last_payment(get_from_any("payment", "contract_id", "id", $id));
         if ($hakedis_no == $last_payment) {
-            $contract_id = get_from_id($this->Module_Table, "contract_id", $id);
+            $contract_id = get_from_id("payment", "contract_id", $id);
             $project_id = project_id_cont($contract_id);
             $project_code = project_code($project_id);
-            $contract_code = get_from_id("contract", "dosya_no", get_from_id($this->Module_Table, "contract_id", $id));
-            $path = "$this->File_Dir_Prefix/$project_code/$contract_code/Payment/";
+            $contract_code = get_from_id("contract", "dosya_no", get_from_id("payment", "contract_id", $id));
+            $path = "uploads/project_v/$project_code/$contract_code/Payment/";
             $sil = deleteDirectory($path);
 
             $delete3 = $this->Boq_model->delete(
@@ -482,18 +476,14 @@ class Payment extends CI_Controller
                     "id" => $id
                 )
             );
-            
-            redirect(base_url("$this->Module_Depended_Dir/$this->Display_route/$contract_id"));
+
+            redirect(base_url("contract/file_form/$contract_id"));
         } else {
-            $alert = array(
-                "title" => "İşlem Başarısız",
-                "text" => "Bu hakedişten sonra yapılan hakedişleri silmeden bu işlemi gerçekleştiremezsiniz",
-                "type" => "alert"
-            );
-            
-            redirect(base_url("$this->Module_Name/$this->Display_route/$id"));
+
+            redirect(base_url("payment/file_form/$id"));
         }
     }
+
     public
     function empty_report($payment_id)
     {
@@ -537,8 +527,8 @@ class Payment extends CI_Controller
         $payment_settings = $this->db->where(array("contract_id" => $contract_id))->get("payment_settings")->row();
         $contract = $this->Contract_model->get(array("id" => $contract_id));
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+        
+       
         $viewData->active_tab = $active_tab;
         $viewData->payment_settings = $payment_settings;
         $viewData->contract = $contract;
@@ -551,12 +541,13 @@ class Payment extends CI_Controller
         $viewData->form_error = true;
         redirect(base_url("payment/file_form/$payment_id/report"));
     }
+
     public function file_upload($id)
     {
         $payment = $this->Payment_model->get(array("id" => $id));
         $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Payment/$payment->hakedis_no/";
+        $path = "uploads/project_v/$project->dosya_no/$contract->dosya_no/Payment/$payment->hakedis_no/";
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }
@@ -587,15 +578,17 @@ class Payment extends CI_Controller
         echo json_encode($uploadedFiles);
         exit;
     }
+
     public function filedelete_java($id)
     {
         $fileName = $this->input->post('fileName');
         $payment = $this->Payment_model->get(array("id" => $id));
         $contract = $this->Contract_model->get(array("id" => $payment->contract_id));
         $project = $this->Project_model->get(array("id" => $contract->proje_id));
-        $path = "$this->Upload_Folder/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no/Payment/$payment->hakedis_no/";
+        $path = "uploads/project_v/$project->dosya_no/$contract->dosya_no/Payment/$payment->hakedis_no/";
         unlink("$path/$fileName");
     }
+
     public
     function download_all($payment_id)
     {
@@ -616,6 +609,7 @@ class Payment extends CI_Controller
         $zip_name = $contract_name . "-" . $hak_no . " Hakediş";
         $this->zip->download("$zip_name");
     }
+
     public
     function duplicate_code_check($file_name)
     {
@@ -627,6 +621,7 @@ class Payment extends CI_Controller
             return TRUE;
         }
     }
+
     public
     function sitedel_paymentday($payment_day, $sitedal_day)
     {
@@ -637,6 +632,7 @@ class Payment extends CI_Controller
             return TRUE;
         }
     }
+
     public
     function print_calculate($payment_id)
     {
@@ -787,6 +783,7 @@ class Payment extends CI_Controller
         $file_name = "07 - Metraj Cetveli-" . contract_name($contract_id) . "-Hak " . $payment_no;
         $pdf->Output("$file_name.pdf");
     }
+
     public
     function print_calculate_sub($payment_id, $P_or_D = null)
     {
@@ -943,6 +940,7 @@ class Payment extends CI_Controller
             $pdf->Output("$file_name.pdf", "D");
         }
     }
+
     public
     function print_green($payment_id, $hide_zero = null)
     {
@@ -1065,6 +1063,7 @@ class Payment extends CI_Controller
         $file_name = "02 - Metraj İcmali-" . contract_name($contract_id) . "-Hak " . $payment_no;
         $pdf->Output("$file_name.pdf");
     }
+
     public
     function print_works_done($payment_id, $print_zero = null)
     {
@@ -1257,6 +1256,7 @@ class Payment extends CI_Controller
         $file_name = "05 - Yapılan İşler Listesi-" . contract_name($contract_id) . "-Hak " . $payment_no;
         $pdf->Output("$file_name.pdf");
     }
+
     public
     function print_lead_report($payment_id, $print_zero = null)
     {
@@ -1375,6 +1375,7 @@ class Payment extends CI_Controller
         $file_name = "Pozlar İcmali - " . contract_name($contract_id) . " - Hak " . $payment_no;
         $pdf->Output("$file_name.pdf");
     }
+
     public
     function print_group_total($payment_id)
     {
@@ -1477,6 +1478,7 @@ class Payment extends CI_Controller
         $file_name = "Yapılan İşler Grup İcmalleri - " . contract_name($contract_id) . " - Hak " . $payment_no;
         $pdf->Output("$file_name.pdf");
     }
+
     public
     function print_main_total($payment_id)
     {
@@ -1565,6 +1567,7 @@ class Payment extends CI_Controller
         $file_name = "Yapılan İşler İcmali - " . contract_name($contract_id) . " - Hak " . $payment_no;
         $pdf->Output("$file_name.pdf");
     }
+
     public
     function print_cover($payment_id, $P_or_D = null)
     {
@@ -1692,6 +1695,7 @@ class Payment extends CI_Controller
             $pdf->Output("$file_name.pdf", "D");
         }
     }
+
     public
     function print_report($payment_id, $P_or_D = null)
     {
@@ -1921,12 +1925,11 @@ class Payment extends CI_Controller
             $pdf->Output("$file_name.pdf", "D");
         }
     }
+
     public
     function update_payment($id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $payment = $this->Payment_model->get(
             array(
                 "id" => "$id",
@@ -2017,28 +2020,13 @@ class Payment extends CI_Controller
             );
         }
         
-        if ($insert) {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Hakediş Ayarları Yapıldı, Hakediş Girişi Yapabilirsiniz",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İşlem Başarılı",
-                "text" => "Hakediş Ayarları Güncellendi",
-                "type" => "success"
-            );
-        }
-        
-        redirect(base_url("$this->Module_Name/$this->Display_route/$id/settings"));
+        redirect(base_url("payment/file_form/$id/settings"));
     }
+
     public
     function sign_options($id, $module)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $contract_id = contract_id_module("payment", $id);
         $approved = $this->input->post("approved");
         $position = $this->input->post("position");
@@ -2069,86 +2057,56 @@ class Payment extends CI_Controller
                     "name" => $name,
                 )
             );
-            
-            if ($insert) {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "İmza Ayarları Yapıldı",
-                    "type" => "success"
-                );
-            } else {
-                $alert = array(
-                    "title" => "İşlem Başarılı",
-                    "text" => "İmza Ayarları Güncellendi",
-                    "type" => "success"
-                );
-            }
+
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+            
+           
             $viewData->item = $this->Payment_model->get(
                 array(
                     "id" => $id
                 )
             );
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+            $render_html = $this->load->view("contract_module/payment_v/display/signs/$module", $viewData, true);
             echo $render_html;
         } else {
-            $alert = array(
-                "title" => "İsim veya Ünvan Bilgilerinde Eksik Var",
-                "text" => "İmza Ayarları Güncellenemedi",
-                "type" => "danger"
-            );
+
             $viewData = new stdClass();
-            $viewData->viewModule = $this->moduleFolder;
-            $viewData->viewFolder = $this->viewFolder;
+            
+           
             $viewData->form_error = true;
             $viewData->item = $this->Payment_model->get(
                 array(
                     "id" => $id
                 )
             );
-            $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+            $render_html = $this->load->view("contract_module/payment_v/display/signs/$module", $viewData, true);
             print_r(validation_errors());
             echo $render_html;
         }
     }
+
     public
     function delete_sign($id, $module, $payment_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $delete = $this->Payment_sign_model->delete(
             array(
                 "id" => $id
             )
         );
-        
-        if ($delete) {
-            $alert = array(
-                "title" => "İmza Sütunu Silindi",
-                "text" => "İmza Ayarları Yapıldı",
-                "type" => "success"
-            );
-        } else {
-            $alert = array(
-                "title" => "İmza Sütunu Silinemedi",
-                "text" => "İmza Ayarları Güncellendi",
-                "type" => "danger"
-            );
-        }
+
         $viewData = new stdClass();
-        $viewData->viewModule = $this->moduleFolder;
-        $viewData->viewFolder = $this->viewFolder;
+        
+       
         $viewData->item = $this->Payment_model->get(
             array(
                 "id" => $payment_id
             )
         );
-        $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/display/signs/$module", $viewData, true);
+        $render_html = $this->load->view("contract_module/payment_v/display/signs/$module", $viewData, true);
         echo $render_html;
     }
+
     public
     function sign_rankSetter()
     {
@@ -2166,6 +2124,7 @@ class Payment extends CI_Controller
             );
         }
     }
+
     public
     function print_all($payment_id, $P_or_D = null)
     {

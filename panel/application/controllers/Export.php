@@ -22,7 +22,7 @@ use PhpOffice\PhpSpreadsheet\Style\Conditional;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 $spreadsheet = new Spreadsheet();
 $writer = new Xlsx($spreadsheet);
-class Export extends CI_Controller
+class Export extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
@@ -50,7 +50,6 @@ class Export extends CI_Controller
         $this->load->model("Contract_price_model");
         $this->load->model("Costinc_model");
         $this->load->model("Collection_model");
-        $this->load->model("Delete_model");
         $this->load->model("District_model");
         $this->load->model("Extime_model");
         $this->load->model("Favorite_model");
@@ -88,9 +87,15 @@ class Export extends CI_Controller
     function contract_report_pdf($contract_id, $P_or_D = null)
     {
         $contract = $this->Contract_model->get(array("id" => $contract_id));
+
+        if (empty($contract)){
+            redirect(403);
+        }
+
         if ($contract->parent > 0) {
             $main_contract = $this->Contract_model->get(array("id" => $contract->parent));
         }
+
         $extimes = $this->Extime_model->get_all(array("contract_id" => $contract->id));
         $costincs = $this->Costinc_model->get_all(array("contract_id" => $contract->id));
         $payments = $this->Payment_model->get_all(array("contract_id" => $contract->id));
@@ -523,9 +528,7 @@ class Export extends CI_Controller
     }
     public function contract_report_excel($contract_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $contract = $this->Contract_model->get(array("id" => $contract_id));
         if ($contract->parent > 0) {
             $main_contract = $this->Contract_model->get(array("id" => $contract->parent));
@@ -836,9 +839,7 @@ class Export extends CI_Controller
     }
     public function group_download_excel($contract_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
@@ -1103,9 +1104,7 @@ class Export extends CI_Controller
     }
     public function book_download_excel($contract_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         // Model yükleme
         $this->load->model("Company_model");
         // Sözleşme ve ana grup bilgilerini al
@@ -1350,9 +1349,7 @@ class Export extends CI_Controller
     }
     public function group_boq_download_excel($contract_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
@@ -1544,9 +1541,7 @@ class Export extends CI_Controller
     }
     public function group_boq_download_pdf($contract_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $this->load->library('pdf_creator');
         $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
         $pdf->SetPageOrientation('P');
@@ -1614,9 +1609,7 @@ class Export extends CI_Controller
     }
     public function contract_price_download_excel($contract_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->getPageMargins()->setTop(0.3937); // 1 cm = 0.3937 inch
@@ -1859,9 +1852,7 @@ class Export extends CI_Controller
     }
     public function contract_price_download_pdf($contract_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $this->load->library('pdf_creator');
         $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
         $pdf->SetPageOrientation('P');
@@ -1940,9 +1931,7 @@ class Export extends CI_Controller
     }
     public function sitestock_download_excel($site_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $site = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $site->contract_id));
         $spreadsheet = new Spreadsheet();
@@ -2095,9 +2084,7 @@ class Export extends CI_Controller
     }
     public function sitestock_download_pdf($site_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $site = $this->Site_model->get(array("id" => $site_id));
         $contract = $this->Contract_model->get(array("id" => $site->contract_id));
         $this->load->library('pdf_creator');
@@ -2166,9 +2153,7 @@ class Export extends CI_Controller
     }
     public function report_download_excel($site_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $this->load->model("Workman_model");
         $this->load->model("Report_model");
         $site = $this->Site_model->get(array("id" => $site_id));
@@ -2694,9 +2679,7 @@ class Export extends CI_Controller
     }
     public function report_download_pdf($site_id)
     {
-        if (!isAdmin()) {
-            redirect(base_url("error"));
-        }
+
         $this->load->model("Workman_model");
         $this->load->model("Report_model");
         $site = $this->Site_model->get(array("id" => $site_id));

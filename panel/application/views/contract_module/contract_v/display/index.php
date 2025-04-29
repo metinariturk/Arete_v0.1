@@ -38,6 +38,8 @@
 <?php $this->load->view("contract_module/contract_v/display/price_script"); ?>
 <script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+<div id="updateSuccessAlert" class="update-alert"></div>
+
 </body>
 </html>
 

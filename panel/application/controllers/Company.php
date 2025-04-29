@@ -1,5 +1,5 @@
 <?php
-class company extends CI_Controller
+class company extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";

@@ -33,7 +33,7 @@ $advance_given = sum_anything("advance", "avans_miktar", "contract_id", $item->i
         </thead>
         <tbody>
         <tr>
-            <td><p><?= money_format($item->sozlesme_bedel) . " " . $item->para_birimi; ?></p></td>
+            <td><p><?= money_format($item->sozlesme_bedel) . " load_tab_2.php" . $item->para_birimi; ?></p></td>
             <td><p><?= dateFormat_dmy($item->sozlesme_tarih); ?></p></td>
             <td><p><?= $item->isin_suresi . " Gün"; ?></p></td>
             <td><p><?= dateFormat_dmy($item->sozlesme_bitis); ?></p></td>

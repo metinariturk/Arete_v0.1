@@ -1,5 +1,5 @@
 <?php
-class Weather extends CI_Controller
+class Weather extends MY_Controller
 {
     public $viewFolder = "";
     public function __construct()

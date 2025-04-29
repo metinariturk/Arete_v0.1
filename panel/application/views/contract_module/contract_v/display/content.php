@@ -1,50 +1,32 @@
 <div class="text-center">
     <ul class="nav nav-tabs search-list" id="top-tab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active"
-               id="tab1-link" data-bs-toggle="tab" href="#tab1" role="tab"
-               tabindex="active"
-               aria-selected="true">
+            <a class="nav-link active" id="tab1-link" data-bs-toggle="tab" href="#tab1" role="tab" aria-selected="true">
                 Genel
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link"
-               id="tab2-link" data-bs-toggle="tab" href="#tab2" role="tab"
-               tabindex="-1"
-               aria-selected="false">
+            <a class="nav-link" id="tab2-link" data-bs-toggle="tab" href="#tab2" onclick="loadTabContent('tab2')" role="tab" aria-selected="false">
                 Sözleşme Raporu
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link"
-               id="tab3-link" data-bs-toggle="tab" href="#tab3" role="tab"
-               tabindex="-1"
-               aria-selected="false">
+            <a class="nav-link" id="tab3-link" data-bs-toggle="tab" href="#tab3" onclick="loadTabContent('tab3')" role="tab" aria-selected="false">
                 Hakedişler
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link"
-               id="tab4-link" data-bs-toggle="tab" href="#tab4" role="tab"
-               tabindex="-1"
-               aria-selected="false">
+            <a class="nav-link" id="tab4-link" data-bs-toggle="tab" href="#tab4" onclick="loadTabContent('tab4')" role="tab" aria-selected="false">
                 Ödemeler
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link"
-               id="tab5-link" data-bs-toggle="tab" href="#tab5" role="tab"
-               tabindex="-1"
-               aria-selected="false">
+            <a class="nav-link" id="tab5-link" data-bs-toggle="tab" href="#tab5" onclick="loadTabContent('tab5')" role="tab" aria-selected="false">
                 Sözleşme Fiyatları
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link"
-               id="tab6-link" data-bs-toggle="tab" href="#tab6" role="tab"
-               tabindex="-1"
-               aria-selected="false">
+            <a class="nav-link" id="tab6-link" data-bs-toggle="tab" href="#tab6" onclick="loadTabContent('tab6')" role="tab" aria-selected="false">
                 Dosya Yöneticisi
             </a>
         </li>
@@ -113,7 +95,7 @@
             </div>
             <div class="card-body">
                 <div id="tab_Contract">
-                    <?php $this->load->view("contract_module/contract_v/display/tabs/tab_1_info"); ?>
+                    <?php $this->load->view("contract_module/contract_v/display/script_load/load_tab_1"); ?>
                     <div id="edit_contract_modal">
                         <?php $this->load->view("contract_module/contract_v/display/contract/edit_contract_modal_form"); ?>
                     </div>
@@ -138,254 +120,38 @@
                         <i class="fa fa-file-pdf-o fa-2x"></i>
                     </a>
                 </div>
-                <?php $this->load->view("contract_module/contract_v/display/tabs/tab_2_report"); ?>
-
+                <div id="tab2-content">
+                    <?php /*$this->load->view("contract_module/contract_v/display/tabs/tab_2_report"); */ ?>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="tab-pane fade" id="tab3" role="tabpanel"
          aria-labelledby="tab3-link">
-        <div class="card">
-            <div class="card-body">
-                <h5>Hakediş Listesi</h5>
-                <div class="download_links mt-3">
-                    <i class="fa fa-plus fa-2x text-primary" id="openPaymentModal"
-                       style="cursor: pointer;" data-bs-toggle="modal"
-                       data-bs-target="#AddPaymentModal" title="Yeni Hakediş Oluştur"
-                       aria-hidden="true">
-                    </i>
-
-                    <a href="<?php echo base_url("export/sitestock_download_excel/$item->id"); ?>">
-                        <i class="fa fa-file-excel-o fa-2x"></i>
-                    </a>
-                    <a href="<?php echo base_url("export/sitestock_download_pdf/$item->id"); ?>">
-                        <i class="fa fa-file-pdf-o fa-2x"></i>
-                    </a>
-                </div>
-
-                <div id="payment_table">
-                    <?php $this->load->view("contract_module/contract_v/display/payment/payment_table"); ?>
-                </div>
-                <div id="add_payment_modal">
-                    <?php $this->load->view("contract_module/contract_v/display/payment/add_payment_modal"); ?>
-                </div>
-                <div id="edit_payment_modal">
-                    <?php $this->load->view("contract_module/contract_v/display/payment/edit_payment_modal_form"); ?>
-                </div>
-            </div>
+        <div id="tab3-content">
+            <!--            --><?php /*$this->load->view("contract_module/contract_v/display/payment/load_tab_3"); */?>
         </div>
+
     </div>
 
     <div class="tab-pane fade" id="tab4" role="tabpanel"
          aria-labelledby="tab4-link">
-        <div class="card">
-            <div class="card-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab4-1-link"
-                           data-bs-toggle="tab" href="#tab4-1" role="tab">
-                            <h5>Ödemeler</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab4-2-link"
-                           data-bs-toggle="tab" href="#tab4-2" role="tab">
-                            <h5>Avanslar</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab4-3-link"
-                           data-bs-toggle="tab" href="#tab4-3" role="tab">
-                            <h5>Teminatlar</h5>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab4-1" role="tabpanel" aria-labelledby="tab4-1-link">
-                        <div class="download_links mt-3">
-                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;"
-                               id="openCollectionModal"
-                               onclick="open_modal('AddCollectionModal')"></i>
-                            <a href="<?php echo base_url('export/collection_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/collection_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="collection_table">
-                            <?php $this->load->view("contract_module/contract_v/display/collection/collection_table"); ?>
-                        </div>
-                        <div id="add_collection_modal">
-                            <?php $this->load->view("contract_module/contract_v/display/collection/add_collection_modal"); ?>
-                        </div>
-                        <div id="edit_collection_modal">
-                            <?php $this->load->view("contract_module/contract_v/display/collection/edit_collection_modal_form"); ?>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab4-2" role="tabpanel" aria-labelledby="tab4-2-link">
-                        <div class="download_links mt-3">
-                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
-                               id="openAdvanceModal"
-                               data-bs-target="#AddAdvanceModal"></i>
-                            <a href="<?php echo base_url('export/advance_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/advance_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="advance_table">
-                            <?php $this->load->view("contract_module/contract_v/display/advance/advance_table"); ?>
-                        </div>
-                        <div id="add_advance_modal">
-                            <?php $this->load->view("contract_module/contract_v/display/advance/add_advance_modal"); ?>
-                        </div>
-                        <div id="edit_advance_modal">
-                            <?php $this->load->view("contract_module/contract_v/display/advance/edit_advance_modal_form"); ?>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab4-3" role="tabpanel" aria-labelledby="tab4-3-link">
-                        <div class="download_links mt-3">
-                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
-                               id="openBondModal"
-                               data-bs-target="#AddBondModal"></i>
-                            <a href="<?php echo base_url('export/bond_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/bond_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="bond_table">
-                            <?php $this->load->view("contract_module/contract_v/display/bond/bond_table"); ?>
-                        </div>
-                        <div id="add_bond_modal">
-                            <?php $this->load->view("contract_module/contract_v/display/bond/add_bond_modal"); ?>
-                        </div>
-                        <div id="edit_bond_modal">
-                            <?php $this->load->view("contract_module/contract_v/display/bond/edit_bond_modal_form"); ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="tab4-content">
+            <!--            --><?php /*$this->load->view("contract_module/contract_v/display/collection/load_tab_4"); */?>
         </div>
     </div>
 
     <div class="tab-pane fade" id="tab5" role="tabpanel"
          aria-labelledby="tab5-link">
-        <div class="card">
-            <div class="card-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" style="background-color: rgba(233,231,247,0.38);" id="tab5-1-link"
-                           data-bs-toggle="tab" href="#tab5-1" role="tab">
-                            <h5>Birim Fiyat Tablo</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);"
-                           id="tab5-2-link"
-                           data-bs-toggle="tab" href="#tab5-2" role="tab">
-                            <h5>Poz Grupları</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-3-link"
-                           data-bs-toggle="tab" href="#tab5-3" role="tab">
-                            <h5>Poz Kitabı</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="background-color: rgba(233,231,247,0.38);" id="tab5-4-link"
-                           data-bs-toggle="tab" href="#tab5-4" role="tab">
-                            <h5>Sözleşme İş Grupları</h5>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab5-1" role="tabpanel" aria-labelledby="tab5-1-link">
-                        <div class="download_links mt-3">
-                            <a href="<?php echo base_url("export/report_download_excel/$item->id"); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="tab_contract_price_table">
-                            <?php $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table"); ?>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab5-2" role="tabpanel" aria-labelledby="tab5-2-link">
-                        <div class="download_links mt-3">
-                            <a href="<?php echo base_url('export/'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url("export/$item->id"); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="pricegroup_table">
-                            <?php $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table"); ?>
-                        </div>
-
-                        <div id="edit_pricegroup_modal">
-                            <?php $this->load->view("contract_module/contract_v/display/pricegroup/edit_pricegroup_modal_form"); ?>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab5-3" role="tabpanel" aria-labelledby="tab5-3-link">
-                        <div class="download_links mt-3">
-                            <a href="<?php echo base_url("export/book_download_excel/$item->id"); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div id="tab_price_book">
-                            <?php $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book"); ?>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab5-4" role="tabpanel" aria-labelledby="tab5-4-link">
-                        <div class="download_links mt-3">
-                            <a href="<?php echo base_url("export/book_download_excel/$item->id"); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url("export/report_download_pdf/$item->id"); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
-                        <div class="refresh_tab_5" name="refresh_tab_5" id="refresh_tab_5">
-                            <?php $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group"); ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="tab5-content">
         </div>
     </div>
 
     <div class="tab-pane fade" id="tab6" role="tabpanel"
          aria-labelledby="tab6-link">
-        <div class="card">
-            <div class="card-body">
-                <h5>Dosya Yöneticisi</h5>
-                <div class="download_links mt-3">
-                    <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;"
-                       id="openCollectionModal"
-                       onclick="open_modal('AddFolderModal')"></i>
-                </div>
-                <div id="folder_table">
-                    <?php $this->load->view("contract_module/contract_v/display/folder/folder_table"); ?>
-                </div>
-                <div id="add_folder_modal">
-                    <?php $this->load->view("contract_module/contract_v/display/folder/add_folder_modal"); ?>
-                </div>
-                <div id="edit_folder_modal">
-                    <?php $this->load->view("contract_module/contract_v/display/folder/edit_folder_modal_form"); ?>
-                </div>
-            </div>
+        <div id="tab6-content">
+<!--            --><?php /*$this->load->view("contract_module/contract_v/display/folder/load_tab_6"); */?>
         </div>
     </div>
 </div>

@@ -1,3 +1,7 @@
+<button type="submit" class="btn btn-success">
+    <i class="fa fa-floppy-o fa-lg"></i> Kaydet ve Hakedişe Geri Dön
+</button>
+
 <table class="table table-responsive active_group" group-id="<?php echo $sub_id; ?>">
     <thead>
     <tr>

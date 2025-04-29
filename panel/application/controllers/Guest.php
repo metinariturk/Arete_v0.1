@@ -1,5 +1,5 @@
 <?php
-class Guest extends CI_Controller
+class Guest extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";

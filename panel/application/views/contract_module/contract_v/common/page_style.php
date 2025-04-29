@@ -179,4 +179,48 @@
         border: 1px solid #dcdcdc; /* İncecik ve çok açık gri çerçeve */
 
     }
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        50% { transform: translateX(4px); }
+        75% { transform: translateX(-4px); }
+        100% { transform: translateX(0); }
+    }
+
+    .shake-success {
+        animation: shake 0.5s ease;
+        background-color: #d4edda !important; /* Açık yeşil */
+        transition: background-color 1s ease;
+    }
+
+    .shake-error {
+        animation: shake 0.5s ease;
+        background-color: #f8d7da !important; /* Açık kırmızı */
+        transition: background-color 1s ease;
+    }
+
+    .update-alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: none;
+        z-index: 9999;
+    }
+    .update-alert.show {
+        display: block;
+    }
+    .update-alert.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .update-alert.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
 </style>

@@ -1,5 +1,5 @@
 <?php
-class Workmachine extends CI_Controller
+class Workmachine extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";

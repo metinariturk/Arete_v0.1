@@ -426,14 +426,34 @@
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    alert('Veriler başarıyla güncellendi.');
+                    const table = document.getElementById('contract_price');
+                    table.innerHTML = result.price_html;
+
+                    table.classList.add('shake-success');
+                    setTimeout(() => table.classList.remove('shake-success'), 1000);
+
+                    showAlert('Güncelleme başarılı', 'success');
                 } else {
-                    alert('Bir hata oluştu.');
+                    const table = document.getElementById('contract_price');
+                    table.classList.add('shake-error');
+                    setTimeout(() => table.classList.remove('shake-error'), 1000);
+
+                    showAlert('Güncelleme başarısız', 'error');
                 }
             })
             .catch(error => {
                 console.error('Hata:', error);
-            });
+            })
+    }
+
+    function showAlert(message, type) {
+        const alertBox = document.getElementById('updateSuccessAlert');
+        alertBox.textContent = message;
+        alertBox.className = 'update-alert show ' + type;
+
+        setTimeout(() => {
+            alertBox.className = 'update-alert'; // temizle
+        }, 3500);
     }
 
     function refresh_leader_group(anchor) {

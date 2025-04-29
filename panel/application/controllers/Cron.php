@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Cron extends CI_Controller
+class Cron extends MY_Controller
 {
     public function __construct()
     {

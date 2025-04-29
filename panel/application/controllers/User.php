@@ -1,6 +1,6 @@
 <?php
 
-class user extends CI_Controller
+class user extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";

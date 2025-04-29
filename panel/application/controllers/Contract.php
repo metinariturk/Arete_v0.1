@@ -96,6 +96,7 @@ class Contract extends MY_Controller
             "update_leader_selection" => array('payment' => ['u', 'd']),
             "update_sub_group" => array('payment' => ['u', 'd']),
             "upload_book_excel" => array('payment' => ['u', 'd']),
+            "show_tabs" => array('contract' => ['r', 'u']),
 
             "date_greater_than" => array(),
             "date_greater_than_equal" => array(),
@@ -144,7 +145,7 @@ class Contract extends MY_Controller
         $viewData->active_items = $active_items;
         $viewData->inactive_items = $inactive_items;
         $viewData->all_items = $all_items;
-        
+
 
         $this->load->view("contract_module/contract_v/list/index", $viewData);
     }
@@ -152,7 +153,6 @@ class Contract extends MY_Controller
     public function file_form($id = null)
     {
         null_parameter_error($id);
-
 
         $fav = $this->Favorite_model->get(array(
             "user_id" => active_user_id(),
@@ -162,47 +162,31 @@ class Contract extends MY_Controller
         ));
 
         // Değişken tanımları
-        $advances = $this->Advance_model->get_all(array('contract_id' => $id));
-        $bonds = $this->Bond_model->get_all(array('contract_id' => $id));
-        $collections = $this->Collection_model->get_all(array('contract_id' => $id), "tahsilat_tarih ASC");
+
         $companys = $this->Company_model->get_all(array(), "company_name ASC");
-        $costincs = $this->Costinc_model->get_all(array('contract_id' => $id));
-        $extimes = $this->Extime_model->get_all(array('contract_id' => $id));
         $item = $this->Contract_model->get(array("id" => $id));
-        $leaders = $this->Contract_price_model->get_all(array('contract_id' => $id, 'leader' => 1));
-        $main_bond = $this->Bond_model->get(array('contract_id' => $id, 'teminat_gerekce' => 'contract'));
-        $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1));
-        $newprices = $this->Newprice_model->get_all(array('contract_id' => $id));
-        $payments = $this->Payment_model->get_all(array('contract_id' => $id));
-        $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $id, "main_group" => 1), "code ASC");
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $site = $this->Site_model->get(array("project_id" => $item->project_id));
         $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
         $upload_function = base_url("Contract/file_upload/$item->id");
+
         $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no";
         $subdirs = ['Contract', 'Collection', 'Advance', 'Offer', 'Payment'];
         createDirectories($main_path, $subdirs);
         $main_folders = get_dir_contents($main_path, 'dir');
+
         $viewData = new stdClass();
         // View'e gönderilecek Değişkenlerin Set Edilmesi
-        $viewData->advances = $advances;
-        $viewData->bonds = $bonds;
-        $viewData->collections = $collections;
-        $viewData->companys = $companys;
-        $viewData->costincs = $costincs;
-        $viewData->extimes = $extimes;
-        $viewData->fav = $fav;
+
+
         $viewData->form_error = null;
+        $viewData->fav = $fav;
         $viewData->item = $item;
-        $viewData->leaders = $leaders;
-        $viewData->main_bond = $main_bond;
+        $viewData->companys = $companys;
+
         $viewData->main_folders = $main_folders;
         $viewData->sub_contracts = $sub_contracts;
-        $viewData->main_groups = $main_groups;
         $viewData->main_path = $main_path;
-        $viewData->newprices = $newprices;
-        $viewData->payments = $payments;
-        $viewData->prices_main_groups = $prices_main_groups;
         $viewData->project = $project;
         $viewData->site = $site;
 
@@ -282,9 +266,8 @@ class Contract extends MY_Controller
             $viewData = new stdClass();
             $project = $this->Project_model->get(array("id" => $project_id));
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
-            
 
-            
+
             $viewData->project = $project;
             $viewData->companys = $companys;
             $viewData->project_id = $project_id;
@@ -359,8 +342,8 @@ class Contract extends MY_Controller
                 )
             );
             $viewData = new stdClass();
-            
-            
+
+
             $item = $this->Contract_model->get(array("id" => $parent_contract));
             $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
             // View'e gönderilecek Değişkenlerin Set Edilmesi
@@ -1261,6 +1244,10 @@ class Contract extends MY_Controller
         $data = file_get_contents('php://input');
         // JSON verilerini diziye dönüştür
         $data_array = json_decode($data, true);
+
+        $success = true; // Başlangıçta başarılı olarak kabul et
+        $error_message = '';
+
         // Verileri kontrol etmek için
         if ($data_array) {
             // Her bir öğeyi güncelle
@@ -1270,15 +1257,45 @@ class Contract extends MY_Controller
                     array("id" => $values['id']), // Güncellenecek satırın ID'si
                     array("qty" => $values['qty']) // Güncellenecek veriler
                 );
-                // Güncellemenin başarılı olup olmadığını kontrol et (Opsiyonel)
-                if ($update) {
-                    log_message('info', 'Güncelleme başarılı: ID ' . $values['id']);
-                } else {
+                // Güncellemenin başarılı olup olmadığını kontrol et
+                if (!$update) {
+                    $success = false;
+                    $error_message = 'Güncelleme sırasında bir hata oluştu.';
                     log_message('error', 'Güncelleme başarısız: ID ' . $values['id']);
+                    break; // İlk hatada döngüden çık
+                } else {
+                    log_message('info', 'Güncelleme başarılı: ID ' . $values['id']);
                 }
             }
-            // JSON yanıt
-            echo json_encode(array('success' => true));
+
+            if ($success) {
+                // Tüm güncellemeler başarılıysa, güncel fiyatı al ve HTML olarak döndür
+                $contract_id = null;
+                if (!empty($data_array) && isset($data_array[0]['id'])) {
+                    $contract_price_item = $this->Contract_price_model->get(array('id' => $data_array[0]['id']));
+                    if ($contract_price_item) {
+                        $contract_id = $contract_price_item->contract_id;
+                    }
+                }
+
+                if ($contract_id) {
+
+                    $viewData = new stdClass();
+                    $item = $this->Contract_model->get(array("id" => $contract_id));
+                    $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "main_group" => 1), "code ASC");
+
+                    $viewData->prices_main_groups = $prices_main_groups;
+                    $viewData->item = $item;
+
+
+                    $price_html =  $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_a_contract_price_table", $viewData, TRUE);
+                    echo json_encode(array('success' => true, 'price_html' => $price_html));
+                } else {
+                    echo json_encode(array('success' => true, 'message' => 'Veriler güncellendi ancak sözleşme ID\'si bulunamadı.'));
+                }
+            } else {
+                echo json_encode(array('success' => false, 'message' => 'Güncelleme başarısız.'));
+            }
         } else {
             echo json_encode(array('success' => false, 'message' => 'Gelen veri boş veya geçersiz formatta.'));
         }
@@ -1453,11 +1470,10 @@ class Contract extends MY_Controller
             }
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
 
-            
 
             $viewData = new stdClass();
 
-            
+
             $viewData->project = $project;
             $viewData->collections = $collections;
             $viewData->item = $item;
@@ -1467,11 +1483,11 @@ class Contract extends MY_Controller
             );
             echo json_encode($response);
         } else {
-            
+
 
             $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
             $viewData = new stdClass();
-            
+
             $viewData->project = $project;
             $viewData->collections = $collections;
             $viewData->item = $item;
@@ -2264,11 +2280,10 @@ class Contract extends MY_Controller
             } else {
                 $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
             }
-            
+
 
             $viewData = new stdClass();
             $viewData->edit_item = $item;
-            
 
 
             $viewData->companys = $companys;
@@ -2284,7 +2299,7 @@ class Contract extends MY_Controller
             );
             echo json_encode($response);
         } else {
-            
+
             $item = $this->Contract_model->get(array("id" => $contract_id));
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
             if ($item->parent > 0) {
@@ -2295,7 +2310,7 @@ class Contract extends MY_Controller
 
 
             $viewData = new stdClass();
-            
+
             $viewData->companys = $companys;
             $viewData->item = $item;
             $viewData->edit_item = $item;
@@ -2750,5 +2765,82 @@ class Contract extends MY_Controller
             return FALSE;
         }
         return TRUE;
+    }
+
+
+    public function show_tabs($contract_id)
+    {
+        if ($this->input->post('tab_id')) {
+            $tab_id = $this->input->post('tab_id');
+
+            // Veriyi al
+            $item = $this->Contract_model->get(array("id" => $contract_id));
+            $project = $this->Project_model->get(array("id" => $item->project_id));
+
+            // Verinin alınıp alınmadığını kontrol et
+            if (!$item) {
+                echo json_encode(array("error" => "Veri bulunamadı"));
+                return;
+            }
+
+            // Veriyi view'e aktar
+            $viewData = new stdClass();
+            $viewData->item = $item;
+            $viewData->project = $project;
+
+            // View'i yükle
+
+
+            switch ($tab_id) {
+                case 'tab2':
+                    $costincs = $this->Costinc_model->get_all(array('contract_id' => $item->id));
+                    $viewData->costincs = $costincs;
+                    $extimes = $this->Extime_model->get_all(array('contract_id' => $item->id));
+                    $main_bond = $this->Bond_model->get(array('contract_id' => $item->id, 'teminat_gerekce' => 'contract'));
+                    $viewData->extimes = $extimes;
+                    $costincs = $this->Costinc_model->get_all(array('contract_id' => $item->id));
+                    $viewData->costincs = $costincs;
+                    $viewData->main_bond = $main_bond;
+                    $this->load->view("contract_module/contract_v/display/script_load/load_tab_2", $viewData);
+                    break;
+                case 'tab3':
+                    $payments = $this->Payment_model->get_all(array('contract_id' => $item->id));
+                    $viewData->payments = $payments;
+                    $this->load->view("contract_module/contract_v/display/script_load/load_tab_3", $viewData);
+                    break;
+                case 'tab4':
+                    $advances = $this->Advance_model->get_all(array('contract_id' => $item->id));
+                    $bonds = $this->Bond_model->get_all(array('contract_id' => $item->id));
+                    $collections = $this->Collection_model->get_all(array('contract_id' => $item->id), "tahsilat_tarih ASC");
+                    $viewData->advances = $advances;
+                    $viewData->bonds = $bonds;
+                    $viewData->collections = $collections;
+                    $this->load->view("contract_module/contract_v/display/script_load/load_tab_4", $viewData);
+                    break;
+                case 'tab5':
+
+                    $main_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->id, "main_group" => 1));
+                    $prices_main_groups = $this->Contract_price_model->get_all(array('contract_id' => $item->id, "main_group" => 1), "code ASC");
+                    $leaders = $this->Contract_price_model->get_all(array('contract_id' => $item->id, 'leader' => 1));
+                    $viewData->prices_main_groups = $prices_main_groups;
+                    $viewData->leaders = $leaders;
+                    $viewData->main_groups = $main_groups;
+                    $this->load->view("contract_module/contract_v/display/script_load/load_tab_5", $viewData);
+
+                    break;
+                case 'tab6':
+                    $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no";
+                    $main_folders = get_dir_contents($main_path, 'dir');
+                    $viewData->main_folders = $main_folders;
+                    $viewData->main_path = $main_path;
+                    $this->load->view("contract_module/contract_v/display/script_load/load_tab_6", $viewData);
+                    break;
+                default:
+                    echo "Geçersiz sekme ID'si.";
+                    break;
+            }
+        } else {
+            echo "Geçersiz istek.";
+        }
     }
 }

@@ -1,5 +1,5 @@
 <?php
-class Workgroup extends CI_Controller
+class Workgroup extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";

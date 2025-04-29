@@ -23,15 +23,15 @@ class Boq extends MY_Controller
             $this->load->model($model);
         }
         $this->rules = array(
-            "new_form" => array('report' => ['w']),
-            "calculate_render" => array('report' => ['r']),
-            "rebar_render" => array('report' => ['r']),
-            "save" => array('report' => ['w', 'u']),
-            "delete" => array('report' => ['d', 'u']),
-            "open_sub" => array('report' => ['r', 'w', 'u']),
-            "back_main" => array('report' => ['r', 'w', 'u']),
-            "template_download" => array('report' => ['r']),
-            "template_download_rebar" => array('report' => ['r']),
+            "new_form" => array('boq' => ['w']),
+            "calculate_render" => array('boq' => ['r']),
+            "rebar_render" => array('boq' => ['r']),
+            "save" => array('boq' => ['w', 'u']),
+            "delete" => array('boq' => ['d', 'u']),
+            "open_sub" => array('boq' => ['r', 'w', 'u']),
+            "back_main" => array('boq' => ['r', 'w', 'u']),
+            "template_download" => array('boq' => ['r']),
+            "template_download_rebar" => array('boq' => ['r']),
         );
 
         $this->check_permissions();

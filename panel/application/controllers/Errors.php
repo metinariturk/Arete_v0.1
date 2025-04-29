@@ -1,5 +1,5 @@
 <?php
-class Errors extends CI_Controller
+class Errors extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";

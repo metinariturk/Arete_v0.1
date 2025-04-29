@@ -96,7 +96,7 @@
 </div>
 
 <?php
-$file_path = "$this->File_Dir_Prefix/$project->dosya_no/$item->dosya_no/Bond/$edit_bond->id";
+$file_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/Bond/$edit_bond->id";
 
 if (!is_dir($file_path)) {
     mkdir($file_path, 0777, true);

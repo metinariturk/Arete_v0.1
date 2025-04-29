@@ -72,35 +72,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Arete_v0.1/panel/application/views/project_v/list&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/contract_module/contract_v/display/script_load",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\script_load" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\collection" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\payment" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\folder" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\project_v\list" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\list" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\list\tabs" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\helpers" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\file_uploader_dist" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\script_load" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\contract_module\contract_v\display\pricegroup" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\libraries" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\user_module\user_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\dashboard_v\notes" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -265,7 +265,7 @@
       <workItem from="1745514878732" duration="5863000" />
       <workItem from="1745697058652" duration="20288000" />
       <workItem from="1745831497495" duration="1463000" />
-      <workItem from="1745942113995" duration="3240000" />
+      <workItem from="1745942113995" duration="14817000" />
     </task>
     <servers />
   </component>
@@ -286,7 +286,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
-          <line>339</line>
+          <line>338</line>
           <properties>
             <option name="className" value="\Project" />
             <option name="methodName" value="file_upload" />
@@ -313,7 +313,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Export.php</url>
-          <line>1893</line>
+          <line>1884</line>
           <properties>
             <option name="className" value="\Export" />
             <option name="methodName" value="report_download_excel" />
@@ -340,7 +340,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>619</line>
+          <line>602</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="download_backup" />
@@ -349,7 +349,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Contract.php</url>
-          <line>1610</line>
+          <line>1626</line>
           <properties>
             <option name="className" value="\Contract" />
             <option name="methodName" value="create_bond" />

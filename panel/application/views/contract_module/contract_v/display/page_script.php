@@ -1,100 +1,37 @@
 <script>
-    function start_collection_table() {
-        // DataTable başlat
-        var table = $('#collectionTable').DataTable({
-            "order": [[1, 'desc']], // 2. sütun (Ödeme Tarihi) tarih sıralaması ile başlasın
+    function init_table(selector) {
+        if ($.fn.DataTable.isDataTable(selector)) {
+            $(selector).DataTable().destroy(); // Önce eski DataTable'ı kaldır
+        }
+
+        $(selector).DataTable({
+            "order": [[1, 'desc']],
             "columnDefs": [
                 {
-                    "targets": 1, // 2. sütun (Ödeme Tarihi)
-                    "render": function(data, type, row, meta) {
-                        // Eğer veri type 'display' ise, tarihi istediğiniz formata dönüştür
+                    "targets": 1,
+                    "render": function (data, type, row, meta) {
                         if (type === 'display') {
-                            // Y-m-d formatını d-m-Y formatına çevir
                             var date = new Date(data);
-                            var day = ('0' + date.getDate()).slice(-2);  // Gün
-                            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Ay
-                            var year = date.getFullYear(); // Yıl
-                            return day + '-' + month + '-' + year; // d-m-Y formatı
+                            var day = ('0' + date.getDate()).slice(-2);
+                            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                            var year = date.getFullYear();
+                            return day + '-' + month + '-' + year;
                         }
                         return data;
                     }
                 }
             ],
-            "paging": true, // Sayfalama
-            "searching": true, // Arama
-            "ordering": true, // Sıralama
+            "paging": true,
+            "searching": true,
+            "ordering": true
         });
     }
 
-    $(document).ready(function() {
-        // Fonksiyonu çağır
-        start_collection_table();
+    $(document).ready(function () {
+        init_table('#collectionTable');
+        init_table('#advanceTable');
+        init_table('#bondTable');
     });
-
-    function start_advance_table() {
-        // DataTable başlat
-        var table = $('#advanceTable').DataTable({
-            "order": [[1, 'desc']], // 2. sütun (Ödeme Tarihi) tarih sıralaması ile başlasın
-            "columnDefs": [
-                {
-                    "targets": 1, // 2. sütun (Ödeme Tarihi)
-                    "render": function(data, type, row, meta) {
-                        // Eğer veri type 'display' ise, tarihi istediğiniz formata dönüştür
-                        if (type === 'display') {
-                            // Y-m-d formatını d-m-Y formatına çevir
-                            var date = new Date(data);
-                            var day = ('0' + date.getDate()).slice(-2);  // Gün
-                            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Ay
-                            var year = date.getFullYear(); // Yıl
-                            return day + '-' + month + '-' + year; // d-m-Y formatı
-                        }
-                        return data;
-                    }
-                }
-            ],
-            "paging": true, // Sayfalama
-            "searching": true, // Arama
-            "ordering": true, // Sıralama
-        });
-    }
-
-    $(document).ready(function() {
-        // Fonksiyonu çağır
-        start_advance_table();
-    });
-
-    function start_bond_table() {
-        // DataTable başlat
-        var table = $('#bondTable').DataTable({
-            "order": [[1, 'desc']], // 2. sütun (Ödeme Tarihi) tarih sıralaması ile başlasın
-            "columnDefs": [
-                {
-                    "targets": 1, // 2. sütun (Ödeme Tarihi)
-                    "render": function(data, type, row, meta) {
-                        // Eğer veri type 'display' ise, tarihi istediğiniz formata dönüştür
-                        if (type === 'display') {
-                            // Y-m-d formatını d-m-Y formatına çevir
-                            var date = new Date(data);
-                            var day = ('0' + date.getDate()).slice(-2);  // Gün
-                            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Ay
-                            var year = date.getFullYear(); // Yıl
-                            return day + '-' + month + '-' + year; // d-m-Y formatı
-                        }
-                        return data;
-                    }
-                }
-            ],
-            "paging": true, // Sayfalama
-            "searching": true, // Arama
-            "ordering": true, // Sıralama
-        });
-    }
-
-    $(document).ready(function() {
-        // Fonksiyonu çağır
-        start_bond_table();
-    });
-
 </script>
 
 <script>
@@ -110,7 +47,7 @@
             contentType: false, // Content-Type'ı false yap (FormData için gerekli)
             processData: false, // Veriyi işleme (FormData için gerekli)
             dataType: 'json', // JSON yanıt bekleniyor
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 'success') {
                     // Başarılı cevap gelirse:
                     $('#' + successDivId).html(response.html); // Div'e yeni içeriği yükle
@@ -120,15 +57,14 @@
                         $(DataTable).DataTable().destroy();
                     }
 
+
                     // DataTable ID'sine göre uygun fonksiyonu çalıştır
                     if (DataTable === 'collectionTable') {
-                        start_collection_table();
+                        init_table('#collectionTable');
                     } else if (DataTable === 'advanceTable') {
-                        start_advance_table();
+                        init_table('#advanceTable');
                     } else if (DataTable === 'bondTable') {
-                        start_bond_table();
-                    } else if (DataTable === 'paymentTable') {
-                        start_payment_table();
+                        init_table('#bondTable');
                     }
 
                     // Modal'ı kapat
@@ -146,7 +82,7 @@
                     initializeFlatpickr();
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 // AJAX isteği başarısız olursa:
                 console.error('Form gönderiminde hata oluştu: ', error);
                 console.error('Hata Detayı: ', xhr.responseText);
@@ -258,13 +194,11 @@
 
                         // DataTable ID'sine göre uygun fonksiyonu çalıştır
                         if (DataTable === 'collectionTable') {
-                            start_collection_table();
+                            init_table('#collectionTable');
                         } else if (DataTable === 'advanceTable') {
-                            start_advance_table();
+                            init_table('#advanceTable');
                         } else if (DataTable === 'bondTable') {
-                            start_bond_table();
-                        } else if (DataTable === 'paymentTable') {
-                            start_payment_table();
+                            init_table('#bondTable');
                         }
 
                     },
@@ -392,7 +326,7 @@
     }
 
     // Sayfa yüklendiğinde dosya yükleyici fonksiyonunu başlat
-    $(document).ready(function() {
+    $(document).ready(function () {
         var itemId = <?php echo json_encode($item->id); ?>; // Örneğin, PHP'den alınan item ID'si
         initializeFileUploader(itemId); // Dosya yükleyiciyi başlat
     });
@@ -440,8 +374,8 @@
                 $.ajax({
                     url: "<?= base_url('Contract/delete_folder') ?>",
                     type: "POST",
-                    data: { folderName: folderName, contractId: contractId },
-                    success: function(response) {
+                    data: {folderName: folderName, contractId: contractId},
+                    success: function (response) {
                         if (response.success) {
                             $(icon).closest('.col-12').remove(); // Kartı kaldır
                             Swal.fire("Silindi!", "Klasör başarıyla silindi.", "success");
@@ -449,7 +383,7 @@
                             Swal.fire("Hata!", "Silme işlemi başarısız: " + response.message, "error");
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         Swal.fire("Hata!", "Bir hata oluştu, lütfen tekrar deneyin.", "error");
                     }
                 });
@@ -473,7 +407,7 @@
                 contractID: contractID, // Klasör ID'sini de gönderiyoruz
                 parent_name: parentName, // Klasör ID'sini de gönderiyoruz
             },
-            success: function(response) {
+            success: function (response) {
                 // Eğer başarılıysa yapılacak işlemler
                 console.log('Klasör adı: ' + folderName + ' ID: ' + contractID);
                 console.log(response); // Server'dan gelen yanıt
@@ -481,7 +415,7 @@
                 // Gelen yanıtı 'sub_folder' ID'sine sahip div'e yerleştiriyoruz
                 $('#sub_folder').html(response);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log("Bir hata oluştu: " + error);
             }
         });
@@ -526,17 +460,16 @@
         $.ajax({
             url: '<?php echo base_url("Contract/delete_file/"); ?>' + encodedPath,
             type: 'GET',
-            success: function(response) {
+            success: function (response) {
                 // Dosya başarıyla silindiyse, sayfayı yenileyin veya başarı mesajı gösterin
                 alert(response);  // Başarı veya hata mesajını gösterir
                 location.reload(); // Sayfayı yenileyebilirsiniz
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 alert('Silme işlemi sırasında bir hata oluştu!');
             }
         });
     }
-
 
 
 </script>
@@ -612,4 +545,58 @@
         modal.show();
         initializeFlatpickr(); // Modal açılınca Flatpickr'ı çalıştır
     }
+</script>
+
+<script>
+    function loadTabContent(tabId) {
+        // AJAX isteği gönderme fonksiyonu
+        var contractId = '<?php echo $item->id; ?>'; // PHP'den ID'yi al
+
+
+        $.ajax({
+            url: '<?php echo base_url("contract/show_tabs/"); ?>' + contractId,
+            type: 'POST',
+            data: {tab_id: tabId}, // Sunucuya gönderilecek veri
+            dataType: 'html', // Beklenen veri tipi
+            success: function (response) {
+                // Başarılı olursa ilgili divin içeriğini güncelle
+                $('#' + tabId + '-content').html(response);
+
+                // Diğer sekmelerin aktifliğini kaldır, tıklananı aktif yap
+                $('.nav-link').removeClass('active');
+                $('#' + tabId + '-link').addClass('active');
+                $('.tab-pane').removeClass('show active'); // Eğer Bootstrap tab yapısını tam kullanıyorsanız
+                $('#' + tabId).addClass('show active');     // Bu satırları ekleyebilirsiniz.
+
+                if (tabId === 'tab4') {
+                    $('#tab4-1-link').addClass('active');
+                    $('#tab4-1').addClass('show active');
+                }
+
+                if (tabId === 'tab5') {
+                    $('#tab5-1-link').addClass('active');
+                    $('#tab5-1').addClass('show active');
+                }
+
+                $(document).ready(function () {
+                    ['#collectionTable', '#advanceTable', '#bondTable'].forEach(function (selector) {
+                        if ($(selector).length) {
+                            init_table(selector);
+                        }
+                    });
+                });
+
+            },
+            error: function (xhr, status, error) {
+                // Hata durumunda yapılacak işlemler
+                console.error("AJAX Hatası: " + error);
+                $('#' + tabId + '-content').html('<div class="alert alert-danger">İçerik yüklenirken bir hata oluştu.</div>');
+            }
+        });
+    }
+
+    // İlk sekmenin içeriğini başlangıçta göstermek için (isteğe bağlı)
+    $(document).ready(function () {
+        loadTabContent('tab1');
+    });
 </script>
