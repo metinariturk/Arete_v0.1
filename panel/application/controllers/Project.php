@@ -136,6 +136,11 @@ class Project extends MY_Controller
     {
 
         $item = $this->Project_model->get(array("id" => $id));
+
+        if (!$item) {
+            redirect(base_url("404"));
+        }
+
         $main_contracts = $this->Contract_model->get_all(array("project_id" => $id, "parent" => 0));
         $sites = $this->Site_model->get_all(array("project_id" => $id));
         $viewData = new stdClass();
@@ -277,32 +282,59 @@ class Project extends MY_Controller
     public function hard_delete($id)
     {
 
+
+
         $project = $this->Project_model->get(array("id" => $id));
+
         if (!$project) {
-            redirect(base_url("error"));
+            redirect(base_url("404"));
         }
-        // Silme işlemini engelleyecek kayıtları kontrol et
-        $contracts = $this->Contract_model->get_all(array("project_id" => $id));
-        $sites = $this->Site_model->get(array("project_id" => $id));
-        $reports = $this->Report_model->get(array("project_id" => $id));
-        $report_supply = $this->Report_supply_model->get(array("project_id" => $id));
-        $report_workgroup = $this->Report_workgroup_model->get(array("project_id" => $id));
-        $report_workmachine = $this->Report_workmachine_model->get(array("project_id" => $id));
-        if ($contracts || $sites || $reports || $report_supply || $report_workgroup || $report_workmachine) {
+
+        // Silme işlemini engelleyecek ilişkili kayıtları kontrol et
+        $has_related_data = false;
+        $has_related_data |= !empty($this->Contract_model->get_all(array("project_id" => $id)));
+        $has_related_data |= !empty($this->Site_model->get_all(array("project_id" => $id)));
+
+
+        if ($has_related_data) {
             redirect(base_url("project/file_form/$project->id"));
+            return;
         }
-        $path = "uploads/project_v/$project->dosya_no";
-        if (!deleteDirectory($path)) {
-            log_message('error', "Klasör silinemedi: $path");
+
+        $path = FCPATH . "uploads/project_v/{$project->dosya_no}";
+
+        echo $path;
+        die();
+
+        delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
+        if (is_dir($path)) {
+            rmdir($path);
         }
-        // Projeyi ve ilişkili tüm verileri sil
-        $this->db->trans_start(); // Transaction başlat
+
+        // Silme işlemi
+        $this->db->trans_start();
         $this->Project_model->delete(array("id" => $id));
         $this->Favorite_model->delete(array("module" => "project", "module_id" => $id));
-        $this->db->trans_complete(); // Transaction tamamla
+        $this->db->trans_complete();
+
         if ($this->db->trans_status() === FALSE) {
-            redirect(base_url("error"));
+
+            $item = $this->Project_model->get(array("id" => $id));
+            $main_contracts = $this->Contract_model->get_all(array("project_id" => $id, "parent" => 0));
+            $sites = $this->Site_model->get_all(array("project_id" => $id));
+            $viewData = new stdClass();
+
+            $viewData->sites = $sites;
+            $viewData->main_contracts = $main_contracts;
+            $viewData->item = $item;
+            $viewData->form_error = true;
+
+            $this->load->view("project_v/delete_form/index", $viewData);
         }
+
+
+
+        // Başarılıysa
         redirect(base_url("project"));
     }
 

@@ -414,6 +414,9 @@ class Contract extends MY_Controller
     {
 
         $item = $this->Contract_model->get(array("id" => $id));
+        if (!$item) {
+            redirect(base_url("404"));
+        }
         $sub_contracts = $this->Contract_model->get_all(array("parent" => $id));
         $sites = $this->Site_model->get_all(array("contract_id" => $id));
         $advances = $this->Advance_model->get_all(array('contract_id' => $id));
@@ -441,8 +444,6 @@ class Contract extends MY_Controller
 
     public function hard_delete($id)
     {
-
-
         // Sözleşme verisini al
         $contract = $this->Contract_model->get(array("id" => $id));
         // Sözleşme bulunamazsa hata sayfasına yönlendir
@@ -703,7 +704,7 @@ class Contract extends MY_Controller
             $viewData->sub_groups = $sub_groups;
             $viewData->form_error = true;
         }
-        $render_boq = $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group", $viewData, true);
+        $render_boq = $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_d_work_group", $viewData, true);
         echo $render_boq;
     }
 
@@ -782,9 +783,9 @@ class Contract extends MY_Controller
         $viewData->prices_main_groups = $prices_main_groups;
 
         $response = [
-            'subgroup' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group", $viewData, true),
+            'subgroup' => $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_d_work_group", $viewData, true),
             'pricegroup' => $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table", $viewData, true),
-            'contractprice' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true),
+            'contractprice' => $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_a_contract_price_table", $viewData, true),
         ];
         echo json_encode($response);
     }
@@ -801,7 +802,7 @@ class Contract extends MY_Controller
         $viewData->item = $item;
         $viewData->prices_main_groups = $prices_main_groups;
 
-        $render_boq = $this->load->view("contract_module/contract_v/display/tabs/tab_5_b_contract_price_group", $viewData, true);
+        $render_boq = $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_b_contract_price_group", $viewData, true);
         echo $render_boq;
     }
 
@@ -817,7 +818,7 @@ class Contract extends MY_Controller
         $viewData->item = $item;
         $viewData->prices_main_groups = $prices_main_groups;
 
-        $render_boq = $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true);
+        $render_boq = $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_a_contract_price_table", $viewData, true);
         echo $render_boq;
     }
 
@@ -845,9 +846,9 @@ class Contract extends MY_Controller
         $viewData->sub_groups = $sub_groups;
 
         $response = [
-            'subgroup' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_d_work_group", $viewData, true),
+            'subgroup' => $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_d_work_group", $viewData, true),
             'pricegroup' => $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table", $viewData, true),
-            'contractprice' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true),
+            'contractprice' => $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_a_contract_price_table", $viewData, true),
         ];
         echo json_encode($response);
     }
@@ -896,7 +897,7 @@ class Contract extends MY_Controller
             $viewData->item = $item;
             $viewData->main_groups = $main_groups;
 
-            $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
+            $render_html = $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_c_price_book", $viewData, true);
             echo $render_html;
         } else {
             $item = $this->Contract_model->get(array("id" => $contract_id));
@@ -909,7 +910,7 @@ class Contract extends MY_Controller
             $viewData->main_groups = $main_groups;
             $viewData->form_error = true;
 
-            $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
+            $render_html = $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_c_price_book", $viewData, true);
             echo $render_html;
         }
     }
@@ -949,7 +950,7 @@ class Contract extends MY_Controller
         $viewData->item = $item;
         $viewData->main_groups = $main_groups;
 
-        $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
+        $render_html = $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_c_price_book", $viewData, true);
         echo $render_html;
     }
 
@@ -1009,7 +1010,7 @@ class Contract extends MY_Controller
 
         $response = [
             'firstDivHtml' => $this->load->view("contract_module/contract_v/display/pricegroup/pricegroup_table", $viewData, true),
-            'secondDivHtml' => $this->load->view("contract_module/contract_v/display/tabs/tab_5_a_contract_price_table", $viewData, true),
+            'secondDivHtml' => $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_a_contract_price_table", $viewData, true),
         ];
         echo json_encode($response);
     }
@@ -1032,7 +1033,7 @@ class Contract extends MY_Controller
 
 
         $viewData->item = $item;
-        $render_html = $this->load->view("contract_module/contract_v/display/tabs/tab_5_c_price_book", $viewData, true);
+        $render_html = $this->load->view("contract_module/contract_v/display/pricegroup/tab_5_c_price_book", $viewData, true);
         echo $render_html;
     }
 
