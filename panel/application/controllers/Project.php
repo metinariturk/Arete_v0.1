@@ -142,11 +142,16 @@ class Project extends MY_Controller
         }
 
         $main_contracts = $this->Contract_model->get_all(array("project_id" => $id, "parent" => 0));
+
+        $this->db->where("parent !=", 0);
+        $sub_contracts = $this->Contract_model->get_all(array("project_id" => $id));
+
         $sites = $this->Site_model->get_all(array("project_id" => $id));
         $viewData = new stdClass();
 
 
         $viewData->sites = $sites;
+        $viewData->sub_contracts = $sub_contracts;
         $viewData->main_contracts = $main_contracts;
         $viewData->item = $item;
 
@@ -297,7 +302,7 @@ class Project extends MY_Controller
 
 
         if ($has_related_data) {
-            redirect(base_url("project/file_form/$project->id"));
+            redirect(base_url("project/delete_form/$project->id"));
             return;
         }
 
@@ -311,8 +316,9 @@ class Project extends MY_Controller
         // Silme işlemi
         $this->db->trans_start();
         $this->Project_model->delete(array("id" => $id));
-        $this->Favorite_model->delete(array("module" => "project", "module_id" => $id));
         $this->db->trans_complete();
+
+        $this->Favorite_model->delete(array("module" => "project", "module_id" => $id));
 
         if ($this->db->trans_status() === FALSE) {
 

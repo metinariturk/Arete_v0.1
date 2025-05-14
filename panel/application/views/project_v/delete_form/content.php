@@ -34,6 +34,24 @@
                         </ul>
                     <?php } ?>
 
+                    <?php if (empty($sub_contracts)) { ?>
+                        <div class="alert alert-success">
+                            <i class="fa fa-check-circle"></i> Bağlı alt sözleşme yok.
+                        </div>
+                    <?php } else { ?>
+                        <ul class="list-group mb-3">
+                            <?php foreach ($sub_contracts as $sub_contract) { ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><?php echo $sub_contract->dosya_no; ?> - <?php echo $sub_contract->contract_name; ?></span>
+                                    <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>" target="_blank" class="btn btn-sm btn-outline-success">
+                                        <i class="fa fa-arrow-circle-right"></i> Görüntüle
+                                    </a>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                    <?php } ?>
+
+
                     <!-- Bağlı Şantiyeler -->
                     <h5><i class="fa fa-hard-hat text-secondary"></i> Bağlı Şantiyeler (<?php echo count($sites); ?>)</h5>
                     <?php if (empty($sites)) { ?>

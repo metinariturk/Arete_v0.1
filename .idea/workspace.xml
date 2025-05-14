@@ -288,7 +288,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Project.php</url>
-          <line>370</line>
+          <line>373</line>
           <properties>
             <option name="className" value="\Project" />
             <option name="methodName" value="file_upload" />
