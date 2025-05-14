@@ -303,9 +303,6 @@ class Project extends MY_Controller
 
         $path = FCPATH . "uploads/project_v/{$project->dosya_no}";
 
-        echo $path;
-        die();
-
         delete_files($path, true); // İkinci parametre (true), klasörün kendisini de siler
         if (is_dir($path)) {
             rmdir($path);
