@@ -3,6 +3,7 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("{$viewFolder}/common/page_style"); ?>
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/todo.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
 </head>
 <body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">

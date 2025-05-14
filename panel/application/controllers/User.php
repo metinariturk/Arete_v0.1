@@ -9,8 +9,6 @@ class user extends MY_Controller
     {
         parent::__construct();
 
-        $uploader = APPPATH . 'libraries/FileUploader.php';
-        include($uploader);
         $this->moduleFolder = "user_module";
         $this->viewFolder = "user_v";
         $this->load->model("User_model");
