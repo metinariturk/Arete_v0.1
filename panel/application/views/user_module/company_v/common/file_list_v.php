@@ -27,13 +27,13 @@
                     <th class="order"><i class="fa fa-reorder"></i></th>
                     <th>Dosya Adı</th>
                     <th>
-                        <a href="<?php echo base_url("$this->Module_Name/download_all/$item->id"); ?>">
+                        <a href="<?php echo base_url("Company/download_all/$item->id"); ?>">
                             <i style="font-size: 18px;" class="fa fa-arrow-circle-down" aria-hidden="true"></i>
                         </a>
                     </th>
                     <th>
                         <a onclick="deleteConfirmationFile(this)"
-                           url="<?php echo base_url("$this->Module_Name/fileDelete_all/$delete_all_id"); ?>"
+                           url="<?php echo base_url("Company/fileDelete_all/$delete_all_id"); ?>"
                         <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o" aria-hidden="true"></i>
                         </a>
                     </th>
@@ -45,13 +45,13 @@
                         <td class="order w5"><?php echo ext_img($file->img_url); ?></td>
                         <td><?php echo filenamedisplay($file->img_url); ?></td>
                         <td class="w15">
-                            <a href="<?php echo base_url("$this->Module_Name/file_download/$file->id"); ?>">
+                            <a href="<?php echo base_url("Company/file_download/$file->id"); ?>">
                                 <i style="font-size: 18px;" class="fa fa-arrow-circle-down" aria-hidden="true"></i>
                             </a>
                         </td>
                         <td>
                             <a onclick="deleteConfirmationFile(this)"
-                               url="<?php echo base_url("$this->Module_Name/fileDelete/$file->id"); ?>"
+                               url="<?php echo base_url("Company/fileDelete/$file->id"); ?>"
                             <i style="font-size: 18px; color: Tomato;" class="fa fa-times-circle-o"
                                aria-hidden="true"></i>
                             </a>

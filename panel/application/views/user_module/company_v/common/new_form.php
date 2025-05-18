@@ -1,5 +1,5 @@
 <form id="new_company"
-      action="<?php echo base_url("$this->Module_Name/save"); ?>"
+      action="<?php echo base_url("Company/save"); ?>"
       method="post"
       enctype="multipart">
     <div class="row g-3">

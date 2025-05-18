@@ -1,3 +1,46 @@
+<div class="container-fluid">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-6">
+                <h3>
+                    <?php echo "Firama Listesi"; ?>
+                </h3>
+            </div>
+            <div class="col-6">
+                <ol class="breadcrumb">
+
+                    <li>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal"
+                                data-bs-target=".bd-example-modal-lg" data-bs-original-title="" title="">+ Yeni Firma
+                        </button>
+                        <div class="modal fade bd-example-modal-lg" tabindex="-1" aria-labelledby="myLargeModalLabel"
+                             style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Yeni Firma</h5>
+                                        <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?php $this->load->view("user_module/company_v/common/new_form"); ?>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+                                            Kapat
+                                        </button>
+                                        <button class="btn btn-primary" form="new_company" type="submit">Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body">

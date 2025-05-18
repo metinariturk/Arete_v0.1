@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="edit-profile">
         <form id="update_company"
-              action="<?php echo base_url("$this->Module_Name/update/$item->id"); ?>" method="post"
+              action="<?php echo base_url("Company/update/$item->id"); ?>" method="post"
               enctype="multipart/form-data" autocomplete="off">
             <div class="row">
                 <div class="col-md-9">
@@ -66,13 +66,13 @@
                                                 class="form-control <?php cms_isset(form_error("tax_city"), "is-invalid", ""); ?>">
                                             <option id="tax_cityOption"
                                                     value="<?php echo isset($form_error) ? set_value("tax_city") : "$item->tax_city"; ?>"
-                                                    data-url="<?php echo base_url("$this->Module_Name/get_tax_office/"); ?>"
+                                                    data-url="<?php echo base_url("Company/get_tax_office/"); ?>"
                                             >
                                                 <?php echo isset($form_error) ? city_name(set_value("tax_city")) : city_name($item->tax_city); ?>
                                             </option>
                                             <?php foreach ($cities as $city) { ?>
                                                 <option id="tax_cityOption"
-                                                        data-url="<?php echo base_url("$this->Module_Name/get_tax_office/"); ?>"
+                                                        data-url="<?php echo base_url("Company/get_tax_office/"); ?>"
                                                         value="<?php echo $city->id; ?>"><?php echo $city->city_name; ?></option>
                                             <?php } ?>
                                         </select>
@@ -111,13 +111,13 @@
                                                 class="form-control <?php cms_isset(form_error("adress_city"), "is-invalid", ""); ?>">
                                             <option id="adress_cityOption"
                                                     value="<?php echo isset($form_error) ? set_value("adress_city") : "$item->adress_city"; ?>"
-                                                    data-url="<?php echo base_url("$this->Module_Name/get_district/"); ?>"
+                                                    data-url="<?php echo base_url("Company/get_district/"); ?>"
                                             >
                                                 <?php echo isset($form_error) ? city_name(set_value("adress_city")) : city_name($item->adress_city); ?>
                                             </option>
                                             <?php foreach ($cities as $city) { ?>
                                                 <option id="tax_cityOption"
-                                                        data-url="<?php echo base_url("$this->Module_Name/get_district/"); ?>"
+                                                        data-url="<?php echo base_url("Company/get_district/"); ?>"
                                                         value="<?php echo $city->id; ?>"><?php echo $city->city_name; ?></option>
                                             <?php } ?>
                                         </select>
@@ -239,13 +239,13 @@
                                         <div class="avatar_list_container">
                                             <div class="content-container">
                                                 <?php if (company_avatar_isset($item->id)) { ?>
-                                                    <?php $this->load->view("{$viewModule}/{$viewFolder}/common/avatar"); ?>
+                                                    <?php $this->load->view("user_module/company_v/common/avatar"); ?>
                                                 <?php } else { ?>
-                                                    <div data-url="<?php echo base_url("$this->Module_Name/refresh_file_list/$item->id"); ?>"
-                                                         action="<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>"
+                                                    <div data-url="<?php echo base_url("Company/refresh_file_list/$item->id"); ?>"
+                                                         action="<?php echo base_url("Company/file_upload/$item->id"); ?>"
                                                          id="dropzone_avatar" class="dropzone"
                                                          data-plugin="dropzone"
-                                                         data-options="{ url: '<?php echo base_url("$this->Module_Name/file_upload/$item->id"); ?>'}">
+                                                         data-options="{ url: '<?php echo base_url("Company/file_upload/$item->id"); ?>'}">
                                                         <div class="dz-message">
                                                             <i class="fa-solid fa-cloud-arrow-up fa-4x"></i>
                                                             <h3>Firma Logosunu Buraya Bırakınız</h3>
