@@ -970,6 +970,7 @@ class Payment extends MY_Controller
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
         $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
         $pdf->headerText = "METRAJ İCMALİ";
+        $pdf->AddPage();
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
         $pdf->custom_footer = $footer_sign;
         $page_width = $pdf->getPageWidth();
@@ -1397,14 +1398,19 @@ class Payment extends MY_Controller
                 "id" => $payment_id
             )
         );
+
+
         $viewData = new stdClass();
         $viewData->item = $item;
         $this->load->library('pdf_creator');
         $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
         $pdf->SetPageOrientation('P');
+
         $pdf->headerSubText = "İşin Adı : " . contract_name($contract_id);
         $pdf->headerPaymentNo = "Hakediş No : " . $payment_no;
         $pdf->headerText = "YAPILAN İŞLER GRUP İCMALLERİ";
+        $pdf->AddPage();
+
         $pdf->parametre = 1; // Parametreyi belirleyin (1 veya 2)
         $pdf->custom_footer = $footer_sign;
         $page_width = $pdf->getPageWidth();
@@ -1448,8 +1454,10 @@ class Payment extends MY_Controller
             foreach ($sub_groups as $sub_group) :
                 $sum_group_items = $this->Boq_model->get_all(array('contract_id' => $item->contract_id, "payment_no" => $item->hakedis_no, "sub_id" => $sub_group->id));
                 $a = array_reduce($sum_group_items, function ($carry, $sum_group_item) {
-                    $contract_price = get_from_any("contract_price", "price", "id", "$sum_group_item->boq_id");
-                    return $carry + $sum_group_item->total * $contract_price;
+
+                    $contract_price = $this->Contract_price_model->get(array("id" => $sum_group_item->boq_id));
+
+                    return $carry + $sum_group_item->total * $contract_price->price;
                 }, 0);
                 $sum_group_old_items = $this->Boq_model->get_all(array('contract_id' => $item->contract_id, "payment_no <" => $item->hakedis_no, "sub_id" => $sub_group->id));
                 $b = array_reduce($sum_group_old_items, function ($carry, $sum_group_old_item) {

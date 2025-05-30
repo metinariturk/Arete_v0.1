@@ -45,24 +45,18 @@
 
             <div class="card-body">
                 <div class="download_links mt-3">
-                    <a href="#">
-                        <i class="fa fa-file-excel-o fa-2x"></i>
-                    </a>
-                    <a target="_blank" href="<?php echo base_url("payment/print_report/$item->id"); ?>">
-                        <i class="fa fa-file-pdf-o fa-2x"></i>
-                    </a>
                     <div class="dropdown">
                         <div class="light-square" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-ellipsis-h fa-2x"></i>
                         </div>
                         <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu">
                             <li>
-
                                 <a class="dropdown-item" target="_blank"
                                    href="<?php echo base_url("payment/print_report/$item->id"); ?>">
                                     <i class="fa fa-file-excel-o"></i> Excel'e Aktar
                                 </a>
                             </li>
+
                             <li>
                                 <a class="dropdown-item" target="_blank"
                                    href="<?php echo base_url("payment/print_all/$item->id"); ?>">
@@ -70,7 +64,10 @@
                                 </a>
                             </li>
                             <li>
-
+                                <a class="dropdown-item" target="_blank" href="<?php echo base_url("payment/print_report/$item->id"); ?>"
+                                   href="<?php echo base_url("payment/print_all/$item->id"); ?>">
+                                    <i class="fa fa-file-pdf-o"></i> Sayfayı İndir
+                                </a>
                             </li>
                             <li>
                                 <a class="dropdown-item"

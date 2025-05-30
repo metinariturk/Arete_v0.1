@@ -4,6 +4,10 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
+
 class Boq extends MY_Controller
 {
     public $viewFolder = "";
@@ -78,7 +82,7 @@ class Boq extends MY_Controller
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
         $settings = $this->Settings_model->get();
-        
+
         $viewData->viewModule = "contract_module";
         $viewData->viewFolder = "boq_v";
         $viewData->subViewFolder = "add";
@@ -114,7 +118,7 @@ class Boq extends MY_Controller
                 "contract_id", "$contract_id",
                 "payment_no", "$payment->hakedis_no",
                 "boq_id", $boq_id);
-        
+
         $viewData->viewModule = "contract_module";
         $viewData->viewFolder = "boq_v";
         $viewData->subViewFolder = "display";
@@ -154,7 +158,7 @@ class Boq extends MY_Controller
                 "contract_id", "$contract_id",
                 "payment_no", "$payment->hakedis_no",
                 "boq_id", $boq_id);
-        
+
         $viewData->viewModule = "contract_module";
         $viewData->viewFolder = "boq_v";
         $viewData->subViewFolder = "display";
@@ -303,7 +307,7 @@ class Boq extends MY_Controller
                 "contract_id", "$contract_id",
                 "payment_no", "$payment->hakedis_no",
                 "boq_id", $boq_id);
-        
+
         $viewData->viewModule = "contract_module";
         $viewData->viewFolder = "boq_v";
         $viewData->subViewFolder = "display";
@@ -328,7 +332,7 @@ class Boq extends MY_Controller
     {
 
         $viewData = new stdClass();
-        
+
         $viewData->viewModule = "contract_module";
         $viewData->viewFolder = "boq_v";
         $viewData->subViewFolder = "display";
@@ -360,7 +364,7 @@ class Boq extends MY_Controller
         $contract = $this->Contract_model->get(array('id' => $contract_id));
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
-        
+
         $viewData->viewFolder = "boq_v";
         $viewData->viewModule = "contract_module";
         $viewData->subViewFolder = "add";
@@ -382,7 +386,7 @@ class Boq extends MY_Controller
         $sub_groups = $this->Contract_price_model->get_all(array('contract_id' => $contract_id, "sub_group" => 1));
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $viewData = new stdClass();
-        
+
         $viewData->viewModule = "contract_module";
         $viewData->viewFolder = "boq_v";
         $viewData->subViewFolder = "add";
@@ -395,105 +399,434 @@ class Boq extends MY_Controller
     }
     public function template_download($contract_id, $payment_id, $boq_id)
     {
-
-        // Ödeme bilgilerini al
         $this->load->model("Company_model");
+
+        // Veritabanından gerekli verileri al
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $contract = $this->Contract_model->get(array('id' => $contract_id));
         $company = $this->Company_model->get(array('id' => $contract->isveren));
         $boq = $this->Contract_price_model->get(array('id' => $boq_id));
-        // BOQ verilerini al
-        $old_boq = $this->Boq_model->get(
-            array(
-                "boq_id" => $boq_id,
-                "contract_id" => $contract_id,
-                "payment_no" => $payment->hakedis_no
-            )
-        );
-        // Excel şablonunu yükle
-        $templatePath = 'uploads/Excel_Template.xlsx';
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A2', "$company->company_name" );
-        $sheet->setCellValue('A3', "$contract->contract_name" );
-        $sheet->setCellValue('A4', "$boq->name" );
-        $sheet->setCellValue('H4', "$boq->unit" );
+
         // BOQ hesaplama verilerini al
+        $old_boq = $this->Boq_model->get(array(
+            "boq_id" => $boq_id,
+            "contract_id" => $contract_id,
+            "payment_no" => $payment->hakedis_no
+        ));
+
         if (isset($old_boq)) {
             $dataArray = json_decode($old_boq->calculation, true);
         } else {
             $dataArray = array();
         }
-        // Hücrelere veriyi yaz
-        $row = 7;
+
+        // Yeni bir Excel dosyası oluştur
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $title_start_row = 2;
+
+        // 1. satır: METRAJ CETVELİ
+        $sheet->mergeCells("B$title_start_row:I$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "METRAJ CETVELİ");
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(20);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("B$title_start_row:I$title_start_row")->getFont()->setName('Verdana');
+
+        $title_start_row++;
+        $title_start_row++;
+
+
+// 2. satır: İşin adı
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row",  "İşin Adı : ");
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", $contract->contract_name);
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $title_start_row++;
+
+// 3. satır: Firma adı
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "Firma : " );
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", $company->company_name);
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $title_start_row++;
+        
+        // 4. satır
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "İmalat Adı : " );
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", $boq->name . "(" . $boq->unit .")" );
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $title_start_row++;
+        $total_row = $title_start_row;
+        
+        // 5. satır
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "Toplam : " );
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", "");
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+
+
+// Satırları doldurma kısmında
+        $sheet->getStyle("A1:D$title_start_row")->getFont()->getColor()->setARGB('FF808080'); // Koyu gri için örnek
+
+        $title_start_row++;
+        $title_start_row++;
+        $counter = 1;
+
+        $table_start = $title_start_row;
+
+        // Kolon başlıkları - A boş, B satır no
+        $sheet->setCellValue("A$table_start", '');          // boş bırakıyoruz
+        $sheet->setCellValue("B$table_start", 'No');        // Satır numarası
+        $sheet->setCellValue("C$table_start", 'Mahal');
+        $sheet->setCellValue("D$table_start", 'Açıklama');
+        $sheet->setCellValue("E$table_start", 'Adet');
+        $sheet->setCellValue("F$table_start", 'En');
+        $sheet->setCellValue("G$table_start", 'Boy');
+        $sheet->setCellValue("H$table_start", 'Yükseklik');
+        $sheet->setCellValue("I$table_start", 'Toplam');
+
+        $sheet->getStyle("E$table_start:I$table_start")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        $title_start_row++;
+        $sheet->freezePane("A$title_start_row");
+
+        $reference_row = $title_start_row;
+
+
         foreach ($dataArray as $data) {
-            $sheet->setCellValue('B' . $row, $data['s']);
-            $sheet->setCellValue('C' . $row, $data['n']);
-            $sheet->setCellValue('D' . $row, $data['q']);
-            $sheet->setCellValue('E' . $row, $data['w']);
-            $sheet->setCellValue('F' . $row, $data['h']);
-            $sheet->setCellValue('G' . $row, $data['l']);
-            $row++;
+            $sheet->setCellValue('B' . $title_start_row, $counter);  // satır numarası
+            $sheet->setCellValue('C' . $title_start_row, $data['s']);
+            $sheet->setCellValue('D' . $title_start_row, $data['n']);
+            $sheet->setCellValue('E' . $title_start_row, $data['q']);
+            $sheet->setCellValue('F' . $title_start_row, $data['w']);
+            $sheet->setCellValue('G' . $title_start_row, $data['h']);
+            $sheet->setCellValue('H' . $title_start_row, $data['l']);
+            $sheet->setCellValue('I' . $title_start_row, "=PRODUCT(E$title_start_row:H$title_start_row)"); // çarpım formülü
+
+            $title_start_row++;
+            $counter++;
         }
-        // Dosyayı indirme
+
+        $lastDataRow = $title_start_row - 1;
+
+        $sheet->getStyle("B$table_start:I$table_start")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
+        $sheet->getStyle("B$table_start:B$lastDataRow")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
+        $sheet->getStyle("B$table_start:B$lastDataRow")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("B$table_start:I$table_start")->getFont()->setBold(true);
+        $sheet->getStyle("B$table_start:B$lastDataRow")->getFont()->setBold(true);
+
+        $sheet->setCellValue("D$total_row", "=SUM(I$total_row:I$lastDataRow)");
+
+// Örneğin birim "kg" ise:
+        $sheet->getStyle("D$total_row")
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00" ' . $boq->unit . '"');
+
+        $sheet->getColumnDimension('A')->setWidth(5);     // boş sütun, biraz geniş bırakabiliriz
+        $sheet->getColumnDimension('B')->setWidth(5);     // satır no için yeterli
+        $sheet->getColumnDimension('C')->setWidth(14);    // Mahal ~100px
+        $sheet->getColumnDimension('D')->setWidth(28);    // Açıklama ~195px
+        $sheet->getColumnDimension('E')->setWidth(9);     // Adet ~60px
+        $sheet->getColumnDimension('F')->setWidth(9);     // En ~60px
+        $sheet->getColumnDimension('G')->setWidth(9);     // Boy ~60px
+        $sheet->getColumnDimension('H')->setWidth(9);     // Yükseklik ~60px
+        $sheet->getColumnDimension('I')->setWidth(11);    // Toplam ~70px
+
+        $sheet->getStyle("E$reference_row:I$lastDataRow")->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle("E$reference_row:I$lastDataRow")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->getStyle("E$total_row:I$total_row")->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $allBorders = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+        $sheet->getStyle("B$table_start:I$lastDataRow")->applyFromArray($allBorders);
+
+
+        for ($r = $table_start+1; $r <= $lastDataRow; $r++) {
+            $fillColor = ($r % 2 == 1) ? 'CCCCCC' : 'A8A8A8';  // Açık gri ve koyu gri
+            $sheet->getStyle("C$r:I$r")->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setARGB($fillColor);
+
+            // Metin sola yaslı (C:I)
+            $sheet->getStyle("C$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+            // Eğer gerekiyorsa B sütunu sola yaslı, zaten #FFC000 arka plan var, koruyor
+            $sheet->getStyle("B$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        }
+
+        $sheet->getPageMargins()->setTop(0.25);    // Üst kenar boşluğu
+        $sheet->getPageMargins()->setBottom(0.25); // Alt kenar boşluğu
+        $sheet->getPageMargins()->setLeft(0.25);   // Sol kenar boşluğu
+        $sheet->getPageMargins()->setRight(0.25);  // Sağ kenar boşluğu
+
+
+
+
+
+        // Excel dosyasını indir
         $writer = new Xlsx($spreadsheet);
         $downloadFileName = "$boq->name - $payment->hakedis_no Nolu Hakediş.xlsx";
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
+
     public function template_download_rebar($contract_id, $payment_id, $boq_id)
     {
-
-        // Ödeme bilgilerini al
         $this->load->model("Company_model");
+
+        // Veritabanından gerekli verileri al
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $contract = $this->Contract_model->get(array('id' => $contract_id));
         $company = $this->Company_model->get(array('id' => $contract->isveren));
         $boq = $this->Contract_price_model->get(array('id' => $boq_id));
-        // BOQ verilerini al
-        $old_boq = $this->Boq_model->get(
-            array(
-                "boq_id" => $boq_id,
-                "contract_id" => $contract_id,
-                "payment_no" => $payment->hakedis_no
-            )
-        );
+
         // BOQ hesaplama verilerini al
+        $old_boq = $this->Boq_model->get(array(
+            "boq_id" => $boq_id,
+            "contract_id" => $contract_id,
+            "payment_no" => $payment->hakedis_no
+        ));
+
         if (isset($old_boq)) {
             $dataArray = json_decode($old_boq->calculation, true);
         } else {
             $dataArray = array();
         }
-        $dataArrayCount = count($dataArray);
-        $nearestValues = array(100, 200, 300, 400, 500, 600, 750, 1000, 1500, 2000);
-        $roundedCount = roundToNearest($dataArrayCount, $nearestValues);
-        // Excel şablonunu yükle
-        $templatePath = "uploads/Excel_Template_Rebar_$roundedCount.xlsx";
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath);
+
+        // Yeni bir Excel dosyası oluştur
+        $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A2', "$company->company_name" );
-        $sheet->setCellValue('A3', "$contract->contract_name" );
-        $sheet->setCellValue('A4', "$boq->name" );
-        $sheet->setCellValue('H4', "$boq->unit" );
-        // Hücrelere veriyi yaz
-        $row = 7;
+
+        $title_start_row = 2;
+
+        // 1. satır: METRAJ CETVELİ
+        $sheet->mergeCells("B$title_start_row:I$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "METRAJ CETVELİ");
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(20);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("B$title_start_row:I$title_start_row")->getFont()->setName('Verdana');
+
+        $title_start_row++;
+        $title_start_row++;
+
+
+// 2. satır: İşin adı
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row",  "İşin Adı : ");
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", $contract->contract_name);
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $title_start_row++;
+
+// 3. satır: Firma adı
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "Firma : " );
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", $company->company_name);
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $title_start_row++;
+
+        // 4. satır
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "İmalat Adı : " );
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", $boq->name . " (" . $boq->unit .")" );
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $title_start_row++;
+        $total_row = $title_start_row;
+
+        // 5. satır
+        $sheet->mergeCells("B$title_start_row:C$title_start_row");
+        $sheet->setCellValue("B$title_start_row", "Toplam : " );
+        $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->mergeCells("D$title_start_row:I$title_start_row");
+        $sheet->setCellValue("D$title_start_row", "");
+        $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
+        $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+// Satırları doldurma kısmında
+        $sheet->getStyle("A1:D$title_start_row")->getFont()->getColor()->setARGB('FF808080'); // Koyu gri için örnek
+
+        $title_start_row++;
+        $title_start_row++;
+        $counter = 1;
+
+        $table_start = $title_start_row;
+
+        // Kolon başlıkları - A boş, B satır no
+        $sheet->setCellValue("A$table_start", '');          // boş bırakıyoruz
+        $sheet->setCellValue("B$table_start", 'No');        // Satır numarası
+        $sheet->setCellValue("C$table_start", 'Mahal');
+        $sheet->setCellValue("D$table_start", 'Açıklama');
+        $sheet->setCellValue("E$table_start", 'Çap');
+        $sheet->setCellValue("F$table_start", 'Benzer');
+        $sheet->setCellValue("G$table_start", 'Adet');
+        $sheet->setCellValue("H$table_start", 'Uzunluk');
+        $sheet->setCellValue("I$table_start", 'Toplam');
+
+        $sheet->getStyle("E$table_start:I$table_start")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+
+
+        $title_start_row++;
+        $sheet->freezePane("A$title_start_row");
+
+        $reference_row = $title_start_row;
+
+        $allowedValues = [8, 10, 12, 14, 16, 18,20,22,24,25, 26,28,30,32,34, 36,38,40,45,50];
+
         foreach ($dataArray as $data) {
-            $sheet->setCellValue('B' . $row, $data['s']);
-            $sheet->setCellValue('C' . $row, $data['n']);
-            $sheet->setCellValue('D' . $row, $data['q']);
-            $sheet->setCellValue('E' . $row, $data['w']);
-            $sheet->setCellValue('F' . $row, $data['h']);
-            $sheet->setCellValue('G' . $row, $data['l']);
-            $row++;
+
+            $validation = $sheet->getCell('E' . $title_start_row)->getDataValidation();
+            $validation->setType(DataValidation::TYPE_LIST);
+            $validation->setErrorStyle(DataValidation::STYLE_STOP);
+            $validation->setAllowBlank(false);
+            $validation->setShowInputMessage(true);
+            $validation->setShowErrorMessage(true);
+            $validation->setErrorTitle('Geçersiz Değer');
+            $validation->setError('Sadece belirtilen çaplardan birini girin: 8, 10, 12, 14, 16, 18,20,22,24,25, 26,28,30,32,34, 36,38,40,45,50');
+            $validation->setFormula1('"' . implode(',', $allowedValues) . '"');
+
+            $sheet->setCellValue('B' . $title_start_row, $counter);  // satır numarası
+            $sheet->setCellValue('C' . $title_start_row, $data['s']);
+            $sheet->setCellValue('D' . $title_start_row, $data['n']);
+            $sheet->setCellValue('E' . $title_start_row, $data['q']);
+            $sheet->setCellValue('F' . $title_start_row, $data['w']);
+            $sheet->setCellValue('G' . $title_start_row, $data['h']);
+            $sheet->setCellValue('H' . $title_start_row, $data['l']);
+            $formula = sprintf("=(E%d^2/162)*F%d*G%d*H%d", $title_start_row, $title_start_row, $title_start_row, $title_start_row);
+
+            $sheet->setCellValue('I' . $title_start_row, $formula);
+            $title_start_row++;
+            $counter++;
         }
-        // Dosyayı indirme
+
+        $lastDataRow = $title_start_row - 1;
+
+        $sheet->getStyle("B$table_start:I$table_start")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
+        $sheet->getStyle("B$table_start:B$lastDataRow")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
+        $sheet->getStyle("B$table_start:B$lastDataRow")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("B$table_start:I$table_start")->getFont()->setBold(true);
+        $sheet->getStyle("B$table_start:B$lastDataRow")->getFont()->setBold(true);
+
+        $sheet->setCellValue("D$total_row", "=SUM(I$total_row:I$lastDataRow)");
+
+// Örneğin birim "kg" ise:
+        $sheet->getStyle("D$total_row")
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00" ' . $boq->unit . '"');
+
+        $sheet->getColumnDimension('A')->setWidth(5);     // boş sütun, biraz geniş bırakabiliriz
+        $sheet->getColumnDimension('B')->setWidth(5);     // satır no için yeterli
+        $sheet->getColumnDimension('C')->setWidth(14);    // Mahal ~100px
+        $sheet->getColumnDimension('D')->setWidth(28);    // Açıklama ~195px
+        $sheet->getColumnDimension('E')->setWidth(9);     // Adet ~60px
+        $sheet->getColumnDimension('F')->setWidth(9);     // En ~60px
+        $sheet->getColumnDimension('G')->setWidth(9);     // Boy ~60px
+        $sheet->getColumnDimension('H')->setWidth(9);     // Yükseklik ~60px
+        $sheet->getColumnDimension('I')->setWidth(11);    // Toplam ~70px
+
+        $sheet->getStyle("E$reference_row:I$lastDataRow")->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle("E$reference_row:I$lastDataRow")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        $sheet->getStyle("E$total_row:I$total_row")->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $allBorders = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+        $sheet->getStyle("B$table_start:I$lastDataRow")->applyFromArray($allBorders);
+
+
+
+        for ($r = $table_start+1; $r <= $lastDataRow; $r++) {
+            $fillColor = ($r % 2 == 1) ? 'CCCCCC' : 'A8A8A8';  // Açık gri ve koyu gri
+            $sheet->getStyle("C$r:I$r")->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setARGB($fillColor);
+
+            // Metin sola yaslı (C:I)
+            $sheet->getStyle("C$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+            // Eğer gerekiyorsa B sütunu sola yaslı, zaten #FFC000 arka plan var, koruyor
+            $sheet->getStyle("B$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+            $sheet->getStyle("E$r:E$lastDataRow")
+                ->getNumberFormat()
+                ->setFormatCode('"Ø"#');
+
+        }
+
+        $sheet->getPageMargins()->setTop(0.25);    // Üst kenar boşluğu
+        $sheet->getPageMargins()->setBottom(0.25); // Alt kenar boşluğu
+        $sheet->getPageMargins()->setLeft(0.25);   // Sol kenar boşluğu
+        $sheet->getPageMargins()->setRight(0.25);  // Sağ kenar boşluğu
+
+
+        // Excel dosyasını indir
         $writer = new Xlsx($spreadsheet);
         $downloadFileName = "$boq->name - $payment->hakedis_no Nolu Hakediş.xlsx";
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $downloadFileName . '"');
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
+
 }

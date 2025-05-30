@@ -3161,10 +3161,10 @@ class Export extends MY_Controller
         $contractor = $this->Company_model->get(array("id" => $contract->yuklenici));
         $this->load->library('pdf_creator');
         $pdf = new Pdf_creator(); // PdfCreator sınıfını doğru şekilde çağırın
-        $pdf->addTOCPage('L', "A5");
+        $pdf->addTOCPage('P', "A4");
 // Çerçeve için boşlukları belirleme
         $topMargin = 30;  // 4 cm yukarıdan
-        $bottomMargin = 10;  // 4 cm aşağıdan
+        $bottomMargin = 150;  // 4 cm aşağıdan
         $rightMargin = 10;  // 2 cm sağdan
         $leftMargin = 10;  // 2 cm soldan
 // Çerçeve renk ve kalınlığını ayarla
