@@ -60,15 +60,14 @@
         <!-- Sekmeler -->
         <ul class="nav nav-tabs" id="projectTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="active-tab" data-bs-toggle="tab" href="#project_active" role="tab">Devam
-                    Eden</a>
+                <a class="nav-link active" id="active-tab" data-bs-toggle="tab" href="#project_active" role="tab">Tüm Projeler</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="inactive-tab" data-bs-toggle="tab" href="#project_inactive"
-                   role="tab">Biten</a>
+                   role="tab">Biten Projeler</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="all-tab" data-bs-toggle="tab" href="#project_all" role="tab">Tümü</a>
+                <a class="nav-link" id="all-tab" data-bs-toggle="tab" href="#project_all" role="tab">Devam Eden Projeler</a>
             </li>
         </ul>
 
@@ -78,7 +77,7 @@
             <!-- Devam Eden Sözleşmeler -->
             <div class="tab-pane fade show active" id="project_active" role="tabpanel">
                 <div class="table-responsive">
-                    <?php $this->load->view("project_v/list/tabs/active"); ?>
+                    <?php $this->load->view("project_v/list/tabs/all"); ?>
                 </div>
             </div>
             <!-- Biten Sözleşmeler -->
@@ -90,7 +89,7 @@
             <!-- Tüm Sözleşmeler -->
             <div class="tab-pane fade" id="project_all" role="tabpanel">
                 <div class="table-responsive">
-                    <?php $this->load->view("project_v/list/tabs/all"); ?>
+                    <?php $this->load->view("project_v/list/tabs/active"); ?>
                 </div>
             </div>
         </div>

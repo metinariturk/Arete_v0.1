@@ -39,7 +39,7 @@ class Site extends MY_Controller
             "add_personel" => array('attendance' => ['w', 'u']),
             "add_stock" => array('sitestock' => ['w']),
             "ajax_list" => array('site' => ['r']),
-            "changestatus" => array('site' => ['r', 'u']),
+            "change_status" => array('site' => ['u']),
             "check_end_date" => array(), // Callback fonksiyonu
             "delete" => array('site' => ['d']),
             "delete_group" => array('report' => ['u', 'd']),
@@ -2081,7 +2081,7 @@ class Site extends MY_Controller
 
     /*Personel End*/
 
-    public function changestatus($id)
+    public function change_status($id)
     {
         $item = $this->Site_model->get(array("id" => $id));
         if (!$item) {

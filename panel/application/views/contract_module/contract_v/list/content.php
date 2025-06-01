@@ -6,15 +6,16 @@
         <!-- Sekmeler -->
         <ul class="nav nav-tabs" id="contractTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="active-tab" data-bs-toggle="tab" href="#contract_active" role="tab">Devam
-                    Eden</a>
+                <a class="nav-link active" id="active-tab" data-bs-toggle="tab" href="#contract_active" role="tab">
+                    Aktif Sözleşmeler
+                </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="inactive-tab" data-bs-toggle="tab" href="#contract_inactive"
-                   role="tab">Biten</a>
+                   role="tab">Biten Sözleşmeler</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="all-tab" data-bs-toggle="tab" href="#contract_all" role="tab">Tümü</a>
+                <a class="nav-link" id="all-tab" data-bs-toggle="tab" href="#contract_all" role="tab">Tüm Sözleşmeler</a>
             </li>
         </ul>
 

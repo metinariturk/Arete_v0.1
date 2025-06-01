@@ -81,7 +81,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item" onclick="change_Status(this)"
-                               url="<?php echo base_url("Contract/changestatus/$item->id"); ?>"
+                               url="<?php echo base_url("Contract/change_status/$item->id"); ?>"
                                style="cursor: pointer;">
                                 <i class="fa <?php echo ($item->isActive == 1) ? 'fa-check' : 'fa-circle-o-notch'; ?>"
                                    style="<?php echo ($item->isActive == 1) ? 'color: green;' : 'color: blue;'; ?>"></i>

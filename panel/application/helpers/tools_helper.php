@@ -726,7 +726,7 @@ function isUser($user_id)
         ->get("users")
         ->row();
 
-    return isset($user->user_role) && in_array($user->user_role, [SYTEM_ADMIN, SYTEM_USER]);
+    return isset($user->user_role) && in_array($user->user_role, [SYSTEM_ADMIN, SYSTEM_USER]);
 }
 
 function getModuleList()

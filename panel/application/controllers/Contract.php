@@ -48,7 +48,7 @@ class Contract extends MY_Controller
             "add_main_group" => array('payment' => ['u', 'w', 'd']),
             "add_sub_contract" => array('contract' => ['w']),
             "back_main" => array('payment' => ['r']),
-            "changestatus" => array('contract' => ['u']),
+            "change_status" => array('contract' => ['u']),
             "create_advance" => array('payment' => ['w', 'u']),
             "create_bond" => array('payment' => ['w', 'u']),
             "create_collection" => array('payment' => ['w', 'u']),
@@ -130,16 +130,18 @@ class Contract extends MY_Controller
 
         // Devam Eden Sözleşmeler (isActive = 1), tarihe göre yeni başta
         $active_items = $this->Contract_model->get_all([
-            "isActive" => 1
+            "isActive" => 1,
+            "parent" => 0,
         ], "sozlesme_tarih DESC");
 
         // Biten Sözleşmeler (isActive = 0)
         $inactive_items = $this->Contract_model->get_all([
-            "isActive" => 2
+            "isActive" => 2,
+            "parent" => 0,
         ], "sozlesme_tarih DESC");
 
         // Tüm Sözleşmeler
-        $all_items = $this->Contract_model->get_all([], "sozlesme_tarih DESC");
+        $all_items = $this->Contract_model->get_all(["parent" => 0,], "sozlesme_tarih DESC");
 
         $viewData = new stdClass();
         $viewData->active_items = $active_items;
@@ -2726,6 +2728,53 @@ class Contract extends MY_Controller
             force_download($file_path, NULL);  // Dosyayı indir
         } else {
             echo "Dosya bulunamadı!";
+        }
+    }
+
+    public
+    function change_status($id)
+    {
+        $item = $this->Contract_model->get(array("id" => $id));
+        if (!$item) {
+            echo "Kayıt bulunamadı.";
+            return false;
+        }
+
+        // Güncelleme işlemi
+        if ($item->isActive == STATUS_PASSIVE || $item->isActive == STATUS_ACTIVE) {
+            $update = $this->Contract_model->update(
+                array("id" => $id),
+                array("isActive" => STATUS_ARCHIVED)
+            );
+            $sub_contracts = $this->Contract_model->get_all(array("parent" => $id));
+            foreach ($sub_contracts as $sub_contract) {
+                $update = $this->Contract_model->update(
+                    array("id" => $sub_contract->id),
+                    array("isActive" => STATUS_ARCHIVED)
+                );
+            }
+        } elseif ($item->isActive == STATUS_ARCHIVED) {
+            $update = $this->Contract_model->update(
+                array("id" => $id),
+                array("isActive" => STATUS_ACTIVE)
+            );
+            $sub_contracts = $this->Contract_model->get_all(array("parent" => $id));
+            foreach ($sub_contracts as $sub_contract) {
+                $update = $this->Contract_model->update(
+                    array("id" => $sub_contract->id),
+                    array("isActive" => STATUS_ACTIVE)
+                );
+            }
+        } else {
+            echo "Geçerli bir durum güncellemesi yapılamadı.";
+            return false;
+        }
+
+        // Güncelleme sonucu kontrolü
+        if ($update) {
+            echo "Durum başarıyla güncellendi.";
+        } else {
+            echo "Güncelleme sırasında bir hata oluştu.";
         }
     }
 

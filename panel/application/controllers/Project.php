@@ -37,6 +37,7 @@ class Project extends MY_Controller
             "update" => array('project' => ['u']),
             "hard_delete" => array('project' => ['d']),
             "file_upload" => array('project' => ['r', 'u']),
+            "change_status" => array('project' => ['u']),
             "filedelete_java" => array('project' => ['u', 'd']),
             "download_all" => array('project' => ['w', 'r']),
             "duplicate_code_check" => array(),
@@ -635,7 +636,7 @@ class Project extends MY_Controller
     }
 
     public
-    function changestatus($id)
+    function change_status($id)
     {
         $item = $this->Project_model->get(array("id" => $id));
         if (!$item) {

@@ -84,6 +84,10 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-define('SYTEM_ADMIN', 1);
-define('SYTEM_USER', 2);
-define('SYTEM_REGISTER_ONLY', 3);
+define('SYSTEM_ADMIN', 1);
+define('SYSTEM_USER', 2);
+define('SYSTEM_REGISTER_ONLY', 3);
+
+define('STATUS_PASSIVE', 0);
+define('STATUS_ACTIVE', 1);
+define('STATUS_ARCHIVED', 2);
