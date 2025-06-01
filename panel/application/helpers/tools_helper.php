@@ -387,6 +387,7 @@ function module_name($module_name)
         "Süre Uzatımı" => "extime",
         "Yeni Birim Fiyat" => "newprice",
         "Hakediş" => "payment",
+        "Teklif" => "offer",
         "Rapor" => "report",
         "Şantiye" => "site",
         "Şantiye Depo" => "sitestock",

@@ -30,7 +30,7 @@
                                                data-contract-id="<?= $item->id ?>"
                                                data-parent-name="<?= htmlspecialchars($folder, ENT_QUOTES, 'UTF-8') ?>"
                                                onclick="sendFolderData(this)"></i>
-                                            <h6 class="mt-3"><?= htmlspecialchars($folder, ENT_QUOTES, 'UTF-8') ?></h6>
+                                            <h6 class="mt-3"><?= module_name(htmlspecialchars($folder, ENT_QUOTES, 'UTF-8')) ?></h6>
                                             <p><?= $sub_file_count ?> dosya</p>
                                         </div>
                                     </div>

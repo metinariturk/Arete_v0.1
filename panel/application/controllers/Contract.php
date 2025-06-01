@@ -205,10 +205,8 @@ class Contract extends MY_Controller
 
     public function create_contract($project_id = null, $parent_contract = null)
     {
-
-
         $project_code = project_code($project_id);
-        $file_name = "SOZ-" . $this->input->post('dosya_no');
+        $file_name = "SOZ-" . get_next_file_code("Contract");
         $this->load->library("form_validation");
         $this->form_validation->set_rules("dosya_no", "Dosya No", "greater_than[0]|trim");
         $this->form_validation->set_rules("contract_name", "Sözleşme Ad", "required|trim");
@@ -269,7 +267,6 @@ class Contract extends MY_Controller
             $project = $this->Project_model->get(array("id" => $project_id));
             $companys = $this->Company_model->get_all(array(), "company_name ASC");
 
-
             $viewData->project = $project;
             $viewData->companys = $companys;
             $viewData->project_id = $project_id;
@@ -280,12 +277,10 @@ class Contract extends MY_Controller
 
     public function add_sub_contract($parent_contract)
     {
-
-
         $item = $this->Contract_model->get(array("id" => $parent_contract));
         $project = $this->Project_model->get(array("id" => $item->project_id));
-        $next_contract_name = get_next_file_code("Contract");
-        $file_name = "SOZ-" . $next_contract_name;
+        $file_name = "SOZ-" . get_next_file_code("Contract");
+
         $this->load->library("form_validation");
         $this->form_validation->set_rules("sub_dosya_no", "Dosya No", "greater_than[0]|trim");
         $this->form_validation->set_rules("sub_contract_name", "Sözleşme Ad", "required|trim");
@@ -312,7 +307,7 @@ class Contract extends MY_Controller
         $validate = $this->form_validation->run();
         if ($validate) {
             // Dizin oluşturma işlemi
-            $path = "uploads/$this->Module_Main_Dir/$project->dosya_no/$file_name";
+            $path = "uploads/project_v/$project->dosya_no/$file_name";
             if (!is_dir($path)) {
                 try {
                     mkdir($path, 0777, TRUE);
@@ -343,8 +338,8 @@ class Contract extends MY_Controller
                     "isActive" => "1",
                 )
             );
-            $viewData = new stdClass();
 
+            $viewData = new stdClass();
 
             $item = $this->Contract_model->get(array("id" => $parent_contract));
             $sub_contracts = $this->Contract_model->get_all(array("parent" => $item->id));
@@ -459,10 +454,10 @@ class Contract extends MY_Controller
         }
         $project = $this->Project_model->get(array("id" => $contract->project_id));
         $site = $this->Site_model->get(array("contract_id" => $id));
-        $path = "uploads/$this->Module_Main_Dir/$project->dosya_no/$contract->dosya_no";
+        $path = "uploads/project_v/$project->dosya_no/$contract->dosya_no";
         $site_path = '';
         if (isset($site)) {
-            $site_path = "uploads/$this->Module_Main_Dir/$project->dosya_no/$site->dosya_no";
+            $site_path = "uploads/project_v/$project->dosya_no/$site->dosya_no";
         }
         // Klasör silme işlemi - Sözleşme yolu
         if (!deleteDirectory($path)) {
@@ -2672,6 +2667,7 @@ class Contract extends MY_Controller
         $folder_name = $this->input->post('folder_name');
         $contract_id = $this->input->post('contractID');
         $parent_name = $this->input->post('parent_name');
+
         $item = $this->Contract_model->get(array("id" => $contract_id));
         $project = $this->Project_model->get(array("id" => $item->project_id));
         $main_path = "uploads/project_v/$project->dosya_no/$item->dosya_no/";
@@ -2701,6 +2697,7 @@ class Contract extends MY_Controller
 
         $viewData->item = $item;
         $viewData->path = $path;
+        $viewData->project = $project;
         $viewData->main_folders = $main_folders;
         $viewData->folder_id = $parent_name;
         $viewData->main_path = $main_path;

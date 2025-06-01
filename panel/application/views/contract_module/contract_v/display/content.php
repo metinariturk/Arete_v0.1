@@ -132,7 +132,6 @@
         <div id="tab3-content">
             <!--            --><?php /*$this->load->view("contract_module/contract_v/display/payment/load_tab_3"); */?>
         </div>
-
     </div>
 
     <div class="tab-pane fade" id="tab4" role="tabpanel"

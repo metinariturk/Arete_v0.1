@@ -1,4 +1,24 @@
 <script>
+    function initializeFlatpickr() {
+        flatpickr(".flatpickr", {
+            dateFormat: "d-m-Y",
+            locale: "tr",
+            allowInput: true,
+            disableMobile: true
+        });
+    }
+
+    $(document).ready(function () {
+        initializeFlatpickr(); // Sayfa yüklendiğinde çalıştır
+    });
+
+    function open_modal(modalId) {
+        var modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
+        initializeFlatpickr(); // Modal açılınca Flatpickr'ı çalıştır
+    }
+</script>
+<script>
     function init_table(selector) {
         if ($.fn.DataTable.isDataTable(selector)) {
             $(selector).DataTable().destroy(); // Önce eski DataTable'ı kaldır
@@ -144,12 +164,7 @@
                 $('#' + ModalId).modal('show');
 
                 // Flatpickr'ı yeniden başlat
-                flatpickr(".flatpickr", {
-                    dateFormat: "d-m-Y",
-                    locale: "tr",
-                    allowInput: true,
-                    disableMobile: true
-                });
+                initializeFlatpickr(); // Flatpickr tekrar çalıştır
 
                 // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
                 $('body').css('padding-right', '');
@@ -216,121 +231,6 @@
 
 </script>
 <!--verisi sil sonu-->
-
-
-<script>
-    // Dosya Yükleme Scripti
-    function initializeFileUploader(itemId) {
-        $('input[name="files"]').fileuploader({
-            changeInput: '<div class="fileuploader-input">' +
-                '<div class="fileuploader-input-inner">' +
-                '<div class="fileuploader-icon-main"></div>' +
-                '<h3 class="fileuploader-input-caption"><span>${captions.feedback}</span></h3>' +
-                '<p>${captions.or}</p>' +
-                '<button type="button" class="fileuploader-input-button"><span>${captions.button}</span></button>' +
-                '</div>' +
-                '</div>',
-            theme: 'dragdrop',
-            upload: {
-                url: "<?php echo base_url('Contract/file_upload/'); ?>" + itemId,
-                data: null,
-                type: 'POST',
-                enctype: 'multipart/form-data',
-                start: true,
-                synchron: true,
-                beforeSend: null,
-                onSuccess: function (result, item) {
-                    var data = {};
-
-                    // get data
-                    if (result && result.files)
-                        data = result;
-                    else
-                        data.hasWarnings = true;
-
-                    // if success
-                    if (data.isSuccess && data.files[0]) {
-                        item.name = data.files[0].name;
-                        item.html.find('.column-title > div:first-child').text(data.files[0].name).attr('title', data.files[0].name);
-                    }
-
-                    // if warnings
-                    if (data.hasWarnings) {
-                        for (var warning in data.warnings) {
-                            alert(data.warnings[warning]);
-                        }
-
-                        item.html.removeClass('upload-successful').addClass('upload-failed');
-                        return this.onError ? this.onError(item) : null;
-                    }
-
-                    item.html.find('.fileuploader-action-remove').addClass('fileuploader-action-success');
-                    setTimeout(function () {
-                        item.html.find('.progress-bar2').fadeOut(400);
-                    }, 400);
-                },
-                onError: function (item) {
-                    var progressBar = item.html.find('.progress-bar2');
-
-                    if (progressBar.length) {
-                        progressBar.find('span').html(0 + "%");
-                        progressBar.find('.fileuploader-progressbar .bar').width(0 + "%");
-                        item.html.find('.progress-bar2').fadeOut(400);
-                    }
-
-                    if (item.upload.status != 'cancelled' && item.html.find('.fileuploader-action-retry').length == 0) {
-                        item.html.find('.column-actions').prepend(
-                            '<button type="button" class="fileuploader-action fileuploader-action-retry" title="Retry"><i class="fileuploader-icon-retry"></i></button>'
-                        );
-                    }
-                },
-                onProgress: function (data, item) {
-                    var progressBar = item.html.find('.progress-bar2');
-
-                    if (progressBar.length > 0) {
-                        progressBar.show();
-                        progressBar.find('span').html(data.percentage + "%");
-                        progressBar.find('.fileuploader-progressbar .bar').width(data.percentage + "%");
-                    }
-                },
-                onComplete: null,
-            },
-            onRemove: function (item, listEl, parentEl, newInputEl, inputEl) {
-                // AJAX isteği ile dosyanın sunucudan silinmesi
-                $.ajax({
-                    url: "<?php echo base_url('Contract/filedelete_java/'); ?>" + itemId,
-                    type: 'POST',
-                    data: {
-                        fileName: item.name // Dosyanın adı
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            // Sunucu silme işlemini başarıyla tamamladı
-                            console.log('Dosya başarıyla silindi:', item.name);
-                        } else {
-                            // Sunucu bir hata mesajı döndürdü
-                            console.error(item.id, response.message);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        // AJAX isteği başarısız oldu
-                        console.error('Bir hata oluştu:', error);
-                    }
-                });
-
-                // Dosyanın listeden hemen kaldırılmasını önlemek için false döndürün
-                return true;
-            },
-            captions: $.extend(true, {}, $.fn.fileuploader.languages['tr'], {}),
-        });
-    }
-
-    // Sayfa yüklendiğinde dosya yükleyici fonksiyonunu başlat
-    $(document).ready(function () {
-        var itemId = <?php echo json_encode($item->id); ?>; // Örneğin, PHP'den alınan item ID'si
-        initializeFileUploader(itemId); // Dosya yükleyiciyi başlat
-    });
-</script>
 
 <!--İş Grupları-->
 
@@ -526,26 +426,7 @@
 <!-- Favori İşareti Son-->
 
 
-<script>
-    function initializeFlatpickr() {
-        flatpickr(".flatpickr", {
-            dateFormat: "d-m-Y",
-            locale: "tr",
-            allowInput: true,
-            disableMobile: true
-        });
-    }
 
-    $(document).ready(function () {
-        initializeFlatpickr(); // Sayfa yüklendiğinde çalıştır
-    });
-
-    function open_modal(modalId) {
-        var modal = new bootstrap.Modal(document.getElementById(modalId));
-        modal.show();
-        initializeFlatpickr(); // Modal açılınca Flatpickr'ı çalıştır
-    }
-</script>
 
 <script>
     function loadTabContent(tabId) {
@@ -578,6 +459,7 @@
                     $('#tab5-1').addClass('show active');
                 }
 
+
                 $(document).ready(function () {
                     ['#collectionTable', '#advanceTable', '#bondTable'].forEach(function (selector) {
                         if ($(selector).length) {
@@ -585,6 +467,7 @@
                         }
                     });
                 });
+                initializeFlatpickr(); // Flatpickr tekrar çalıştır
 
             },
             error: function (xhr, status, error) {
