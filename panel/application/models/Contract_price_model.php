@@ -45,4 +45,10 @@ class Contract_price_model extends CI_Model
         return $total;
     }
 
+    public function get_field_by_id($id, $field = 'name')
+    {
+        $row = $this->get(['id' => $id]);
+        return $row && isset($row->$field) ? $row->$field : null;
+    }
+
 }

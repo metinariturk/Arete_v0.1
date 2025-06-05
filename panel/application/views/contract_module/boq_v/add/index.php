@@ -3,7 +3,6 @@
 <head>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("contract_module/boq_v/common/page_style"); ?>
-
 </head>
 <body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>

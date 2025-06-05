@@ -31,6 +31,7 @@ class Boq extends MY_Controller
             "calculate_render" => array('boq' => ['r']),
             "rebar_render" => array('boq' => ['r']),
             "save" => array('boq' => ['w', 'u']),
+            "save_total" => array('boq' => ['w', 'u']),
             "delete" => array('boq' => ['d', 'u']),
             "open_sub" => array('boq' => ['r', 'w', 'u']),
             "back_main" => array('boq' => ['r', 'w', 'u']),
@@ -196,6 +197,7 @@ class Boq extends MY_Controller
                 unset($boq_array[$key]);
             }
         }
+
         $old_boq = $this->Boq_model->get(
             array(
                 "boq_id" => $boq_id,
@@ -327,6 +329,56 @@ class Boq extends MY_Controller
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
         }
         echo $render_calculate;
+    }
+
+    public function save_total($contract_id, $payment_id)
+    {
+
+        $payment = $this->Payment_model->get(array('id' => $payment_id));
+        $boq_id = ($this->input->post('boq_id'));
+        $boq_array = ($this->input->post('boq[]'));
+        if (empty($boq_array)){
+            redirect(base_url("payment/file_form/$payment->id"));
+        }
+        $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
+        $boq_total = ($this->input->post("total_$boq_id"));
+        foreach ($boq_array as $key => $sub_array) {
+            if (empty(array_filter($sub_array))) {
+                unset($boq_array[$key]);
+            }
+        }
+
+        $old_boq = $this->Boq_model->get(
+            array(
+                "boq_id" => $boq_id,
+                "contract_id" => $contract_id,
+                "payment_no" => $payment->hakedis_no
+            )
+        );
+        if (isset($old_boq)) {
+            $delete = $this->Boq_model->delete(
+                array(
+                    "boq_id" => $boq_id,
+                    "contract_id" => $contract_id,
+                    "payment_no" => $payment->hakedis_no
+                )
+            );
+        }
+        $insert = $this->Boq_model->add(
+            array(
+                "contract_id" => $contract_id,
+                "boq_id" => $boq_id,
+                "sub_id" => $contract_item->sub_id,
+                "leader_id" => $contract_item->leader_id,
+                "main_id" => $contract_item->main_id,
+                "payment_no" => $payment->hakedis_no,
+                "total" => $boq_total,
+                "createdAt" => date("Y-m-d H:i:s"),
+            )
+        );
+
+        exit;
+
     }
     public function delete($contract_id, $payment_no, $boq_id)
     {

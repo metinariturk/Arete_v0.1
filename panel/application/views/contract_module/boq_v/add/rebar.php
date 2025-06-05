@@ -5,34 +5,54 @@
 <div class="card">
     <div class="card-body">
         <fieldset>
-            <h4 class="m-t-10 text-center"><?php echo contract_name($contract_id); ?></h4>
-            <h4 class="m-t-10 text-center"> <?php echo $payment->hakedis_no; ?> Nolu Hakediş</h4>
-            <h5 class="text-center"><?php echo $boq->name; ?> </h5>
-            <h6 class="text-center">Metraj Formu</h6>
-            <a onclick="renderCalculate(this)"
-               href="#"
-               data-bs-original-title=""
-               title=""
-               url="<?php echo base_url("Boq/calculate_render/$contract_id/$payment->id/$income"); ?>">
-               Normal Metraj
-            </a>
-            <hr>
-            <div class="mb-3 row">
-                <label class="col-lg-3 form-label text-lg-start" for="prependedcheckbox">El İle Toplam Metraj
-                    Girişi</label>
-                <div class="col-lg-4">
-                    <div class="input-group">
-                        <span class="input-group-text">
+            <div class="text-center mb-4">
+                <h5 class="mb-1 text-uppercase">
+                    <?php echo contract_name($contract_id); ?> - <?php echo $payment->hakedis_no; ?> Nolu Hakediş
+                </h5>
+                <p class="text-muted mb-1">
+                    <?php echo $this->Contract_price_model->get_field_by_id($boq->main_id,"code"); ?> -
+                    <?php echo $this->Contract_price_model->get_field_by_id($boq->main_id,"name"); ?>
+                </p>
+                <p class="text-muted mb-0">
+                    <?php echo $this->Contract_price_model->get_field_by_id($boq->sub_id,"code"); ?> -
+                    <?php echo $this->Contract_price_model->get_field_by_id($boq->sub_id,"name"); ?>
+                </p>
+                <h6 class="mt-2"><?php echo $boq->name; ?> Metraj Formu</h6>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-grid gap-2 mb-4">
+                <a onclick="renderCalculate(this)"
+                   href="#"
+                   data-bs-original-title=""
+                   title=""
+                   url="<?php echo base_url("Boq/calculate_render/$contract_id/$payment->id/$income"); ?>"
+                   class="btn btn-primary btn-sm">
+                    Normal Metraj Hesapla
+                </a>
+            </div>
+
+            <div class="row justify-content-center mb-3"> <label class="col-lg-4 col-form-label text-lg-end" for="toggleCheckbox">El İle Toplam Metraj Girişi</label> <div class="col-lg-5"> <div class="input-group">
+                        <span class="input-group-text p-0">
                             <input type="checkbox" id="toggleCheckbox" name="bypass_total"
-                                   onclick="toggleReadOnly(<?php echo $income; ?>)">
+                                   onclick="toggleReadOnly(<?php echo $income; ?>)" class="form-check-input m-2">
                         </span>
                         <input id="total_<?php echo $income; ?>" readonly name="total_<?php echo $income; ?>"
-                               value="<?php if (!empty($old_boq)) {
-                                   echo $old_boq->total;
-                               } ?>"
-                               class="form-control btn-square" type="text" placeholder=""><span
+                               value="<?php if (!empty($old_boq)) { echo $old_boq->total; } ?>"
+                               class="form-control" type="text" placeholder="0.00"><span
                                 class="input-group-text"><?php echo $income_contract_price->unit; ?></span>
                         <input name="boq_id" id="dont_delete" hidden value="<?php echo $income; ?>">
+                        <button
+                                class="btn btn-outline-primary"
+                                type="button"
+                                data-bs-original-title=""
+                                onclick="saveManuel(this)"
+                                form="save_boq"
+                                data-url="<?php echo base_url("Boq/save_total/$contract_id/$payment->id"); ?>"
+                                title="">
+                            Manuel Girişi Kaydet
+                        </button>
                     </div>
                 </div>
             </div>
@@ -377,6 +397,37 @@
                 // Assuming the response contains the updated content
                 $(".dynamic").html(response);
                 calculateAndSetResult(<?php echo $income; ?>, 1);
+                var autoRefreshButton = document.querySelector('.auto-refresh-button');
+                if (autoRefreshButton) {
+                    autoRefreshButton.click();
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+<script>
+    function saveManuel(buttonElement) {
+
+        var url = buttonElement.getAttribute('data-url');
+        var formId = buttonElement.getAttribute('form');
+
+        // Serialize the form data
+        var formData = new FormData(document.getElementById(formId));
+
+        // Send an AJAX POST request
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // Assuming the response contains the updated content
+                $(".dynamic").html(response);
                 var autoRefreshButton = document.querySelector('.auto-refresh-button');
                 if (autoRefreshButton) {
                     autoRefreshButton.click();

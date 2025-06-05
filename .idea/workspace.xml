@@ -269,6 +269,7 @@
       <workItem from="1745969273903" duration="379000" />
       <workItem from="1747245675948" duration="3054000" />
       <workItem from="1747592419961" duration="5227000" />
+      <workItem from="1748886336671" duration="4978000" />
     </task>
     <servers />
   </component>
@@ -280,7 +281,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
-          <line>345</line>
+          <line>397</line>
           <properties>
             <option name="className" value="\Boq" />
             <option name="methodName" value="template_download" />
@@ -358,6 +359,24 @@
             <option name="methodName" value="create_bond" />
           </properties>
           <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
+          <line>59</line>
+          <properties>
+            <option name="className" value="\Boq" />
+            <option name="methodName" value="new_form" />
+          </properties>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Boq.php</url>
+          <line>143</line>
+          <properties>
+            <option name="className" value="\Boq" />
+            <option name="methodName" value="rebar_render" />
+          </properties>
+          <option name="timeStamp" value="72" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/panel/application/views/contract_module/payment_v/print/index.php</url>
