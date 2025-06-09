@@ -4,46 +4,105 @@
 <?php $income_contract_price = $this->Contract_price_model->get(array("id" => $income)); ?>
 <div class="card">
     <div class="card-body">
-        <fieldset>
-            <h4 class="m-t-10 text-center"><?php echo contract_name($contract_id); ?></h4>
-            <h4 class="m-t-10 text-center"> <?php echo $payment->hakedis_no; ?> Nolu Hakediş</h4>
-            <h5 class="text-center"><?php echo $boq->name; ?> </h5>
-            <h6 class="text-center">Metraj Formu</h6>
-            <a onclick="renderCalculate(this)"
-               href="#"
-               data-bs-original-title=""
-               title=""
-               url="<?php echo base_url("Boq/rebar_render/$contract_id/$payment->id/$income"); ?>">
-                Donatı Metrajı
-            </a>
-            <hr>
-            <div class="mb-3 row">
-                <label class="col-lg-3 form-label text-lg-start" for="prependedcheckbox">El İle Toplam Metraj
-                    Girişi</label>
-                <div class="col-lg-4">
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <input type="checkbox" id="toggleCheckbox" name="bypass_total"
-                                   onclick="toggleReadOnly(<?php echo $income_contract_price->id; ?>)">
-                        </span>
-                        <input id="total_<?php echo $income; ?>" readonly name="total_<?php echo $income; ?>"
-                               value="<?php if (!empty($old_boq)) {
-                                   echo $old_boq->total;
-                               } ?>"
-                               class="form-control btn-square" type="text" placeholder=""><span
-                                class="input-group-text"><?php echo $income_contract_price->unit; ?></span>
-                        <input name="boq_id" id="dont_delete" hidden value="<?php echo $income; ?>">
+        <div class="row">
+            <div class="col-3 bg3d">
+                <h5>2D/3D Metraj</h5>
+            </div>
+            <div class="col-9">
+                <fieldset>
+                    <div class="text-center mb-4">
+                        <h5 class="mb-1 text-uppercase">
+                            <?php echo contract_name($contract_id); ?> - <?php echo $payment->hakedis_no; ?> Nolu
+                            Hakediş
+                        </h5>
+                        <p class="text-muted mb-1">
+                            <?php echo $this->Contract_price_model->get_field_by_id($boq->main_id, "code"); ?> -
+                            <?php echo $this->Contract_price_model->get_field_by_id($boq->main_id, "name"); ?>
+                        </p>
+                        <p class="text-muted mb-0">
+                            <?php echo $this->Contract_price_model->get_field_by_id($boq->sub_id, "code"); ?> -
+                            <?php echo $this->Contract_price_model->get_field_by_id($boq->sub_id, "name"); ?>
+                        </p>
+                        <h6 class="mt-2"><?php echo $boq->code; ?> - <?php echo $boq->name; ?> Metraj Formu</h6>
                     </div>
-                </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-grid gap-2 mb-4">
+                        <a onclick="renderCalculate(this)"
+                           href="#"
+                           data-bs-original-title=""
+                           title=""
+                           url="<?php echo base_url("Boq/rebar_render/$contract_id/$payment->id/$income"); ?>"
+                           class="btn btn-primary btn-sm">
+                            Donatı Metrajı Yap
+                        </a>
+                    </div>
+
+                    <div class="row mb-3 align-items-center">
+                        <!-- Önceki Hakedişler Toplamı -->
+                        <label for="prependedcheckbox" class="col-lg-4 col-form-label text-lg-end">
+                            Önceki Hakedişler Toplamı
+                        </label>
+                        <div class="col-lg-5">
+                            <div class="form-control-plaintext">
+                                <?php
+                                echo $old_total = $this->Boq_model->sum_all(
+                                    array(
+                                        'contract_id' => $payment->contract_id,
+                                        "payment_no <" => $payment->hakedis_no,
+                                        "boq_id" => $income_contract_price->id
+                                    ),
+                                    "total"
+                                );
+                                ?>
+                                <?php echo $income_contract_price->unit; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 align-items-center">
+                        <!-- Manuel Giriş -->
+                        <label for="toggleCheckbox" class="col-lg-4 col-form-label text-lg-end">
+                            El İle Toplam Metraj Girişi
+                        </label>
+
+                        <div class="col-lg-5">
+                            <div class="input-group">
+                                <div class="input-group-text">
+                                    <input type="checkbox"
+                                           id="toggleCheckbox"
+                                           name="bypass_total"
+                                           class="form-check-input m-0"
+                                           onclick="toggleReadOnly(<?php echo $income; ?>)">
+                                </div>
+
+                                <input type="text"
+                                       class="form-control"
+                                       id="total_<?php echo $income; ?>"
+                                       name="total_<?php echo $income; ?>"
+                                       value="<?php if (!empty($old_boq)) echo $old_boq->total; ?>"
+                                       placeholder="0.00"
+                                       readonly>
+
+                                <span class="input-group-text"><?php echo $income_contract_price->unit; ?></span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 mt-2 mt-lg-0">
+                            <input type="hidden" name="boq_id" id="dont_delete" value="<?php echo $income; ?>">
+                            <button type="button"
+                                    class="btn btn-outline-primary w-100"
+                                    onclick="saveManuel(this)"
+                                    form="save_boq"
+                                    data-url="<?php echo base_url("Boq/save_total/$contract_id/$payment->id"); ?>">
+                                Manuel Girişi Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
-            <div class="mb-3 row">
-                <label class="col-lg-3 form-label text-lg-start" for="prependedcheckbox">Önceki Hakedişler Toplamı</label>
-                <div class="col-lg-4">
-                    <?php
-                    echo $old_total = $this->Boq_model->sum_all(array('contract_id' => $payment->contract_id, "payment_no <" => $payment->hakedis_no, "boq_id" => $income_contract_price->id), "total"); ?> <?php echo $income_contract_price->unit; ?>
-                </div>
-            </div>
-        </fieldset>
+        </div>
     </div>
 </div>
 <div class="row">
@@ -82,12 +141,21 @@
                     </button>
                 </div>
                 <div class="col-3">
-                    <label for="formFileLg" class="form-label">Metrajı İndirin</label>
-                    <br>
-                    <a class="btn btn-outline-primary"
-                       href="<?php echo base_url("Boq/template_download/$contract_id/$payment->id/$income"); ?>">
-                        <i class="fa fa-file-excel-o"></i> Şablon İndir
-                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle w-100" type="button"
+                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Şablon İndir
+                        </button>
+                        <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                            <?php
+                            $limits = [100, 250, 500, 1000, 2500];
+                            foreach ($limits as $limit) {
+                                $url = base_url("Boq/template_download/$contract_id/$payment->id/$income") . "?limit=$limit";
+                                echo "<li><a class='dropdown-item' href='$url'>$limit Satır</a></li>";
+                            }
+                            ?>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,10 +175,13 @@
             </button>
         </div>
         <div class="row">
+            <div class="col-1">
+                <strong>Sil</strong>
+            </div>
             <div class="col-2">
                 <strong>Bölüm</strong>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <strong>Açıklama</strong>
             </div>
             <div class="col-1">
@@ -140,6 +211,12 @@
             <?php $range = count($old_boqs); ?>
             <div class="container-fluid">
                 <div class="row" id="row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>">
+                    <div class="col-1" style="margin: 0; padding: 0;">
+                        <button type="button" class="btn btn-danger btn-sm"
+                                onclick="removeRow('row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                     <div class="col-2 mb-1" style="margin: 0; padding: 0;">
                         <input name="boq[<?php echo $j; ?>][s]" style="width: 100%"
                                id="s_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
@@ -148,7 +225,7 @@
                                onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                type="text">
                     </div>
-                    <div class="col-4" style="margin: 0; padding: 0;">
+                    <div class="col-3" style="margin: 0; padding: 0;">
                         <input name="boq[<?php echo $j; ?>][n]" style="width: 100%"
                                id="n_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                value="<?php echo $info['n']; ?>"
@@ -205,6 +282,9 @@
     <?php foreach ($row_numbers as $row_number) { ?>
         <div class="container-fluid">
             <div class="row" id="row_<?php echo $income; ?>_<?php echo $row_number; ?>">
+                <div class="col-1" style="margin: 0; padding: 0;">
+                   &nbsp;
+                </div>
                 <div class="col-2 mb-1" style="margin: 0; padding: 0;">
                     <input name="boq[<?php echo $row_number; ?>][s]" style="width: 100%"
                            id="s_<?php echo $income; ?>_<?php echo $row_number; ?>"
@@ -212,7 +292,7 @@
                            onblur="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                            type="text">
                 </div>
-                <div class="col-4" style="margin: 0; padding: 0;">
+                <div class="col-3" style="margin: 0; padding: 0;">
                     <input name="boq[<?php echo $row_number; ?>][n]" style="width: 100%"
                            id="n_<?php echo $income; ?>_<?php echo $row_number; ?>"
                            onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
@@ -498,6 +578,8 @@
         }
     }
 </script>
+
+
 
 
 

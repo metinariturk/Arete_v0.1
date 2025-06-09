@@ -1,4 +1,14 @@
 <script>
+    function renderCalculate(btn) {
+        var $url = btn.getAttribute('url');
+
+        $.post($url, {}, function (response) {
+            $(".dynamic").html(response);
+
+        })
+    }
+</script>
+<script>
     function delete_boq(btn) {
         var $url = btn.getAttribute('url');
 
@@ -26,12 +36,40 @@
         });
     }
 </script>
+
 <script>
-    function renderCalculate(btn) {
-        var $url = btn.getAttribute('url');
-        $.post($url, {}, function (response) {
-            $(".dynamic").html(response);
-        })
+    function saveCalc(btn) {
+
+        calculateAndSetResult(<?php echo $income; ?>, 1);
+
+        var url = btn.getAttribute('data-url');
+        var formId = btn.getAttribute('form');
+
+
+        // Serialize the form data
+        var formData = new FormData(document.getElementById(formId));
+
+        // Send an AJAX POST request
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // Assuming the response contains the updated content
+                $(".dynamic").html(response);
+                calculateAndSetResult(<?php echo $income; ?>, 1);
+                var autoRefreshButton = document.querySelector('.auto-refresh-button');
+                if (autoRefreshButton) {
+                    autoRefreshButton.click();
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
     }
 </script>
 <script>
@@ -88,7 +126,7 @@
     }
 </script>
 <script>
-    function calculaterebarAndSetResult(income, row_number) {
+    function calculateAndSetResult(income, row_number) {
         var totalResult = 0;
         var total = 0; // Toplamı saklamak için bir değişken tanımlayın
         var allEmpty = true; // Tüm q, w, h, l değerleri boş mu?
@@ -166,12 +204,40 @@
     }
 
 </script>
-
 <script>
-    function removeRow(rowId) {
-        var row = document.getElementById(rowId);
-        if (row) {
-            row.remove(); // sadece DOM'dan siler
+    function toggleReadOnly(income) {
+        var toggleCheckbox = document.getElementById('toggleCheckbox');
+        var readonlyInput = document.getElementById('total_' + income);
+
+        readonlyInput.readOnly = !toggleCheckbox.checked;
+
+        var pointerEventsValue = toggleCheckbox.checked ? "none" : "auto"; // pointerEvents ayarı
+
+        for (var i = 1; i <= <?php echo $j + 11; ?>; i++) {
+            var qInput = document.getElementById('q_' + income + '_' + i);
+            var wInput = document.getElementById('w_' + income + '_' + i);
+            var nInput = document.getElementById('n_' + income + '_' + i);
+            var sInput = document.getElementById('s_' + income + '_' + i);
+            var hInput = document.getElementById('h_' + income + '_' + i);
+            var lInput = document.getElementById('l_' + income + '_' + i);
+            var tInput = document.getElementById('t_' + income + '_' + i);
+
+            qInput.readOnly = toggleCheckbox.checked;
+            qInput.style.pointerEvents = pointerEventsValue;
+            wInput.readOnly = toggleCheckbox.checked;
+            wInput.style.pointerEvents = pointerEventsValue;
+            nInput.readOnly = toggleCheckbox.checked;
+            nInput.style.pointerEvents = pointerEventsValue;
+            sInput.readOnly = toggleCheckbox.checked;
+            sInput.style.pointerEvents = pointerEventsValue;
+            hInput.readOnly = toggleCheckbox.checked;
+            hInput.style.pointerEvents = pointerEventsValue;
+            lInput.readOnly = toggleCheckbox.checked;
+            lInput.style.pointerEvents = pointerEventsValue;
+            tInput.readOnly = toggleCheckbox.checked;
+            tInput.style.pointerEvents = pointerEventsValue;
         }
+
+
     }
 </script>

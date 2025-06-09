@@ -14,4 +14,21 @@
         cursor: not-allowed; /* Fare imlecini işaretçi olarak değiştirin */
         border-width: 2px; /* Border kalınlığını ayarlayın */
     }
+
+
+
+</style>
+<style>
+    .bg3d {
+        background-image: url('<?php echo base_url("assets/images/3dimacad.png"); ?>');
+        background-size: contain; /* Değişiklik burada */
+        background-position: center;
+        background-repeat: no-repeat; /* Görselin tekrar etmesini istemiyorsanız */
+    }
+    .bgrebar {
+        background-image: url('<?php echo base_url("assets/images/rebarbg.png"); ?>');
+        background-size: contain; /* Değişiklik burada */
+        background-position: center;
+        background-repeat: no-repeat; /* Görselin tekrar etmesini istemiyorsanız */
+    }
 </style>

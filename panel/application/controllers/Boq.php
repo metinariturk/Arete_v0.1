@@ -7,6 +7,8 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat; // Add this for number formatting
+
 
 class Boq extends MY_Controller
 {
@@ -215,35 +217,24 @@ class Boq extends MY_Controller
             );
         }
         if (!empty($_FILES['excelDosyasi']['name'])) {
-            $tempFolderPath = 'uploads/temp/';
-// Temp klasör yoksa oluştur
-            if (!is_dir($tempFolderPath)) {
-                if (!mkdir($tempFolderPath, 0777, true)) {
-                    die('Temp klasör oluşturulamadı...');
-                }
-            }
             $tempFilePath = $_FILES['excelDosyasi']['tmp_name'];
-            $targetFilePath = 'uploads/temp/' . $_FILES['excelDosyasi']['name'];
-            move_uploaded_file($tempFilePath, $targetFilePath);
-            $workbook = IOFactory::load($targetFilePath);
+            $workbook = IOFactory::load($tempFilePath);
             $worksheet = $workbook->getActiveSheet();
             $dataArray = array();
-            $startRow = 7;
-            $endRow = 3000; // 3000 satır daha eklendiğini varsayıyorum
-// Boş satır sayacını tanımlayın
+            $startRow = 10;
+            $endRow = 3000;
             $emptyRowCount = 0;
-// Her bir satır için döngü oluşturun
+
             for ($row = $startRow; $row <= $endRow; $row++) {
-                // Her bir satırdaki B'den G'ye kadar olan hücrelerden veriyi alarak bir dizi oluşturun
                 $rowData = array(
-                    's' => $worksheet->getCell('B' . $row)->getValue(),
-                    'n' => $worksheet->getCell('C' . $row)->getValue(),
-                    'q' => $worksheet->getCell('D' . $row)->getValue(),
-                    'w' => $worksheet->getCell('E' . $row)->getValue(),
-                    'h' => $worksheet->getCell('F' . $row)->getValue(),
-                    'l' => $worksheet->getCell('G' . $row)->getValue()
+                    's' => $worksheet->getCell('C' . $row)->getValue(),
+                    'n' => $worksheet->getCell('D' . $row)->getValue(),
+                    'q' => $worksheet->getCell('E' . $row)->getValue(),
+                    'w' => $worksheet->getCell('F' . $row)->getValue(),
+                    'h' => $worksheet->getCell('G' . $row)->getValue(),
+                    'l' => $worksheet->getCell('H' . $row)->getValue()
                 );
-                // Satırın boş olup olmadığını kontrol edin
+
                 $isEmptyRow = true;
                 foreach ($rowData as $cellValue) {
                     if (!empty($cellValue)) {
@@ -251,40 +242,41 @@ class Boq extends MY_Controller
                         break;
                     }
                 }
-                // Eğer satır boşsa boş satır sayacını artır, aksi takdirde sıfırla
+
                 if ($isEmptyRow) {
                     $emptyRowCount++;
                 } else {
                     $emptyRowCount = 0;
                 }
-                // Boş satır sayacı 10 ise döngüyü durdur
-                if ($emptyRowCount >= 5) {
+
+                if ($emptyRowCount >= 10) {
                     break;
                 }
-                // Oluşturulan dizi, ana diziye eklenir
+
                 $dataArray[] = $rowData;
             }
-            $boq_array = ($this->input->post('boq[]'));
+
+            $boq_array = $this->input->post('boq[]');
             $mergedArray = array_merge($dataArray, $boq_array);
             foreach ($mergedArray as $key => $sub_array) {
                 if (empty(array_filter($sub_array))) {
                     unset($mergedArray[$key]);
                 }
             }
-            $insert = $this->Boq_model->add(
-                array(
-                    "contract_id" => $contract_id,
-                    "boq_id" => $boq_id,
-                    "sub_id" => $contract_item->sub_id,
-                    "leader_id" => $contract_item->leader_id,
-                    "main_id" => $contract_item->main_id,
-                    "payment_no" => $payment->hakedis_no,
-                    "calculation" => json_encode($mergedArray),
-                    "total" => $boq_total,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                )
-            );
-        } else {
+
+            $insert = $this->Boq_model->add([
+                "contract_id" => $contract_id,
+                "boq_id" => $boq_id,
+                "sub_id" => $contract_item->sub_id,
+                "leader_id" => $contract_item->leader_id,
+                "main_id" => $contract_item->main_id,
+                "payment_no" => $payment->hakedis_no,
+                "calculation" => json_encode($mergedArray),
+                "total" => $boq_total,
+                "createdAt" => date("Y-m-d H:i:s"),
+            ]);
+        }
+        else {
             $insert = $this->Boq_model->add(
                 array(
                     "contract_id" => $contract_id,
@@ -451,6 +443,8 @@ class Boq extends MY_Controller
     }
     public function template_download($contract_id, $payment_id, $boq_id)
     {
+        $limit = $this->input->get('limit') ?? 100; // varsayılan 100
+
         $this->load->model("Company_model");
 
         // Veritabanından gerekli verileri al
@@ -475,7 +469,7 @@ class Boq extends MY_Controller
         // Yeni bir Excel dosyası oluştur
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        
+
         $title_start_row = 2;
 
         // 1. satır: METRAJ CETVELİ
@@ -514,13 +508,13 @@ class Boq extends MY_Controller
         $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
         $title_start_row++;
-        
+
         // 4. satır
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
         $sheet->setCellValue("B$title_start_row", "İmalat Adı : " );
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-        
+
         $sheet->mergeCells("D$title_start_row:I$title_start_row");
         $sheet->setCellValue("D$title_start_row", $boq->name . "(" . $boq->unit .")" );
         $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
@@ -528,7 +522,7 @@ class Boq extends MY_Controller
 
         $title_start_row++;
         $total_row = $title_start_row;
-        
+
         // 5. satır
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
         $sheet->setCellValue("B$title_start_row", "Toplam : " );
@@ -569,30 +563,69 @@ class Boq extends MY_Controller
 
         $reference_row = $title_start_row;
 
+        $maxRows = $limit; // her durumda 1000 satır üretilecek
 
-        foreach ($dataArray as $data) {
-            $sheet->setCellValue('B' . $title_start_row, $counter);  // satır numarası
-            $sheet->setCellValue('C' . $title_start_row, $data['s']);
-            $sheet->setCellValue('D' . $title_start_row, $data['n']);
-            $sheet->setCellValue('E' . $title_start_row, $data['q']);
-            $sheet->setCellValue('F' . $title_start_row, $data['w']);
-            $sheet->setCellValue('G' . $title_start_row, $data['h']);
-            $sheet->setCellValue('H' . $title_start_row, $data['l']);
-            $sheet->setCellValue('I' . $title_start_row, "=PRODUCT(E$title_start_row:H$title_start_row)"); // çarpım formülü
+        if (!empty($dataArray)) {
+            foreach ($dataArray as $data) {
+                $sheet->setCellValue('B' . $title_start_row, $counter);
+                $sheet->setCellValue('C' . $title_start_row, $data['s']);
+                $sheet->setCellValue('D' . $title_start_row, $data['n']);
+                $sheet->setCellValue('E' . $title_start_row, $data['q']);
+                $sheet->setCellValue('F' . $title_start_row, $data['w']);
+                $sheet->setCellValue('G' . $title_start_row, $data['h']);
+                $sheet->setCellValue('H' . $title_start_row, $data['l']);
 
-            $title_start_row++;
-            $counter++;
+                // D hücresindeki değere göre formül belirle
+                $isMinha = false;
+                if (isset($data['n'])) {
+                    $lower = strtolower($data['n']);
+                    $isMinha = (strpos($lower, 'minha') !== false || strpos($lower, 'mihna') !== false || strpos($lower, 'minah') !== false);
+                }
+
+                $formula = $isMinha
+                    ? "=PRODUCT(E$title_start_row:H$title_start_row)*-1"
+                    : "=PRODUCT(E$title_start_row:H$title_start_row)";
+
+                $sheet->setCellValue('I' . $title_start_row, $formula);
+
+                $title_start_row++;
+                $counter++;
+            }
+
+            // Kalan satırlar için (boş satırlar)
+            $remainingRows = $maxRows - count($dataArray);
+            for ($i = 0; $i < $remainingRows; $i++) {
+                $sheet->setCellValue('B' . $title_start_row, $counter);
+                $sheet->setCellValue('I' . $title_start_row, "=PRODUCT(E$title_start_row:H$title_start_row)");
+
+                $title_start_row++;
+                $counter++;
+            }
+        } else {
+            // Hiç veri yoksa tüm satırlar boş
+            for ($i = 0; $i < $maxRows; $i++) {
+                $sheet->setCellValue('B' . $title_start_row, $counter);
+                $sheet->setCellValue('I' . $title_start_row, "=PRODUCT(E$title_start_row:H$title_start_row)");
+
+                $title_start_row++;
+                $counter++;
+            }
         }
 
+
+// Son satır tespiti
         $lastDataRow = $title_start_row - 1;
 
+// Biçimlendirme ve toplam satırı
         $sheet->getStyle("B$table_start:I$table_start")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
         $sheet->getStyle("B$table_start:B$lastDataRow")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
         $sheet->getStyle("B$table_start:B$lastDataRow")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle("B$table_start:I$table_start")->getFont()->setBold(true);
         $sheet->getStyle("B$table_start:B$lastDataRow")->getFont()->setBold(true);
 
-        $sheet->setCellValue("D$total_row", "=SUM(I$total_row:I$lastDataRow)");
+// TOPLAM hücresi
+        $first_value = $table_start + 1;
+        $sheet->setCellValue("D$total_row", "=SUM(I$first_value:I$lastDataRow)");
 
 // Örneğin birim "kg" ise:
         $sheet->getStyle("D$total_row")
@@ -622,30 +655,40 @@ class Boq extends MY_Controller
                 ],
             ],
         ];
+
         $sheet->getStyle("B$table_start:I$lastDataRow")->applyFromArray($allBorders);
 
 
-        for ($r = $table_start+1; $r <= $lastDataRow; $r++) {
-            $fillColor = ($r % 2 == 1) ? 'CCCCCC' : 'A8A8A8';  // Açık gri ve koyu gri
-            $sheet->getStyle("C$r:I$r")->getFill()
-                ->setFillType(Fill::FILL_SOLID)
-                ->getStartColor()->setARGB($fillColor);
+        $ivalues = array();
+        for ($r = 10; $r <= $lastDataRow; $r++) {
+            $iValue = $sheet->getCell('I' . $r)->getCalculatedValue(); // Formül varsa hesaplanmış değer al
+            $isNegative = is_numeric($iValue) && $iValue < 0;
+            $ivalues[] = $iValue;
 
-            // Metin sola yaslı (C:I)
-            $sheet->getStyle("C$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            if ($isNegative) {
+                // Pastel kırmızı: FF + FFCCCC
+                $sheet->getStyle("C$r:I$r")->getFill()
+                    ->setFillType(Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('FFFFCCCC');
 
-            // Eğer gerekiyorsa B sütunu sola yaslı, zaten #FFC000 arka plan var, koruyor
-            $sheet->getStyle("B$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("B$r:I$r")->getFont()->setBold(true);
+                $sheet->getStyle("B$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            } else {
+                // Gri zemin
+                $fillColor = ($r % 2 == 1) ? 'FFCCCCCC' : 'FFA8A8A8';
+
+                $sheet->getStyle("C$r:I$r")->getFill()
+                    ->setFillType(Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB($fillColor);
+
+                $sheet->getStyle("B$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            }
         }
 
         $sheet->getPageMargins()->setTop(0.25);    // Üst kenar boşluğu
         $sheet->getPageMargins()->setBottom(0.25); // Alt kenar boşluğu
         $sheet->getPageMargins()->setLeft(0.25);   // Sol kenar boşluğu
         $sheet->getPageMargins()->setRight(0.25);  // Sağ kenar boşluğu
-
-
-
-
 
         // Excel dosyasını indir
         $writer = new Xlsx($spreadsheet);
@@ -659,6 +702,8 @@ class Boq extends MY_Controller
 
     public function template_download_rebar($contract_id, $payment_id, $boq_id)
     {
+        $limit = $this->input->get('limit') ?? 100; // varsayılan 100
+
         $this->load->model("Company_model");
 
         // Veritabanından gerekli verileri al
@@ -688,7 +733,7 @@ class Boq extends MY_Controller
 
         // 1. satır: METRAJ CETVELİ
         $sheet->mergeCells("B$title_start_row:I$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "METRAJ CETVELİ");
+        $sheet->setCellValue("B$title_start_row", "METRAJ CETVELİ (Donatı)");
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(20);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle("B$title_start_row:I$title_start_row")->getFont()->setName('Verdana');
@@ -766,54 +811,91 @@ class Boq extends MY_Controller
         $sheet->setCellValue("F$table_start", 'Benzer');
         $sheet->setCellValue("G$table_start", 'Adet');
         $sheet->setCellValue("H$table_start", 'Uzunluk');
-        $sheet->setCellValue("I$table_start", 'Toplam');
+        $sheet->setCellValue("I$table_start", 'Toplam (kg)');
 
         $sheet->getStyle("E$table_start:I$table_start")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
+        $maxRows = $limit; // her durumda 1000 satır üretilecek
 
 
         $title_start_row++;
         $sheet->freezePane("A$title_start_row");
-
         $reference_row = $title_start_row;
 
-        $allowedValues = [8, 10, 12, 14, 16, 18,20,22,24,25, 26,28,30,32,34, 36,38,40,45,50];
+        $allowedValues = [8,10,12,14,16,18,20,22,24,25,26,28,30,32,34,36,38,40,45,50];
 
-        foreach ($dataArray as $data) {
+// K sütununda (gizlenmiş) başlama satırı
+        $hiddenListStartRow = 10;
+        $hiddenListColumn = 'K'; // Listenin yazılacağı sütun
 
-            $validation = $sheet->getCell('E' . $title_start_row)->getDataValidation();
+// Allowed Values (İzin Verilen Değerler) listesini K sütununa yazdır
+        foreach ($allowedValues as $index => $value) {
+            $sheet->setCellValue($hiddenListColumn . ($hiddenListStartRow + $index), $value);
+            // K sütunundaki bu değerleri de sayısal olarak formatlayalım
+            $sheet->getStyle($hiddenListColumn . ($hiddenListStartRow + $index))->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        }
+
+        $hiddenListEndRow = $hiddenListStartRow + count($allowedValues) - 1;
+        $hiddenListRange = '$' . $hiddenListColumn . '$' . $hiddenListStartRow . ':$' . $hiddenListColumn . '$' . $hiddenListEndRow;
+
+
+        $dataCount = !empty($dataArray) ? count($dataArray) : 0;
+        $rowsToGenerate = max($dataCount, $maxRows);
+
+        for ($i = 1; $i < $rowsToGenerate; $i++) {
+            $currentDataRow = $title_start_row;
+
+            // Data validation ayarları
+            $validation = $sheet->getCell('E' . $currentDataRow)->getDataValidation();
             $validation->setType(DataValidation::TYPE_LIST);
             $validation->setErrorStyle(DataValidation::STYLE_STOP);
-            $validation->setAllowBlank(false);
+            $validation->setAllowBlank(true);
             $validation->setShowInputMessage(true);
             $validation->setShowErrorMessage(true);
             $validation->setErrorTitle('Geçersiz Değer');
-            $validation->setError('Sadece belirtilen çaplardan birini girin: 8, 10, 12, 14, 16, 18,20,22,24,25, 26,28,30,32,34, 36,38,40,45,50');
-            $validation->setFormula1('"' . implode(',', $allowedValues) . '"');
+            $validation->setError('Sadece belirtilen çaplardan birini girin.');
+            $validation->setFormula1($hiddenListRange);
 
-            $sheet->setCellValue('B' . $title_start_row, $counter);  // satır numarası
-            $sheet->setCellValue('C' . $title_start_row, $data['s']);
-            $sheet->setCellValue('D' . $title_start_row, $data['n']);
-            $sheet->setCellValue('E' . $title_start_row, $data['q']);
-            $sheet->setCellValue('F' . $title_start_row, $data['w']);
-            $sheet->setCellValue('G' . $title_start_row, $data['h']);
-            $sheet->setCellValue('H' . $title_start_row, $data['l']);
-            $formula = sprintf("=(E%d^2/162)*F%d*G%d*H%d", $title_start_row, $title_start_row, $title_start_row, $title_start_row);
+            $sheet->setCellValue('B' . $currentDataRow, $counter);
 
-            $sheet->setCellValue('I' . $title_start_row, $formula);
+            if (!empty($dataArray) && isset($dataArray[$i])) {
+                $data = $dataArray[$i];
+                $sheet->setCellValue('C' . $currentDataRow, $data['s']);
+                $sheet->setCellValue('D' . $currentDataRow, $data['n']);
+                $sheet->setCellValue('E' . $currentDataRow, (int)trim($data['q']));
+                $sheet->setCellValue('F' . $currentDataRow, $data['w']);
+                $sheet->setCellValue('G' . $currentDataRow, $data['h']);
+                $sheet->setCellValue('H' . $currentDataRow, $data['l']);
+            }
+
+            // Koşullu formül
+            $formula = sprintf(
+                '=IF(OR(ISNUMBER(SEARCH("minha",LOWER(D%d))), ISNUMBER(SEARCH("mihna",LOWER(D%d))), ISNUMBER(SEARCH("minah",LOWER(D%d)))), -1*((E%d^2/162)*F%d*G%d*H%d), (E%d^2/162)*F%d*G%d*H%d)',
+                $currentDataRow, $currentDataRow, $currentDataRow, // D sütunu 3 kere
+                $currentDataRow, $currentDataRow, $currentDataRow, $currentDataRow, // Negatif kısım için E,F,G,H
+                $currentDataRow, $currentDataRow, $currentDataRow, $currentDataRow // Pozitif kısım için E,F,G,H
+            );
+            $sheet->setCellValue('I' . $currentDataRow, $formula);
+
             $title_start_row++;
             $counter++;
         }
 
         $lastDataRow = $title_start_row - 1;
 
+        $sheet->getColumnDimension($hiddenListColumn)->setVisible(false);
+
+// Başlık ve numara sütunu stilleri
         $sheet->getStyle("B$table_start:I$table_start")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
         $sheet->getStyle("B$table_start:B$lastDataRow")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFC000');
         $sheet->getStyle("B$table_start:B$lastDataRow")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle("B$table_start:I$table_start")->getFont()->setBold(true);
         $sheet->getStyle("B$table_start:B$lastDataRow")->getFont()->setBold(true);
 
-        $sheet->setCellValue("D$total_row", "=SUM(I$total_row:I$lastDataRow)");
+// Toplam hücresi
+        $first_value = $table_start + 1;
+        $sheet->setCellValue("D$total_row", "=SUM(I$first_value:I$lastDataRow)/1000");
+
 
 // Örneğin birim "kg" ise:
         $sheet->getStyle("D$total_row")
@@ -847,22 +929,29 @@ class Boq extends MY_Controller
 
 
 
-        for ($r = $table_start+1; $r <= $lastDataRow; $r++) {
-            $fillColor = ($r % 2 == 1) ? 'CCCCCC' : 'A8A8A8';  // Açık gri ve koyu gri
-            $sheet->getStyle("C$r:I$r")->getFill()
-                ->setFillType(Fill::FILL_SOLID)
-                ->getStartColor()->setARGB($fillColor);
+        for ($r = $table_start + 1; $r <= $lastDataRow; $r++) {
+            $iValue = $sheet->getCell('I' . $r)->getCalculatedValue(); // Formül varsa hesaplanmış değer al
+            $isNegative = is_numeric($iValue) && $iValue < 0;
 
-            // Metin sola yaslı (C:I)
-            $sheet->getStyle("C$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            if ($isNegative) {
+                // Pastel kırmızı: FF + FFCCCC
+                $sheet->getStyle("B$r:I$r")->getFill()
+                    ->setFillType(Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('FFFFCCCC');
 
-            // Eğer gerekiyorsa B sütunu sola yaslı, zaten #FFC000 arka plan var, koruyor
-            $sheet->getStyle("B$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("B$r:I$r")->getFont()->setBold(true);
+                $sheet->getStyle("B$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            } else {
+                // Gri zemin
+                $fillColor = ($r % 2 == 1) ? 'FFCCCCCC' : 'FFA8A8A8';
 
-            $sheet->getStyle("E$r:E$lastDataRow")
-                ->getNumberFormat()
-                ->setFormatCode('"Ø"#');
+                $sheet->getStyle("C$r:I$r")->getFill()
+                    ->setFillType(Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB($fillColor);
 
+                $sheet->getStyle("C$r:I$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("B$r")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            }
         }
 
         $sheet->getPageMargins()->setTop(0.25);    // Üst kenar boşluğu
