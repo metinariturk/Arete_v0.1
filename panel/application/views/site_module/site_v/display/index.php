@@ -1,4 +1,6 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("site_module/site_v/common/page_style"); ?>
     <?php $this->load->view("includes/include_datatable_css"); ?>

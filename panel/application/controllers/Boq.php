@@ -1,6 +1,5 @@
 <?php
 require 'vendor/autoload.php';
-
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -8,16 +7,13 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-
-// Add this for number formatting
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat; // Add this for number formatting
 
 
 class Boq extends MY_Controller
 {
     public $viewFolder = "";
     public $moduleFolder = "";
-
     public function __construct()
     {
         parent::__construct();
@@ -50,7 +46,6 @@ class Boq extends MY_Controller
 
     protected function check_permissions()
     {
-
         $current_method = strtolower($this->router->method);
 
         if (!isset($this->rules[$current_method])) {
@@ -103,12 +98,11 @@ class Boq extends MY_Controller
         $viewData->settings = $settings;
         $viewData->contract_id = $contract_id;
         if ((!empty($this->input->post("contract_id"))) or !empty($contract_id)) {
-            $project = $this->Project_model->get(array("id" => $contract->project_id));
+            $project = $this->Project_model->get(array("id"=> $contract->project_id));
             $viewData->project = $project;
         }
         $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/index", $viewData);
     }
-
     public function calculate_render($contract_id, $payment_id, $boq_id)
     {
 
@@ -142,14 +136,13 @@ class Boq extends MY_Controller
             $viewData->old_boq = $old_boq;
         }
         $viewData->contract_id = $contract_id;
-        if (empty($payment->A)) {
+        if (empty($payment->A)){
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
         } else {
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/show_calculate", $viewData, true);
         }
         echo $render_calculate;
     }
-
     public function rebar_render($contract_id, $payment_id, $boq_id)
     {
 
@@ -183,14 +176,13 @@ class Boq extends MY_Controller
             $viewData->old_boq = $old_boq;
         }
         $viewData->contract_id = $contract_id;
-        if (empty($payment->A)) {
+        if (empty($payment->A)){
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/rebar", $viewData, true);
         } else {
             $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/show_rebar", $viewData, true);
         }
         echo $render_calculate;
     }
-
     public function save($contract_id, $payment_id, $stay = null)
     {
 
@@ -207,6 +199,7 @@ class Boq extends MY_Controller
                 unset($boq_array[$key]);
             }
         }
+
         $old_boq = $this->Boq_model->get(
             array(
                 "boq_id" => $boq_id,
@@ -224,26 +217,15 @@ class Boq extends MY_Controller
             );
         }
         if (!empty($_FILES['excelDosyasi']['name'])) {
-            $tempFolderPath = 'uploads/temp/';
-// Temp klasör yoksa oluştur
-            if (!is_dir($tempFolderPath)) {
-                if (!mkdir($tempFolderPath, 0777, true)) {
-                    die('Temp klasör oluşturulamadı...');
-                }
-            }
             $tempFilePath = $_FILES['excelDosyasi']['tmp_name'];
-            $targetFilePath = 'uploads/temp/' . $_FILES['excelDosyasi']['name'];
-            move_uploaded_file($tempFilePath, $targetFilePath);
-            $workbook = IOFactory::load($targetFilePath);
+            $workbook = IOFactory::load($tempFilePath);
             $worksheet = $workbook->getActiveSheet();
             $dataArray = array();
             $startRow = 10;
-            $endRow = 3000; // 3000 satır daha eklendiğini varsayıyorum
-// Boş satır sayacını tanımlayın
+            $endRow = 3000;
             $emptyRowCount = 0;
-// Her bir satır için döngü oluşturun
+
             for ($row = $startRow; $row <= $endRow; $row++) {
-                // Her bir satırdaki B'den G'ye kadar olan hücrelerden veriyi alarak bir dizi oluşturun
                 $rowData = array(
                     's' => $worksheet->getCell('C' . $row)->getValue(),
                     'n' => $worksheet->getCell('D' . $row)->getValue(),
@@ -252,7 +234,7 @@ class Boq extends MY_Controller
                     'h' => $worksheet->getCell('G' . $row)->getValue(),
                     'l' => $worksheet->getCell('H' . $row)->getValue()
                 );
-                // Satırın boş olup olmadığını kontrol edin
+
                 $isEmptyRow = true;
                 foreach ($rowData as $cellValue) {
                     if (!empty($cellValue)) {
@@ -260,40 +242,41 @@ class Boq extends MY_Controller
                         break;
                     }
                 }
-                // Eğer satır boşsa boş satır sayacını artır, aksi takdirde sıfırla
+
                 if ($isEmptyRow) {
                     $emptyRowCount++;
                 } else {
                     $emptyRowCount = 0;
                 }
-                // Boş satır sayacı 10 ise döngüyü durdur
-                if ($emptyRowCount >= 5) {
+
+                if ($emptyRowCount >= 10) {
                     break;
                 }
-                // Oluşturulan dizi, ana diziye eklenir
+
                 $dataArray[] = $rowData;
             }
-            $boq_array = ($this->input->post('boq[]'));
+
+            $boq_array = $this->input->post('boq[]');
             $mergedArray = array_merge($dataArray, $boq_array);
             foreach ($mergedArray as $key => $sub_array) {
                 if (empty(array_filter($sub_array))) {
                     unset($mergedArray[$key]);
                 }
             }
-            $insert = $this->Boq_model->add(
-                array(
-                    "contract_id" => $contract_id,
-                    "boq_id" => $boq_id,
-                    "sub_id" => $contract_item->sub_id,
-                    "leader_id" => $contract_item->leader_id,
-                    "main_id" => $contract_item->main_id,
-                    "payment_no" => $payment->hakedis_no,
-                    "calculation" => json_encode($mergedArray),
-                    "total" => $boq_total,
-                    "createdAt" => date("Y-m-d H:i:s"),
-                )
-            );
-        } else {
+
+            $insert = $this->Boq_model->add([
+                "contract_id" => $contract_id,
+                "boq_id" => $boq_id,
+                "sub_id" => $contract_item->sub_id,
+                "leader_id" => $contract_item->leader_id,
+                "main_id" => $contract_item->main_id,
+                "payment_no" => $payment->hakedis_no,
+                "calculation" => json_encode($mergedArray),
+                "total" => $boq_total,
+                "createdAt" => date("Y-m-d H:i:s"),
+            ]);
+        }
+        else {
             $insert = $this->Boq_model->add(
                 array(
                     "contract_id" => $contract_id,
@@ -339,41 +322,14 @@ class Boq extends MY_Controller
         }
         echo $render_calculate;
     }
-    public function delete($contract_id, $payment_no, $boq_id)
-    {
 
-        $viewData = new stdClass();
-
-        $viewData->viewModule = "contract_module";
-        $viewData->viewFolder = "boq_v";
-        $viewData->subViewFolder = "display";
-        $boq = $this->Boq_model->get(array("boq_id" => $boq_id,
-                "contract_id" => $contract_id,
-                "payment_no" => $payment_no)
-        );
-        $delete = $this->Boq_model->delete(
-            array(
-                "id" => $boq->id,
-                "contract_id" => $contract_id,
-                "payment_no" => $payment_no
-            )
-        );
-        $contract = $this->Contract_model->get(array('id' => $contract_id));
-        $payment = $this->Payment_model->get(array('contract_id' => $contract_id, "hakedis_no" => $payment_no));
-        $viewData->payment = $payment;
-        $viewData->contract = $contract;
-        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
-        echo $render_calculate;
-    }
-
-    public
-    function save_total($contract_id, $payment_id)
+    public function save_total($contract_id, $payment_id)
     {
 
         $payment = $this->Payment_model->get(array('id' => $payment_id));
         $boq_id = ($this->input->post('boq_id'));
         $boq_array = ($this->input->post('boq[]'));
-        if (empty($boq_array)) {
+        if (empty($boq_array)){
             redirect(base_url("payment/file_form/$payment->id"));
         }
         $contract_item = $this->Contract_price_model->get(array("id" => $boq_id));
@@ -416,11 +372,33 @@ class Boq extends MY_Controller
         exit;
 
     }
+    public function delete($contract_id, $payment_no, $boq_id)
+    {
 
+        $viewData = new stdClass();
 
-
-    public
-    function open_sub($contract_id, $sub_id, $payment_id)
+        $viewData->viewModule = "contract_module";
+        $viewData->viewFolder = "boq_v";
+        $viewData->subViewFolder = "display";
+        $boq = $this->Boq_model->get(array("boq_id" => $boq_id,
+                "contract_id" => $contract_id,
+                "payment_no" => $payment_no)
+        );
+        $delete = $this->Boq_model->delete(
+            array(
+                "id" => $boq->id,
+                "contract_id" => $contract_id,
+                "payment_no" => $payment_no
+            )
+        );
+        $contract = $this->Contract_model->get(array('id' => $contract_id));
+        $payment = $this->Payment_model->get(array('contract_id' => $contract_id, "hakedis_no" => $payment_no));
+        $viewData->payment = $payment;
+        $viewData->contract = $contract;
+        $render_calculate = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/add/calculate", $viewData, true);
+        echo $render_calculate;
+    }
+    public function open_sub($contract_id, $sub_id, $payment_id)
     {
 
         $sub_cont_items = $this->Contract_price_model->get_all(array("contract_id" => $contract_id, "sub_id" => $sub_id));
@@ -444,9 +422,7 @@ class Boq extends MY_Controller
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/renderSubList", $viewData, true);
         echo $render_html;
     }
-
-    public
-    function back_main($contract_id, $payment_id)
+    public function back_main($contract_id, $payment_id)
     {
 
         $contract = $this->Contract_model->get(array('id' => $contract_id));
@@ -465,9 +441,7 @@ class Boq extends MY_Controller
         $render_html = $this->load->view("{$viewData->viewModule}/{$viewData->viewFolder}/{$viewData->subViewFolder}/renderList", $viewData, true);
         echo $render_html;
     }
-
-    public
-    function template_download($contract_id, $payment_id, $boq_id)
+    public function template_download($contract_id, $payment_id, $boq_id)
     {
         $limit = $this->input->get('limit') ?? 100; // varsayılan 100
 
@@ -511,7 +485,7 @@ class Boq extends MY_Controller
 
 // 2. satır: İşin adı
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "İşin Adı : ");
+        $sheet->setCellValue("B$title_start_row",  "İşin Adı : ");
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -524,7 +498,7 @@ class Boq extends MY_Controller
 
 // 3. satır: Firma adı
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "Firma : ");
+        $sheet->setCellValue("B$title_start_row", "Firma : " );
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -537,12 +511,12 @@ class Boq extends MY_Controller
 
         // 4. satır
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "İmalat Adı : ");
+        $sheet->setCellValue("B$title_start_row", "İmalat Adı : " );
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
         $sheet->mergeCells("D$title_start_row:I$title_start_row");
-        $sheet->setCellValue("D$title_start_row", $boq->name . "(" . $boq->unit . ")");
+        $sheet->setCellValue("D$title_start_row", $boq->name . "(" . $boq->unit .")" );
         $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
         $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -551,7 +525,7 @@ class Boq extends MY_Controller
 
         // 5. satır
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "Toplam : ");
+        $sheet->setCellValue("B$title_start_row", "Toplam : " );
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -559,6 +533,7 @@ class Boq extends MY_Controller
         $sheet->setCellValue("D$title_start_row", "");
         $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
         $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
 
 
 // Satırları doldurma kısmında
@@ -725,8 +700,7 @@ class Boq extends MY_Controller
         $writer->save('php://output');
     }
 
-    public
-    function template_download_rebar($contract_id, $payment_id, $boq_id)
+    public function template_download_rebar($contract_id, $payment_id, $boq_id)
     {
         $limit = $this->input->get('limit') ?? 100; // varsayılan 100
 
@@ -770,7 +744,7 @@ class Boq extends MY_Controller
 
 // 2. satır: İşin adı
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "İşin Adı : ");
+        $sheet->setCellValue("B$title_start_row",  "İşin Adı : ");
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -783,7 +757,7 @@ class Boq extends MY_Controller
 
 // 3. satır: Firma adı
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "Firma : ");
+        $sheet->setCellValue("B$title_start_row", "Firma : " );
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -796,12 +770,12 @@ class Boq extends MY_Controller
 
         // 4. satır
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "İmalat Adı : ");
+        $sheet->setCellValue("B$title_start_row", "İmalat Adı : " );
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
         $sheet->mergeCells("D$title_start_row:I$title_start_row");
-        $sheet->setCellValue("D$title_start_row", $boq->name . " (" . $boq->unit . ")");
+        $sheet->setCellValue("D$title_start_row", $boq->name . " (" . $boq->unit .")" );
         $sheet->getStyle("D$title_start_row")->getFont()->setSize(11);
         $sheet->getStyle("D$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -810,7 +784,7 @@ class Boq extends MY_Controller
 
         // 5. satır
         $sheet->mergeCells("B$title_start_row:C$title_start_row");
-        $sheet->setCellValue("B$title_start_row", "Toplam : ");
+        $sheet->setCellValue("B$title_start_row", "Toplam : " );
         $sheet->getStyle("B$title_start_row")->getFont()->setBold(true)->setSize(11);
         $sheet->getStyle("B$title_start_row")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
@@ -848,7 +822,7 @@ class Boq extends MY_Controller
         $sheet->freezePane("A$title_start_row");
         $reference_row = $title_start_row;
 
-        $allowedValues = [8, 10, 12, 14, 16, 18, 20, 22, 24, 25, 26, 28, 30, 32, 34, 36, 38, 40, 45, 50];
+        $allowedValues = [8,10,12,14,16,18,20,22,24,25,26,28,30,32,34,36,38,40,45,50];
 
 // K sütununda (gizlenmiş) başlama satırı
         $hiddenListStartRow = 10;
@@ -952,6 +926,7 @@ class Boq extends MY_Controller
             ],
         ];
         $sheet->getStyle("B$table_start:I$lastDataRow")->applyFromArray($allBorders);
+
 
 
         for ($r = $table_start + 1; $r <= $lastDataRow; $r++) {
