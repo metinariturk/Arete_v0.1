@@ -547,10 +547,12 @@ class Project extends MY_Controller
     public
     function create_site($project_id = null)
     {
-
+        $project = $this->Project_model->get(array("id"=>$project_id));
         $next_site_name = get_next_file_code("Site");
         $file_name = "SNT-" . $next_site_name;
+
         $this->load->library("form_validation");
+
         $this->form_validation->set_rules("contract_id", "Sözleşme", "required|trim|integer");
         $this->form_validation->set_rules("santiye_sefi", "Şantiye Şefi", "greater_than[0]|required|trim");
         $this->form_validation->set_rules("santiye_ad", "Şantiye Adı", "required|trim|is_unique[site.santiye_ad]");
@@ -563,9 +565,9 @@ class Project extends MY_Controller
             )
         );
         $validate = $this->form_validation->run();
+
         if ($validate) {
-            $project_code = project_code($project_id);
-            $path = "uploads/project_v/$project_code/$file_name/Main/";
+            $path = "uploads/project_v/$project->dosya_no/$file_name/Main/";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
             }
@@ -589,7 +591,7 @@ class Project extends MY_Controller
                     "santiye_ad" => $this->input->post("santiye_ad"),
                     "santiye_sefi" => $this->input->post("santiye_sefi"),
                     "teknik_personel" => $data_personel,
-                    "is_Active" => "1",
+                    "isActive" => "1",
                 )
             );
             $viewData = new stdClass();

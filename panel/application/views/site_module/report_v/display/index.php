@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("site_module/report_v/common/page_style"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>

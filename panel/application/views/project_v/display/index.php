@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("project_v/common/page_style.php"); ?>
     <?php $this->load->view("includes/drag_drop_style"); ?>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/custom.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <!-- Choices.js JS -->
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <style>
         .table-responsive {
             overflow-x: auto !important;
@@ -42,6 +39,8 @@
 <?php $this->load->view("project_v/display/page_script"); ?>
 <script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 
 </body>
 </html>
