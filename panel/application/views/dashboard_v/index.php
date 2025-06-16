@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("{$viewFolder}/common/page_style"); ?>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/todo.css">

@@ -1,25 +1,38 @@
 <script>
-    function initialize_multiselect() {
-        // Önce varsa eski Choices instance'ını temizle
-        if (window.choicesInstance) {
-            window.choicesInstance.destroy();
-        }
+    function initializeUIComponents() {
+        // Flatpickr alanlarını başlat
+        initializeFlatpickr();
 
-        // Yeni Choices instance oluştur
-        window.choicesInstance = new Choices("#teknik_personeller", {
-            removeItemButton: true, // Seçili elemanları kaldırmak için (X) butonu
-            placeholder: true, // Placeholder gösterimi
-            placeholderValue: "Seçiniz...",
-            editItems: true, // Kullanıcı yeni değerler ekleyebilsin
-            duplicateItemsAllowed: false, // Aynı elemandan birden fazla eklenmesin
-            delimiter: ",", // Virgül ile ayırma desteği
+        // Choices.js select kutularını başlat
+        initializeChoices();
+
+        // Diğer UI bileşenleri varsa buraya eklersiniz
+    }
+</script>
+<script>
+    function initializeChoices() {
+        // Tüm '.js-choices-multiple' sınıfına sahip select elementlerini seçin
+        var elements = document.querySelectorAll('.js-choices-multiple');
+
+        elements.forEach(function(element) {
+            // Eğer element zaten Choices.js tarafından başlatılmadıysa (yani 'choices--active' sınıfına sahip değilse)
+            if (!element.classList.contains('choices--active')) {
+                new Choices(element, {
+                    // Choices.js seçenekleri
+                    itemSelectText: 'Seçmek için Enter tuşuna basın',
+                    noResultsText: 'Sonuç bulunamadı',
+                    noChoicesText: 'Seçenek bulunamadı',
+                    placeholder: true, // Placeholder kullanmak isterseniz
+                    placeholderValue: 'Seçim yapın', // Placeholder metni
+                    searchEnabled: true, // Arama kutusu etkin mi
+                    shouldSort: false, // Seçenekleri otomatik sıralama (isteğe bağlı)
+                    // Diğer seçeneklerinizi buraya ekleyebilirsiniz:
+                    // Örneğin: removeItems: true, removeItemButton: true, // Seçilen öğeleri kaldırma butonu
+                    // maxItemCount: 5, // Maksimum seçilebilecek öğe sayısı
+                });
+            }
         });
     }
-
-    // Sayfa yüklendiğinde çalıştır
-    document.addEventListener("DOMContentLoaded", function () {
-        initialize_multiselect();
-    });
 </script>
 <script>
     function start_collection_table() {
@@ -152,8 +165,8 @@
                     // Hata cevabı gelirse:
                     $('#' + errorDivId).html(response.html); // Hata mesajını errorDivId içine yükle
                     $('#' + modalId).modal('show'); // Modalı açık tut
-                    initializeFlatpickr();
-                    initialize_multiselect();
+                    initializeUIComponents();
+
                 }
             },
             error: function(xhr, status, error) {
@@ -161,8 +174,7 @@
                 console.error('Form gönderiminde hata oluştu: ', error);
                 console.error('Hata Detayı: ', xhr.responseText);
                 alert('Form gönderiminde bir hata oluştu veya yetkiniz yok. Lütfen tekrar deneyin.');
-                initializeFlatpickr(); // Flatpickr tekrar çalıştır
-                initialize_multiselect();
+                initializeUIComponents(); // Flatpickr tekrar çalıştır
             }
         });
     }
@@ -605,6 +617,8 @@
 <!-- Favori İşareti Son-->
 
 
+
+
 <script>
     function initializeFlatpickr() {
         flatpickr(".flatpickr", {
@@ -615,14 +629,10 @@
         });
     }
 
-    $(document).ready(function () {
-        initializeFlatpickr(); // Sayfa yüklendiğinde çalıştır
-    });
-
     function open_modal(modalId) {
         var modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
-        initializeFlatpickr(); // Modal açılınca Flatpickr'ı çalıştır
+        initializeUIComponents(); // Modal açılınca Flatpickr'ı çalıştır
     }
 </script>
 

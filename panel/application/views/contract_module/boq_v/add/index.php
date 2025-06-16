@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("contract_module/boq_v/common/page_style"); ?>
 </head>

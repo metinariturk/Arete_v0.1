@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
     <?php $this->load->view("includes/head"); ?>
     <?php $this->load->view("site_v/weather_v/common/page_style"); ?>
 </head>
