@@ -896,7 +896,7 @@ class Boq extends MY_Controller
 
             // Koşullu formül
             $formula = sprintf(
-                '=IF(OR(ISNUMBER(SEARCH("minha",LOWER(D%d))), ISNUMBER(SEARCH("mihna",LOWER(D%d))), ISNUMBER(SEARCH("minah",LOWER(D%d)))), -1*((E%d^2/162)*F%d*G%d*H%d), (E%d^2/162)*F%d*G%d*H%d)',
+                '=IF(OR(ISNUMBER(SEARCH("minha",LOWER(D%d))), ISNUMBER(SEARCH("mihna",LOWER(D%d))), ISNUMBER(SEARCH("minah",LOWER(D%d)))), -1*((E%d^2/162)*PRODUCT(F%d:H%d)), (E%d^2/162)*PRODUCT(F%d:H%d))',
                 $currentDataRow, $currentDataRow, $currentDataRow, // D sütunu 3 kere
                 $currentDataRow, $currentDataRow, $currentDataRow, $currentDataRow, // Negatif kısım için E,F,G,H
                 $currentDataRow, $currentDataRow, $currentDataRow, $currentDataRow // Pozitif kısım için E,F,G,H
