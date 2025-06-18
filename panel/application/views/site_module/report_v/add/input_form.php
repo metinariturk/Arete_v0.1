@@ -23,7 +23,7 @@
                 <div class="row justify-content-center">
                     <div class="col-5">
                         <div class="mb-2">
-                            <div class="col-form-label">Tahsilat Ödeme Tarihi</div>
+                            <div class="col-form-label">Rapor Tarihi</div>
                             <input class="flatpickr form-control <?php cms_isset(form_error("report_date"), "is-invalid", ""); ?>"
                                    type="text" id="flatpickr"
                                    name="report_date"

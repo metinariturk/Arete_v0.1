@@ -235,9 +235,6 @@ class Report extends MY_Controller
 
         if ($validate) {
 
-            echo "valide";
-            die();
-
             $rep_date = $this->input->post("report_date");
 
             if ($this->input->post("report_date")) {
@@ -325,7 +322,6 @@ class Report extends MY_Controller
 
 
         } else {
-
 
             $site = $this->Site_model->get(array("id" => $site_id));
             $project = $this->Project_model->get(array("id" => $site->project_id));

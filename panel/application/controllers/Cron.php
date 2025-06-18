@@ -54,6 +54,9 @@ class Cron extends MY_Controller
     // Aktif sitelerin hava durumu verilerini alıp veritabanına kaydetme
     function saveWeatherToDB()
     {
+        echo "Cron çalıştı: $(date)" >> /home/aretemuhendislik/cronlog.txt
+
+    exit();
         // Aynı şehir ve tarih var mı?
         $sites = $this->Site_model->get_all(array("isActive" => 1));
 
