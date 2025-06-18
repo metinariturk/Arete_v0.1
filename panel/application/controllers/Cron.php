@@ -54,62 +54,15 @@ class Cron extends MY_Controller
     // Aktif sitelerin hava durumu verilerini alıp veritabanına kaydetme
     function saveWeatherToDB()
     {
-        echo "Cron çalıştı: $(date)" >> /home/aretemuhendislik/cronlog.txt
 
-    exit();
-        // Aynı şehir ve tarih var mı?
-        $sites = $this->Site_model->get_all(array("isActive" => 1));
+        $this->Report_weather_model->add(array(
+            "location" => "KONYA",
+            "date" => null,
+            "max" => null,
+            "min" => null,
+            "event" => null
+        ));
+        echo "verisi kaydedildi.<br>";
 
-        $api_key = "hJA0Edlt4yr3aaQTe2V2b0i43R3A5LX5";
-
-        // Şehir isimlerini al
-        $city_names = array();
-
-        foreach ($sites as $site) {
-            // Şehirleri array'e ekle
-            $city_names[] = $site->location;
-        }
-
-        // Tekrarlayan şehirleri kaldır
-        $city_names = array_unique($city_names);
-
-        // Eşsiz şehirler için hava durumu sorgusu yap
-        foreach ($city_names as $city_name) {
-            // Şehir için hava durumu tahminini al
-            $forecast = $this->get_forecast_for_city($city_name, $api_key);
-
-            if ($forecast) {
-                // Veritabanında aynı şehir ve tarih var mı?
-                $existing_report = $this->Report_weather_model->get(array(
-                    "location" => $forecast['location'],
-                    "date" => $forecast['date']
-                ));
-
-                if ($existing_report) {
-                    // Eğer veritabanında varsa güncelleme
-                    $this->Report_weather_model->update(
-                        array("id" => $existing_report->id),
-                        array(
-                            "max" => $forecast['max_temp'],
-                            "min" => $forecast['min_temp'],
-                            "event" => $forecast['event']
-                        )
-                    );
-                    echo "{$city_name} verisi güncellendi.<br>";
-                } else {
-                    // Eğer veritabanında yoksa yeni kayıt ekle
-                    $this->Report_weather_model->add(array(
-                        "location" => $forecast['location'],
-                        "date" => $forecast['date'],
-                        "max" => $forecast['max_temp'],
-                        "min" => $forecast['min_temp'],
-                        "event" => $forecast['event']
-                    ));
-                    echo "{$city_name} verisi kaydedildi.<br>";
-                }
-            } else {
-                echo "{$city_name} verisi alınamadı.<br>";
-            }
-        }
     }
 }
