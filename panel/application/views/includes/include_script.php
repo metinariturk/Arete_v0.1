@@ -15,6 +15,7 @@
 <!-- Feather Icons -->
 <script src="<?php echo base_url("assets"); ?>/js/icons/feather-icon/feather.min.js"></script>
 <script src="<?php echo base_url("assets"); ?>/js/icons/feather-icon/feather-icon.js"></script>
+<script src="<?php echo base_url("assets"); ?>/js/calendar_script.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

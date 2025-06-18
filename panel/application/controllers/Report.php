@@ -31,6 +31,7 @@ class Report extends MY_Controller
             "new_form" => array('report' => ['w']),
             "update_form" => array('report' => ['u']),
             "file_form" => array('report' => ['r']),
+            "refresh_day" => array('report' => ['r']),
             "save" => array('report' => ['w', 'u']),
             "update" => array('report' => ['w', 'u']),
             "delete" => array('report' => ['d']),
@@ -191,6 +192,7 @@ class Report extends MY_Controller
         $viewData->workgroups = $workgroups;
         $viewData->previous_report = $previous_report;
         $viewData->next_report = $next_report;
+        $viewData->reports = $reports;
         $viewData->workmachines = $workmachines;
         $viewData->supplies = $supplies;
         $viewData->site = $site;
@@ -201,6 +203,50 @@ class Report extends MY_Controller
             )
         );
         $this->load->view("site_module/report_v/display/index", $viewData);
+    }
+
+    public function refresh_day($id)
+    {
+        $item = $this->Report_model->get(array("id" => $id));
+        $site = $this->Site_model->get(array("id" => $item->site_id));
+        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $upload_function = base_url("Report/file_upload/$item->id");
+        $date = dateFormat_dmy($item->report_date);
+        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$date/";
+        $reports = $this->Report_model->get_all(array("site_id" => $item->site_id), "report_date ASC");
+        $current_report_index = array_search($id, array_column($reports, 'id'));
+
+        $workgroups = $this->Report_workgroup_model->get_all(array("report_id" => $id));
+        $weather = $this->Report_weather_model->get(array("date" => $item->report_date));
+        $workmachines = $this->Report_workmachine_model->get_all(array("report_id" => $id));
+        $supplies = $this->Report_supply_model->get_all(array("report_id" => $id));
+        $site = $this->Site_model->get(array(
+            "id" => $site->id
+        ));
+        $viewData = new stdClass();
+        $viewData->path = $path;
+        $viewData->upload_function = $upload_function;
+        $viewData->item = $item;
+        $viewData->project_id = $project->id;
+        $viewData->weather = $weather;
+        $viewData->workgroups = $workgroups;
+        $viewData->reports = $reports;
+        $viewData->workmachines = $workmachines;
+        $viewData->supplies = $supplies;
+        $viewData->site = $site;
+        $viewData->project = $project;
+        $viewData->item = $this->Report_model->get(
+            array(
+                "id" => $id
+            )
+        );
+
+        $html = $this->load->view("site_module/report_v/display/modules/report_body", $viewData, true);
+
+        echo json_encode([
+            "success" => true,
+            "form_html" => $html
+        ]);
     }
 
     public function save($site_id)
@@ -246,10 +292,6 @@ class Report extends MY_Controller
             $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$rep_date";
             if (!is_dir($path)) {
                 mkdir("$path", 0777, TRUE);
-                echo "oluştu";
-            } else {
-                echo "Dosya Oluşturulamadı";
-                echo $path;
             }
             $off_days = ($this->input->post("off_days") == 0) ? "1" : "";
 
@@ -258,7 +300,7 @@ class Report extends MY_Controller
                     "site_id" => $site_id,
                     "project_id" => $project->id,
                     "contract_id" => $site->contract_id,
-                    "report_date" => $report_date,
+                    "report_date" => $rep_date,
                     "createdAt" => date("Y-m-d"),
                     "createdBy" => active_user_id(),
                     "off_days" => $off_days,
@@ -317,7 +359,7 @@ class Report extends MY_Controller
 
             echo json_encode([
                 "success" => true,
-                "redirect" =>  redirect(base_url("Report/file_form/$report_id"))
+                "redirect" => base_url("Report/file_form/$report_id") // Sadece URL stringi
             ]);
 
 
@@ -518,7 +560,13 @@ class Report extends MY_Controller
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
         $date = dateFormat_dmy($item->report_date);
-        $path = rtrim(uploads, '/') . '/' . "project_v" . "/$project->dosya_no/$site->dosya_no/Reports/$date/";
+        $path = 'uploads' . DIRECTORY_SEPARATOR .
+            'project_v' . DIRECTORY_SEPARATOR .
+            $project->dosya_no . DIRECTORY_SEPARATOR .
+            $site->dosya_no . DIRECTORY_SEPARATOR .
+            'Reports' . DIRECTORY_SEPARATOR .
+            dateFormat_dmy($item->report_date) . DIRECTORY_SEPARATOR;
+
         if (!is_dir($path)) {
             mkdir($path, 0777, TRUE);
         }

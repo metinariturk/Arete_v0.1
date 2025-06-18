@@ -1001,5 +1001,28 @@ function filter_array($array, $key) {
     return $filtered;
 }
 
-
-
+if (!function_exists('get_weather_icon')) {
+    function get_weather_icon($event_text) {
+        switch ($event_text) {
+            case 'Güneşli':
+                return '<i class="fas fa-sun text-warning"></i>';
+            case 'Bulutlu':
+                return '<i class="fas fa-cloud text-secondary"></i>';
+            case 'Parçalı Bulutlu':
+                return '<i class="fas fa-cloud-sun text-info"></i>';
+            case 'Çok Bulutlu':
+                return '<i class="fas fa-cloud text-secondary"></i>';
+            case 'Hafif Yağmurlu':
+            case 'Yağmurlu':
+                return '<i class="fas fa-cloud-showers-heavy text-primary"></i>';
+            case 'Karlı':
+                return '<i class="fas fa-snowflake text-info"></i>';
+            case 'Fırtınalı':
+                return '<i class="fas fa-bolt text-danger"></i>';
+            case 'Sisli':
+                return '<i class="fas fa-smog text-muted"></i>';
+            default:
+                return '<i class="fas fa-cloud-question text-muted"></i>'; // Bilinmeyen durumlar için
+        }
+    }
+}

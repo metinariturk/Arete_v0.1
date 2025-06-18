@@ -1,4 +1,4 @@
-<form id="reportForm" method="post" enctype="multipart/form-data"
+<form id="reportForm" method="post"
       autocomplete="off">
 
     <div class="card">
@@ -48,7 +48,7 @@
                         </button>
                     </div>
                     <div data-repeater-list="workgroups">
-                        <?php if (isset($workgroups_filter)) { ?>
+                        <?php if (!empty($workgroups_filter)) { ?>
                             <?php foreach ($workgroups_filter as $workgroup_return) { ?>
                                 <div data-repeater-item class="mb-3 border rounded p-3">
                                     <div class="row align-items-center">
@@ -146,7 +146,7 @@
                         </button>
                     </div>
                     <div data-repeater-list="workmachines">
-                        <?php if (isset($workmachine_filter)) { ?>
+                        <?php if (!empty($workmachine_filter)) { ?>
                             <?php print_r($workmachine_filter); ?>
                             <?php foreach ($workmachine_filter as $workmachine_return) { ?>
                                 <div data-repeater-item class="mb-3 border rounded p-3">
@@ -271,7 +271,7 @@
             </div>
             <div class="card-body">
                 <label>Genel Notlar</label>
-                <textarea class="form-control" name="note" rows="3"></textarea>
+                <textarea class="form-control" name="note" rows="3"><?php echo isset($form_error) ? set_value("note") : ""; ?></textarea>
             </div>
         </div>
     </div>

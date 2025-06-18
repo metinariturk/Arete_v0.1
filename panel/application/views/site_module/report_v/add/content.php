@@ -42,6 +42,6 @@
 
 <div id="formContainer">
 
-        <?php $this->load->view("site_module/report_v/add/input_form"); ?>
+    <?php $this->load->view("site_module/report_v/add/input_form"); ?>
 
 </div>

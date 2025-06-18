@@ -1,154 +1,202 @@
-
 <script>
-    function initializeFormScripts() {
-        // Repeater
-        $('.repeater').repeater({
-            repeaters: [{
-                selector: '.inner-repeater'
-            }],
-            hide: function (deleteElement) {
-                if (confirm('Bu satırı Silmek İstediğinize Emin Misiniz?')) {
-                    $(this).slideUp(deleteElement);
-                }
-            },
-        });
-    }
-
-    // Sayfa ilk yüklendiğinde initializeFormScripts bir kere çalışacak
-    $(document).ready(function() {
-        initializeFormScripts();
-    });
-</script>
-
-<script>
-
-    function initializeFlatpickr() {
-        var phpDates = <?php echo json_encode($dates); ?>; // PHP'den gelen JSON verisini alıyoruz
-
-        var coolDates = [];
-        phpDates.forEach(function(dateString) {
-            // 'Y-m-d' formatındaki tarihi JavaScript Date objesine çeviriyoruz
-            var dateParts = dateString.split('-');
-            var jsDate = new Date(dateParts[0], parseInt(dateParts[1]) - 1, dateParts[2]);
-
-            // Saat bilgisini sıfırlıyoruz (sadece tarih kısmına odaklanıyoruz)
-            jsDate.setHours(0, 0, 0, 0);
-
-            coolDates.push(jsDate.getTime()); // Milisaniye cinsinden değeri coolDates'e ekliyoruz
-        });
-
-// coolDates dizisini bir Set'e dönüştürerek hızlı arama yapıyoruz
-        var coolDatesSet = new Set(coolDates);
-
-// Start tarihi, PHP'den gelen son tarih (arraydeki son tarih)
-        var startDate = new Date(phpDates[phpDates.length - 1]); // PHP'den gelen son tarih
-        startDate.setHours(0, 0, 0, 0); // Saat bilgisini sıfırlıyoruz
-
-// End tarihi, PHP'den gelen ilk tarih (arraydeki ilk tarih)
-        var endDate = new Date(phpDates[0]); // PHP'den gelen ilk tarih
-        endDate.setHours(0, 0, 0, 0); // Saat bilgisini sıfırlıyoruz
-
-// flatpickr'ı yapılandırıyoruz
-        flatpickr(".flatpickr", {
-            dateFormat: "d-m-Y",
-            locale: "tr",
-            allowInput: true,
-            disableMobile: true,
-            maxDate: "today", // Bugünden sonra tarihleri engelliyoruz
-            defaultDate: "today", // Bugünün tarihini varsayılan olarak ayarla
-            position: "auto center", // Takvimi ortadan açacak şekilde konumlandır
-            onDayCreate: function(dObj, dStr, fp, dayElem) {
-                // Eğer gün tarihi, PHP'den gelen tarihler arasında varsa, özel bir sınıf ekliyoruz
-                if (coolDatesSet.has(dayElem.dateObj.getTime())) {
-                    dayElem.className += " has-action";
-                }
-
-                // Eğer gün PHP'den gelen tarihlerde yoksa ve belirtilen tarih aralığındaysa kırmızı renkte boyuyoruz
-                if (!coolDatesSet.has(dayElem.dateObj.getTime()) && dayElem.dateObj >= startDate && dayElem.dateObj <= endDate) {
-                    dayElem.className += " in-range"; // in-range sınıfını ekliyoruz
-                }
-            }
-        });
-
-// CSS ile 'in-range' sınıfına transparan renkler ekliyoruz
-        var style = document.createElement('style');
-        style.innerHTML = `
-    .has-action {
-        background-color: rgba(0, 255, 0, 0.3) !important; /* Açık yeşil */
-        color: black !important;
-    }
-    .in-range {
-        background-color: rgba(255, 0, 0, 0.3) !important; /* Açık kırmızı */
-        color: white !important;
-    }
-`;
-        document.head.appendChild(style);
-    }
-
-    $(document).ready(function () {
-        initializeFlatpickr(); // Sayfa yüklendiğinde çalıştır
-    });
-</script>
-
-<script>
-    document.getElementById('off_days').addEventListener('change', function () {
-        var workSections = document.getElementById('work_sections');
-        if (this.checked) {
-            workSections.style.display = 'block'; // Çalışma Var
-        } else {
-            workSections.style.display = 'none';  // Çalışma Yok
+    function initFileUploader() {
+        // İlk olarak varsa eski fileuploader'ı destroy et (çakışmasın)
+        if ($('input[name="files"]').data('fileuploader')) {
+            $('input[name="files"]').data('fileuploader').destroy();
         }
-    });
 
-    // Sayfa yüklenince de doğru durumda olsun:
-    window.addEventListener('DOMContentLoaded', function () {
-        var event = new Event('change');
-        document.getElementById('off_days').dispatchEvent(event);
-    });
-</script>
+        // Preloaded dosyaları JSON olarak al
+        let preloadedFiles = $('input[name="files"]').attr('data-fileuploader-files');
+        preloadedFiles = preloadedFiles ? JSON.parse(preloadedFiles) : [];
 
-<script>
-    function submitReportForm() {
-        var formData = $("#reportForm").serialize(); // Form verilerini al
-
-        $.ajax({
-            type: "POST",
-            url: "<?= base_url('report/save/'.$site->id) ?>", // kendi kayıt url'in
-            data: formData,
-            dataType: "json",
-
-            success: function(response) {
-                if (response.success) {
-                    // BAŞARILI İSE
-                    if (response.redirect) {
-                        // Redirect varsa, yönlendir
-                        window.location.href = response.redirect;
-                    } else if (response.message) {
-                        // Mesaj varsa, ekrana göster (SweetAlert, toastr vs. kullanabilirsin)
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Başarılı',
-                            text: response.message
-                        }).then(() => {
-                            // İstersen sonra başka bir şey yap
-                            location.reload(); // örneğin sayfayı yenile
-                        });
-                    }
-                } else {
-                    // BAŞARISIZ İSE
-                    $("#formContainer").html(response.form_html);
-                    initializeFlatpickr(); // Sayfa yüklendiğinde çalıştır
-                    initializeFormScripts();
-                }
-            },
-            error: function () {
-                alert("Bir hata oluştu. Lütfen tekrar deneyin.");
-            }
+        // Fileuploader başlat
+        $('input[name="files"]').fileuploader({
+            preloaded: preloadedFiles,
+            // İstersen buraya diğer ayarlarını ekle
         });
     }
 
-    // Butona basınca fonksiyon çalışacak
-    $(document).on("click", "#submitBtn", function () {
-        submitReportForm();
+    $(document).ready(function() {
+        initFileUploader();
     });
+
+</script>
+<script>
+    // Tüm scriptleri tek bir blokta veya ayrı bir JS dosyasında toplayın.
+    // Fonksiyonları bir namespace (nesne) altında gruplayarak global kirliliği önleyin.
+    var ReportModule = (function($) {
+        // Özel Flatpickr CSS'ini sadece bir kez eklemek için kontrol
+        function ensureFlatpickrStyles() {
+            if (!document.getElementById('flatpickr-custom-styles')) {
+                var style = document.createElement('style');
+                style.id = 'flatpickr-custom-styles';
+                style.innerHTML = `
+                    .has-action { background-color: rgba(0, 255, 0, 0.3) !important; color: black !important; }
+                    .in-range { background-color: rgba(255, 0, 0, 0.3) !important; color: white !important; }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function initializeFlatpickr() {
+            ensureFlatpickrStyles();
+
+            var phpDates = <?php echo json_encode(!empty($dates) ? $dates : []); ?>;
+
+            var fpConfig = {
+                dateFormat: "d-m-Y",
+                locale: "tr",
+                allowInput: true,
+                disableMobile: true,
+                maxDate: "today",
+                defaultDate: "today",
+                position: "auto center"
+            };
+
+            // Bu kontrolü güçlendirelim ve foreach içinde de kontrol edelim
+            if (phpDates && Array.isArray(phpDates) && phpDates.length > 0) {
+                var coolDates = [];
+                phpDates.forEach(function(dateString) {
+                    // Her dateString'in geçerli bir string olduğundan emin olun
+                    if (typeof dateString === 'string' && dateString.length > 0) { // <-- EK KONTROL BURADA
+                        var dateParts = dateString.split('-');
+                        var jsDate = new Date(dateParts[0], parseInt(dateParts[1]) - 1, dateParts[2]);
+                        jsDate.setHours(0, 0, 0, 0);
+                        coolDates.push(jsDate.getTime());
+                    } else {
+                        console.warn("Flatpickr: Geçersiz tarih formatı algılandı, atlanıyor:", dateString);
+                    }
+                });
+
+                // Eğer coolDates boşsa, startDate ve endDate hatalarına karşı koruma
+                if (coolDates.length > 0) {
+                    var coolDatesSet = new Set(coolDates);
+                    var startDate = new Date(phpDates[phpDates.length - 1]);
+                    startDate.setHours(0, 0, 0, 0);
+                    var endDate = new Date(phpDates[0]);
+                    endDate.setHours(0, 0, 0, 0);
+
+                    fpConfig.onDayCreate = function(dObj, dStr, fp, dayElem) {
+                        if (coolDatesSet.has(dayElem.dateObj.getTime())) {
+                            dayElem.className += " has-action";
+                        }
+                        if (!coolDatesSet.has(dayElem.dateObj.getTime()) && dayElem.dateObj >= startDate && dayElem.dateObj <= endDate) {
+                            dayElem.className += " in-range";
+                        }
+                    };
+                } else {
+                    console.warn("Flatpickr: Filtrelenmiş geçerli tarih bulunamadı, özel renklendirme devre dışı.");
+                }
+            }
+
+            flatpickr(".flatpickr", fpConfig);
+        }
+        function initializeRepeater() {
+            // Repeater'ı DOM'dan kaldırıp tekrar eklediğimizde
+            // eski instance'ı yok etme veya yeniden başlatma stratejisi önemlidir.
+            // jquery.repeater'ın destroy metodu yoksa, formun HTML'i yenilendiğinde
+            // otomatik olarak eski instance temizlenir ve yenisi başlatılır.
+            $('.repeater').repeater({
+                repeaters: [{
+                    selector: '.inner-repeater'
+                }],
+                hide: function(deleteElement) {
+                    if (confirm('Bu satırı Silmek İstediğinize Emin Misiniz?')) {
+                        $(this).slideUp(deleteElement);
+                    }
+                },
+                // Boş item'lar otomatik silinsin mi kontrolü eklenebilir.
+                // show: function () { $(this).slideDown(); } // Opsiyonel: Yeni item'ın animasyonla gelmesi
+            });
+            // Select2 gibi kütüphaneleri de burada yeniden başlatmanız gerekebilir:
+            $('[data-plugin="select2"]').select2();
+        }
+
+        function handleOffDaysSwitch() {
+            var offDaysSwitch = document.getElementById('off_days');
+            var workSections = document.getElementById('work_sections');
+
+            if (offDaysSwitch && workSections) { // Elementler varsa çalıştır
+                // Başlangıç durumu için hemen kontrol et
+                workSections.style.display = offDaysSwitch.checked ? 'block' : 'none';
+
+                offDaysSwitch.addEventListener('change', function() {
+                    workSections.style.display = this.checked ? 'block' : 'none';
+                });
+            }
+        }
+
+        function submitReportForm() {
+            var form = $("#reportForm");
+            // Eğer formda dosya yükleme varsa FormData kullanın, yoksa serialize() yeterli.
+            // HTML'de enctype="multipart/form-data" varsa, buna dikkat edin.
+            // var formData = new FormData(form[0]); // Dosya yükleme için
+            var formData = form.serialize(); // Sadece form verileri için
+
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('report/save/'.$site->id) ?>",
+                data: formData,
+                dataType: "json",
+                // Eğer formData kullanıyorsanız, şu iki satırı ekleyin:
+                // processData: false,
+                // contentType: false,
+
+                success: function(response) {
+                    if (response.success) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else if (response.message) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı',
+                                text: response.message
+                            }).then(() => {
+                                // Formu temizle veya sayfayı yenile gibi işlemler
+                                location.reload();
+                            });
+                        }
+                    } else {
+                        // BAŞARISIZ İSE
+                        // Form HTML'ini yeniden yükle ve scriptleri yeniden başlat
+                        $("#formContainer").html(response.form_html);
+                        initializeFlatpickr();
+                        initializeRepeater(); // initializeFormScripts'i initializeRepeater olarak adlandırın
+                        handleOffDaysSwitch(); // Switch'i de yeniden başlatın
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Daha detaylı hata yönetimi
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: 'Bir hata oluştu. Lütfen tekrar deneyin. (' + textStatus + ': ' + errorThrown + ')'
+                    });
+                }
+            });
+        }
+
+        // DOM yüklendiğinde ilk başlatmaları yap
+        $(document).ready(function() {
+            initializeRepeater(); // Repeater'ı başlat
+            initializeFlatpickr(); // Flatpickr'ı başlat
+            handleOffDaysSwitch(); // Switch'i başlat
+
+            // submitBtn'e click listener ata
+            $(document).on("click", "#submitBtn", function() {
+                submitReportForm();
+            });
+        });
+
+        // Modül dışına açılacak fonksiyonlar (varsa)
+        return {
+            submitForm: submitReportForm,
+            init: function() {
+                // Eğer farklı yerlerden bu modülü başlatmak isterseniz
+                console.log("ReportModule initialized.");
+            }
+        };
+
+    })
+
 </script>
