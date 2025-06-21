@@ -730,7 +730,9 @@ class Report extends MY_Controller
         $pdf->SetX(10);
         $pdf->SetFont('dejavusans', 'B', 7);
         $pdf->Cell(30, 5, "İşveren", 0, 0, "L", 0);
-        $pdf->Cell(80, 5, $owner->company_name, 0, 0, "L", 0);
+        if (!empty($owner)) {
+            $pdf->Cell(80, 5, $owner->company_name, 0, 0, "L", 0);
+        }
         $pdf->Cell(50, 5, "", 0, 0, "L", 0);
         if (isset($weather)) {
             $pdf->Cell(30, 5, "$weather->event", 0, 0, "R", 0);
