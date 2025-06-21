@@ -1,9 +1,10 @@
 <div class="row justify-content-center">
     <div class="col-lg-8 col-md-12">
         <div class="card shadow-lg mb-4">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <h3 class="fw-bold text-muted mb-1">Günlük Rapor</h3>
+            <div class="card-body p-4" style="position: relative;">
+
+                <div class="text-center mb-4" style="padding-top: 40px;"><h3 class="fw-bold text-muted mb-1">Günlük
+                        Rapor</h3>
                     <span class="h4"><?php echo $project->project_name; ?></span>
                     <p class="text-muted lead mb-0">
                         <a href="<?php echo base_url("project/file_form/$project->id"); ?>"
@@ -18,6 +19,7 @@
                         </a>
                     </p>
                 </div>
+
                 <div id="refresh_report">
                     <?php $this->load->view("site_module/report_v/display/modules/report_body"); ?>
                 </div>

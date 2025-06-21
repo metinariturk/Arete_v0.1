@@ -1,47 +1,23 @@
-<div class="card">
-    <div class="card-body">
-        <div class="project-info">
-            <?php if ($contract) { ?>
-                <div class="info-header">
-                    <h5 class="mb-0">
-                        <?php echo mb_strtoupper($contract->dosya_no . " / " . $contract->contract_name); ?>
-                        <small class="status" style="font-size: 14px;">
-                            <?php
-                            if ($contract->isActive == 1) {
-                                echo "<span class='badge bg-warning'>Devam eden sözleşme</span>";
-                            } elseif ($contract->isActive == 2) {
-                                echo "<span class='badge bg-success'>Tamamlanan sözleşme</span>";
-                            }
-                            ?>
-                        </small>
-                    </h5>
+<div id="formContainer">
+    <div class="card">
+        <div class="card-body">
+            <form id="reportForm" method="post"
+                  autocomplete="off">
+                <?php $this->load->view("site_module/report_v/add/sections/00_head"); ?>
+                <hr>
+                <div id="work_sections">
+                    <?php $this->load->view("site_module/report_v/add/sections/01_workgroup"); ?>
+                    <?php $this->load->view("site_module/report_v/add/sections/02_workmachine"); ?>
+                    <?php $this->load->view("site_module/report_v/add/sections/03_supplies"); ?>
+                    <?php $this->load->view("site_module/report_v/add/sections/04_notes"); ?>
                 </div>
-            <?php } elseif ($project) { ?>
-                <div class="info-header">
-                    <h5 class="mb-0">
-                        <?php echo mb_strtoupper($project->dosya_no . " / " . $project->project_name); ?>
-                        <small class="status" style="font-size: 14px;">
-                            <?php
-                            if ($project->isActive == 1) {
-                                echo "<span class='badge bg-warning'>Devam eden proje</span>";
-                            } elseif ($project->isActive == 2) {
-                                echo "<span class='badge bg-success'>Tamamlanan proje</span>";
-                            }
-                            ?>
-                        </small>
-                    </h5>
+                <div class="d-flex justify-content-end">
+                    <button class="modern-save-btn" type="button" id="submitBtn"><i class="fa fa-save me-2"></i> Formu
+                        Kaydet
+                    </button>
                 </div>
-            <?php } ?>
-            <div class="site-info">
-                <span><?php echo $site->santiye_ad; ?></span>
-                <span><?php echo $site->dosya_no; ?></span>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 
-<div id="formContainer">
-
-    <?php $this->load->view("site_module/report_v/add/input_form"); ?>
-
-</div>

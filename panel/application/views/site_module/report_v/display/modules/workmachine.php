@@ -1,6 +1,7 @@
 <div class="card mb-3 shadow-sm">
     <div class="card-header bg-primary text-white text-center">
         <h5 class="mb-0 fw-bold">Çalışan Makineler</h5>
+        <?php echo $item->id; ?>
     </div>
     <div class="card-body p-0"> <?php if (!empty($workmachines)) { ?>
             <div class="table-responsive">

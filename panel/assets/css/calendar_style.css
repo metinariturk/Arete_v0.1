@@ -1,35 +1,5 @@
-/* Import Google font - Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-body{
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  justify-content: center;
-  min-height: 100vh;
-  background: #9B59B6;
-}
-.wrapper{
-  width: 450px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-}
-.wrapper header{
-  display: flex;
-  align-items: center;
-  padding: 25px 30px 10px;
-  justify-content: space-between;
-}
-header .icons{
-  display: flex;
-}
-header .icons span{
+/* Header ve Genel Takvim Yapısı */
+header .icons span {
   height: 38px;
   width: 38px;
   margin: 0 1px;
@@ -40,107 +10,137 @@ header .icons span{
   font-size: 1.9rem;
   user-select: none;
   border-radius: 50%;
+  display: flex; /* İçeriği merkezlemek için */
+  align-items: center;
+  justify-content: center;
 }
-.icons span:last-child{
+.icons span:last-child {
   margin-right: -10px;
 }
-header .icons span:hover{
+header .icons span:hover {
   background: #f2f2f2;
 }
-header .current-date{
+header .current-date {
   font-size: 1.45rem;
   font-weight: 500;
 }
-.calendar{
+.calendar {
   padding: 20px;
 }
-.calendar ul{
+.calendar ul {
   display: flex;
   flex-wrap: wrap;
   list-style: none;
   text-align: center;
 }
-.calendar .days{
+.calendar .days {
   margin-bottom: 20px;
 }
-.calendar li{
-  color: #333;
-  width: calc(100% / 7);
+.calendar li {
+  /* Tüm gün li'leri için temel stiller */
+  color: #333; /* Varsayılan yazı rengi */
+  width: calc(100% / 7); /* Bir satırda 7 gün */
   font-size: 1.07rem;
-}
-.calendar .weeks li{
-  font-weight: 500;
-  cursor: default;
-}
-.calendar .days li{
   z-index: 1;
   cursor: pointer;
-  position: relative;
-  margin-top: 30px;
+  position: relative; /* ::before için referans */
+  margin-top: 30px; /* Günler arası dikey boşluk */
+  /* Li'nin kendisi için yuvarlaklığı ve ortalamayı kaldırıyoruz, A etiketine devrediyoruz */
+  /* li yerine ::before ve a etiketine odaklanacağız */
+  display: flex; /* İçindeki a etiketini veya sayıyı merkezlemek için */
+  align-items: center; /* Dikey merkezleme */
+  justify-content: center; /* Yatay merkezleme */
+  height: 40px; /* ::before ile aynı boyutta olsun ki click alanı tam olsun */
 }
-.days li.inactive{
-  color: #ffffff;
+
+/* Haftanın günleri başlıkları */
+.calendar .weeks li {
+  font-weight: 500;
+  cursor: default;
+  height: auto; /* Haftanın günlerinin yüksekliğini kısıtlamayalım */
 }
+
+/* Gün içindeki <a> etiketi için stil */
+/* KRİTİK: Bu, gün numarasının/linkinin yuvarlak alanı tam olarak kaplamasını sağlar */
+.days li a {
+  display: flex; /* İçindeki sayıyı merkezlemek için */
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* li'nin yüksekliğini kapla (40px) */
+  width: 100%; /* li'nin genişliğini kapla (calc(100%/7) * parent'ın genişliği) */
+  max-width: 40px; /* Sadece 40px ile sınırlayalım */
+  max-height: 40px; /* Sadece 40px ile sınırlayalım */
+  border-radius: 50%; /* Linkin de yuvarlak olmasını sağlar */
+  text-decoration: none; /* Alt çizgiyi kaldır */
+  color: inherit; /* Yazı rengini li'den miras al */
+  background-color: transparent !important; /* A etiketinin kendi arka plan rengi olmasın, li::before kullanalım */
+}
+
+
+/* ::before pseudo-elementleri - TÜM arka plan renkleri ve yuvarlaklar buradan yönetilir */
+.days li::before {
+  position: absolute;
+  content: "";
+  left: 50%;
+  top: 50%;
+  height: 40px; /* Yuvarlağın boyutu */
+  width: 40px; /* Yuvarlağın boyutu */
+  z-index: -1; /* İçerikteki metnin arkasında kalır */
+  border-radius: 50%;
+  transform: translate(-50%, -50%); /* Tam merkezleme */
+  background-color: transparent; /* Varsayılan olarak şeffaf */
+}
+
+/* Bugünün (active) stili */
 .days li.active {
-  color: white !important;  /* Yazı rengi beyaz olsun */
-  position: relative;
+  color: white !important; /* Yazı rengi beyaz */
   font-weight: 600;
 }
-
-.days li::before{
-  position: absolute;
-  content: "";
-  left: 50%;
-  top: 50%;
-  height: 40px;
-  width: 40px;
-  z-index: -1;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
 .days li.active::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 40px;
-  width: 40px;
-  background: #2980b9; /* mavi */
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: -1;
+  background: #2980b9; /* Mavi arka plan */
 }
 
-.days li:not(.active):hover::before{
-  background: #f2f2f2;
+/* Hover efekti (aktif olmayan ve pasif olmayan günler için) */
+.days li:not(.active):not(.inactive):hover::before {
+  background: #f2f2f2; /* Hafif gri hover rengi */
 }
 
-.days li.report-day a {
-  display: block;
-  color: #fff;
-  background: #27ae60; /* yeşil */
-  border-radius: 50%;
-  height: 40px;
-  width: 40px;
-  line-height: 40px;
-  text-decoration: none;
-  margin: auto;
+/* Pasif (inactive) günler */
+.days li.inactive {
+  color: #ccc; /* Gri yazı */
+  cursor: default;
+}
+.days li.inactive::before {
+  background-color: transparent; /* Pasif günlerin arka planı olmasın */
+}
+.days li.inactive a {
+  color: inherit; /* Pasif gün linklerinin rengi de gri olsun */
+  cursor: default;
 }
 
+
+/* Raporlu günler (report-day) */
+.days li.report-day {
+  color: #fff; /* Yazı rengi beyaz olsun */
+  font-weight: bold;
+}
+.days li.report-day::before {
+  background: #27ae60; /* Yeşil arka plan */
+}
+
+/* Raporsuz günler (no-report-day) - Kırmızı boyalı */
 .days li.no-report-day {
-  color: white;
-  position: relative;
+  color: white; /* Yazı rengi beyaz olsun */
+  font-weight: bold;
+}
+.days li.no-report-day::before {
+  background: #e74c3c; /* Kırmızı arka plan */
 }
 
-.days li.no-report-day::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 40px;
-  width: 40px;
-  background: #e74c3c; /* kırmızı */
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: -1;
-}
+/* Ek olarak, genel .days li hover efekti */
+/* Bu kural, :not(.active):hover::before kuralıyla çakışabilir.
+   Daha spesifik pseudo-element kuralı genellikle daha iyi çalışır.
+   Bu kuralı kaldırıp sadece ::before hover kuralını kullanmak daha temiz olabilir. */
+/* .days li:hover:not(.active):not(.inactive) {
+  background-color: #f2f2f2;
+} */

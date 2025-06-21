@@ -27,6 +27,7 @@ class MY_Controller extends CI_Controller
 
         $settings = $this->Settings_model->get(); // query object
         $this->viewData = new stdClass();
-        $this->settings = $settings;
+        $this->settings = $settings; // Burası önemli!
+
     }
 }

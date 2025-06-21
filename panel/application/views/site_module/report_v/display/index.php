@@ -4,6 +4,36 @@
     <?php $this->load->view("site_module/report_v/common/page_script"); ?>
 
     <?php $this->load->view("includes/drag_drop_style"); ?>
+    <style>
+        .card-body {
+            position: relative; /* Bu satırı ekleyin (eğer yoksa) */
+            padding: 4px; /* veya mevcut padding değeriniz */
+        }
+        .dropdown {
+            position: absolute; /* Ebeveyni .card-body'ye göre konumlanır */
+            top: 15px;          /* Kartın üst kenarından 15px aşağı */
+            right: 15px;        /* Kartın sağ kenarından 15px içeri */
+            left: auto;         /* Sol konumlandırmayı iptal eder */
+            z-index: 10;        /* Diğer içeriklerin üzerinde görünmesini sağlar */
+        }
+
+        /* Dropdown menüsünün kendisi (menünün sağa açılması için) */
+        .dropdown-menu {
+            position: absolute; /* Butonun ebeveyni olan .dropdown'a göre konumlanır */
+            top: 100%;          /* Butonun hemen altına */
+            right: 0;           /* Butonun sağ kenarına hizalanır */
+            left: auto;         /* Sol hizalamayı iptal eder */
+            z-index: 1000;      /* Diğer elementlerin üzerinde görünmesini sağlar */
+        }
+
+        /* Nokta ikonu içeren buton */
+        .light-square {
+            /* Bu div'in display özelliği önemli olabilir */
+            /* Varsayılan olarak block olabilir, bunu inline-block veya flex yapmayı deneyin */
+            display: inline-block;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
@@ -21,49 +51,12 @@
         <?php $this->load->view("includes/footer"); ?>
     </div>
 </div>
-<script>
-    const reportLinks = <?php
-        $links = [];
-        foreach ($reports as $r) {
-            $date = date('Y-m-d', strtotime($r->report_date));
-            $links[$date] = $r->id;  // sadece id
-        }
-        echo json_encode($links);
-        ?>;
-</script>
+
 
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/file_upload_script.php"); ?>
-<?php $this->load->view("site_module/report_v/common/page_script"); ?>
-<script>
-    const BASE_URL = "<?php echo base_url(); ?>";
-</script>
-<script>
-    document.querySelector('.days').addEventListener('click', e => {
-        if (e.target.classList.contains('report-link')) {
-            e.preventDefault();
-            const reportId = e.target.getAttribute('data-id');
+<?php $this->load->view("site_module/report_v/display/page_script"); ?>
 
-            fetch(`${BASE_URL}report/refresh_day/${reportId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        document.getElementById('refresh_report').innerHTML = data.form_html;
-                        initFileUploader();
-                    } else {
-                        console.error('Veri yüklenemedi.');
-                    }
-                })
-                .catch(error => console.error('Fetch error:', error));
-        }
-    });
-</script>
 
 </body>
 </html>
