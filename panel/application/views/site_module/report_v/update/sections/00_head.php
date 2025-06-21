@@ -32,7 +32,7 @@
             }
 
             // Sözleşme Bilgisi
-            if ($contract) {
+            if (isset($contract)) {
                 $contract_status_text = '';
                 $contract_status_class = '';
                 if ($contract->isActive == 1) {
