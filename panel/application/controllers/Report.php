@@ -719,7 +719,9 @@ class Report extends MY_Controller
         $pdf->SetX(10);
         $pdf->SetFont('dejavusans', 'B', 7);
         $pdf->Cell(30, 5, "Sözleşme Adı", 0, 0, "L", 0);
-        $pdf->Cell(80, 5, mb_strtoupper($contract->contract_name), 0, 0, "L", 0);
+        if (!empty($contract)){
+            $pdf->Cell(80, 5, mb_strtoupper($contract->contract_name), 0, 0, "L", 0);
+        }
         $pdf->Cell(50, 5, "", 0, 0, "L", 0);
         if (isset($weather)) {
             $pdf->Cell(30, 5, "En Düşük : $weather->min °C", 0, 0, "R", 0);
