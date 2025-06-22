@@ -1,5 +1,4 @@
 <?php $this->load->view("includes/head"); ?>
-<?php $this->load->view("site_module/report_v/common/page_style"); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/flatpickr/flatpickr.min.css">
 <?php $this->load->view("site_module/report_v/add/page_style"); ?>
 </head>

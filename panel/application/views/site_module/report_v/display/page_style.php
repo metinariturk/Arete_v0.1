@@ -40,7 +40,7 @@
          font-size: 1rem;
          margin-right: 10px;
      }
-
+     
     .card-body {
         position: relative; /* Bu satırı ekleyin (eğer yoksa) */
         padding: 4px; /* veya mevcut padding değeriniz */

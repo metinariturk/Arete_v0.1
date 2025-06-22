@@ -1,71 +1,4 @@
 <script>
-    // Tüm scriptleri tek bir blokta veya ayrı bir JS dosyasında toplayın.
-    // Fonksiyonları bir namespace (nesne) altında gruplayarak global kirliliği önleyin.
-    // Özel Flatpickr CSS'ini sadece bir kez eklemek için kontrol
-    function ensureFlatpickrStyles() {
-        if (!document.getElementById('flatpickr-custom-styles')) {
-            var style = document.createElement('style');
-            style.id = 'flatpickr-custom-styles';
-            style.innerHTML = `
-                    .has-action { background-color: rgba(0, 255, 0, 0.3) !important; color: black !important; }
-                    .in-range { background-color: rgba(255, 0, 0, 0.3) !important; color: white !important; }
-                `;
-            document.head.appendChild(style);
-        }
-    }
-
-    function initializeFlatpickr() {
-        ensureFlatpickrStyles();
-
-        var phpDates = <?php echo json_encode(!empty($dates) ? $dates : []); ?>;
-
-        var fpConfig = {
-            dateFormat: "d-m-Y",
-            locale: "tr",
-            allowInput: true,
-            disableMobile: true,
-            maxDate: "today",
-            position: "auto center"
-        };
-
-        // Bu kontrolü güçlendirelim ve foreach içinde de kontrol edelim
-        if (phpDates && Array.isArray(phpDates) && phpDates.length > 0) {
-            var coolDates = [];
-            phpDates.forEach(function (dateString) {
-                // Her dateString'in geçerli bir string olduğundan emin olun
-                if (typeof dateString === 'string' && dateString.length > 0) { // <-- EK KONTROL BURADA
-                    var dateParts = dateString.split('-');
-                    var jsDate = new Date(dateParts[0], parseInt(dateParts[1]) - 1, dateParts[2]);
-                    jsDate.setHours(0, 0, 0, 0);
-                    coolDates.push(jsDate.getTime());
-                } else {
-                    console.warn("Flatpickr: Geçersiz tarih formatı algılandı, atlanıyor:", dateString);
-                }
-            });
-
-            // Eğer coolDates boşsa, startDate ve endDate hatalarına karşı koruma
-            if (coolDates.length > 0) {
-                var coolDatesSet = new Set(coolDates);
-                var startDate = new Date(phpDates[phpDates.length - 1]);
-                startDate.setHours(0, 0, 0, 0);
-                var endDate = new Date(phpDates[0]);
-                endDate.setHours(0, 0, 0, 0);
-
-                fpConfig.onDayCreate = function (dObj, dStr, fp, dayElem) {
-                    if (coolDatesSet.has(dayElem.dateObj.getTime())) {
-                        dayElem.className += " has-action";
-                    }
-                    if (!coolDatesSet.has(dayElem.dateObj.getTime()) && dayElem.dateObj >= startDate && dayElem.dateObj <= endDate) {
-                        dayElem.className += " in-range";
-                    }
-                };
-            } else {
-                console.warn("Flatpickr: Filtrelenmiş geçerli tarih bulunamadı, özel renklendirme devre dışı.");
-            }
-        }
-
-        flatpickr(".flatpickr", fpConfig);
-    }
 
     function initializeRepeater() {
         // Repeater'ı DOM'dan kaldırıp tekrar eklediğimizde
@@ -136,7 +69,6 @@
                     // BAŞARISIZ İSE
                     // Form HTML'ini yeniden yükle ve scriptleri yeniden başlat
                     $("#formContainer").html(response.form_html);
-                    initializeFlatpickr();
                     initializeRepeater(); // initializeFormScripts'i initializeRepeater olarak adlandırın
                     handleOffDaysSwitch(); // Switch'i de yeniden başlatın
                 }
@@ -155,7 +87,6 @@
     // DOM yüklendiğinde ilk başlatmaları yap
     $(document).ready(function () {
         initializeRepeater(); // Repeater'ı başlat
-        initializeFlatpickr(); // Flatpickr'ı başlat
         handleOffDaysSwitch(); // Switch'i başlat
 
         // submitBtn'e click listener ata

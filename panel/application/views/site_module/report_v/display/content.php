@@ -46,7 +46,7 @@
                     <li>Paz</li>
                 </ul>
                 <ul class="days"></ul>
-            </div
+            </div>
         </div>
     </div>
 </div>

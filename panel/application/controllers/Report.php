@@ -29,6 +29,7 @@ class Report extends MY_Controller
             "update_form" => array('report' => ['u']),
             "file_form" => array('report' => ['r']),
             "refresh_day" => array('report' => ['r']),
+            "get_calendar_for_site" => array('report' => ['r']),
             "save" => array('report' => ['w', 'u']),
             "update" => array('report' => ['w', 'u']),
             "delete" => array('report' => ['d']),
@@ -61,10 +62,16 @@ class Report extends MY_Controller
     {
         $viewData = new stdClass();
 
+        $sites = $this->Site_model->get_all(array());
+        $active_sites = $this->Site_model->get_all(array("isActive" => 1));
+        $passive_sites = $this->Site_model->get_all(array("isActive !=" => 1));
         $items = $this->Report_model->get_all(array());
-        $active_sites = $this->Site_model->get_all();
+
         $viewData->items = $items;
         $viewData->active_sites = $active_sites;
+        $viewData->passive_sites = $passive_sites;
+        $viewData->sites = $sites;
+
         $this->load->view("site_module/report_v/list/index", $viewData);
     }
 
@@ -116,8 +123,6 @@ class Report extends MY_Controller
         }
 
         $this->load->view("site_module/report_v/add/index", $viewData);
-
-
     }
 
     public function update_form($id)
@@ -173,42 +178,28 @@ class Report extends MY_Controller
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $upload_function = base_url("Report/file_upload/$item->id");
-        $date = dateFormat_dmy($item->report_date);
-        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$date/";
+
         $reports = $this->Report_model->get_all(array("site_id" => $item->site_id), "report_date ASC");
-        $current_report_index = array_search($id, array_column($reports, 'id'));
-        $previous_report = null;
-        $next_report = null;
-        if ($current_report_index !== false) {
-            if ($current_report_index > 0) {
-                $previous_report = $reports[$current_report_index - 1];
-            }
-            if ($current_report_index < count($reports) - 1) {
-                $next_report = $reports[$current_report_index + 1];
-            }
-        }
         $workgroups = $this->Report_workgroup_model->get_all(array("report_id" => $id));
-        $weather = $this->Report_weather_model->get(array("date" => $item->report_date, "location" => $site->location));
+        $weathers_for_day = $this->Report_weather_model->get_all(array("date" => $item->report_date, "location" => $site->location));
         $workmachines = $this->Report_workmachine_model->get_all(array("report_id" => $id));
         $supplies = $this->Report_supply_model->get_all(array("report_id" => $id));
         $site = $this->Site_model->get(array(
             "id" => $site->id
         ));
         $viewData = new stdClass();
-        $viewData->path = $path;
-        $viewData->upload_function = $upload_function;
         $viewData->item = $item;
+
         $viewData->project_id = $project->id;
-        $viewData->weather = $weather;
+        $viewData->weathers_for_day = $weathers_for_day;
         $viewData->workgroups = $workgroups;
-        $viewData->previous_report = $previous_report;
-        $viewData->next_report = $next_report;
+
         $viewData->reports = $reports;
         $viewData->workmachines = $workmachines;
         $viewData->supplies = $supplies;
         $viewData->site = $site;
         $viewData->project = $project;
+
         $viewData->item = $this->Report_model->get(
             array(
                 "id" => $id
@@ -222,7 +213,6 @@ class Report extends MY_Controller
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $upload_function = base_url("Report/file_upload/$item->id");
         $date = dateFormat_dmy($item->report_date);
         $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$date/";
         $reports = $this->Report_model->get_all(array("site_id" => $item->site_id), "report_date ASC");
@@ -237,7 +227,6 @@ class Report extends MY_Controller
         ));
         $viewData = new stdClass();
         $viewData->path = $path;
-        $viewData->upload_function = $upload_function;
         $viewData->item = $item;
         $viewData->project_id = $project->id;
         $viewData->weather = $weather;
@@ -258,6 +247,41 @@ class Report extends MY_Controller
         echo json_encode([
             "success" => true,
             "form_html" => $html
+        ]);
+    }
+
+    public function get_calendar_for_site($site_id)
+    {
+        $site = $this->Site_model->get(array("id" => $site_id));
+        $reports = $this->Report_model->get_all(array("site_id" => $site->id));
+
+        $reportLinks = [];
+        if (!empty($reports)) {
+            foreach ($reports as $r) {
+                $date_formatted_for_js = date('Y-m-d', strtotime($r->report_date));
+                $reportLinks[$date_formatted_for_js] = $r->id;
+            }
+        }
+
+        $year = $this->input->get('year') ? (int)$this->input->get('year') : date('Y');
+        $month = $this->input->get('month') ? (int)$this->input->get('month') : date('m');
+
+
+        $viewData = new stdClass();
+        $viewData->reports = $reports;
+        $viewData->site = $site;
+        // $viewData->reportLinksJSON = json_encode($reportLinks); // Artık bunu view'a göndermeyeceğiz.
+
+        // calendar_table.php sadece HTML üretecek, JS'i silinmiş haliyle
+        $calendar_html  = $this->load->view("site_module/report_v/list/tabs/calendar_table", $viewData, true);
+
+        echo json_encode([
+            "success" => true,
+            "form_html" => $calendar_html,
+            "site_id_for_js" => $site->id,
+            "report_links_for_js" => $reportLinks,
+            "current_year" => $year,  // BU SATIRI EKLEYİN
+            "current_month" => $month // BU SATIRI EKLEYİN
         ]);
     }
 
@@ -450,7 +474,7 @@ class Report extends MY_Controller
                 "aciklama" => $this->input->post("note"),
                 "updatedAt" => date("Y-m-d"),
                 "updatedBy" => active_user_id(),
-             )
+            )
         );
 
         $delete_old_workgroup = $this->Report_workgroup_model->delete(array("report_id"=>$report_id));
@@ -492,7 +516,7 @@ class Report extends MY_Controller
         foreach ($supplies_filter as $supplies) {
             $insert_workmachine = $this->Report_supply_model->add(
                 array(
-                    "site_id" => $site_id,
+                    "site_id" => $site->id,
                     "report_id" => $report_id,
                     "project_id" => $site->project_id,
                     "contract_id" => $site->contract_id,
@@ -525,8 +549,8 @@ class Report extends MY_Controller
         $delete_old_workmachine = $this->Report_workmachine_model->delete(array("report_id"=>$report_id));
         $delete_old_supplies = $this->Report_supply_model->delete(array("report_id"=>$report_id));
 
-
         $sil = deleteDirectory($path);
+
         if ($sil) {
             echo '<br>deleted successfully';
         } else {
@@ -546,7 +570,7 @@ class Report extends MY_Controller
         $item = $this->Report_model->get(array("id" => $id));
         $site = $this->Site_model->get(array("id" => $item->site_id));
         $project = $this->Project_model->get(array("id" => $site->project_id));
-        $date = dateFormat_dmy($item->report_date);
+
         $path = 'uploads' . DIRECTORY_SEPARATOR .
             'project_v' . DIRECTORY_SEPARATOR .
             $project->dosya_no . DIRECTORY_SEPARATOR .
@@ -625,25 +649,6 @@ class Report extends MY_Controller
         $fileName = $this->input->post('fileName');
         unlink("$path/$fileName");
         unlink("$thumb_path/$fileName");
-    }
-
-    public function download_all($report_id)
-    {
-
-        $this->load->library('zip');
-        $this->zip->compression_level = 0;
-
-        $report = $this->Report_model->get(array("id" => $report_id));
-        $report_date = dateFormat_dmy($report->report_date);
-        $site = $this->Site_model->get(array("id" => $report->site_id));
-        $project = $this->Project_model->get(array("id" => $site->project_id));
-        $path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Reports/$report_date";
-        $files = glob($path . '/*');
-        foreach ($files as $file) {
-            $this->zip->read_file($file, FALSE);
-        }
-        $zip_name = "Foto-" . $report_date;
-        $this->zip->download("$zip_name");
     }
 
     public

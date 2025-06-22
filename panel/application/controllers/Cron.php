@@ -14,18 +14,33 @@ class Cron extends CI_Controller
     public function get_forecast_for_city($cityName, $api_key)
     {
         $location_url = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey={$api_key}&q=" . urlencode($cityName) . "&language=tr";
-        // cURL ile veri al
         $ch = curl_init($location_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $location_response = curl_exec($ch);
         curl_close($ch);
 
         $location_data = json_decode($location_response, true);
+
         if (empty($location_data)) {
             return null;
         }
 
-        $city_key = $location_data[0]['Key'];
+        // --- BURADAKİ KONTROL ÇOK ÖNEMLİ ---
+        $found_city = null;
+        foreach ($location_data as $loc) {
+            // Eğer ülke kodu Türkiye (TR) ise ve tip "City" (Şehir) ise
+            // Veya AdministrativeArea (id) yani bölge kodu doğruysa
+            if (isset($loc['Country']['ID']) && $loc['Country']['ID'] === 'TR') {
+                $found_city = $loc;
+                break; // İlk bulunan Türkiye şehrini al
+            }
+        }
+
+        if (empty($found_city)) {
+            return null; // Türkiye'de bu isimde bir şehir bulunamadı
+        }
+
+        $city_key = $found_city['Key'];
 
         $forecast_url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/{$city_key}?apikey={$api_key}&language=tr&metric=true";
         // cURL ile 1 günlük hava durumu tahmini al
@@ -44,7 +59,7 @@ class Cron extends CI_Controller
 
         return [
             'location' => $cityName,
-            'date' => date('Y-m-d', strtotime($forecast['Date'])),
+            'date' => $forecast['Date'], // Tam datetime stringi (örn. 2025-06-22T14:00:00+03:00)
             'max_temp' => $forecast['Temperature']['Maximum']['Value'],
             'min_temp' => $forecast['Temperature']['Minimum']['Value'],
             'event' => $forecast['Day']['IconPhrase']
@@ -54,56 +69,43 @@ class Cron extends CI_Controller
     // Aktif sitelerin hava durumu verilerini alıp veritabanına kaydetme
     function saveWeatherToDB()
     {
-        // Aynı şehir ve tarih var mı?
+        // Aktif siteleri al
         $sites = $this->Site_model->get_all(array("isActive" => 1));
 
+        // AccuWeather API anahtarınız
         $api_key = "hJA0Edlt4yr3aaQTe2V2b0i43R3A5LX5";
 
-        // Şehir isimlerini al
+        // Tüm aktif sitelerin şehir isimlerini al
         $city_names = array();
-
         foreach ($sites as $site) {
-            // Şehirleri array'e ekle
             $city_names[] = $site->location;
         }
 
-        // Tekrarlayan şehirleri kaldır
+        // Tekrarlayan şehir isimlerini kaldır (her şehri sadece bir kez sorgula)
         $city_names = array_unique($city_names);
 
-        // Eşsiz şehirler için hava durumu sorgusu yap
+        // Her şehir için hava durumu sorgusu yap ve kaydet
         foreach ($city_names as $city_name) {
-            // Şehir için hava durumu tahminini al
+            // Şehir için hava durumu tahminini al.
+            // get_forecast_for_city fonksiyonu artık 'date' alanında
+            // fonksiyonun çalıştığı anki sistem datetime değerini döndürüyor.
             $forecast = $this->get_forecast_for_city($city_name, $api_key);
+            date_default_timezone_set('Europe/Istanbul');
+            $current_system_time_only = date('H:i:s');
+            $current_system_day_only = date('Y-m-d');
 
             if ($forecast) {
-                // Veritabanında aynı şehir ve tarih var mı?
-                $existing_report = $this->Report_weather_model->get(array(
+                // Veri başarıyla alındıysa, yeni bir kayıt ekle.
+                // Artık güncelleme kontrolü yapmıyoruz, çünkü her çalıştırma yeni bir kayıt olacak.
+                $this->Report_weather_model->add(array(
                     "location" => $forecast['location'],
-                    "date" => $forecast['date']
+                    "date" => $current_system_day_only, // get_forecast_for_city'den gelen anlık datetime
+                    "time" => $current_system_time_only, // AccuWeather'ın orijinal tahmin zamanı
+                    "max" => $forecast['max_temp'],
+                    "min" => $forecast['min_temp'],
+                    "event" => $forecast['event']
                 ));
-
-                if ($existing_report) {
-                    // Eğer veritabanında varsa güncelleme
-                    $this->Report_weather_model->update(
-                        array("id" => $existing_report->id),
-                        array(
-                            "max" => $forecast['max_temp'],
-                            "min" => $forecast['min_temp'],
-                            "event" => $forecast['event']
-                        )
-                    );
-                    echo "{$city_name} verisi güncellendi.<br>";
-                } else {
-                    // Eğer veritabanında yoksa yeni kayıt ekle
-                    $this->Report_weather_model->add(array(
-                        "location" => $forecast['location'],
-                        "date" => $forecast['date'],
-                        "max" => $forecast['max_temp'],
-                        "min" => $forecast['min_temp'],
-                        "event" => $forecast['event']
-                    ));
-                    echo "{$city_name} verisi kaydedildi.<br>";
-                }
+                echo "{$city_name} verisi kaydedildi.<br>";
             } else {
                 echo "{$city_name} verisi alınamadı.<br>";
             }

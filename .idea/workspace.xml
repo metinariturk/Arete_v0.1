@@ -76,7 +76,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/site_module/report_v/update",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/site_module/report_v/list",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -89,11 +89,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\update" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\add" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\list" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\display" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\display\modules" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\add\sections" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\list\tabs" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\update" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\add" />
@@ -272,6 +272,8 @@
       <workItem from="1748886336671" duration="4978000" />
       <workItem from="1749381329647" duration="16256000" />
       <workItem from="1750264392173" duration="4126000" />
+      <workItem from="1750586972223" duration="12838000" />
+      <workItem from="1750611849542" duration="8372000" />
     </task>
     <servers />
   </component>
@@ -301,7 +303,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Report.php</url>
-          <line>660</line>
+          <line>665</line>
           <properties>
             <option name="className" value="\Report" />
             <option name="methodName" value="fileDelete_java" />

@@ -1,7 +1,8 @@
+<?php $this->load->view("includes/head"); ?>
+<?php $this->load->view("site_module/report_v/list/page_style"); ?>
 
-    <?php $this->load->view("includes/head"); ?>
 </head>
-<body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
+<body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
@@ -18,9 +19,7 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_datatable"); ?>
+<?php $this->load->view("site_module/report_v/list/page_script"); ?>
+
 </body>
 </html>
-
-
-

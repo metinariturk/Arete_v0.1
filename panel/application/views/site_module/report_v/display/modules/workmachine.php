@@ -12,6 +12,7 @@
                         <th class="text-center py-2" style="width:10%;">Sayısı</th>
                         <th class="text-center py-2" style="width:20%;">Çalıştığı Mahal</th>
                         <th class="text-center py-2" style="width:60%;">Açıklama</th>
+                        <th class="text-center py-2" style="width:60%;">İmalat</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -21,6 +22,7 @@
                             <td class="text-center py-2"><?php echo $workmachine->number; ?></td>
                             <td class="text-start py-2"><?php echo yazim_duzen($workmachine->place); ?></td>
                             <td class="text-start py-2"><?php echo yazim_duzen($workmachine->notes); ?></td>
+                            <td class="text-start py-2"><?php echo yazim_duzen($workmachine->production); ?></td>
                         </tr>
                     <?php } ?>
                     <tr class="table-active">
@@ -29,6 +31,7 @@
                             <?php echo $this->Report_workmachine_model->sum_all(array("report_id" => $item->id), "number"); ?>
                         </td>
                         <td colspan="2" class="text-start py-2"></td>
+                        <td class="text-center fw-bold py-2"></td>
                     </tr>
                     </tbody>
                 </table>
