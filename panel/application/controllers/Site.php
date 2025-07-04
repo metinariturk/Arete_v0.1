@@ -1390,11 +1390,7 @@ class Site extends MY_Controller
     public
     function name_control($user_name)
     {
-        if (preg_match('/^([a-z üğışçöÜĞİŞÇÖ])*$/i', $user_name)) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
+        return preg_match('/^([A-ZÇĞİÖŞÜ][a-zçğıöşü]+)(\s[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+$/u', $user_name) === 1;
     }
 
     public function IBAN_control($IBAN)
