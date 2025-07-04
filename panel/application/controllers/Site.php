@@ -1389,14 +1389,29 @@ class Site extends MY_Controller
     /*Validation Controls Start*/
     public function name_control($user_name)
     {
-        if (preg_match('/^[a-zA-ZçÇğĞıİöÖşŞüÜ]+( [a-zA-ZçÇğĞıİöÖşŞüÜ]+)+$/u', $user_name)) {
-            return TRUE;
-        } else {
-            $this->form_validation->set_message('name_control', 'Lütfen geçerli bir ad soyad giriniz.');
+        // Sadece harf ve boşluk var mı? (alfabetik kontrol)
+        if (!preg_match('/^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/u', $user_name)) {
+            $this->form_validation->set_message('name_control', 'Ad soyad sadece harf ve boşluk içermelidir.');
             return FALSE;
         }
-    }
 
+        // En az iki kelime var mı? (isim ve soyisim birlikte)
+        if (substr_count(trim($user_name), ' ') < 1) {
+            $this->form_validation->set_message('name_control', 'Lütfen hem adınızı hem soyadınızı giriniz.');
+            return FALSE;
+        }
+
+        // Her kelime en az 2 harfli mi?
+        $parts = explode(' ', $user_name);
+        foreach ($parts as $part) {
+            if (mb_strlen($part, 'UTF-8') < 2) {
+                $this->form_validation->set_message('name_control', 'Her kelime en az 2 harfli olmalıdır.');
+                return FALSE;
+            }
+        }
+
+        return TRUE;
+    }
     public function IBAN_control($IBAN)
     {
         // Tüm boşlukları kaldır
