@@ -1707,7 +1707,7 @@ class Site extends MY_Controller
         $validate = $this->form_validation->run();
         // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
         if ($validate) {
-            $name_surname = ucwords(strtolower($this->input->post("name_surname")));
+            $name_surname = mb_convert_case(mb_strtolower($this->input->post("name_surname"), 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
             $IBAN = str_replace(' ', '', $this->input->post("IBAN"));
             // "TR" ibaresinin başında olup olmadığını kontrol et
             if (substr($IBAN, 0, 2) !== 'TR') {
@@ -1827,7 +1827,7 @@ class Site extends MY_Controller
         $validate = $this->form_validation->run();
         // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
         if ($validate) {
-            $name_surname = ucwords(mb_strtolower($this->input->post("name_surname"), 'UTF-8'));
+            $name_surname = mb_convert_case(mb_strtolower($this->input->post("name_surname"), 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
             $IBAN = str_replace(' ', '', $this->input->post("IBAN"));
             // "TR" ibaresinin başında olup olmadığını kontrol et
             if (substr($IBAN, 0, 2) !== 'TR') {
