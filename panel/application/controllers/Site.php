@@ -50,6 +50,7 @@ class Site extends MY_Controller
             "download_all" => array('site' => ['r', 'u']),
             "download_all_expense" => array('sitewallet' => ['r']),
             "edit_expense" => array('sitewallet' => ['w', 'u']),
+            "edit_personel" => array('site' => ['w', 'u']),
             "exit_stock" => array('sitestock' => ['w', 'u']),
             "expense_file_delete" => array('sitewallet' => ['u', 'd']),
             "expense_file_download" => array('sitewallet' => ['r']),
