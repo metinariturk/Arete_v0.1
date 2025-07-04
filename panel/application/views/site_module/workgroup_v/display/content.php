@@ -15,8 +15,8 @@
                                 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="category" action="<?php echo base_url("site_module/add_main"); ?>"
-                                      url="<?php echo base_url("site_module/add_main"); ?>"
+                                <form id="category" action="<?php echo base_url("workgroup/add_main"); ?>"
+                                      url="<?php echo base_url("workgroup/add_main"); ?>"
                                       method="post" enctype="multipart">
                                     <div class="mb-3">
                                         <label class="col-form-label" for="recipient-name">Ana İş Grubu:</label>
