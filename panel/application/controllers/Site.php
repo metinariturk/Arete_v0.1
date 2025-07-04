@@ -1387,10 +1387,14 @@ class Site extends MY_Controller
     /*Sitewalllet End*/
     /*----*/
     /*Validation Controls Start*/
-    public
-    function name_control($user_name)
+    public function name_control($user_name)
     {
-        return preg_match('/^([A-ZÇĞİÖŞÜ][a-zçğıöşü]+)(\s[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+$/u', $user_name) === 1;
+        if (preg_match('/^[a-zA-ZçÇğĞıİöÖşŞüÜ]+( [a-zA-ZçÇğĞıİöÖşŞüÜ]+)+$/u', $user_name)) {
+            return TRUE;
+        } else {
+            $this->form_validation->set_message('name_control', 'Lütfen geçerli bir ad soyad giriniz.');
+            return FALSE;
+        }
     }
 
     public function IBAN_control($IBAN)
