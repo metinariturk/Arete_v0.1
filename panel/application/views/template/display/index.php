@@ -31,9 +31,6 @@
         background-color: #c82333;
     }
 
-    .file-link { /* 'İçeriği Görüntüle' linki için stil */
-        margin-right: 10px; /* İndir ve sil butonlarından ayırmak için */
-    }
     /* Genel eksik veri satır stili */
     tr.missing-data-row {
         background-color: #ffe0e0; /* Açık kırmızı */
@@ -43,19 +40,7 @@
         border: 2px solid #ff0000; /* Kırmızı çerçeve */
         background-color: #fff0f0; /* Açık kırmızı iç renk */
     }
-    /* Diğer inputların da stilini düzeltelim ki tutarlı olsunlar */
-    #csvDataForm input[type="text"] {
-        border: 1px solid #ccc;
-        padding: 5px;
-        border-radius: 3px;
-        font-size: 0.9em;
-    }
-    /* Readonly inputlara biraz farklı stil verebiliriz */
-    #csvDataForm input[type="text"][readonly] {
-        background-color: #f0f0f0;
-        color: #555;
-        cursor: default;
-    }
+
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -73,7 +58,7 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("trial_page/display/content"); ?>
+            <?php $this->load->view("template/display/content"); ?>
         </div>
     </div>
     <?php $this->load->view("includes/footer"); ?>

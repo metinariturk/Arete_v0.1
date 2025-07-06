@@ -43,13 +43,29 @@ $sidebarList = array(
             array(
                 "title" => "Hava Durumu",
                 "url" => base_url("Weather")
-            )        )
+            ))
     ),
 
     array(
         "title" => "Personel Yönetimi",
         "icon" => "users",
         "url" => base_url("user")
+    ),
+
+    array(
+        "title" => "Araçlar",
+        "icon" => "gear",
+        "url" => "#",
+        "submodules" => array(
+            array(
+                "title" => "Donatı Metrajı",
+                "url" => base_url("Rebar")
+            ),
+            array(
+                "title" => "AutoCAD Araçları",
+                "url" => base_url("Template")
+            )
+         )
     ),
 
     array(
@@ -80,7 +96,6 @@ $sidebarList = array(
         "icon" => "log-out",
         "url" => base_url("logout")
     ),
-
 
 
 );

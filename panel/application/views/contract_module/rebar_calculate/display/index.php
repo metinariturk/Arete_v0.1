@@ -73,7 +73,7 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("trial_page/display/content"); ?>
+            <?php $this->load->view("contract_module/rebar_calculate/display/content"); ?>
         </div>
     </div>
     <?php $this->load->view("includes/footer"); ?>
