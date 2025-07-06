@@ -1,6 +1,16 @@
 <?php $this->load->view("includes/head"); ?>
 
 <style>
+    .missing-data-row {
+        background-color: #ffdddd; /* Kırmızımsı arka plan */
+    }
+    .missing-qty, .missing-r, .missing-l {
+        border: 2px solid red; /* Kırmızı kenarlık */
+    }
+</style>
+
+<style>
+
     /* ... Mevcut stil kodları ... */
     .file-list li {
         /* flex özelliklerini düzenleyelim ki butonlar yanyana gelsin */

@@ -60,14 +60,7 @@ class Dashboard extends MY_Controller
                 )
             );
             $id = $this->db->insert_id();
-            $path = "Uploads/Notes/$id";
-            if (!is_dir($path)) {
-                try {
-                    mkdir($path, 0777, TRUE);
-                } catch (Exception $e) {
-                    log_message('error', 'Dizin oluşturulamadı: ' . $e->getMessage());
-                }
-            }
+
             $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
             $viewData = new stdClass();
             $viewData->notes = $notes;
@@ -121,13 +114,7 @@ class Dashboard extends MY_Controller
             );
             $id = $this->db->insert_id();
             $path = "Uploads/Notes/$id";
-            if (!is_dir($path)) {
-                try {
-                    mkdir($path, 0777, TRUE);
-                } catch (Exception $e) {
-                    log_message('error', 'Dizin oluşturulamadı: ' . $e->getMessage());
-                }
-            }
+
             $notes = $this->Notes_model->get_all(array("owner" => active_user_id()));
             $viewData = new stdClass();
             $viewData->notes = $notes;

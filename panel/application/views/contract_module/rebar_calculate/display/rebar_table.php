@@ -1,20 +1,20 @@
 <?php
 // Bu view dosyası HTML tablo içeriğini input alanlarıyla oluşturacak.
 
-if (!empty($error_message)) : ?>
+// Controller'dan gelen URL'yi alacağız
+$action_url = site_url('Rebar/export_table_to_excel');
+?>
+
+<?php if (!empty($error_message)) : ?>
     <div class="error"><?php echo html_escape($error_message); ?></div>
 <?php endif; ?>
 
-    <h3>"<?php echo html_escape($file_name); ?>" Dosyası İçeriği</h3>
-
+<h3>"<?php echo html_escape($file_name); ?>" Dosyası İçeriği</h3>
 
 
 <?php if (!empty($csv_data_for_table)) : ?>
     <h3>Ayrıştırılmış Tablo Verileri (Toplam <?php echo count($csv_data_for_table); ?> satır)</h3>
-
-
-
-    <form id="csvDataForm">
+    <form id="csvDataForm" action="<?php echo $action_url; ?>" method="POST">
         <table border="1">
             <thead>
             <tr>
@@ -75,8 +75,22 @@ if (!empty($error_message)) : ?>
             </tbody>
         </table>
         <br>
-        <button type="button" id="processCsvData" style="background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">Verileri İşle (JSON Gönder)</button>
+        <button type="submit"
+                style="background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+            Verileri Excel Olarak İndir
+        </button>
+
     </form>
 <?php else : ?>
     <p>Ayrıştırılmış tablo verisi bulunamadı veya dosya işlenirken hata oluştu.</p>
 <?php endif; ?>
+
+<style>
+    .missing-data-row {
+        background-color: #ffdddd; /* Kırmızımsı arka plan */
+    }
+
+    .missing-qty, .missing-r, .missing-l {
+        border: 2px solid red; /* Kırmızı kenarlık */
+    }
+</style>

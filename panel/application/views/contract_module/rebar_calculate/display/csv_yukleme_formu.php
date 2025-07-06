@@ -29,7 +29,7 @@
                                 $encoded_path = urlencode(base64_encode($full_file_path));
                                 ?>
                                 <a href="#" class="btn btn-info btn-sm me-2 file-link" data-encoded-path="<?php echo $encoded_path; ?>">İçeriği Görüntüle</a>
-                                <a href="<?php echo site_url('Rebar/download_file/' . $encoded_path); ?>" class="btn btn-secondary btn-sm me-2">İndir</a>
+                                <a href="<?php echo site_url('Rebar/download_file/' . $encoded_path); ?>" class="btn btn-secondary btn-sm me-2">Ham Dosyayı İndir</a>
                                 <button type="button" class="btn btn-danger btn-sm delete-file-btn" data-encoded-path="<?php echo $encoded_path; ?>">Sil</button>
                             </div>
                         </li>
