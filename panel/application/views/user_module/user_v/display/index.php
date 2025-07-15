@@ -30,8 +30,7 @@
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("{$viewModule}/{$viewFolder}/common/page_script"); ?>
 
-<script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
 </body>
 </html>

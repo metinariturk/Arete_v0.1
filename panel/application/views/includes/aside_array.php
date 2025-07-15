@@ -3,25 +3,22 @@
 $sidebarList = array(
     array(
         "title" => "Ana Sayfa",
-        "icon" => "home",
+        "icon" => "fas fa-home", // home -> fas fa-home
         "url" => base_url("dashboard")
     ),
     array(
         "title" => "Projeler",
-        "icon" => "box",
+        "icon" => "fas fa-project-diagram", // box -> fas fa-project-diagram (daha uygun bir ikon)
         "url" => base_url("project")
     ),
-
-
     array(
         "title" => "Sözleşmeler",
-        "icon" => "box",
+        "icon" => "fas fa-file-contract", // box -> fas fa-file-contract (daha uygun bir ikon)
         "url" => base_url("Contract")
     ),
-
     array(
         "title" => "Şantiye Yönetimi",
-        "icon" => "triangle",
+        "icon" => "fas fa-hard-hat", // triangle -> fas fa-hard-hat (daha uygun bir ikon)
         "url" => "#",
         "submodules" => array(
             array(
@@ -43,18 +40,17 @@ $sidebarList = array(
             array(
                 "title" => "Hava Durumu",
                 "url" => base_url("Weather")
-            ))
+            )
+        )
     ),
-
     array(
         "title" => "Personel Yönetimi",
-        "icon" => "users",
+        "icon" => "fas fa-users", // users -> fas fa-users
         "url" => base_url("user")
     ),
-
     array(
         "title" => "Araçlar",
-        "icon" => "gear",
+        "icon" => "fas fa-wrench", // gear -> fas fa-wrench (veya fas fa-cog)
         "url" => "#",
         "submodules" => array(
             array(
@@ -65,20 +61,17 @@ $sidebarList = array(
                 "title" => "AutoCAD Araçları",
                 "url" => base_url("Template")
             )
-         )
+        )
     ),
-
     array(
         "title" => "Firma Yönetimi",
-        "icon" => "trello",
+        "icon" => "fas fa-building", // trello -> fas fa-building (daha uygun bir ikon)
         "url" => base_url("company")
     ),
-
     array(
         "title" => "Ayarlar",
-        "icon" => "settings",
+        "icon" => "fas fa-cogs", // settings -> fas fa-cogs
         "url" => "#",
-
         "submodules" => array(
             array(
                 "title" => "Genel Ayarlar",
@@ -90,14 +83,11 @@ $sidebarList = array(
             )
         )
     ),
-
     array(
         "title" => "ÇIKIŞ",
-        "icon" => "log-out",
+        "icon" => "fas fa-sign-out-alt", // log-out -> fas fa-sign-out-alt
         "url" => base_url("logout")
     ),
-
-
 );
 
 foreach ($sidebarList as $module) { ?>
@@ -108,7 +98,7 @@ foreach ($sidebarList as $module) { ?>
         <?php } ?>
         "
            href="<?php echo $module["url"]; ?>">
-            <i data-feather="<?php echo $module["icon"]; ?>"></i>
+            <i class="<?php echo $module["icon"]; ?>"></i>
             <span><?php echo $module["title"]; ?></span>
         </a>
         <?php if (isset($module["submodules"])) { ?>

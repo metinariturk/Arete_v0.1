@@ -22,13 +22,18 @@
                     }
 
                     // Modal'ı kapat
+                    $('#' + formId)[0].reset(); // Formu sıfırla
+
                     $('#' + modalId).modal('hide');
+                    console.log('Modal hide method called for:', modalId);
+
                     $('body').removeClass('modal-open'); // Body'den modal-open class'ını kaldır
                     $('.modal-backdrop').remove(); // Modal arka planını temizle
 
                     // Formdaki inputları temizle
                     $('#' + formId)[0].reset(); // Formu sıfırla
 
+                    alert("asd");
                 } else if (response.status === 'error') {
                     // Hata cevabı gelirse:
                     $('#' + errorDivId).html(response.html); // Hata mesajını errorDivId içine yükle

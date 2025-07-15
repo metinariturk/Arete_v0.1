@@ -27,7 +27,6 @@
 
 <?php $this->load->view("includes/include_script"); ?>
 <?php $this->load->view("includes/file_upload_script.php"); ?>
-<?php $this->load->view("includes/include_form_script"); ?>
 <?php $this->load->view("includes/include_datatable"); ?>
 <?php $this->load->view("site_module/site_v/display/page_script"); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -20,7 +20,7 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_form_script"); ?>
+
 
 <script>
     function update_group(anchor) {

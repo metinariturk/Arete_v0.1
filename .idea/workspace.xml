@@ -76,7 +76,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/application/views/site_module/report_v/list",
+    "last_opened_file_path": "C:/xampp/htdocs/Arete_v0.1/panel/assets/images",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -89,11 +89,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\css" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\list" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\display" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\list\tabs" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\update" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\add" />
@@ -274,6 +274,9 @@
       <workItem from="1750264392173" duration="4126000" />
       <workItem from="1750586972223" duration="12838000" />
       <workItem from="1750611849542" duration="8372000" />
+      <workItem from="1752006808588" duration="1827000" />
+      <workItem from="1752440340259" duration="8732000" />
+      <workItem from="1752518171069" duration="6619000" />
     </task>
     <servers />
   </component>

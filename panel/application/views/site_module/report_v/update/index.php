@@ -18,7 +18,7 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_form_script"); ?>
+
 <script src="<?php echo base_url("assets"); ?>/js/jquery.repeater.js"></script><!--Form Inputs-->
 <?php $this->load->view("site_module/report_v/update/page_script"); ?>
 

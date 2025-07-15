@@ -8,7 +8,7 @@ class Weather extends MY_Controller
 
         $this->moduleFolder = "site_module";
         $this->viewFolder = "weather_v";
-        $this->load->model("Weather_model");
+        $this->load->model("Report_weather_model");
         $this->load->model("Report_model");
         $this->Module_Title = "Hava Durumu Verileri";
     }
@@ -16,7 +16,7 @@ class Weather extends MY_Controller
     {
         $viewData = new stdClass();
         
-        $items = $this->Weather_model->get_all(
+        $items = $this->Report_weather_model->get_all(
             array()
         );
         
@@ -28,7 +28,7 @@ class Weather extends MY_Controller
     {
         $viewData = new stdClass();
         
-        $items = $this->Weather_model->get_all(
+        $items = $this->Report_weather_model->get_all(
             array()
         );
         
@@ -68,7 +68,7 @@ class Weather extends MY_Controller
         if ($validate) {
             $date = dateFormat('Y-m-d', $this->input->post("report_date"));
             if ($this->input->post("update") != "on") {
-                $insert = $this->Weather_model->add(
+                $insert = $this->Report_weather_model->add(
                     array(
                         "date" => $date,
                         "min" => $this->input->post('min'),
@@ -77,7 +77,7 @@ class Weather extends MY_Controller
                     )
                 );
             } else {
-                $insert = $this->Weather_model->update(
+                $insert = $this->Report_weather_model->update(
                     array(
                         "date" => $date,
                     ),
@@ -110,7 +110,7 @@ class Weather extends MY_Controller
         } else {
             $viewData = new stdClass();
             
-            $items = $this->Weather_model->get_all(
+            $items = $this->Report_weather_model->get_all(
                 array()
             );
             
@@ -125,7 +125,7 @@ class Weather extends MY_Controller
     {
         $viewData = new stdClass();
         
-        $item = $this->Weather_model->get(
+        $item = $this->Report_weather_model->get(
             array(
                 "id" => $id,
             )
@@ -158,7 +158,7 @@ class Weather extends MY_Controller
         $validate = $this->form_validation->run();
         if ($validate) {
             // Upload Süreci...
-            $update = $this->Weather_model->update(
+            $update = $this->Report_weather_model->update(
                 array("id" => $id),
                 array(
                     "protocol" => $this->input->post("protocol"),
@@ -193,7 +193,7 @@ class Weather extends MY_Controller
             $viewData->subViewFolder = "update";
             $viewData->form_error = true;
             
-            $viewData->item = $this->Weather_model->get(
+            $viewData->item = $this->Report_weather_model->get(
                 array(
                     "id" => $id,
                 )
@@ -204,7 +204,7 @@ class Weather extends MY_Controller
     public
     function delete($id)
     {
-        $delete = $this->Weather_model->delete(
+        $delete = $this->Report_weather_model->delete(
             array(
                 "id" => $id
             )
@@ -216,9 +216,9 @@ class Weather extends MY_Controller
     public
     function date_control($date)
     {
-        $this->load->model("Weather_model");
+        $this->load->model("Report_weather_model");
         $control = dateFormat('Y-m-d', $date);
-        $weather = $this->Weather_model->get(array('date' => $control));
+        $weather = $this->Report_weather_model->get(array('date' => $control));
         if (isset($weather)) {
             return FALSE;
         } else {

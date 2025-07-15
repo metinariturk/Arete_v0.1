@@ -19,10 +19,9 @@
     </div>
 </div>
 <?php $this->load->view("includes/include_script"); ?>
-<?php $this->load->view("includes/include_form_script"); ?>
+
 <script src="<?php echo base_url("assets"); ?>/js/jquery.repeater.js"></script><!--Form Inputs-->
-<script src="<?php echo base_url("assets"); ?>/js/flat-pickr/flatpickr.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+
 <?php $this->load->view("site_module/report_v/add/page_script"); ?>
 
 </body>

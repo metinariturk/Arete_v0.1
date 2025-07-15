@@ -1,28 +1,18 @@
-<!-- Favicon ve Apple Icon -->
-<link rel="icon" type="image/png" href="<?php echo base_url("assets"); ?>/images/favicon.png">
-<link rel="shortcut icon" href="<?php echo base_url("assets"); ?>/images/favicon.png" type="image/x-icon">
-<link rel="apple-touch-icon" href="<?php echo base_url("assets"); ?>/images/favicon.png">
-
 <!-- Mobil Web App -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Web Site Adı">
+<script src="https://kit.fontawesome.com/c5e2f40b81.js" crossorigin="anonymous"></script>
+
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&display=swap" rel="stylesheet">
-
-<!-- Icon Fonts -->
-<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/icofont.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/themify.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/flag-icon.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/feather-icon.css">
 
 <!-- Vendor Plugins -->
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/scrollbar.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/animate.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/select2.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/dropzone.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/date-picker.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/vendors/tree.css">
 
 <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets"); ?>/css/calendar_style.css">

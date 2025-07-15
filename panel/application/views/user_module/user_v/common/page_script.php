@@ -204,3 +204,21 @@
         });
     }
 </script>
+<script>
+    function cancelConfirmationModule(button) {
+        swal.fire({
+            title: 'Emin misiniz?',
+            text: "Yaptığınız değişiklik varsa kaydedilmeyecektir.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '<i class="fa fa-arrow-circle-o-left fa-lg"></i> Değişiklik Yapmayacağım',
+            cancelButtonText: 'Düzenlemeye Devam Et <i class="fa fa-arrow-circle-o-right fa-lg"></i>'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = button.getAttribute('url');
+            }
+        });
+    }
+</script>

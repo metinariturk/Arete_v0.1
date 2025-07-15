@@ -24,6 +24,9 @@ class MY_Controller extends CI_Controller
         include($uploader);
 
         $this->load->model("Settings_model");
+        $this->load->model("Project_model");
+        $this->load->model("Contract_model");
+        $this->load->model("Site_model");
 
         $settings = $this->Settings_model->get(); // query object
         $this->viewData = new stdClass();
