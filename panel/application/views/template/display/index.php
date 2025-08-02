@@ -51,9 +51,7 @@
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
-        <div class="header-wrapper row m-0">
-            <?php $this->load->view("includes/navbar_left"); ?>
-        </div>
+        <?php $this->load->view("includes/navbar_left"); ?>
     </div>
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>

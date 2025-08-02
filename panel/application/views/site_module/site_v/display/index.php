@@ -1,20 +1,17 @@
+<?php $this->load->view("includes/head"); ?>
+<?php $this->load->view("site_module/site_v/common/page_style"); ?>
+<?php $this->load->view("includes/include_datatable_css"); ?>
+<?php $this->load->view("includes/drag_drop_style"); ?>
 
-    <?php $this->load->view("includes/head"); ?>
-    <?php $this->load->view("site_module/site_v/common/page_style"); ?>
-    <?php $this->load->view("includes/include_datatable_css"); ?>
-    <?php $this->load->view("includes/drag_drop_style"); ?>
+<!-- Plugins css start-->
 
-    <!-- Plugins css start-->
-
-    <!-- Plugins css Ends-->
+<!-- Plugins css Ends-->
 </head>
-<body  class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
+<body class="<?php echo ($this->Theme_mode == 1) ? "dark-only" : ""; ?>">
 <?php $this->load->view("includes/wrapper"); ?>
 <div class="page-wrapper compact-wrapper" id="pageWrapper">
     <div class="page-header">
-        <div class="header-wrapper row m-0">
-            <?php $this->load->view("includes/navbar_left"); ?>
-        </div>
+        <?php $this->load->view("includes/navbar_left"); ?>
     </div>
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
