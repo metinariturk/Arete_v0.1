@@ -11,7 +11,7 @@
     <title>Arete - Panel</title>
     <link rel="icon" href="<?php echo base_url("assets/images/favicon.ico"); ?>" sizes="any">
 
-    <link rel="icon" type="image/svg+xml" href="<?php echo base_url("assets/images/rlogo.svg"); ?>">
+    <link rel="icon" type="image/svg+xml" href="<?php echo base_url("assets/images/logo.ico"); ?>">
 
     <link rel="apple-touch-icon" sizes="180x180" href="<?php echo base_url("assets/images/apple-touch-icon.png"); ?>">
 
