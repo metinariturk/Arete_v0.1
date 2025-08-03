@@ -10,7 +10,6 @@
     <div class="page-body-wrapper">
         <?php $this->load->view("includes/aside"); ?>
         <div class="page-body">
-            <?php $this->load->view("user_module/company_v/common/title"); ?>
             <?php $this->load->view("user_module/company_v/display/content"); ?>
         </div>
         <?php $this->load->view("includes/footer"); ?>
