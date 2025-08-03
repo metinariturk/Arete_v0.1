@@ -3381,6 +3381,8 @@ class Export extends MY_Controller
         $advance_given = sum_from_table("advance", "avans_miktar", $contract->id);
         $sum_old_advance = $this->Payment_model->sum_all(array('contract_id' => $payment->contract_id, "hakedis_no" => $payment->hakedis_no), "I");
         $this->load->library('pdf_creator');
+
+
         $pdf = new Pdf_creator();
         if ($contract->parent > 0) {
             $main_contract = $this->Contract_model->get(array("id" => $contract->parent));

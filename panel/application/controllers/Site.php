@@ -891,6 +891,21 @@ class Site extends MY_Controller
         }
     }
 
+    public function personel_file_download($site_id, $personel_data_id)
+    {
+
+        $personel = $this->Sitewallet_model->get(array("id" => $data_id));
+        $site = $this->Site_model->get(array("id" => $site_wallet->site_id));
+        $project = $this->Project_model->get(array("id" => $site->project_id));
+        $file_path = "uploads/project_v/$project->dosya_no/$site->dosya_no/Sitewallet/$data_id/$file_name";
+        if ($file_path) {
+            if (file_exists($file_path)) {
+                $data = file_get_contents($file_path);
+                force_download($file_name, $data);
+            }
+        }
+    }
+
     public function download_all_expense($data_id)
     {
 
@@ -1412,20 +1427,36 @@ class Site extends MY_Controller
 
         return TRUE;
     }
-    public function IBAN_control($IBAN)
+    public function IBAN_control($iban_input)
     {
-        // Tüm boşlukları kaldır
-        $IBAN = str_replace(' ', '', $IBAN);
-        // "TR" ibaresinin başında olup olmadığını kontrol et
-        if (substr($IBAN, 0, 2) !== 'TR') {
-            $IBAN = 'TR' . $IBAN; // Eğer yoksa, başına "TR" ekle
+        // form_validation kütüphanesinin zaten yüklü olduğunu varsayıyoruz.
+        // $this->load->library('form_validation'); // If unsure and needed, uncomment this line.
+
+        // Convert to uppercase and remove spaces for all checks
+        $iban_cleaned = strtoupper(str_replace(' ', '', $iban_input));
+
+        // If input is just "TR" (case-insensitive, already handled by strtoupper), return true.
+        // This allows "TR" as a valid initial state for an empty/incomplete entry.
+        if ($iban_cleaned === 'TR') {
+            return TRUE;
         }
-        // Toplam uzunluğunu kontrol et
-        if (strlen($IBAN) === 26) {
-            return TRUE; // IBAN geçerli
-        } else {
-            return FALSE; // IBAN geçersiz
+
+        // Check if it starts with "TR" (case-insensitive, already handled by strtoupper)
+        if (substr($iban_cleaned, 0, 2) !== 'TR') {
+            $this->form_validation->set_message('IBAN_control', 'IBAN "TR" ile başlamalıdır.');
+            return FALSE;
         }
+
+        // Check total length
+        if (strlen($iban_cleaned) !== 26) {
+            $this->form_validation->set_message('IBAN_control', 'IBAN toplamda 26 karakter olmalıdır (TR dahil).');
+            return FALSE;
+        }
+
+        // You might want to add a Modulo 97 check here for actual IBAN validity in a real application.
+        // For now, based on your rules, if it passes above, it's considered valid.
+
+        return TRUE;
     }
 
     public function TC_control($social_id)
@@ -1723,11 +1754,15 @@ class Site extends MY_Controller
         // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
         if ($validate) {
             $name_surname = mb_convert_case(mb_strtolower($this->input->post("name_surname"), 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
-            $IBAN = str_replace(' ', '', $this->input->post("IBAN"));
-            // "TR" ibaresinin başında olup olmadığını kontrol et
-            if (substr($IBAN, 0, 2) !== 'TR') {
-                $IBAN = 'TR' . $IBAN; // Eğer yoksa, başına "TR" ekle
+            $IBAN = strtoupper(str_replace(' ', '', $this->input->post("IBAN"))); // Convert to uppercase and remove spaces first for consistency
+
+            if (strlen($IBAN) > 2 && substr($IBAN, 0, 2) !== 'TR') {
+                $IBAN = 'TR' . $IBAN;
             }
+            if ($IBAN === 'TR') {
+                $IBAN = null;
+            }
+
             // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
             if ($this->input->post("start_date")) {
                 $start_date = dateFormat('Y-m-d', $this->input->post("start_date"));
@@ -1819,15 +1854,15 @@ class Site extends MY_Controller
         // Form validation kütüphanesini yüklüyoruz
         $this->load->library("form_validation");
         // Form doğrulama kuralları ekliyoruz
-        $this->form_validation->set_rules('name_surname', 'Ad Soyad', 'required|callback_name_control');
-        $this->form_validation->set_rules('group', 'Meslek', 'required');
-        if ($this->input->post("social_id")) {
-            $this->form_validation->set_rules('social_id', 'TC Kimlik', 'callback_TC_control');
+        $this->form_validation->set_rules('edit_name_surname', 'Ad Soyad', 'required|callback_name_control');
+        $this->form_validation->set_rules('edit_group', 'Meslek', 'required');
+        if ($this->input->post("edit_social_id")) {
+            $this->form_validation->set_rules('edit_social_id', 'TC Kimlik', 'callback_TC_control');
         }
-        if ($this->input->post("IBAN")) {
-            $this->form_validation->set_rules('IBAN', 'IBAN', 'callback_IBAN_control');
+        if ($this->input->post("edit_IBAN")) {
+            $this->form_validation->set_rules('edit_IBAN', 'IBAN', 'callback_IBAN_control');
         }
-        $this->form_validation->set_rules('start_date', 'Giriş Tarihi', 'required');
+        $this->form_validation->set_rules('edit_start_date', 'Giriş Tarihi', 'required');
         $this->form_validation->set_message(
             array(
                 "IBAN_control" => "<b>{field}</b> TR ibaresi hariç 24 haneden oluşmalıdır, eğer TR ibaresi ile girerseniz 26 haneli olmalıdır. Boşluklar dikkate alınmamaktadır",
@@ -1842,20 +1877,26 @@ class Site extends MY_Controller
         $validate = $this->form_validation->run();
         // Eğer doğrulama başarılı ise aşağıdaki işlemleri yapıyoruz
         if ($validate) {
-            $name_surname = mb_convert_case(mb_strtolower($this->input->post("name_surname"), 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
-            $IBAN = str_replace(' ', '', $this->input->post("IBAN"));
-            // "TR" ibaresinin başında olup olmadığını kontrol et
-            if (substr($IBAN, 0, 2) !== 'TR') {
-                $IBAN = 'TR' . $IBAN; // Eğer yoksa, başına "TR" ekle
+            $name_surname = mb_convert_case(mb_strtolower($this->input->post("edit_name_surname"), 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+            $IBAN = strtoupper(str_replace(' ', '', $this->input->post("edit_IBAN"))); // Convert to uppercase and remove spaces first for consistency
+
+            if (strlen($IBAN) > 2 && substr($IBAN, 0, 2) !== 'TR') {
+                $IBAN = 'TR' . $IBAN;
             }
+            if ($IBAN === 'TR') {
+                $IBAN = null;
+            }
+
+
+
             // Eğer formdan tarih bilgisi gelmişse, formatı Y-m-d olarak ayarlıyoruz
-            if ($this->input->post("start_date")) {
-                $start_date = dateFormat('Y-m-d', $this->input->post("start_date"));
+            if ($this->input->post("edit_start_date")) {
+                $start_date = dateFormat('Y-m-d', $this->input->post("edit_start_date"));
             } else {
                 $start_date = null;
             }
-            if ($this->input->post("exit_date")) {
-                $exit_date = dateFormat('Y-m-d', $this->input->post("exit_date"));
+            if ($this->input->post("edit_exit_date")) {
+                $exit_date = dateFormat('Y-m-d', $this->input->post("edit_exit_date"));
                 $is_Active = 0;
             } else {
                 $exit_date = null;
@@ -1865,13 +1906,13 @@ class Site extends MY_Controller
                 array("id" => $edit_personel->id),
                 array(
                     "name_surname" => $name_surname,
-                    "group" => $this->input->post("group"),
-                    "bank" => $this->input->post("bank"),
+                    "group" => $this->input->post("edit_group"),
+                    "bank" => $this->input->post("edit_bank"),
                     "IBAN" => $IBAN,
-                    "social_id" => $this->input->post('social_id'),
+                    "social_id" => $this->input->post('edit_social_id'),
                     "start_date" => $start_date,
                     "exit_date" => $exit_date,
-                    "notes" => $this->input->post('personel_notes'),
+                    "notes" => $this->input->post('edit_personel_notes'),
                     "isActive" => $is_Active,
                 )
             );

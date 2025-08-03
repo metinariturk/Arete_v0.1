@@ -275,16 +275,6 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab6-1" role="tabpanel" aria-labelledby="tab6-1-link">
-                        <div class="download_links mt-3">
-                            <i class="fa fa-plus fa-2x me-0" style="cursor: pointer;" data-bs-toggle="modal"
-                               data-bs-target="#AddWorker"></i>
-                            <a href="<?php echo base_url('export/active_worker_download_excel'); ?>">
-                                <i class="fa fa-file-excel-o fa-2x"></i>
-                            </a>
-                            <a href="<?php echo base_url('export/active_worker_download_pdf'); ?>">
-                                <i class="fa fa-file-pdf-o fa-2x"></i>
-                            </a>
-                        </div>
                         <?php $this->load->view("site_module/site_v/display/tabs/tab_6_1_workgroup"); ?>
                     </div>
                     <div class="tab-pane fade" id="tab6-2" role="tabpanel" aria-labelledby="tab6-2-link">

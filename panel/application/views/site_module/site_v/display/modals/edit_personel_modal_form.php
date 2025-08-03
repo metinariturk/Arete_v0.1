@@ -17,7 +17,7 @@
                                 <label class="col-form-label" for="name_surname">Adı Soyadı:</label>
                                 <input id="name_surname" type="text"
                                        class="form-control <?php cms_isset(form_error("name_surname"), "is-invalid", ""); ?>"
-                                       name="name_surname"
+                                       name="edit_name_surname"
                                        value="<?php echo isset($form_error) ? set_value("name_surname") : "$edit_personel->name_surname"; ?>"
                                        placeholder="Adı Soyadı">
                                 <?php if (isset($form_error)) { ?>
@@ -29,7 +29,7 @@
                                 <label class="col-form-label" for="social_id">TC Kimlik No:</label>
                                 <input id="social_id" type="text"
                                        class="form-control <?php cms_isset(form_error("social_id"), "is-invalid", ""); ?>"
-                                       name="social_id" maxlength="11" minlength="11"
+                                       name="edit_social_id" maxlength="11" minlength="11"
                                        pattern="[0-9]{11}"
                                        placeholder="TC NO"
                                        value="<?php echo isset($form_error) ? set_value("social_id") : "$edit_personel->social_id"; ?>">
@@ -42,7 +42,7 @@
                             <!-- Tarih -->
                             <div class="mb-3">
                                 <label for="start_date" class="form-label">Giriş Tarihi</label>
-                                <input type="date" name="start_date" id="start_date"
+                                <input type="date" name="edit_start_date" id="start_date"
                                        value="<?php echo isset($form_error) ? date(set_value('start_date')) : date($edit_personel->start_date); ?>"
                                        class="form-control <?php cms_isset(form_error("start_date"), "is-invalid", ""); ?>">
                                 <?php if (isset($form_error)) { ?>
@@ -54,7 +54,7 @@
                                 <label class="col-form-label" for="group">Meslek:</label>
                                 <select id="select2-demo-profession" style="width: 100%;"
                                         class="form-control <?php cms_isset(form_error("group"), "is-invalid", ""); ?>"
-                                        data-plugin="select2" name="group">
+                                        data-plugin="select2" name="edit_group">
                                     <option selected="selected"
                                             value="<?php echo isset($form_error) ? cms_if_echo(set_value("group"), null, "", set_value("group")) : $edit_personel->group; ?>">
                                         <?php echo isset($form_error) ? cms_if_echo(set_value("group"), null, "Seçiniz", group_name(set_value("group"))) : group_name($edit_personel->group); ?>
@@ -76,7 +76,7 @@
                                 <label class="col-form-label" for="bank">Banka:</label>
                                 <select id="select2-demo-bank" style="width: 100%;"
                                         class="form-control <?php cms_isset(form_error("bank"), "is-invalid", ""); ?>"
-                                        data-plugin="select2" name="bank">
+                                        data-plugin="select2" name="edit_bank">
                                     <option selected="selected"
                                             value="<?php echo isset($form_error) ? cms_if_echo(set_value("bank"), null, "", set_value("bank")) : $edit_personel->bank; ?>">
                                         <?php echo isset($form_error) ? cms_if_echo(set_value("bank"), null, "Seçiniz", set_value("bank")) : $edit_personel->bank; ?>
@@ -93,7 +93,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="col-form-label" for="IBAN">IBAN:</label>
-                                <input id="IBAN" type="text" name="IBAN"
+                                <input id="IBAN" type="text" name="edit_IBAN"
                                        class="form-control <?php cms_isset(form_error("IBAN"), "is-invalid", ""); ?>"
                                        value="<?php echo isset($form_error) ? set_value("IBAN") : "$edit_personel->IBAN"; ?>">
                                 <?php if (isset($form_error)) { ?>
@@ -105,7 +105,7 @@
                                 <label class="col-form-label" for="payment_notes">Açıklama:</label>
                                 <input id="personel_notes" type="text"
                                        class="form-control <?php cms_isset(form_error("personel_notes"), "is-invalid", ""); ?>"
-                                       name="personel_notes" value="<?php echo isset($form_error) ? set_value("personel_notes") : "$edit_personel->notes"; ?>"
+                                       name="edit_personel_notes" value="<?php echo isset($form_error) ? set_value("personel_notes") : "$edit_personel->notes"; ?>"
                                        placeholder="Açıklama">
                                 <?php if (isset($form_error)) { ?>
                                     <div class="invalid-feedback"><?php echo form_error('personel_notes'); ?></div>
@@ -115,7 +115,7 @@
                             <!-- Tarih -->
                             <div class="mb-3">
                                 <label for="exit_date" class="form-label">Çıkış Tarihi</label>
-                                <input type="date" name="exit_date" id="exit_date"
+                                <input type="date" name="edit_exit_date" id="exit_date"
                                        value="<?php echo isset($form_error) ? date(set_value('exit_date')) : date($edit_personel->exit_date); ?>"
                                        class="form-control <?php cms_isset(form_error("exit_date"), "is-invalid", ""); ?>">
                                 <?php if (isset($form_error)) { ?>

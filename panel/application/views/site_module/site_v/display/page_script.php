@@ -1,7 +1,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!--// Modal içindeki Formu Gönderip Belirli bir Div'i refresh eden script başı -->
-
+<script>
+    function initializeFlatpickr() {
+        flatpickr(".flatpickr", {
+            dateFormat: "d-m-Y",
+            locale: "tr",
+            allowInput: true,
+            disableMobile: true
+        });
+    }
+</script>
 <script>
     function submit_modal_form(formId, modalId, DivId, DataTable = null) {
         var form = $('#' + formId)[0];  // Form referansını alıyoruz (DOM element olarak)
@@ -132,6 +141,8 @@
                 // Modal padding ve overflow ayarlarını sıfırla (gerekirse)
                 $('body').css('padding-right', '');
                 $('body').css('overflow', '');
+
+                initializeFlatpickr();
             },
             error: function () {
                 alert('Modal içeriği yüklenirken bir hata oluştu.');
@@ -334,53 +345,6 @@
     });
 </script>
 
-<script>
-    // PHP'den alınan harcama verisini JavaScript'te kullanmak için
-    var monthlyExpenses = <?php echo $chart_expense; ?>;
-
-    // Grafik verilerini hazırlama
-    var labels = Object.keys(monthlyExpenses); // Aylar
-    var data = Object.values(monthlyExpenses); // Toplam harcamalar
-
-    // Her çubuk için farklı renkler tanımlama
-    var colors = [
-        'rgba(75, 192, 192, 0.2)', // Ocak
-        'rgba(255, 99, 132, 0.2)', // Şubat
-        'rgba(255, 206, 86, 0.2)', // Mart
-        'rgba(75, 192, 192, 0.2)', // Nisan
-        'rgba(54, 162, 235, 0.2)', // Mayıs
-        'rgba(153, 102, 255, 0.2)', // Haziran
-        'rgba(255, 159, 64, 0.2)', // Temmuz
-        'rgba(255, 99, 132, 0.2)', // Ağustos
-        'rgba(75, 192, 192, 0.2)', // Eylül
-        'rgba(255, 206, 86, 0.2)', // Ekim
-        'rgba(54, 162, 235, 0.2)', // Kasım
-        'rgba(153, 102, 255, 0.2)'  // Aralık
-    ];
-
-    // Grafik oluşturma
-    var ctx = document.getElementById('expenseChart').getContext('2d');
-    var expenseChart = new Chart(ctx, {
-        type: 'bar', // Çubuk grafik
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Aylık Harcama (TL)',
-                data: data,
-                backgroundColor: colors.slice(0, data.length), // Her çubuğa farklı renk
-                borderColor: colors.slice(0, data.length).map(color => color.replace('0.2', '1')), // Kenar rengi
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-</script>
 
 <script>
     function change_list(div_id, url, DataTable) {
@@ -797,4 +761,75 @@
 <!-- Favori İşareti Son-->
 
 
-<!--Rapor İmza Ayarı-->
+
+<script>
+    // clearAddPersonelFormCustom fonksiyonunuzun tanımı
+    function clearAddPersonelFormCustom() {
+        const form = document.getElementById('addPersonelForm');
+        if (!form) {
+            console.error("Form with ID 'addPersonelForm' not found in clearAddPersonelFormCustom.");
+            return;
+        }
+
+        // Tüm metin, sayı ve textarea inputlarını temizle
+        form.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
+            input.value = '';
+            input.classList.remove('is-invalid');
+            // Hata mesajını kaldıralım, varsayalım input'tan sonraki ilk sibling invalid-feedback
+            // Eğer yapınız farklıysa bu kısmı düzeltmeniz gerekebilir (örn: div > input + div.invalid-feedback)
+            if (input.nextElementSibling && input.nextElementSibling.classList.contains('invalid-feedback')) {
+                input.nextElementSibling.remove();
+            }
+        });
+
+        // Tarih inputunu temizle
+        form.querySelectorAll('input[type="date"]').forEach(input => {
+            input.value = '';
+            input.classList.remove('is-invalid');
+            if (input.nextElementSibling && input.nextElementSibling.classList.contains('invalid-feedback')) {
+                input.nextElementSibling.remove();
+            }
+        });
+
+        // Dosya inputunu temizle
+        form.querySelectorAll('input[type="file"]').forEach(input => {
+            input.value = '';
+        });
+
+        // Select2 ile oluşturulmuş select kutularını temizle (jQuery gerekli)
+        // Eğer bu Select2'lerinizde varsayılan bir "Seçiniz" opsiyonu varsa,
+        // .val('').trigger('change') daha uygun olabilir.
+        const professionSelect = $('#select2-demo-profession');
+        if (professionSelect.length) {
+            professionSelect.val(null).trigger('change');
+            // Select2'nin "placeholder"ını tekrar göstermesi için de tetikleme gerekebilir.
+            // Bu genellikle .val(null).trigger('change') ile olur.
+        }
+
+        const bankSelect = $('#select2-demo-bank');
+        if (bankSelect.length) {
+            bankSelect.val(null).trigger('change');
+        }
+
+        // Genel .is-invalid sınıflarını ve .invalid-feedback divlerini kaldır
+        form.querySelectorAll('.is-invalid').forEach(element => {
+            element.classList.remove('is-invalid');
+        });
+
+        form.querySelectorAll('.invalid-feedback').forEach(feedbackDiv => {
+            feedbackDiv.remove();
+        });
+
+        console.log('addPersonelForm temizleme işlemi tamamlandı.'); // Konsol çıktısı
+    }
+
+
+    // Bootstrap Modal Olay Dinleyicisi
+    $(document).ready(function() {
+        // 'AddPersonelModal' açılmadan hemen önce tetiklenir
+        $('#AddPersonelModal').on('show.bs.modal', function (e) {
+            console.log('AddPersonelModal açılma olayı tetiklendi. Form temizleniyor...');
+            clearAddPersonelFormCustom();
+        });
+    });
+</script>

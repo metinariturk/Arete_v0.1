@@ -90,10 +90,10 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\images" />
+      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\site_v\display\modals" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\assets\css" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\list" />
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\display" />
-      <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\list\tabs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Arete_v0.1\panel\application\views\site_module\report_v\add" />
@@ -277,7 +277,8 @@
       <workItem from="1752006808588" duration="1827000" />
       <workItem from="1752440340259" duration="8732000" />
       <workItem from="1752518171069" duration="6619000" />
-      <workItem from="1754161556316" duration="2159000" />
+      <workItem from="1754161556316" duration="15510000" />
+      <workItem from="1754177575501" duration="2520000" />
     </task>
     <servers />
   </component>
@@ -316,7 +317,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/panel/application/controllers/Site.php</url>
-          <line>1869</line>
+          <line>1910</line>
           <properties>
             <option name="className" value="\Site" />
             <option name="methodName" value="edit_personel" />
@@ -400,6 +401,11 @@
           <url>file://$PROJECT_DIR$/panel/application/views/site_module/site_v/display/modals/exit_modal_form.php</url>
           <line>10</line>
           <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/panel/application/controllers/Payment.php</url>
+          <line>669</line>
+          <option name="timeStamp" value="73" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/panel/assets/js/flat-pickr/custom-flatpickr.js</url>
