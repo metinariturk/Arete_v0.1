@@ -206,75 +206,77 @@
     <?php if (!empty($old_boq)) { ?>
         <?php $old_boqs = json_decode($old_boq->calculation, true); ?>
         <?php $i = 1; ?>
-        <?php foreach ($old_boqs as $row_no => $info) { ?>
-            <?php $j = $i++; ?>
-            <?php $range = count($old_boqs); ?>
-            <div class="container-fluid">
-                <div class="row" id="row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>">
-                    <div class="col-1" style="margin: 0; padding: 0;">
-                        <button type="button" class="btn btn-danger btn-sm"
-                                onclick="removeRow('row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                    <div class="col-2 mb-1" style="margin: 0; padding: 0;">
-                        <input name="boq[<?php echo $j; ?>][s]" style="width: 100%"
-                               id="s_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo $info['s']; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="text">
-                    </div>
-                    <div class="col-3" style="margin: 0; padding: 0;">
-                        <input name="boq[<?php echo $j; ?>][n]" style="width: 100%"
-                               id="n_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo $info['n']; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="text">
-                    </div>
-                    <div class="col-1" style="margin: 0; padding: 0;">
-                        <input name="boq[<?php echo $j; ?>][q]" style="width: 100%"
-                               id="q_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo $info['q']; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="number" step="any">
-                    </div>
-                    <div class="col-1" style="margin: 0; padding: 0;">
-                        <input name="boq[<?php echo $j; ?>][w]" style="width: 100%"
-                               id="w_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo $info['w']; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="number" step="any">
-                    </div>
-                    <div class="col-1" style="margin: 0; padding: 0;" id="h_<?php echo $j; ?>">
-                        <input name="boq[<?php echo $j; ?>][h]" style="width: 100%"
-                               id="h_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo $info['h']; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="number" step="any">
-                    </div>
-                    <div class="col-1" style="margin: 0; padding: 0;" id="l_<?php echo $j; ?>">
-                        <input name="boq[<?php echo $j; ?>][l]" style="width: 100%"
-                               id="l_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo $info['l']; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="number" step="any">
-                    </div>
-                    <div class="col-2" style="margin: 0; padding: 0;" id="t_<?php echo $j; ?>">
-                        <input readonly name="boq[<?php echo $j; ?>][t]" style="width: 100%"
-                               id="t_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
-                               value="<?php echo isset($info['t']) ? $info['t'] : ''; ?>"
-                               onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
-                               type="number" step="any">
+        <?php if (isset($old_boqs)) { ?>
+            <?php foreach ($old_boqs as $row_no => $info) { ?>
+                <?php $j = $i++; ?>
+                <?php $range = count($old_boqs); ?>
+                <div class="container-fluid">
+                    <div class="row" id="row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>">
+                        <div class="col-1" style="margin: 0; padding: 0;">
+                            <button type="button" class="btn btn-danger btn-sm"
+                                    onclick="removeRow('row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="col-2 mb-1" style="margin: 0; padding: 0;">
+                            <input name="boq[<?php echo $j; ?>][s]" style="width: 100%"
+                                   id="s_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                   value="<?php echo $info['s']; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   type="text">
+                        </div>
+                        <div class="col-3" style="margin: 0; padding: 0;">
+                            <input name="boq[<?php echo $j; ?>][n]" style="width: 100%"
+                                   id="n_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                   value="<?php echo $info['n']; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   type="text">
+                        </div>
+                        <div class="col-1" style="margin: 0; padding: 0;">
+                            <input name="boq[<?php echo $j; ?>][q]" style="width: 100%"
+                                   id="q_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                   value="<?php echo $info['q']; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   type="number" step="any">
+                        </div>
+                        <div class="col-1" style="margin: 0; padding: 0;">
+                            <input name="boq[<?php echo $j; ?>][w]" style="width: 100%"
+                                   id="w_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                   value="<?php echo $info['w']; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   type="number" step="any">
+                        </div>
+                        <div class="col-1" style="margin: 0; padding: 0;" id="h_<?php echo $j; ?>">
+                            <input name="boq[<?php echo $j; ?>][h]" style="width: 100%"
+                                   id="h_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                   value="<?php echo $info['h']; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   type="number" step="any">
+                        </div>
+                        <div class="col-1" style="margin: 0; padding: 0;" id="l_<?php echo $j; ?>">
+                            <input name="boq[<?php echo $j; ?>][l]" style="width: 100%"
+                                   id="l_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                   value="<?php echo $info['l']; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   type="number" step="any">
+                        </div>
+                        <div class="col-2" style="margin: 0; padding: 0;" id="t_<?php echo $j; ?>">
+                            <input readonly name="boq[<?php echo $j; ?>][t]" style="width: 100%"
+                                   id="t_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
+                                   value="<?php echo isset($info['t']) ? $info['t'] : ''; ?>"
+                                   onclick="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   onblur="calculateAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
+                                   type="number" step="any">
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php } ?>
         <?php } ?>
     <?php } ?>
 
@@ -283,7 +285,7 @@
         <div class="container-fluid">
             <div class="row" id="row_<?php echo $income; ?>_<?php echo $row_number; ?>">
                 <div class="col-1" style="margin: 0; padding: 0;">
-                   &nbsp;
+                    &nbsp;
                 </div>
                 <div class="col-2 mb-1" style="margin: 0; padding: 0;">
                     <input name="boq[<?php echo $row_number; ?>][s]" style="width: 100%"
@@ -589,14 +591,14 @@
             var selects = row.querySelectorAll('select');
 
             // Tüm inputların değerini sıfırla
-            inputs.forEach(function(input) {
+            inputs.forEach(function (input) {
                 if (input.type === 'text' || input.type === 'number') {
                     input.value = '';
                 }
             });
 
             // Tüm select elemanlarının değerini boş değere (null) getir
-            selects.forEach(function(select) {
+            selects.forEach(function (select) {
                 select.value = '';
                 if (select.options.length > 0 && select.options[0].value === '') {
                     select.selectedIndex = 0;
@@ -621,14 +623,14 @@
             var selects = row.querySelectorAll('select');
 
             // Tüm inputların değerini sıfırla
-            inputs.forEach(function(input) {
+            inputs.forEach(function (input) {
                 if (input.type === 'text' || input.type === 'number') {
                     input.value = '';
                 }
             });
 
             // Tüm select elemanlarının değerini boş değere (null) getir
-            selects.forEach(function(select) {
+            selects.forEach(function (select) {
                 select.value = '';
                 if (select.options.length > 0 && select.options[0].value === '') {
                     select.selectedIndex = 0;
