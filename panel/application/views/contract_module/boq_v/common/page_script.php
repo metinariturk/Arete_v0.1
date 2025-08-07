@@ -167,11 +167,4 @@
 
 </script>
 
-<script>
-    function removeRow(rowId) {
-        var row = document.getElementById(rowId);
-        if (row) {
-            row.remove(); // sadece DOM'dan siler
-        }
-    }
-</script>
+

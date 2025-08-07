@@ -2279,18 +2279,23 @@ class Contract extends MY_Controller
                 $sub_contracts = $this->Contract_model->get_all(array('parent' => $item->id));
             }
 
-
+            $project = $this->Project_model->get(array("id" => $item->project_id));
+            $site = $this->Site_model->get(array("project_id" => $item->project_id));
             $viewData = new stdClass();
             $viewData->edit_item = $item;
 
 
             $viewData->companys = $companys;
             $viewData->item = $item;
+            $viewData->project = $project;
+            $viewData->site = $site;
             if ($item->parent > 0) {
                 $viewData->main_contract = $main_contract;
             } else {
                 $viewData->sub_contracts = $sub_contracts;
             }
+
+
             $response = array(
                 'status' => 'success',
                 'html' => $this->load->view("contract_module/contract_v/display/contract/contract_table", $viewData, true)

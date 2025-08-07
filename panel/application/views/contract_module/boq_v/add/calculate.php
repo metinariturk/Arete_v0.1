@@ -410,6 +410,7 @@
 
 <script>
     function saveCalc(btn) {
+
         calculateAndSetResult(<?php echo $income; ?>, 1);
 
         var url = btn.getAttribute('data-url');
@@ -579,7 +580,66 @@
     }
 </script>
 
+<script>
+    function removeRow(rowId) {
+        var row = document.getElementById(rowId);
+        if (row) {
+            // Satırdaki tüm input ve select elemanlarını bul
+            var inputs = row.querySelectorAll('input');
+            var selects = row.querySelectorAll('select');
 
+            // Tüm inputların değerini sıfırla
+            inputs.forEach(function(input) {
+                if (input.type === 'text' || input.type === 'number') {
+                    input.value = '';
+                }
+            });
 
+            // Tüm select elemanlarının değerini boş değere (null) getir
+            selects.forEach(function(select) {
+                select.value = '';
+                if (select.options.length > 0 && select.options[0].value === '') {
+                    select.selectedIndex = 0;
+                }
+            });
 
+            // Satırı HTML sayfasında gizle
+            row.style.display = 'none';
 
+            // Toplamı manuel olarak güncelle ki kullanıcı gizlenen satırın etkisini hemen görebilsin
+            calculateAndSetResult(<?php echo $income; ?>, 1);
+        }
+    }
+</script>
+
+<script>
+    function removerebarRow(rowId) {
+        var row = document.getElementById(rowId);
+        if (row) {
+            // Satırdaki tüm input ve select elemanlarını bul
+            var inputs = row.querySelectorAll('input');
+            var selects = row.querySelectorAll('select');
+
+            // Tüm inputların değerini sıfırla
+            inputs.forEach(function(input) {
+                if (input.type === 'text' || input.type === 'number') {
+                    input.value = '';
+                }
+            });
+
+            // Tüm select elemanlarının değerini boş değere (null) getir
+            selects.forEach(function(select) {
+                select.value = '';
+                if (select.options.length > 0 && select.options[0].value === '') {
+                    select.selectedIndex = 0;
+                }
+            });
+
+            // Satırı HTML sayfasında gizle
+            row.style.display = 'none';
+
+            // Toplamı manuel olarak güncelle ki kullanıcı gizlenen satırın etkisini hemen görebilsin
+            calculaterebarAndSetResult(<?php echo $income; ?>, 1);
+        }
+    }
+</script>

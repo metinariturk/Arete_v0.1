@@ -20,7 +20,7 @@
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Kapat</button>
                     <button type="button" class="btn btn-primary"
                             id="EditContractModal-<?php echo "$edit_item->id"; ?>"
-                            onclick="submit_modal_form('editContractForm','EditContractModal', 'contract_table' ,'edit_Contract_modal')">
+                            onclick="submit_modal_form('editContractForm','EditContractModal', 'Contract_card' ,'edit_Contract_modal')">
                         Gönder
                     </button>
                 </div>

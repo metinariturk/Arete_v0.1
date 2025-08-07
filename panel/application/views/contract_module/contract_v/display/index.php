@@ -33,7 +33,6 @@
 <?php $this->load->view("contract_module/contract_v/display/page_script"); ?>
 <?php $this->load->view("contract_module/contract_v/display/price_script"); ?>
 
-<div id="updateSuccessAlert" class="update-alert"></div>
 
 </body>
 </html>

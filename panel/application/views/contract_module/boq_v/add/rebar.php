@@ -504,7 +504,7 @@
                 var m = n.includes(forbiddenWord) ? -1 : 1;
 
                 var result = Math.PI * (q ** 2) / 4 * 7.85 / 1000 * m * w * h * l;
-                result = result.toFixed(2);
+                result = result.toFixed(3);
                 document.getElementById('t_' + income + '_' + i).value = result;
                 totalResult += parseFloat(result) / 1000;
                 allEmpty = false; // En az bir değer dolu, allEmpty değerini false yap
