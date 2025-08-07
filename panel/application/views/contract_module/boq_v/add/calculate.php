@@ -178,7 +178,10 @@
             <div class="col-1">
                 <strong>Sil</strong>
             </div>
-            <div class="col-2">
+            <div class="col-1">
+                <strong>#</strong>
+            </div>
+            <div class="col-1">
                 <strong>Bölüm</strong>
             </div>
             <div class="col-3">
@@ -218,7 +221,10 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
-                        <div class="col-2 mb-1" style="margin: 0; padding: 0;">
+                        <div class="col-1 text-center" style="margin: 0; padding: 0;">
+                            <?php echo $i-1;?>
+                        </div>
+                        <div class="col-1 mb-1" style="margin: 0; padding: 0;">
                             <input name="boq[<?php echo $j; ?>][s]" style="width: 100%"
                                    id="s_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo $info['s']; ?>"
@@ -287,7 +293,10 @@
                 <div class="col-1" style="margin: 0; padding: 0;">
                     &nbsp;
                 </div>
-                <div class="col-2 mb-1" style="margin: 0; padding: 0;">
+                <div class="col-1 text-center" style="margin: 0; padding: 0;">
+                    <?php echo $row_number; ?>
+                </div>
+                <div class="col-1 mb-1" style="margin: 0; padding: 0;">
                     <input name="boq[<?php echo $row_number; ?>][s]" style="width: 100%"
                            id="s_<?php echo $income; ?>_<?php echo $row_number; ?>"
                            onclick="calculateAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"

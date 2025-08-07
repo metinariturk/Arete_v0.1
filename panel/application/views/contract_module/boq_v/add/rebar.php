@@ -179,6 +179,9 @@
             <div class="col-1">
                 <strong>Sil</strong>
             </div>
+            <div class="col-1">
+                <strong>#</strong>
+            </div>
             <div class="col-2">
                 <strong>Mahal</strong>
             </div>
@@ -197,7 +200,7 @@
             <div class="col-1">
                 <strong>Boy</strong>
             </div>
-            <div class="col-2" style="text-align: right">
+            <div class="col-1" style="text-align: right">
                 <strong>Ağırlık (kg)</strong>
             </div>
         </div>
@@ -218,6 +221,9 @@
                                     onclick="removeRow('row_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>')">
                                 <i class="fas fa-trash"></i>
                             </button>
+                        </div>
+                        <div class="col-1 text-center" style="margin: 0; padding: 0;">
+                            <?php echo $i-1;?>
                         </div>
                         <div class="col-2 mb-1" style="margin: 0; padding: 0;">
                             <input name="boq[<?php echo $j; ?>][s]" style="width: 100%"
@@ -284,7 +290,7 @@
                                    onblur="calculaterebarAndSetResult(<?php echo $old_boq->boq_id; ?>, <?php echo $j; ?>)"
                                    type="number" step="any">
                         </div>
-                        <div class="col-2" style="margin: 0; padding: 0;" id="t_<?php echo $j; ?>">
+                        <div class="col-1" style="margin: 0; padding: 0;" id="t_<?php echo $j; ?>">
                             <input readonly name="boq[<?php echo $j; ?>][t]" style="width: 100%"
                                    id="t_<?php echo $old_boq->boq_id; ?>_<?php echo $j; ?>"
                                    value="<?php echo isset($info['t']) ? $info['t'] : ''; ?>"
@@ -304,6 +310,9 @@
             <div class="row" id="row_<?php echo $income; ?>_<?php echo $row_number; ?>">
                 <div class="col-1" style="margin: 0; padding: 0;">
                    &nbsp;
+                </div>
+                <div class="col-1 text-center" style="margin: 0; padding: 0;">
+                    <?php echo $row_number; ?>
                 </div>
                 <div class="col-2 mb-1" style="margin: 0; padding: 0;">
                     <input name="boq[<?php echo $row_number; ?>][s]" style="width: 100%"
@@ -364,7 +373,7 @@
                            onblur="calculaterebarAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
                            type="number" step="any">
                 </div>
-                <div class="col-2" style="margin: 0; padding: 0;" id="t_<?php echo $row_number; ?>">
+                <div class="col-1" style="margin: 0; padding: 0;" id="t_<?php echo $row_number; ?>">
                     <input readonly name="boq[<?php echo $row_number; ?>][t]" style="width: 100%"
                            id="t_<?php echo $income; ?>_<?php echo $row_number; ?>"
                            onclick="calculaterebarAndSetResult(<?php echo $income; ?>, <?php echo $row_number; ?>)"
