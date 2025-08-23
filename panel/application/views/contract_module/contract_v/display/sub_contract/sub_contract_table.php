@@ -14,13 +14,35 @@
         <div class="contract-details-table">
             <?php if (!empty($sub_contracts)) { ?>
                 <table class="table table-sm table-borderless">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Sözleşme Adı</th>
+                        <th>Yüklenici</th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <?php $i = 1;
-                    foreach ($sub_contracts as $sub_contract) { ?>
+                    foreach ($sub_contracts as $sub_contract) {
+                        // Yüklenici adını al ve bir değişkene ata
+                        $yuklenici_adi = company_name($sub_contract->yuklenici);
+
+                        // Metin 30 karakterden uzunsa, sınırlama ve "..." ekleme işlemi yap
+                        if (strlen($yuklenici_adi) > 25) {
+                            $yuklenici_adi = mb_substr($yuklenici_adi, 0, 25, 'UTF-8') . '...';
+                        }
+                        ?>
                         <tr class="detail-row">
                             <td class="card-label">#<?php echo $i++; ?></td>
                             <td class="card-text">
-                                <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>"><?php echo $sub_contract->contract_name; ?></a>
+                                <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
+                                    <?php echo $sub_contract->contract_name; ?>
+                                </a>
+                            </td>
+                            <td class="card-text">
+                                <a href="<?php echo base_url("contract/file_form/$sub_contract->id"); ?>">
+                                    <?php echo $yuklenici_adi; ?>
+                                </a>
                             </td>
                         </tr>
                     <?php } ?>

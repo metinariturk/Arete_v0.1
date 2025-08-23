@@ -109,12 +109,7 @@
     .status-active { background-color: #28a745; }
     .status-completed { background-color: #6c757d; }
     .contract-details { font-size: 0.9rem; }
-    .detail-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .detail-row:first-child { border-top: none; }
+
     .card-label {
         color: #888;
         font-weight: 400;
